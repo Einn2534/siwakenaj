@@ -1,33 +1,59 @@
+// Created: 2024-05-25
+// Author: gpt-5-codex
+
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>Spawns note prefabs at a constant interval.</summary>
 public class NotesGenerator : MonoBehaviour
 {
+    private const float MinimumIntervalSeconds = 0.01f;
+
     [SerializeField]
-    GameObject notes;
-    [SerializeField] 
-    float interval = 1f; // 生成間隔(秒)
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    GameObject notesPrefab;
+
+    [SerializeField]
+    float intervalSeconds = 1f;
+
+    WaitForSeconds spawnDelay;
+
+    /// <summary>Prepares cached delay instructions.</summary>
+    void Awake()
+    {
+        refresh_spawn_delay();
+    }
+
+    /// <summary>Starts the repeated spawning coroutine.</summary>
     void Start()
     {
-        StartCoroutine(Generator());
+        StartCoroutine(generate_notes());
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>Keeps the configured interval within valid limits.</summary>
+    void OnValidate()
     {
-
-       
+        refresh_spawn_delay();
     }
 
-    IEnumerator Generator()
+    /// <summary>Creates note instances while the generator is active.</summary>
+    IEnumerator generate_notes()
     {
-        var wait = new WaitForSeconds(interval);
         while (true)
         {
-            // このオブジェクトの位置にノーツを生成
-            Instantiate(notes, transform.position, Quaternion.identity);
-            yield return wait;
+            if (notesPrefab)
+            {
+                Instantiate(notesPrefab, transform.position, Quaternion.identity);
+            }
+
+            yield return spawnDelay;
         }
+    }
+
+    /// <summary>Updates the cached delay value.</summary>
+    void refresh_spawn_delay()
+    {
+        float clampedInterval = Mathf.Max(intervalSeconds, MinimumIntervalSeconds);
+        intervalSeconds = clampedInterval;
+        spawnDelay = new WaitForSeconds(clampedInterval);
     }
 }
