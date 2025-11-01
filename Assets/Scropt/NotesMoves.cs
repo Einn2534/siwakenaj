@@ -21,9 +21,15 @@ public class NotesMoves : MonoBehaviour
     Sprite[] textures;
 
     [SerializeField]
-    int id;
+    int noteType;
 
     SpriteRenderer spriteRenderer;
+
+    /// <summary>Gets the randomly assigned note type index.</summary>
+    public int get_note_type()
+    {
+        return noteType;
+    }
 
     /// <summary>Caches component references.</summary>
     void Awake()
@@ -87,7 +93,7 @@ public class NotesMoves : MonoBehaviour
             return;
         }
 
-        id = Random.Range(TextureIndexMin, textures.Length);
-        spriteRenderer.sprite = textures[id];
+        noteType = Random.Range(TextureIndexMin, textures.Length);
+        spriteRenderer.sprite = textures[noteType];
     }
 }

@@ -39,10 +39,24 @@ public class LaneJudge : MonoBehaviour
         on_tap();
     }
 
+    /// <summary>Processes a tap input that targets a specific note type.</summary>
+    /// <param name="noteType">Identifier of the note type that should react.</param>
+    public void OnTap(int noteType)
+    {
+        on_tap(noteType);
+    }
+
     /// <summary>Processes a tap input coming from the UI.</summary>
     public void on_tap()
     {
         handle_tap();
+    }
+
+    /// <summary>Processes a tap input that targets a specific note type.</summary>
+    /// <param name="noteType">Identifier of the note type that should react.</param>
+    public void on_tap(int noteType)
+    {
+        handle_tap(noteType);
     }
 
     /// <summary>Queues a note when it enters the judgement area.</summary>
@@ -70,7 +84,8 @@ public class LaneJudge : MonoBehaviour
     }
 
     /// <summary>Executes the tap judgement workflow.</summary>
-    void handle_tap()
+    /// <param name="noteType">Optional filter for the expected note type.</param>
+    void handle_tap(int? noteType = null)
     {
         cleanup_nulls();
         if (queue.Count == 0)
@@ -78,7 +93,15 @@ public class LaneJudge : MonoBehaviour
             return;
         }
 
-        var note = queue[0];
+        NotesMoves note = noteType.HasValue
+            ? queue.Find(candidate => candidate && candidate.get_note_type() == noteType.Value)
+            : queue[0];
+
+        if (!note)
+        {
+            return;
+        }
+
         float distance = Vector2.Distance(note.transform.position, judgePoint.position);
 
         if (distance <= perfectDist)
