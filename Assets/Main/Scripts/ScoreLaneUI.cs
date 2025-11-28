@@ -18,7 +18,7 @@ public class ScoreLaneUI : MonoBehaviour
     [SerializeField]
     int maxRows = DEFAULT_MAX_ROWS;
 
-    readonly Dictionary<int, List<GameObject>> laneIcons = new();
+    readonly Dictionary<CarType, List<GameObject>> laneIcons = new();
 
     /// <summary>Clears all lane icons.</summary>
     public void reset_all()
@@ -35,36 +35,38 @@ public class ScoreLaneUI : MonoBehaviour
     }
 
     /// <summary>Updates the displayed icons for a specific lane.</summary>
-    /// <param name="laneIndex">Target lane identifier.</param>
+    /// <param name="laneType">Target lane identifier.</param>
     /// <param name="count">Number of icons to display.</param>
-    public void update_lane(int laneIndex, int count)
+    public void update_lane(CarType laneType, int count)
     {
-        ensure_lane_storage(laneIndex);
-        rebuild_lane(laneIndex, count);
+        ensure_lane_storage(laneType);
+        rebuild_lane(laneType, count);
     }
 
     /// <summary>Ensures dictionary storage exists for a lane.</summary>
-    /// <param name="laneIndex">Lane identifier to prepare.</param>
-    void ensure_lane_storage(int laneIndex)
+    /// <param name="laneType">Lane identifier to prepare.</param>
+    void ensure_lane_storage(CarType laneType)
     {
-        if (!laneIcons.ContainsKey(laneIndex))
+        if (!laneIcons.ContainsKey(laneType))
         {
-            laneIcons[laneIndex] = new List<GameObject>();
+            laneIcons[laneType] = new List<GameObject>();
         }
     }
 
     /// <summary>Rebuilds the icon stack with compressed spacing.</summary>
-    /// <param name="laneIndex">Lane identifier to draw.</param>
+    /// <param name="laneType">Lane identifier to draw.</param>
     /// <param name="count">Desired icon count.</param>
-    void rebuild_lane(int laneIndex, int count)
+    void rebuild_lane(CarType laneType, int count)
     {
-        List<GameObject> icons = laneIcons[laneIndex];
+        List<GameObject> icons = laneIcons[laneType];
         foreach (GameObject icon in icons)
         {
             Destroy(icon);
         }
 
         icons.Clear();
+
+        int laneIndex = (int)laneType;
 
         if (lanes == null || laneIndex < 0 || laneIndex >= lanes.Length)
         {

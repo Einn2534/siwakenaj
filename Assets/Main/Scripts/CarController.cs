@@ -16,13 +16,13 @@ public class CarController : MonoBehaviour
     float leftLimit = DEFAULT_LEFT_LIMIT;
 
     [SerializeField]
-    int carTypeIndex;
+    CarType carType;
 
     /// <summary>Gets the identifier for this car type.</summary>
-    /// <returns>Integer representing the serialized car type.</returns>
-    public int get_car_type()
+    /// <returns>Enum representing the serialized car type.</returns>
+    public CarType get_car_type()
     {
-        return carTypeIndex;
+        return carType;
     }
 
     /// <summary>Moves the car each frame.</summary>

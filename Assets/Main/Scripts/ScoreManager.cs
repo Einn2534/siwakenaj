@@ -21,7 +21,7 @@ public class ScoreManager : MonoBehaviour
 
     int currentScore;
     int missCount;
-    readonly Dictionary<int, int> laneCounts = new();
+    readonly Dictionary<CarType, int> laneCounts = new();
 
     /// <summary>Resets score and miss counters for a new stage.</summary>
     /// <param name="stageTargetScore">Score required to clear the stage.</param>
@@ -37,12 +37,12 @@ public class ScoreManager : MonoBehaviour
     }
 
     /// <summary>Processes a successful sort for a specific lane.</summary>
-    /// <param name="laneIndex">Lane identifier that was correctly chosen.</param>
-    public void apply_success(int laneIndex)
+    /// <param name="laneType">Lane identifier that was correctly chosen.</param>
+    public void apply_success(CarType laneType)
     {
         currentScore += SCORE_PER_CORRECT;
-        increment_lane(laneIndex);
-        scoreLaneUi.update_lane(laneIndex, laneCounts[laneIndex]);
+        increment_lane(laneType);
+        scoreLaneUi.update_lane(laneType, laneCounts[laneType]);
         check_clear();
     }
 
@@ -76,15 +76,15 @@ public class ScoreManager : MonoBehaviour
     }
 
     /// <summary>Increments the stored lane success count.</summary>
-    /// <param name="laneIndex">Lane identifier to increment.</param>
-    void increment_lane(int laneIndex)
+    /// <param name="laneType">Lane identifier to increment.</param>
+    void increment_lane(CarType laneType)
     {
-        if (!laneCounts.ContainsKey(laneIndex))
+        if (!laneCounts.ContainsKey(laneType))
         {
-            laneCounts[laneIndex] = 0;
+            laneCounts[laneType] = 0;
         }
 
-        laneCounts[laneIndex] += 1;
+        laneCounts[laneType] += 1;
     }
 
     /// <summary>Gets the current miss count.</summary>

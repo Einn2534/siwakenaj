@@ -18,7 +18,7 @@ public class JudgeController : MonoBehaviour
     /// <summary>Checks whether the pressed lane matches the car type.</summary>
     /// <param name="car">Car currently on the belt.</param>
     /// <param name="expectedLane">Lane identifier chosen by the player.</param>
-    public void judge(CarController car, int expectedLane)
+    public void judge(CarController car, CarType expectedLane)
     {
         if (!car)
         {

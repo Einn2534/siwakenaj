@@ -6,43 +6,48 @@ using UnityEngine;
 /// <summary>Routes UI button presses to the judge with lane awareness.</summary>
 public class ButtonInputController : MonoBehaviour
 {
-    private const int LANE_INDEX_A = 0;
-    private const int LANE_INDEX_B = 1;
-    private const int LANE_INDEX_C = 2;
-
     [SerializeField]
     JudgeController judgeController;
 
     [SerializeField]
     CarSpawner carSpawner;
 
+    [SerializeField]
+    CarType laneAType = CarType.LightTruck;
+
+    [SerializeField]
+    CarType laneBType = CarType.CompactCar;
+
+    [SerializeField]
+    CarType laneCType = CarType.SportsCar;
+
     /// <summary>Handles the tap for the first lane button.</summary>
     public void press_lane_a()
     {
-        handle_press(LANE_INDEX_A);
+        handle_press(laneAType);
     }
 
     /// <summary>Handles the tap for the second lane button.</summary>
     public void press_lane_b()
     {
-        handle_press(LANE_INDEX_B);
+        handle_press(laneBType);
     }
 
     /// <summary>Handles the tap for the third lane button.</summary>
     public void press_lane_c()
     {
-        handle_press(LANE_INDEX_C);
+        handle_press(laneCType);
     }
 
     /// <summary>Dispatches the press to the judge with the current car.</summary>
-    /// <param name="laneIndex">The lane identifier corresponding to the pressed button.</param>
-    void handle_press(int laneIndex)
+    /// <param name="laneType">The lane identifier corresponding to the pressed button.</param>
+    void handle_press(CarType laneType)
     {
         if (!judgeController || !carSpawner)
         {
             return;
         }
 
-        judgeController.judge(carSpawner.get_active_car(), laneIndex);
+        judgeController.judge(carSpawner.get_active_car(), laneType);
     }
 }
