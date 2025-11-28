@@ -19,6 +19,7 @@ public class CarSpawner : MonoBehaviour
     Transform spawnPoint;
 
     Coroutine spawnRoutine;
+    CarController activeCar;
 
     /// <summary>Starts the spawning coroutine if available.</summary>
     public void start_spawning()
@@ -55,9 +56,26 @@ public class CarSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>Provides the currently active car if available.</summary>
+    /// <returns>Existing car on the conveyor or null.</returns>
+    public CarController get_active_car()
+    {
+        return activeCar ? activeCar : null;
+    }
+
     /// <summary>Instantiates a random car prefab at the spawn point.</summary>
     void spawn_random_car()
     {
+        if (!activeCar)
+        {
+            activeCar = null;
+        }
+
+        if (activeCar)
+        {
+            return;
+        }
+
         if (carPrefabs == null || carPrefabs.Length == 0)
         {
             return;
@@ -65,6 +83,7 @@ public class CarSpawner : MonoBehaviour
 
         int index = Random.Range(0, carPrefabs.Length);
         Vector3 position = spawnPoint ? spawnPoint.position : transform.position;
-        Instantiate(carPrefabs[index], position, Quaternion.identity);
+        GameObject carObject = Instantiate(carPrefabs[index], position, Quaternion.identity);
+        activeCar = carObject.GetComponent<CarController>();
     }
 }
