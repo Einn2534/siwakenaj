@@ -77,7 +77,12 @@ public class ScoreLaneUI : MonoBehaviour
             return;
         }
 
-        float clampedCount = Mathf.Max(count, 0);
+        int clampedCount = Mathf.Max(count, 0);
+        if (clampedCount == 0)
+        {
+            return;
+        }
+
         float rowCount = Mathf.Max(1f, Mathf.Min(clampedCount, maxRows));
         float height = lane.rect.height;
         float step = rowCount <= 1f ? 0f : height / (rowCount - 1f);
@@ -87,9 +92,30 @@ public class ScoreLaneUI : MonoBehaviour
         {
             GameObject icon = Instantiate(iconPrefab, lane);
             RectTransform rect = icon.GetComponent<RectTransform>();
-            float ratio = rowCount <= 1f ? 0f : Mathf.Min(i, rowCount - 1f);
+            float ratio = rowCount <= 1f ? 0f : calculate_ratio(i, clampedCount, rowCount);
             rect.anchoredPosition = new Vector2(0f, startY + step * ratio);
             icons.Add(icon);
         }
+    }
+
+    /// <summary>Calculates the vertical ratio for compressed stacking.</summary>
+    /// <param name="index">Position index of the icon.</param>
+    /// <param name="count">Total icon count to display.</param>
+    /// <param name="rowCount">Maximum vertical slots available.</param>
+    /// <returns>Normalized ratio along the lane height.</returns>
+    float calculate_ratio(int index, int count, float rowCount)
+    {
+        if (count <= 1)
+        {
+            return 0f;
+        }
+
+        if (count <= rowCount)
+        {
+            return index;
+        }
+
+        float normalizedIndex = index / (float)(count - 1);
+        return normalizedIndex * (rowCount - 1f);
     }
 }
