@@ -7,18 +7,18 @@ using UnityEngine;
 /// <summary>Tracks global gameplay metrics such as score and combo.</summary>
 public class GameManager : MonoBehaviour
 {
-    private const int MissComboPenalty = 0;
-    private const int PerfectScore = 300;
-    private const int GreatScore = 200;
-    private const int GoodScore = 100;
-    private const int MissScore = 0;
+    private const int MISS_COMBO_PENALTY = 0;
+    private const int PERFECT_SCORE = 300;
+    private const int GREAT_SCORE = 200;
+    private const int GOOD_SCORE = 100;
+    private const int MISS_SCORE = 0;
 
     static readonly Dictionary<JudgementRank, int> rankScores = new()
     {
-        { JudgementRank.Perfect, PerfectScore },
-        { JudgementRank.Great, GreatScore },
-        { JudgementRank.Good, GoodScore },
-        { JudgementRank.Miss, MissScore }
+        { JudgementRank.Perfect, PERFECT_SCORE },
+        { JudgementRank.Great, GREAT_SCORE },
+        { JudgementRank.Good, GOOD_SCORE },
+        { JudgementRank.Miss, MISS_SCORE }
     };
 
     public static GameManager Instance { get; private set; }
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
 
         if (rank == JudgementRank.Miss)
         {
-            combo = MissComboPenalty;
+            combo = MISS_COMBO_PENALTY;
             return;
         }
 

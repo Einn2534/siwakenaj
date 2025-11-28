@@ -7,9 +7,9 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class NotesMoves : MonoBehaviour
 {
-    private const string JudgementAreaTag = "judgementArea";
-    private const int TextureIndexMin = 0;
-    private const float ArrivalThreshold = 0.001f;
+    private const string JUDGEMENT_AREA_TAG = "judgementArea";
+    private const int TEXTURE_INDEX_MIN = 0;
+    private const float ARRIVAL_THRESHOLD = 0.001f;
 
     [SerializeField]
     Transform judgementArea;
@@ -58,7 +58,7 @@ public class NotesMoves : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(current, target, step);
 
-        if (Vector3.Distance(transform.position, target) <= ArrivalThreshold)
+        if (Vector3.Distance(transform.position, target) <= ARRIVAL_THRESHOLD)
         {
             Destroy(gameObject);
         }
@@ -78,7 +78,7 @@ public class NotesMoves : MonoBehaviour
             return;
         }
 
-        GameObject target = GameObject.FindWithTag(JudgementAreaTag);
+        GameObject target = GameObject.FindWithTag(JUDGEMENT_AREA_TAG);
         if (target)
         {
             judgementArea = target.transform;
@@ -93,7 +93,7 @@ public class NotesMoves : MonoBehaviour
             return;
         }
 
-        noteType = Random.Range(TextureIndexMin, textures.Length);
+        noteType = Random.Range(TEXTURE_INDEX_MIN, textures.Length);
         spriteRenderer.sprite = textures[noteType];
     }
 }

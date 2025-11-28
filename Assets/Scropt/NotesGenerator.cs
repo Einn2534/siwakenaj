@@ -7,7 +7,7 @@ using UnityEngine;
 /// <summary>Spawns note prefabs at a constant interval.</summary>
 public class NotesGenerator : MonoBehaviour
 {
-    private const float MinimumIntervalSeconds = 0.01f;
+    private const float MINIMUM_INTERVAL_SECONDS = 0.01f;
 
     [SerializeField]
     GameObject notesPrefab;
@@ -52,7 +52,7 @@ public class NotesGenerator : MonoBehaviour
     /// <summary>Updates the cached delay value.</summary>
     void refresh_spawn_delay()
     {
-        float clampedInterval = Mathf.Max(intervalSeconds, MinimumIntervalSeconds);
+        float clampedInterval = Mathf.Max(intervalSeconds, MINIMUM_INTERVAL_SECONDS);
         intervalSeconds = clampedInterval;
         spawnDelay = new WaitForSeconds(clampedInterval);
     }
