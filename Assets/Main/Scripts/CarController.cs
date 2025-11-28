@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-/// <summary>Moves a car leftwards and removes it when off-screen.</summary>
+/// <summary>車体を左方向へ移動させ、画面外で破棄する。</summary>
 public class CarController : MonoBehaviour
 {
     private const float MINIMUM_SPEED = 0.1f;
@@ -18,14 +18,14 @@ public class CarController : MonoBehaviour
     [SerializeField]
     CarType carType;
 
-    /// <summary>Gets the identifier for this car type.</summary>
-    /// <returns>Enum representing the serialized car type.</returns>
+    /// <summary>設定されている車種を取得する。</summary>
+    /// <returns>シリアライズ済みの車種。</returns>
     public CarType get_car_type()
     {
         return carType;
     }
 
-    /// <summary>Moves the car each frame.</summary>
+    /// <summary>毎フレーム車体を移動させる。</summary>
     void Update()
     {
         Vector3 position = transform.position;
@@ -38,7 +38,7 @@ public class CarController : MonoBehaviour
         }
     }
 
-    /// <summary>Validates serialized fields for safe operation.</summary>
+    /// <summary>シリアライズされた値を安全な範囲に補正する。</summary>
     void OnValidate()
     {
         speed = Mathf.Max(speed, MINIMUM_SPEED);

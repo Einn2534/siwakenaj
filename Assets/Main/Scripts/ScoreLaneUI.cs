@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Displays stacked icons for each lane with compression.</summary>
+/// <summary>車種ごとのアイコンを積み上げて表示する。</summary>
 public class ScoreLaneUI : MonoBehaviour
 {
     private const int DEFAULT_MAX_ROWS = 10;
@@ -20,7 +20,7 @@ public class ScoreLaneUI : MonoBehaviour
 
     readonly Dictionary<CarType, List<GameObject>> laneIcons = new();
 
-    /// <summary>Clears all lane icons.</summary>
+    /// <summary>全レーンのアイコンを削除する。</summary>
     public void reset_all()
     {
         foreach (List<GameObject> icons in laneIcons.Values)
@@ -34,17 +34,17 @@ public class ScoreLaneUI : MonoBehaviour
         laneIcons.Clear();
     }
 
-    /// <summary>Updates the displayed icons for a specific lane.</summary>
-    /// <param name="laneType">Target lane identifier.</param>
-    /// <param name="count">Number of icons to display.</param>
+    /// <summary>指定レーンの表示アイコンを更新する。</summary>
+    /// <param name="laneType">対象の車種。</param>
+    /// <param name="count">表示するアイコン数。</param>
     public void update_lane(CarType laneType, int count)
     {
         ensure_lane_storage(laneType);
         rebuild_lane(laneType, count);
     }
 
-    /// <summary>Ensures dictionary storage exists for a lane.</summary>
-    /// <param name="laneType">Lane identifier to prepare.</param>
+    /// <summary>レーンの辞書領域を確保する。</summary>
+    /// <param name="laneType">準備する車種。</param>
     void ensure_lane_storage(CarType laneType)
     {
         if (!laneIcons.ContainsKey(laneType))
@@ -53,9 +53,9 @@ public class ScoreLaneUI : MonoBehaviour
         }
     }
 
-    /// <summary>Rebuilds the icon stack with compressed spacing.</summary>
-    /// <param name="laneType">Lane identifier to draw.</param>
-    /// <param name="count">Desired icon count.</param>
+    /// <summary>圧縮配置を適用してアイコンを再構築する。</summary>
+    /// <param name="laneType">描画対象の車種。</param>
+    /// <param name="count">生成したいアイコン数。</param>
     void rebuild_lane(CarType laneType, int count)
     {
         List<GameObject> icons = laneIcons[laneType];

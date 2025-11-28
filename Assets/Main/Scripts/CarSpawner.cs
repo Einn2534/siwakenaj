@@ -4,7 +4,7 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>Spawns cars at fixed intervals with randomized types.</summary>
+/// <summary>一定間隔で車をランダム生成する。</summary>
 public class CarSpawner : MonoBehaviour
 {
     private const float MINIMUM_INTERVAL_SECONDS = 0.2f;
@@ -21,7 +21,7 @@ public class CarSpawner : MonoBehaviour
     Coroutine spawnRoutine;
     CarController activeCar;
 
-    /// <summary>Starts the spawning coroutine if available.</summary>
+    /// <summary>生成コルーチンを開始する。</summary>
     public void start_spawning()
     {
         if (spawnRoutine != null)
@@ -32,7 +32,7 @@ public class CarSpawner : MonoBehaviour
         spawnRoutine = StartCoroutine(run_spawner());
     }
 
-    /// <summary>Stops the spawning coroutine.</summary>
+    /// <summary>生成コルーチンを停止する。</summary>
     public void stop_spawning()
     {
         if (spawnRoutine == null)
@@ -44,7 +44,7 @@ public class CarSpawner : MonoBehaviour
         spawnRoutine = null;
     }
 
-    /// <summary>Spawns cars at repeated intervals.</summary>
+    /// <summary>一定間隔で車を生成するループ。</summary>
     IEnumerator run_spawner()
     {
         WaitForSeconds delay = new WaitForSeconds(Mathf.Max(spawnIntervalSeconds, MINIMUM_INTERVAL_SECONDS));
@@ -56,14 +56,14 @@ public class CarSpawner : MonoBehaviour
         }
     }
 
-    /// <summary>Provides the currently active car if available.</summary>
-    /// <returns>Existing car on the conveyor or null.</returns>
+    /// <summary>現在表示中の車を取得する。</summary>
+    /// <returns>コンベア上の車。存在しなければ null。</returns>
     public CarController get_active_car()
     {
         return activeCar ? activeCar : null;
     }
 
-    /// <summary>Instantiates a random car prefab at the spawn point.</summary>
+    /// <summary>生成ポイントにランダムな車プレハブを配置する。</summary>
     void spawn_random_car()
     {
         if (!activeCar)

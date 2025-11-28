@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-/// <summary>Routes UI button presses to the judge with lane awareness.</summary>
+/// <summary>UIボタンの入力を判定処理へ中継する。</summary>
 public class ButtonInputController : MonoBehaviour
 {
     [SerializeField]
@@ -21,26 +21,26 @@ public class ButtonInputController : MonoBehaviour
     [SerializeField]
     CarType laneCType = CarType.SportsCar;
 
-    /// <summary>Handles the tap for the first lane button.</summary>
+    /// <summary>1番目のボタンが押された際の処理。</summary>
     public void press_lane_a()
     {
         handle_press(laneAType);
     }
 
-    /// <summary>Handles the tap for the second lane button.</summary>
+    /// <summary>2番目のボタンが押された際の処理。</summary>
     public void press_lane_b()
     {
         handle_press(laneBType);
     }
 
-    /// <summary>Handles the tap for the third lane button.</summary>
+    /// <summary>3番目のボタンが押された際の処理。</summary>
     public void press_lane_c()
     {
         handle_press(laneCType);
     }
 
-    /// <summary>Dispatches the press to the judge with the current car.</summary>
-    /// <param name="laneType">The lane identifier corresponding to the pressed button.</param>
+    /// <summary>現在の車と入力された車種を判定ロジックへ渡す。</summary>
+    /// <param name="laneType">押下されたボタンに対応する車種。</param>
     void handle_press(CarType laneType)
     {
         if (!judgeController || !carSpawner)

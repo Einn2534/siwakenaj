@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Tracks score, mistakes, and per-car success counts.</summary>
+/// <summary>スコア・ミス回数・車種別正解数を集計する。</summary>
 public class ScoreManager : MonoBehaviour
 {
     private const int SCORE_PER_CORRECT = 10;
@@ -23,9 +23,9 @@ public class ScoreManager : MonoBehaviour
     int missCount;
     readonly Dictionary<CarType, int> laneCounts = new();
 
-    /// <summary>Resets score and miss counters for a new stage.</summary>
-    /// <param name="stageTargetScore">Score required to clear the stage.</param>
-    /// <param name="maxMisses">Number of misses allowed.</param>
+    /// <summary>ステージ開始時にスコアとミス回数を初期化する。</summary>
+    /// <param name="stageTargetScore">クリアに必要なスコア。</param>
+    /// <param name="maxMisses">許容ミス回数。</param>
     public void reset_metrics(int stageTargetScore, int maxMisses)
     {
         targetScore = stageTargetScore;
@@ -36,8 +36,8 @@ public class ScoreManager : MonoBehaviour
         scoreLaneUi.reset_all();
     }
 
-    /// <summary>Processes a successful sort for a specific lane.</summary>
-    /// <param name="laneType">Lane identifier that was correctly chosen.</param>
+    /// <summary>正しく仕分けられた際の処理。</summary>
+    /// <param name="laneType">正解となった車種。</param>
     public void apply_success(CarType laneType)
     {
         currentScore += SCORE_PER_CORRECT;
@@ -46,7 +46,7 @@ public class ScoreManager : MonoBehaviour
         check_clear();
     }
 
-    /// <summary>Processes a miss and checks for game over.</summary>
+    /// <summary>ミス時の処理とゲームオーバー判定。</summary>
     public void apply_miss()
     {
         currentScore += SCORE_PER_MISS;
@@ -62,7 +62,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    /// <summary>Checks whether the current score meets the target.</summary>
+    /// <summary>現在スコアが目標に達したか確認する。</summary>
     void check_clear()
     {
         if (currentScore >= targetScore)
@@ -75,8 +75,8 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    /// <summary>Increments the stored lane success count.</summary>
-    /// <param name="laneType">Lane identifier to increment.</param>
+    /// <summary>車種別の正解数を加算する。</summary>
+    /// <param name="laneType">加算対象の車種。</param>
     void increment_lane(CarType laneType)
     {
         if (!laneCounts.ContainsKey(laneType))
@@ -87,8 +87,8 @@ public class ScoreManager : MonoBehaviour
         laneCounts[laneType] += 1;
     }
 
-    /// <summary>Gets the current miss count.</summary>
-    /// <returns>Total accumulated misses.</returns>
+    /// <summary>現在のミス回数を取得する。</summary>
+    /// <returns>累計ミス回数。</returns>
     public int get_miss_count()
     {
         return missCount;

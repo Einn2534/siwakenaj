@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-/// <summary>Evaluates player input against the current car.</summary>
+/// <summary>プレイヤー入力と現在の車を照合して結果を処理する。</summary>
 public class JudgeController : MonoBehaviour
 {
     [SerializeField]
@@ -15,9 +15,9 @@ public class JudgeController : MonoBehaviour
     [SerializeField]
     SoundManager soundManager;
 
-    /// <summary>Checks whether the pressed lane matches the car type.</summary>
-    /// <param name="car">Car currently on the belt.</param>
-    /// <param name="expectedLane">Lane identifier chosen by the player.</param>
+    /// <summary>押下された車種が現在の車と一致するかを判定する。</summary>
+    /// <param name="car">コンベア上に存在する車。</param>
+    /// <param name="expectedLane">プレイヤーが選んだ車種。</param>
     public void judge(CarController car, CarType expectedLane)
     {
         if (!car)
