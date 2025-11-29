@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-/// <summary>Controls player character animations for feedback.</summary>
+/// <summary>プレイヤーキャラクターのリアクションアニメを制御する。</summary>
 public class PlayerAnimationController : MonoBehaviour
 {
     private const string HAPPY_TRIGGER = "Happy";
@@ -13,7 +13,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField]
     Animator animator;
 
-    /// <summary>Plays the happy reaction animation.</summary>
+    /// <summary>嬉しいリアクションアニメを再生する。</summary>
     public void play_happy()
     {
         if (animator)
@@ -22,7 +22,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    /// <summary>Plays the crying reaction animation.</summary>
+    /// <summary>泣きリアクションのアニメを再生する。</summary>
     public void play_cry()
     {
         if (animator)
@@ -31,7 +31,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    /// <summary>Plays the winning pose animation.</summary>
+    /// <summary>勝利ポーズのアニメを再生する。</summary>
     public void play_win()
     {
         if (animator)

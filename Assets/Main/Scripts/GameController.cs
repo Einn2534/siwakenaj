@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-/// <summary>Controls overall game flow and transitions between states.</summary>
+/// <summary>ゲーム全体の進行と状態遷移を管理する。</summary>
 public class GameController : MonoBehaviour
 {
     private const int FIRST_STAGE_INDEX = 0;
@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
 
     GameState currentState = GameState.Ready;
 
-    /// <summary>Begins gameplay for the configured stage.</summary>
+    /// <summary>設定されたステージでゲームを開始する。</summary>
     public void start_game()
     {
         if (currentState != GameState.Ready)
@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
         currentState = GameState.Playing;
     }
 
-    /// <summary>Handles player failure and stops the game.</summary>
+    /// <summary>失敗時の処理を行い、ゲームを停止する。</summary>
     public void handle_game_over()
     {
         if (currentState == GameState.GameOver)
@@ -53,7 +53,7 @@ public class GameController : MonoBehaviour
         playerAnimationController.play_cry();
     }
 
-    /// <summary>Completes the current stage when the goal is met.</summary>
+    /// <summary>目標達成時に現在のステージをクリアする。</summary>
     public void finish_stage()
     {
         if (currentState != GameState.Playing)
@@ -67,8 +67,8 @@ public class GameController : MonoBehaviour
         playerAnimationController.play_win();
     }
 
-    /// <summary>Loads parameters for a given stage index.</summary>
-    /// <param name="stageIndex">Index of the stage to load.</param>
+    /// <summary>指定したステージ番号のパラメーターを読み込む。</summary>
+    /// <param name="stageIndex">読み込むステージのインデックス。</param>
     void load_stage(int stageIndex)
     {
         stageManager.apply_stage(stageIndex);
@@ -76,7 +76,7 @@ public class GameController : MonoBehaviour
     }
 }
 
-/// <summary>Enumerates the lifecycle phases of the game.</summary>
+/// <summary>ゲームのライフサイクル段階を表す。</summary>
 public enum GameState
 {
     Ready,
