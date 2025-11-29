@@ -22,6 +22,13 @@ public class ScoreManager : MonoBehaviour
     int currentScore;
     int missCount;
     readonly Dictionary<CarType, int> laneCounts = new();
+    GameController controller;
+
+    /// <summary>ゲームコントローラー参照を初期化する。</summary>
+    void Awake()
+    {
+        controller = FindFirstObjectByType<GameController>();
+    }
 
     /// <summary>ステージ開始時にスコアとミス回数を初期化する。</summary>
     /// <param name="stageTargetScore">クリアに必要なスコア。</param>
@@ -54,10 +61,10 @@ public class ScoreManager : MonoBehaviour
 
         if (missCount >= allowedMisses)
         {
-            GameController controller = FindObjectOfType<GameController>();
-            if (controller)
+            GameController activeController = get_controller();
+            if (activeController)
             {
-                controller.handle_game_over();
+                activeController.handle_game_over();
             }
         }
     }
@@ -67,10 +74,10 @@ public class ScoreManager : MonoBehaviour
     {
         if (currentScore >= targetScore)
         {
-            GameController controller = FindObjectOfType<GameController>();
-            if (controller)
+            GameController activeController = get_controller();
+            if (activeController)
             {
-                controller.finish_stage();
+                activeController.finish_stage();
             }
         }
     }
@@ -92,5 +99,17 @@ public class ScoreManager : MonoBehaviour
     public int get_miss_count()
     {
         return missCount;
+    }
+
+    /// <summary>ゲームコントローラーの参照を取得し、存在しない場合は再検索する。</summary>
+    /// <returns>現在のゲームコントローラー。</returns>
+    GameController get_controller()
+    {
+        if (!controller)
+        {
+            controller = FindFirstObjectByType<GameController>();
+        }
+
+        return controller;
     }
 }
