@@ -105,4 +105,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarController
   speed: 5
   leftLimit: -15
-  carTypeIndex: 0
+  carType: 0
