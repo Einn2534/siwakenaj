@@ -22,8 +22,14 @@ public class GameController : MonoBehaviour
 
     [SerializeField]
     SoundManager soundManager;
-
+    [SerializeField]
     GameState currentState = GameState.Ready;
+
+    void Start()
+    {
+        start_game();
+        Debug.Log("kaisi");
+    }
 
     /// <summary>設定されたステージでゲームを開始する。</summary>
     public void start_game()
@@ -74,6 +80,8 @@ public class GameController : MonoBehaviour
         stageManager.apply_stage(stageIndex);
         scoreManager.reset_metrics(stageManager.get_target_score(), stageManager.get_allowed_misses());
     }
+
+    
 }
 
 /// <summary>ゲームのライフサイクル段階を表す。</summary>

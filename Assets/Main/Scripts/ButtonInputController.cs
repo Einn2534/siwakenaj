@@ -43,6 +43,7 @@ public class ButtonInputController : MonoBehaviour
     /// <param name="laneType">押下されたボタンに対応する車種。</param>
     void handle_press(CarType laneType)
     {
+
         if (!judgeController || !carSpawner)
         {
             return;

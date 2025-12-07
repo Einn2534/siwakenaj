@@ -1,9 +1,8 @@
-// Created: 2025-11-28
-// Author: gpt-5.1-codex-max
-
 using UnityEngine;
 
-/// <summary>プレイヤー入力と現在の車を照合して結果を処理する。</summary>
+/// <summary>
+/// プレイヤー入力と現在の車を照合して結果を処理する。
+/// </summary>
 public class JudgeController : MonoBehaviour
 {
     [SerializeField]
@@ -15,17 +14,24 @@ public class JudgeController : MonoBehaviour
     [SerializeField]
     SoundManager soundManager;
 
-    /// <summary>押下された車種が現在の車と一致するかを判定する。</summary>
-    /// <param name="car">コンベア上に存在する車。</param>
-    /// <param name="expectedLane">プレイヤーが選んだ車種。</param>
+    /// <summary>
+    /// 現在の車と、ボタンで選ばれた車種を判定する。
+    /// </summary>
+    /// <param name="car">コンベア上の車（存在しない場合は null）。</param>
+    /// <param name="expectedLane">押されたボタンに対応する車種。</param>
     public void judge(CarController car, CarType expectedLane)
     {
         if (!car)
         {
+            scoreManager.apply_miss();
+            playerAnimationController.play_cry();
+            soundManager.play_miss();
             return;
         }
 
-        bool isCorrect = car.get_car_type() == expectedLane;
+        CarType actual = car.get_car_type();
+        bool isCorrect = actual == expectedLane;
+
         if (isCorrect)
         {
             scoreManager.apply_success(expectedLane);
@@ -40,4 +46,5 @@ public class JudgeController : MonoBehaviour
             soundManager.play_miss();
         }
     }
+
 }

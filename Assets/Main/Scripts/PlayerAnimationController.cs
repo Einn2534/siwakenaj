@@ -6,8 +6,8 @@ using UnityEngine;
 /// <summary>プレイヤーキャラクターのリアクションアニメを制御する。</summary>
 public class PlayerAnimationController : MonoBehaviour
 {
-    private const string HAPPY_TRIGGER = "Happy";
-    private const string CRY_TRIGGER = "Cry";
+    private const string HAPPY_TRIGGER = "Attack";
+    private const string CRY_TRIGGER = "Damage";
     private const string WIN_TRIGGER = "Win";
 
     [SerializeField]
