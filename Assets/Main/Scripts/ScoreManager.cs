@@ -18,7 +18,8 @@ public class ScoreManager : MonoBehaviour
 
     [SerializeField]
     ScoreLaneUI scoreLaneUi;
-
+    
+    [SerializeField]
     int currentScore;
     int missCount;
     readonly Dictionary<CarType, int> laneCounts = new();

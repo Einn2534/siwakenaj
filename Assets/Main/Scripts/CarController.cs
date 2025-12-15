@@ -18,6 +18,19 @@ public class CarController : MonoBehaviour
     [SerializeField]
     CarType carType;
 
+
+    [SerializeField]
+    ScoreManager scoreManager;
+
+
+    void Awake()
+    {
+        if (!scoreManager)
+        {
+            scoreManager = FindFirstObjectByType<ScoreManager>();
+        }
+    }
+
     /// <summary>設定されている車種を取得する。</summary>
     /// <returns>シリアライズ済みの車種。</returns>
     public CarType get_car_type()
@@ -34,8 +47,14 @@ public class CarController : MonoBehaviour
 
         if (transform.position.x <= leftLimit)
         {
+            // 時間切れミス扱い
+            if (scoreManager != null)
+            {
+                scoreManager.apply_miss();
+            }
             Destroy(gameObject);
         }
+
     }
 
     /// <summary>シリアライズされた値を安全な範囲に補正する。</summary>
