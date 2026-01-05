@@ -41,7 +41,7 @@ public class ScoreManager : MonoBehaviour
         currentScore = 0;
         missCount = 0;
         laneCounts.Clear();
-        scoreLaneUi.reset_all();
+        scoreLaneUi.ResetAll();
     }
 
     /// <summary>正しく仕分けられた際の処理。</summary>
@@ -50,7 +50,7 @@ public class ScoreManager : MonoBehaviour
     {
         currentScore += SCORE_PER_CORRECT;
         increment_lane(laneType);
-        scoreLaneUi.update_lane(laneType, laneCounts[laneType]);
+        scoreLaneUi.UpdateLane(laneType, laneCounts[laneType]);
         check_clear();
     }
 
