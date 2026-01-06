@@ -1,3 +1,6 @@
+// Created: 2025-12-01
+// Author: gpt-5.1-codex-max
+
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +17,14 @@ public class JudgeController : MonoBehaviour
     [SerializeField]
     SoundManager soundManager;
 
+    GameController gameController;
+
+    /// <summary>ゲームコントローラー参照を初期化する。</summary>
+    void Awake()
+    {
+        gameController = FindFirstObjectByType<GameController>();
+    }
+
     /// <summary>
     /// 現在の車と、ボタンで選ばれた車種を判定する。
     /// </summary>
@@ -21,6 +32,11 @@ public class JudgeController : MonoBehaviour
     /// <param name="expectedLane">押されたボタンに対応する車種。</param>
     public void judge(CarController car, CarType expectedLane)
     {
+        if (!is_playing())
+        {
+            return;
+        }
+
         if (!car)
         {
             scoreManager.apply_miss();
@@ -47,4 +63,15 @@ public class JudgeController : MonoBehaviour
         }
     }
 
+    /// <summary>ゲームがプレイ中かどうかを確認する。</summary>
+    /// <returns>プレイ中なら true。</returns>
+    bool is_playing()
+    {
+        if (!gameController)
+        {
+            gameController = FindFirstObjectByType<GameController>();
+        }
+
+        return gameController != null && gameController.is_playing();
+    }
 }

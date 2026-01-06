@@ -1,4 +1,5 @@
 // Created: 2025-11-28
+// Updated: 2025-12-01
 // Author: gpt-5.1-codex-max
 
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ public class ScoreManager : MonoBehaviour
 {
     private const int SCORE_PER_CORRECT = 10;
     private const int SCORE_PER_MISS = -5;
+    private const int SCORE_MIN = 0;
 
     [SerializeField]
     int targetScore;
@@ -18,9 +20,10 @@ public class ScoreManager : MonoBehaviour
 
     [SerializeField]
     ScoreLaneUI scoreLaneUi;
-    
+
     [SerializeField]
     int currentScore;
+
     int missCount;
     readonly Dictionary<CarType, int> laneCounts = new();
     GameController controller;
@@ -41,23 +44,41 @@ public class ScoreManager : MonoBehaviour
         currentScore = 0;
         missCount = 0;
         laneCounts.Clear();
-        scoreLaneUi.ResetAll();
+        if (scoreLaneUi)
+        {
+            scoreLaneUi.ResetAll();
+        }
     }
 
     /// <summary>正しく仕分けられた際の処理。</summary>
     /// <param name="laneType">正解となった車種。</param>
     public void apply_success(CarType laneType)
     {
+        if (!is_playing())
+        {
+            return;
+        }
+
         currentScore += SCORE_PER_CORRECT;
         increment_lane(laneType);
-        scoreLaneUi.UpdateLane(laneType, laneCounts[laneType]);
+        if (scoreLaneUi)
+        {
+            scoreLaneUi.UpdateLane(laneType, laneCounts[laneType]);
+        }
+
         check_clear();
     }
 
     /// <summary>ミス時の処理とゲームオーバー判定。</summary>
     public void apply_miss()
     {
+        if (!is_playing())
+        {
+            return;
+        }
+
         currentScore += SCORE_PER_MISS;
+        currentScore = Mathf.Max(currentScore, SCORE_MIN);
         missCount += 1;
 
         if (missCount >= allowedMisses)
@@ -112,5 +133,13 @@ public class ScoreManager : MonoBehaviour
         }
 
         return controller;
+    }
+
+    /// <summary>ゲームがプレイ中かどうかを確認する。</summary>
+    /// <returns>プレイ中なら true。</returns>
+    bool is_playing()
+    {
+        GameController activeController = get_controller();
+        return activeController != null && activeController.is_playing();
     }
 }

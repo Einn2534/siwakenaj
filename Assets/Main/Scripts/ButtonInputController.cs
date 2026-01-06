@@ -1,11 +1,17 @@
 // Created: 2025-05-07
+// Updated: 2025-12-01
 // Author: gpt-5.1-codex-max
 
+using System.Collections;
 using UnityEngine;
 
 /// <summary>UIボタンの入力を判定処理へ中継する。</summary>
 public class ButtonInputController : MonoBehaviour
 {
+    private const float INPUT_COOLDOWN_SECONDS = 0.08f;
+    private const float INITIAL_LAST_INPUT_TIME = -1f;
+    private const int INITIAL_FRAME = -1;
+
     [SerializeField]
     JudgeController judgeController;
 
@@ -20,6 +26,18 @@ public class ButtonInputController : MonoBehaviour
 
     [SerializeField]
     CarType laneCType = CarType.SportsCar;
+
+    GameController gameController;
+    float lastInputTime = INITIAL_LAST_INPUT_TIME;
+    int pendingFrame = INITIAL_FRAME;
+    CarType pendingLaneType;
+    Coroutine pendingCoroutine;
+
+    /// <summary>ゲームコントローラー参照を初期化する。</summary>
+    void Awake()
+    {
+        gameController = FindFirstObjectByType<GameController>();
+    }
 
     /// <summary>1番目のボタンが押された際の処理。</summary>
     public void press_lane_a()
@@ -43,12 +61,57 @@ public class ButtonInputController : MonoBehaviour
     /// <param name="laneType">押下されたボタンに対応する車種。</param>
     void handle_press(CarType laneType)
     {
-
         if (!judgeController || !carSpawner)
         {
             return;
         }
 
-        judgeController.judge(carSpawner.get_active_car(), laneType);
+        if (!is_playing())
+        {
+            return;
+        }
+
+        if (Time.time - lastInputTime < INPUT_COOLDOWN_SECONDS)
+        {
+            return;
+        }
+
+        pendingLaneType = laneType;
+        pendingFrame = Time.frameCount;
+
+        if (pendingCoroutine == null)
+        {
+            pendingCoroutine = StartCoroutine(process_pending_input());
+        }
+    }
+
+    /// <summary>同一フレーム内の最後の入力のみを判定に渡す。</summary>
+    IEnumerator process_pending_input()
+    {
+        int frame = pendingFrame;
+        yield return new WaitForEndOfFrame();
+
+        if (frame == pendingFrame)
+        {
+            if (is_playing())
+            {
+                judgeController.judge(carSpawner.get_active_car(), pendingLaneType);
+                lastInputTime = Time.time;
+            }
+        }
+
+        pendingCoroutine = null;
+    }
+
+    /// <summary>ゲームがプレイ中かどうかを確認する。</summary>
+    /// <returns>プレイ中なら true。</returns>
+    bool is_playing()
+    {
+        if (!gameController)
+        {
+            gameController = FindFirstObjectByType<GameController>();
+        }
+
+        return gameController != null && gameController.is_playing();
     }
 }
