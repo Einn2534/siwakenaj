@@ -20,21 +20,31 @@ public class CarSpawner : MonoBehaviour
     private const float DEFAULT_CAR_WIDTH = 1f;
 
     [SerializeField]
+    // 車プレハブ一覧。
     GameObject[] carPrefabs;
 
     [SerializeField]
+    // PlayZoneのUI矩形。
     RectTransform playZone;
 
     [SerializeField]
+    // スポーン時のZ座標参照点。
     Transform spawnPoint;
 
+    // スポーン間隔（秒）。
     float spawnIntervalSeconds = 1f;
+    // 車の速度（PlayZone幅/秒）。
     float carSpeed = 1f;
+    // ライトトラック重み。
     int weightLightTruck = 1;
+    // コンパクトカー重み。
     int weightCompactCar = 1;
+    // スポーツカー重み。
     int weightSportsCar = 1;
 
+    // スポーン中フラグ。
     bool isSpawning;
+    // スポーンループ用コルーチン。
     Coroutine spawnCoroutine;
 
     /// <summary>ステージ設定を反映する。</summary>

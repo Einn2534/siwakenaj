@@ -9,14 +9,18 @@ using UnityEngine;
 public class JudgeController : MonoBehaviour
 {
     [SerializeField]
+    // スコア管理参照。
     ScoreManager scoreManager;
 
     [SerializeField]
+    // プレイヤーアニメ制御参照。
     PlayerAnimationController playerAnimationController;
 
     [SerializeField]
+    // サウンド制御参照。
     SoundManager soundManager;
 
+    // ゲーム状態参照。
     GameController gameController;
 
     /// <summary>ゲームコントローラー参照を初期化する。</summary>

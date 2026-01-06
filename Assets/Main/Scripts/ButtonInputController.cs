@@ -13,24 +13,34 @@ public class ButtonInputController : MonoBehaviour
     private const int INITIAL_FRAME = -1;
 
     [SerializeField]
+    // 判定処理の参照。
     JudgeController judgeController;
 
     [SerializeField]
+    // スポーン管理の参照。
     CarSpawner carSpawner;
 
     [SerializeField]
+    // レーンAの車種。
     CarType laneAType = CarType.LightTruck;
 
     [SerializeField]
+    // レーンBの車種。
     CarType laneBType = CarType.CompactCar;
 
     [SerializeField]
+    // レーンCの車種。
     CarType laneCType = CarType.SportsCar;
 
+    // ゲーム状態参照。
     GameController gameController;
+    // 最終入力時刻。
     float lastInputTime = INITIAL_LAST_INPUT_TIME;
+    // 保留中入力のフレーム番号。
     int pendingFrame = INITIAL_FRAME;
+    // 保留中入力の車種。
     CarType pendingLaneType;
+    // 保留入力処理用コルーチン。
     Coroutine pendingCoroutine;
 
     /// <summary>ゲームコントローラー参照を初期化する。</summary>

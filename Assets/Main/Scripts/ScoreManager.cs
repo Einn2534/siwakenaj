@@ -13,19 +13,26 @@ public class ScoreManager : MonoBehaviour
     private const int SCORE_MIN = 0;
 
     [SerializeField]
+    // クリアに必要な目標スコア。
     int targetScore;
 
     [SerializeField]
+    // 許容ミス回数。
     int allowedMisses = 3;
 
     [SerializeField]
+    // レーンUI表示用。
     ScoreLaneUI scoreLaneUi;
 
     [SerializeField]
+    // 現在スコア。
     int currentScore;
 
+    // 累計ミス回数。
     int missCount;
+    // 車種ごとの正解数。
     readonly Dictionary<CarType, int> laneCounts = new();
+    // ゲーム状態参照。
     GameController controller;
 
     /// <summary>ゲームコントローラー参照を初期化する。</summary>

@@ -11,14 +11,20 @@ public class CarController : MonoBehaviour
     private const float MISS_MARGIN_RATIO = 0.02f;
 
     [SerializeField]
+    // 車種の種別。
     CarType carType;
 
     [SerializeField]
+    // スコア管理参照。
     ScoreManager scoreManager;
 
+    // ワールド座標での移動速度。
     float speedWorld;
+    // 左端判定ライン。
     float leftEdgeX;
+    // 左端判定のマージン。
     float missMarginX;
+    // 判定ラインが設定済みか。
     bool hasMissLine;
 
     /// <summary>スコアマネージャー参照を初期化する。</summary>

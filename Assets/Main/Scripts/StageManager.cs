@@ -15,6 +15,7 @@ public class StageManager : MonoBehaviour
     private const int DEFAULT_WEIGHT = 1;
 
     [SerializeField]
+    // ステージごとの設定リスト。
     StageConfig[] stageConfigs =
     {
         new StageConfig
@@ -29,6 +30,7 @@ public class StageManager : MonoBehaviour
         }
     };
 
+    // 現在選択中のステージ番号。
     int currentStageIndex;
 
     /// <summary>選択されたステージの設定を適用する。</summary>
@@ -105,12 +107,19 @@ public class StageManager : MonoBehaviour
 [System.Serializable]
 public class StageConfig
 {
+    // クリアに必要な目標スコア。
     public int targetScore;
+    // 許容されるミス回数。
     public int missLimit;
+    // 車の移動速度（PlayZone幅/秒）。
     public float carSpeed;
+    // スポーン間隔（秒）。
     public float spawnInterval;
+    // ライトトラック出現の重み。
     public int weightLightTruck;
+    // コンパクトカー出現の重み。
     public int weightCompactCar;
+    // スポーツカー出現の重み。
     public int weightSportsCar;
 
     /// <summary>デフォルト値を元に初期化した設定を生成する。</summary>

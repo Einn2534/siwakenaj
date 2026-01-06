@@ -12,27 +12,35 @@ public class GameController : MonoBehaviour
     private const float RESULT_PANEL_DELAY_SECONDS = 0.5f;
 
     [SerializeField]
+    // ステージ設定管理用。
     StageManager stageManager;
 
     [SerializeField]
+    // スコア管理用。
     ScoreManager scoreManager;
 
     [SerializeField]
+    // 車両スポーン管理用。
     CarSpawner carSpawner;
 
     [SerializeField]
+    // プレイヤーアニメ制御用。
     PlayerAnimationController playerAnimationController;
 
     [SerializeField]
+    // サウンド制御用。
     SoundManager soundManager;
 
     [SerializeField]
+    // リザルト表示パネル。
     GameObject resultPanel;
 
     [SerializeField]
+    // ゲームオーバー表示パネル。
     GameObject gameOverPanel;
 
     [SerializeField]
+    // 現在のゲーム状態。
     GameState currentState = GameState.Ready;
 
     /// <summary>初回起動時にゲームを開始する。</summary>
