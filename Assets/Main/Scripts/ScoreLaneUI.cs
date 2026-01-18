@@ -1,12 +1,10 @@
-// ScoreLaneUI.cs（差し替え用）
-// そのまま丸ごとコピペして使えます。
-// 既存の ScoreManager が reset_all / update_lane を呼んでいても動くよう、互換メソッドも入れてあります。
+// ScoreLaneUI.cs（simple / drop-last）
+// 目的: 下から積む。maxRowsで溢れたら右に列追加。最後の1個だけ落下。
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>車種ごとのアイコンを積み上げて表示する(追加時は上から落下)。溢れたら2列目(以降も列追加)。</summary>
 public class ScoreLaneUI : MonoBehaviour
 {
     private const int DEFAULT_MAX_ROWS = 10;
@@ -18,74 +16,82 @@ public class ScoreLaneUI : MonoBehaviour
     [Header("Layout")]
     [SerializeField, Min(1)] private int maxRows = DEFAULT_MAX_ROWS;
 
-    // 1~maxRowsのときに使う高さの割合(小さいほど詰まる)
+    [Tooltip("1~maxRowsのときに使う縦の詰め具合(1=最大まで使用 / 小さいほど詰める)")]
     [SerializeField, Range(0.1f, 1f)] private float normalFillRatio = 0.6f;
 
-    // レーン内の余白
     [SerializeField] private float topPadding = 20f;
     [SerializeField] private float bottomPadding = 20f;
     [SerializeField] private float leftPadding = 20f;
     [SerializeField] private float rightPadding = 20f;
 
-    // 列間隔(アイコン幅 + これ)
     [SerializeField] private float columnSpacing = 20f;
 
-    // 2列目以降を右に伸ばす(true推奨:既存が動かない)
-    [SerializeField] private bool overflowToRight = true;
-
-    [Header("Spacing Tuning")]
-    // 着地点を上に持ち上げる（+で上へ）
-    [SerializeField] private float stackLift = 60f;
-
-
     [Header("Drop Animation")]
-    [SerializeField] private float dropStartOffset = 120f; // 目標位置の上方向オフセット
+    [SerializeField] private float dropStartOffset = 120f;
     [SerializeField] private float dropDuration = 0.25f;
     [SerializeField] private AnimationCurve dropCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     private readonly Dictionary<CarType, List<GameObject>> laneIcons = new();
     private readonly Dictionary<CarType, int> laneCounts = new();
-
-    // 落下中のコルーチン(同一Rectに多重に走るのを防ぐ)
     private readonly Dictionary<RectTransform, Coroutine> dropRoutines = new();
 
-    // Prefab寸法キャッシュ
-    private bool prefabMetricsValid;
-    private float prefabW = 64f;
-    private float prefabH = 64f;
-    private Vector2 prefabPivot = new Vector2(0.5f, 0.5f);
+    private readonly List<Vector2> tmpTargets = new(64);
+
+    // Prefab metrics
+    private bool metricsValid;
+    private float iconW = 64f;
+    private float iconH = 64f;
+    private Vector2 iconPivot = new(0.5f, 0.5f);
 
     private void Awake()
     {
-        InvalidatePrefabMetrics();
         CachePrefabMetrics();
+    }
+
+    private void OnEnable()
+    {
+        StartCoroutine(RefreshNextFrame());
+    }
+
+    private IEnumerator RefreshNextFrame()
+    {
+        yield return null;
+        RefreshAll();
     }
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
         if (maxRows < 1) maxRows = 1;
-        InvalidatePrefabMetrics();
+        metricsValid = false;
         CachePrefabMetrics();
     }
 #endif
 
-    // 互換用（既存コードがsnake_caseでも動く）
-    public void reset_all() => ResetAll();
-    public void update_lane(CarType laneType, int count) => UpdateLane(laneType, count);
+    public void RefreshAll()
+    {
+        if (laneCounts.Count == 0) return;
+
+        var keys = new List<CarType>(laneCounts.Keys);
+        foreach (var t in keys)
+        {
+            int count = laneCounts.TryGetValue(t, out var c) ? c : 0;
+            ApplyLaneLayout(t, count, animateLast: false);
+        }
+    }
 
     public void ResetAll()
     {
-        StopAllCoroutines();
-        dropRoutines.Clear();
+        StopAllDrops();
 
-        foreach (var icons in laneIcons.Values)
+        foreach (var list in laneIcons.Values)
         {
-            foreach (var icon in icons)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (icon) Destroy(icon);
+                if (list[i]) Destroy(list[i]);
             }
         }
+
         laneIcons.Clear();
         laneCounts.Clear();
     }
@@ -95,230 +101,246 @@ public class ScoreLaneUI : MonoBehaviour
         EnsureLaneStorage(laneType);
 
         int newCount = Mathf.Max(0, count);
-        int prevCount = laneCounts.TryGetValue(laneType, out int v) ? v : 0;
+        int prevCount = laneCounts.TryGetValue(laneType, out var v) ? v : 0;
         laneCounts[laneType] = newCount;
 
-        int laneIndex = (int)laneType;
-        if (lanes == null || laneIndex < 0 || laneIndex >= lanes.Length) return;
+        bool animateDrop = (newCount == prevCount + 1);
+        ApplyLaneLayout(laneType, newCount, animateDrop);
+    }
 
-        RectTransform lane = lanes[laneIndex];
-        if (!lane || !iconPrefab) return;
+    private void ApplyLaneLayout(CarType laneType, int count, bool animateLast)
+    {
+        if (!TryGetLaneRect(laneType, out var lane) || lane == null || iconPrefab == null)
+            return;
 
         CachePrefabMetrics();
 
-        List<GameObject> icons = laneIcons[laneType];
-
-        // 必要数まで生成(使い回し)
-        for (int i = icons.Count; i < newCount; i++)
+        if (!laneIcons.TryGetValue(laneType, out var icons))
         {
-            icons.Add(Instantiate(iconPrefab, lane));
+            icons = new List<GameObject>();
+            laneIcons[laneType] = icons;
         }
 
-        // 表示数を反映
-        for (int i = 0; i < icons.Count; i++)
+        if (count <= 0)
         {
-            if (icons[i]) icons[i].SetActive(i < newCount);
+            for (int i = 0; i < icons.Count; i++)
+                if (icons[i]) icons[i].SetActive(false);
+            return;
         }
 
-        if (newCount == 0) return;
+        EnsureIconInstances(icons, lane, count);
+        SetActiveIcons(icons, count);
 
-        // 目標位置を計算して配置(溢れたら2列目以降)
-        List<Vector2> targets = CalcTargets(lane, newCount);
+        tmpTargets.Clear();
+        FillTargets(lane, count, tmpTargets);
 
-        // 追加が1個だけ増えたときだけ落下アニメ
-        bool animateDrop = (newCount == prevCount + 1);
-
-        for (int i = 0; i < newCount; i++)
+        for (int i = 0; i < count; i++)
         {
-            RectTransform rect = icons[i].GetComponent<RectTransform>();
-            if (!rect) continue;
+            var go = icons[i];
+            if (!go) continue;
 
-            Vector2 to = targets[i];
+            var rt = go.transform as RectTransform;
+            if (!rt) continue;
 
-            if (animateDrop && i == newCount - 1)
+            Vector2 to = tmpTargets[i];
+
+            if (!(animateLast && i == count - 1))
             {
-                Vector2 from = to + Vector2.up * dropStartOffset;
-                rect.anchoredPosition = from;
-                StartDrop(rect, from, to, dropDuration);
+                StopDrop(rt);
+                rt.anchoredPosition = to;
             }
             else
             {
-                rect.anchoredPosition = to;
+                Vector2 from = to + Vector2.up * dropStartOffset;
+                rt.anchoredPosition = from;
+                StartDrop(rt, from, to, dropDuration);
             }
         }
+    }
+
+    private bool TryGetLaneRect(CarType laneType, out RectTransform lane)
+    {
+        lane = null;
+        int idx = (int)laneType;
+        if (lanes == null || idx < 0 || idx >= lanes.Length) return false;
+        lane = lanes[idx];
+        return lane != null;
     }
 
     private void EnsureLaneStorage(CarType laneType)
     {
         if (!laneIcons.ContainsKey(laneType))
-        {
             laneIcons[laneType] = new List<GameObject>();
-        }
         if (!laneCounts.ContainsKey(laneType))
-        {
             laneCounts[laneType] = 0;
-        }
     }
 
-    private void InvalidatePrefabMetrics()
+    private void EnsureIconInstances(List<GameObject> icons, RectTransform parent, int needCount)
     {
-        prefabMetricsValid = false;
+        for (int i = icons.Count; i < needCount; i++)
+            icons.Add(Instantiate(iconPrefab, parent));
+    }
+
+    private void SetActiveIcons(List<GameObject> icons, int activeCount)
+    {
+        for (int i = 0; i < icons.Count; i++)
+            if (icons[i]) icons[i].SetActive(i < activeCount);
     }
 
     private void CachePrefabMetrics()
     {
-        if (prefabMetricsValid) return;
+        if (metricsValid) return;
 
-        prefabW = 64f;
-        prefabH = 64f;
-        prefabPivot = new Vector2(0.5f, 0.5f);
+        iconW = 64f;
+        iconH = 64f;
+        iconPivot = new Vector2(0.5f, 0.5f);
 
         if (iconPrefab != null)
         {
-            RectTransform pr = iconPrefab.GetComponent<RectTransform>();
+            var pr = iconPrefab.GetComponent<RectTransform>();
             if (pr != null)
             {
-                prefabPivot = pr.pivot;
+                iconPivot = pr.pivot;
 
                 float w = pr.rect.width;
                 float h = pr.rect.height;
 
-                // Prefabのrectが0になるケース対策(sizeDeltaも見る)
-                prefabW = (w > 0f) ? w : Mathf.Max(1f, pr.sizeDelta.x);
-                prefabH = (h > 0f) ? h : Mathf.Max(1f, pr.sizeDelta.y);
+                iconW = (w > 0f) ? w : Mathf.Max(1f, pr.sizeDelta.x);
+                iconH = (h > 0f) ? h : Mathf.Max(1f, pr.sizeDelta.y);
             }
         }
 
-        prefabMetricsValid = true;
+        metricsValid = true;
     }
 
-    // レーンの内側境界(アイコンpivotが置けるmin/max)を計算
-    private void GetInnerPivotBounds(RectTransform lane, out float minX, out float maxX, out float minY, out float maxY)
+    // -------------------------
+    // Layout (simple)
+    // -------------------------
+
+    private void FillTargets(RectTransform lane, int count, List<Vector2> output)
     {
-        float w = lane.rect.width;
-        float h = lane.rect.height;
+        // lane.rect は「laneローカル座標」での矩形（pivotを含んだ xMin/xMax を返す）
+        Rect r = lane.rect;
 
-        // laneローカル座標: pivotが原点
-        float leftEdge = -lane.pivot.x * w;
-        float rightEdge = (1f - lane.pivot.x) * w;
-        float bottomEdge = -lane.pivot.y * h;
-        float topEdge = (1f - lane.pivot.y) * h;
+        float innerXMin = r.xMin + leftPadding;
+        float innerXMax = r.xMax - rightPadding;
+        float innerYMin = r.yMin + bottomPadding;
+        float innerYMax = r.yMax - topPadding;
 
-        float innerLeft = leftEdge + leftPadding;
-        float innerRight = rightEdge - rightPadding;
-        float innerBottom = bottomEdge + bottomPadding;
-        float innerTop = topEdge - topPadding;
+        // アイコンのpivot点が置ける範囲（はみ出し防止）
+        float minX = innerXMin + iconW * iconPivot.x;
+        float maxX = innerXMax - iconW * (1f - iconPivot.x);
+        float minY = innerYMin + iconH * iconPivot.y;
+        float maxY = innerYMax - iconH * (1f - iconPivot.y);
 
-        // アイコンがはみ出ないよう、pivot位置として許される範囲に変換
-        minX = innerLeft + prefabW * prefabPivot.x;
-        maxX = innerRight - prefabW * (1f - prefabPivot.x);
-
-        minY = innerBottom + prefabH * prefabPivot.y;
-        maxY = innerTop - prefabH * (1f - prefabPivot.y);
-
-        // 逆転を防ぐ
         if (maxX < minX) maxX = minX;
         if (maxY < minY) maxY = minY;
-    }
 
-    // 下端基準で積み上げ、溢れたら列を増やす(2列目以降も可)
-    // - 縦が詰みすぎる場合は「行数を減らして列へ逃がす」ので、近すぎ問題が起きにくい
-    private List<Vector2> CalcTargets(RectTransform lane, int count)
-    {
-        GetInnerPivotBounds(lane, out float minX, out float maxX, out float minY, out float maxY);
-
+        float innerWidth = Mathf.Max(0f, maxX - minX);
         float innerHeight = Mathf.Max(0f, maxY - minY);
 
-        // 最小ステップ(重なり防止)
-        float minStep = prefabH;
-
-        // 高さから「最小ステップを保てる最大行数」を計算（+1は両端含む）
-        int maxRowsByHeight = (minStep > 0f)
-            ? Mathf.FloorToInt(innerHeight / minStep) + 1
-            : maxRows;
-
-        // 実際に使う行数（入らないなら行数を減らして列へ）
-        int rowsPerCol = Mathf.Clamp(maxRowsByHeight, 1, maxRows);
-
+        // 行数（基本 maxRows 固定）
+        int rowsPerCol = Mathf.Max(1, maxRows);
         int colCount = Mathf.CeilToInt(count / (float)rowsPerCol);
 
-        // 基本ステップ(詰め具合)
-        float baseStep = 0f;
+        // 縦ステップ: まず「入る最大」を基準にしてから fillRatio で詰める
+        float vStep = 0f;
         if (rowsPerCol >= 2)
         {
-            float usedHeight = innerHeight * Mathf.Clamp01(normalFillRatio);
-            baseStep = usedHeight / (rowsPerCol - 1f);
+            float fitStep = innerHeight / (rowsPerCol - 1f);
+            vStep = fitStep * Mathf.Clamp01(normalFillRatio);
+
+            // ただし詰めすぎると見た目が潰れるので最低限は確保（最終的に入らないならfit優先）
+            float minStep = iconH * 0.5f;
+            vStep = Mathf.Max(vStep, minStep);
+
+            // 入らない場合は fitStep に戻す（=必ず枠内に収める）
+            if (vStep > fitStep) vStep = fitStep;
         }
 
-        // 物理的に入る最大ステップ
-        float maxStep = (rowsPerCol >= 2) ? (innerHeight / (rowsPerCol - 1f)) : 0f;
+        // 使う行数（最後の列は満たないことがあるが、縦位置計算自体は rowsPerCol でOK）
+        // ただし count が少ないときは上に行きすぎないように調整
+        int usedRows = Mathf.Min(rowsPerCol, count);
 
-        // 実際に使うステップ（最小間隔優先、ただし上限はmaxStep）
-        float rowStep = (rowsPerCol >= 2)
-            ? Mathf.Clamp(Mathf.Max(baseStep, minStep), 0f, maxStep)
-            : 0f;
-
-        // 積み上げ開始Y（countが少ない時はその分だけで上端判定）
-        int maxRowUsed = Mathf.Min(rowsPerCol - 1, count - 1);
-
-        float startY = minY + stackLift;
-        if (maxRowUsed >= 1)
+        // 下から積む開始Y（topを超えるなら下げる）
+        float startY = minY;
+        if (usedRows >= 2)
         {
-            float topMostY = startY + rowStep * maxRowUsed;
+            float topMostY = startY + (usedRows - 1) * vStep;
             if (topMostY > maxY)
-            {
-                startY = maxY - rowStep * maxRowUsed;
-            }
+                startY -= (topMostY - maxY);
         }
-        startY = Mathf.Max(startY, minY);
+        startY = Mathf.Clamp(startY, minY, maxY);
 
-        // 横方向: 列ステップ(必要なら詰める)
-        float colStep = prefabW + columnSpacing;
-        float widthAvail = Mathf.Max(0f, maxX - minX);
+        // 横ステップ
+        float desiredColStep = iconW + columnSpacing;
+        float colStep = desiredColStep;
 
-        if (colCount >= 2)
+        float centerX = (minX + maxX) * 0.5f;
+
+        if (colCount <= 1)
         {
-            float need = (colCount - 1) * colStep;
-            if (need > widthAvail && widthAvail > 0f)
-            {
-                colStep = widthAvail / (colCount - 1f);
-            }
+            colStep = 0f;
+        }
+        else
+        {
+            float avail = Mathf.Max(0f, maxX - minX);
+            float fitStep = (avail > 0f) ? (avail / (colCount - 1f)) : 0f;
+            colStep = Mathf.Min(desiredColStep, fitStep);
         }
 
-        var list = new List<Vector2>(count);
+        output.Capacity = Mathf.Max(output.Capacity, count);
 
         for (int i = 0; i < count; i++)
         {
-            int col = i / rowsPerCol; // 0,1,2...
-            int row = i % rowsPerCol; // 0..rowsPerCol-1
+            int col = i / rowsPerCol;
+            int row = i % rowsPerCol;
 
             float x;
-            if (overflowToRight)
-            {
-                // 1列目は左寄せ固定。列が増えても既存が動きにくい
-                x = minX + col * colStep;
-            }
-            else
-            {
-                // 内側幅の中心基準で左右に広げる(列が増えると既存が動く)
-                float centerX = (minX + maxX) * 0.5f;
-                x = centerX + (col - (colCount - 1) * 0.5f) * colStep;
-            }
+            float span = (colCount - 1) * colStep;
+            float firstX = centerX - span * 0.5f;
+            x = firstX + col * colStep;
 
-            float y = startY + rowStep * row;
+            float y = startY + row * vStep;
 
-            list.Add(new Vector2(x, y));
+            // 安全クランプ（極端に小さいレーン対策）
+            x = Mathf.Clamp(x, minX, maxX);
+            y = Mathf.Clamp(y, minY, maxY);
+
+            output.Add(new Vector2(x, y));
         }
+    }
 
-        return list;
+    // -------------------------
+    // Drop animation
+    // -------------------------
+
+    private void StopAllDrops()
+    {
+        foreach (var kv in dropRoutines)
+        {
+            if (kv.Value != null) StopCoroutine(kv.Value);
+        }
+        dropRoutines.Clear();
+    }
+
+    private void StopDrop(RectTransform rect)
+    {
+        if (!rect) return;
+
+        if (dropRoutines.TryGetValue(rect, out var c) && c != null)
+            StopCoroutine(c);
+
+        dropRoutines.Remove(rect);
     }
 
     private void StartDrop(RectTransform rect, Vector2 from, Vector2 to, float duration)
     {
-        if (dropRoutines.TryGetValue(rect, out var running) && running != null)
-        {
-            StopCoroutine(running);
-        }
+        if (!rect) return;
+
+        if (dropRoutines.TryGetValue(rect, out var c) && c != null)
+            StopCoroutine(c);
+
         dropRoutines[rect] = StartCoroutine(DropTo(rect, from, to, duration));
     }
 
@@ -333,11 +355,11 @@ public class ScoreLaneUI : MonoBehaviour
             float p = Mathf.Clamp01(t / duration);
             float eased = (dropCurve != null) ? dropCurve.Evaluate(p) : p;
 
-            rect.anchoredPosition = Vector2.LerpUnclamped(from, to, eased);
+            if (rect) rect.anchoredPosition = Vector2.LerpUnclamped(from, to, eased);
             yield return null;
         }
 
-        rect.anchoredPosition = to;
+        if (rect) rect.anchoredPosition = to;
         dropRoutines.Remove(rect);
     }
 }
