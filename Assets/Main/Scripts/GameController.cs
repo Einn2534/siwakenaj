@@ -4,12 +4,14 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>ゲーム全体の進行と状態遷移を管理する。</summary>
 public class GameController : MonoBehaviour
 {
-    private const int FIRST_STAGE_INDEX = 0;
+    private const int DEFAULT_STAGE_NUMBER = 1;
     private const float RESULT_PANEL_DELAY_SECONDS = 0.5f;
+    private const string RESULT_SCENE = "Result";
 
     [SerializeField]
     // ステージ設定管理用。
@@ -65,7 +67,8 @@ public class GameController : MonoBehaviour
         set_panel_active(resultPanel, false);
         set_panel_active(gameOverPanel, false);
 
-        load_stage(FIRST_STAGE_INDEX);
+        int stageNumber = Mathf.Max(DEFAULT_STAGE_NUMBER, GameSession.stageIndex);
+        load_stage(stageNumber - 1);
         if (soundManager)
         {
             soundManager.play_bgm();
@@ -96,7 +99,8 @@ public class GameController : MonoBehaviour
             playerAnimationController.play_cry();
         }
 
-        StartCoroutine(show_panel_after_delay(gameOverPanel));
+        set_result_data(false);
+        StartCoroutine(load_result_after_delay());
     }
 
     /// <summary>目標達成時に現在のステージをクリアする。</summary>
@@ -120,7 +124,8 @@ public class GameController : MonoBehaviour
             playerAnimationController.play_win();
         }
 
-        StartCoroutine(show_panel_after_delay(resultPanel));
+        set_result_data(true);
+        StartCoroutine(load_result_after_delay());
     }
 
     /// <summary>現在のゲーム状態がプレイ中かどうか。</summary>
@@ -140,18 +145,12 @@ public class GameController : MonoBehaviour
         carSpawner.apply_stage_config(stageConfig);
     }
 
-    /// <summary>指定したパネルを遅延表示する。</summary>
-    /// <param name="panel">表示対象のパネル。</param>
+    /// <summary>リザルトシーンへ遷移する。</summary>
     /// <returns>コルーチン。</returns>
-    IEnumerator show_panel_after_delay(GameObject panel)
+    IEnumerator load_result_after_delay()
     {
-        if (panel == null)
-        {
-            yield break;
-        }
-
         yield return new WaitForSeconds(RESULT_PANEL_DELAY_SECONDS);
-        set_panel_active(panel, true);
+        SceneManager.LoadScene(RESULT_SCENE);
     }
 
     /// <summary>パネルの表示状態を切り替える。</summary>
@@ -163,6 +162,20 @@ public class GameController : MonoBehaviour
         {
             panel.SetActive(isActive);
         }
+    }
+
+    /// <summary>GameSession にリザルトデータを保存する。</summary>
+    /// <param name="isClear">クリアなら true。</param>
+    void set_result_data(bool isClear)
+    {
+        int stageNumber = stageManager ? stageManager.get_current_stage_index() + DEFAULT_STAGE_NUMBER : DEFAULT_STAGE_NUMBER;
+        int score = scoreManager ? scoreManager.get_current_score() : 0;
+        int missCount = scoreManager ? scoreManager.get_miss_count() : 0;
+        int countA = scoreManager ? scoreManager.get_correct_count(CarType.LightTruck) : 0;
+        int countB = scoreManager ? scoreManager.get_correct_count(CarType.CompactCar) : 0;
+        int countC = scoreManager ? scoreManager.get_correct_count(CarType.SportsCar) : 0;
+
+        GameSession.set_result(stageNumber, isClear, score, missCount, countA, countB, countC);
     }
 }
 

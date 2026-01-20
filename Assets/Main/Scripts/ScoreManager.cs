@@ -130,6 +130,26 @@ public class ScoreManager : MonoBehaviour
         return missCount;
     }
 
+    /// <summary>現在のスコアを取得する。</summary>
+    /// <returns>現在スコア。</returns>
+    public int get_current_score()
+    {
+        return currentScore;
+    }
+
+    /// <summary>指定した車種の正解数を取得する。</summary>
+    /// <param name="laneType">取得対象の車種。</param>
+    /// <returns>正解数。</returns>
+    public int get_correct_count(CarType laneType)
+    {
+        if (laneCounts.TryGetValue(laneType, out int count))
+        {
+            return count;
+        }
+
+        return 0;
+    }
+
     /// <summary>ゲームコントローラーの参照を取得し、存在しない場合は再検索する。</summary>
     /// <returns>現在のゲームコントローラー。</returns>
     GameController get_controller()

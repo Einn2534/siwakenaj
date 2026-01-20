@@ -77,6 +77,20 @@ public class StageManager : MonoBehaviour
         return get_stage_config().missLimit;
     }
 
+    /// <summary>現在のステージインデックスを取得する。</summary>
+    /// <returns>0 から始まるステージインデックス。</returns>
+    public int get_current_stage_index()
+    {
+        return currentStageIndex;
+    }
+
+    /// <summary>ステージ数を取得する。</summary>
+    /// <returns>ステージ数。</returns>
+    public int get_stage_count()
+    {
+        return stageConfigs == null ? 0 : stageConfigs.Length;
+    }
+
     /// <summary>ステージ設定値を規定範囲に補正する。</summary>
     void OnValidate()
     {
