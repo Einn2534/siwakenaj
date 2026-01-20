@@ -26,7 +26,7 @@ public class JudgeController : MonoBehaviour
     /// <summary>ゲームコントローラー参照を初期化する。</summary>
     void Awake()
     {
-        gameController = FindFirstObjectByType<GameController>();
+        gameController = FindObjectOfType<GameController>();
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class JudgeController : MonoBehaviour
     {
         if (!gameController)
         {
-            gameController = FindFirstObjectByType<GameController>();
+            gameController = FindObjectOfType<GameController>();
         }
 
         return gameController != null && gameController.is_playing();

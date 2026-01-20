@@ -32,7 +32,7 @@ public class CarController : MonoBehaviour
     {
         if (!scoreManager)
         {
-            scoreManager = FindFirstObjectByType<ScoreManager>();
+            scoreManager = FindObjectOfType<ScoreManager>();
         }
     }
 

@@ -46,7 +46,7 @@ public class ButtonInputController : MonoBehaviour
     /// <summary>ゲームコントローラー参照を初期化する。</summary>
     void Awake()
     {
-        gameController = FindFirstObjectByType<GameController>();
+        gameController = FindObjectOfType<GameController>();
     }
 
     /// <summary>1番目のボタンが押された際の処理。</summary>
@@ -119,7 +119,7 @@ public class ButtonInputController : MonoBehaviour
     {
         if (!gameController)
         {
-            gameController = FindFirstObjectByType<GameController>();
+            gameController = FindObjectOfType<GameController>();
         }
 
         return gameController != null && gameController.is_playing();

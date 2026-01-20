@@ -38,7 +38,7 @@ public class ScoreManager : MonoBehaviour
     /// <summary>ゲームコントローラー参照を初期化する。</summary>
     void Awake()
     {
-        controller = FindFirstObjectByType<GameController>();
+        controller = FindObjectOfType<GameController>();
     }
 
     /// <summary>ステージ開始時にスコアとミス回数を初期化する。</summary>
@@ -156,7 +156,7 @@ public class ScoreManager : MonoBehaviour
     {
         if (!controller)
         {
-            controller = FindFirstObjectByType<GameController>();
+            controller = FindObjectOfType<GameController>();
         }
 
         return controller;
