@@ -92,6 +92,7 @@ public class StageSelectController : MonoBehaviour
         StageInfo info = stageInfos[clampedIndex];
         selectedStageNumber = info.stageNumber;
         SaveService.set_last_stage(selectedStageNumber);
+        SaveService.save();
 
         update_cards();
         if (playButton)
