@@ -3,10 +3,11 @@
 
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>横スワイプのカードをスナップ移動させる。</summary>
-public class SwipeSnapController : MonoBehaviour
+public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     private const float DEFAULT_SNAP_SPEED = 10f;
 
@@ -27,6 +28,7 @@ public class SwipeSnapController : MonoBehaviour
 
     int targetIndex;
     bool hasInitialized;
+    bool isDragging;
 
     /// <summary>初期化時にページ位置を設定する。</summary>
     void Start()
@@ -42,14 +44,14 @@ public class SwipeSnapController : MonoBehaviour
             return;
         }
 
-        if (scrollRect && !scrollRect.dragging)
+        if (scrollRect && !isDragging)
         {
             float targetPosition = get_page_normalized_position(targetIndex);
             float newPosition = Mathf.Lerp(scrollRect.horizontalNormalizedPosition, targetPosition, Time.deltaTime * snapSpeed);
             scrollRect.horizontalNormalizedPosition = newPosition;
         }
 
-        if (scrollRect && scrollRect.dragging)
+        if (scrollRect && isDragging)
         {
             int nearestIndex = get_nearest_page_index();
             if (nearestIndex != targetIndex)
@@ -58,6 +60,20 @@ public class SwipeSnapController : MonoBehaviour
                 onIndexChanged?.Invoke(targetIndex);
             }
         }
+    }
+
+    /// <summary>ドラッグ開始時にフラグを更新する。</summary>
+    /// <param name="eventData">イベントデータ。</param>
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        isDragging = true;
+    }
+
+    /// <summary>ドラッグ終了時にフラグを更新する。</summary>
+    /// <param name="eventData">イベントデータ。</param>
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        isDragging = false;
     }
 
     /// <summary>指定したインデックスへ移動する。</summary>
