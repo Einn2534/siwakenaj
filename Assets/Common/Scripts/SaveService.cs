@@ -20,42 +20,42 @@ public static class SaveService
     /// <returns>BGM が有効なら true。</returns>
     public static bool get_bgm_on()
     {
-        return PlayerPrefs.GetInt(BGM_ON_KEY, BOOL_TRUE) == BOOL_TRUE;
+        return get_bool(BGM_ON_KEY, true);
     }
 
     /// <summary>BGM 設定を保存する。</summary>
     /// <param name="isOn">有効なら true。</param>
     public static void set_bgm_on(bool isOn)
     {
-        PlayerPrefs.SetInt(BGM_ON_KEY, isOn ? BOOL_TRUE : BOOL_FALSE);
+        set_bool(BGM_ON_KEY, isOn);
     }
 
     /// <summary>SE 設定を取得する。</summary>
     /// <returns>SE が有効なら true。</returns>
     public static bool get_se_on()
     {
-        return PlayerPrefs.GetInt(SE_ON_KEY, BOOL_TRUE) == BOOL_TRUE;
+        return get_bool(SE_ON_KEY, true);
     }
 
     /// <summary>SE 設定を保存する。</summary>
     /// <param name="isOn">有効なら true。</param>
     public static void set_se_on(bool isOn)
     {
-        PlayerPrefs.SetInt(SE_ON_KEY, isOn ? BOOL_TRUE : BOOL_FALSE);
+        set_bool(SE_ON_KEY, isOn);
     }
 
     /// <summary>HowTo 表示済みフラグを取得する。</summary>
     /// <returns>表示済みなら true。</returns>
     public static bool get_how_to_shown()
     {
-        return PlayerPrefs.GetInt(HOW_TO_SHOWN_KEY, BOOL_FALSE) == BOOL_TRUE;
+        return get_bool(HOW_TO_SHOWN_KEY, false);
     }
 
     /// <summary>HowTo 表示済みフラグを保存する。</summary>
     /// <param name="isShown">表示済みなら true。</param>
     public static void set_how_to_shown(bool isShown)
     {
-        PlayerPrefs.SetInt(HOW_TO_SHOWN_KEY, isShown ? BOOL_TRUE : BOOL_FALSE);
+        set_bool(HOW_TO_SHOWN_KEY, isShown);
     }
 
     /// <summary>前回選択されたステージ番号を取得する。</summary>
@@ -103,5 +103,23 @@ public static class SaveService
     {
         int safeStageNumber = Mathf.Max(DEFAULT_STAGE_NUMBER, stageNumber);
         return string.Format(BEST_SCORE_KEY_FORMAT, safeStageNumber);
+    }
+
+    /// <summary>PlayerPrefs の bool 値を取得する。</summary>
+    /// <param name="key">保存キー。</param>
+    /// <param name="defaultValue">未設定時の値。</param>
+    /// <returns>保存済みの bool 値。</returns>
+    static bool get_bool(string key, bool defaultValue)
+    {
+        int defaultInt = defaultValue ? BOOL_TRUE : BOOL_FALSE;
+        return PlayerPrefs.GetInt(key, defaultInt) == BOOL_TRUE;
+    }
+
+    /// <summary>PlayerPrefs の bool 値を保存する。</summary>
+    /// <param name="key">保存キー。</param>
+    /// <param name="value">保存する値。</param>
+    static void set_bool(string key, bool value)
+    {
+        PlayerPrefs.SetInt(key, value ? BOOL_TRUE : BOOL_FALSE);
     }
 }
