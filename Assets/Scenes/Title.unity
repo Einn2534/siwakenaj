@@ -4109,9 +4109,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1971472082}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b161469593657e745af0642d874c722f, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f6b9b2ba9fa43f8912fbe6f2f108dc7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SafeArea
+  m_EditorClassIdentifier: Assembly-CSharp::SafeAreaFitter
 --- !u!1 &2021253571
 GameObject:
   m_ObjectHideFlags: 0
