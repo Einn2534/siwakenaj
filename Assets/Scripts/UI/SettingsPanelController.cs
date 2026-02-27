@@ -14,8 +14,6 @@ public class SettingsPanelController : MonoBehaviour
     [SerializeField]
     Toggle seToggle;
 
-    [SerializeField]
-    SoundManager soundManager;
 
     /// <summary>初期化時に保存済み設定をトグルへ反映し、リスナーを登録する。</summary>
     void Start()
@@ -40,9 +38,9 @@ public class SettingsPanelController : MonoBehaviour
         SaveService.set_bgm_on(isOn);
         SaveService.save();
 
-        if (soundManager)
+        if (SoundManager.instance)
         {
-            soundManager.set_bgm_enabled(isOn);
+            SoundManager.instance.set_bgm_enabled(isOn);
         }
     }
 
@@ -53,9 +51,9 @@ public class SettingsPanelController : MonoBehaviour
         SaveService.set_se_on(isOn);
         SaveService.save();
 
-        if (soundManager)
+        if (SoundManager.instance)
         {
-            soundManager.set_se_enabled(isOn);
+            SoundManager.instance.set_se_enabled(isOn);
         }
     }
 }

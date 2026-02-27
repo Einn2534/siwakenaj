@@ -7,6 +7,14 @@ using UnityEngine;
 /// <summary>BGM およびサウンドエフェクトの再生を管理する。</summary>
 public class SoundManager : MonoBehaviour
 {
+    static SoundManager currentInstance;
+
+    /// <summary>シングルトンインスタンス。</summary>
+    public static SoundManager instance
+    {
+        get { return currentInstance; }
+    }
+
     [SerializeField]
     AudioSource bgmSource;
 
@@ -34,8 +42,26 @@ public class SoundManager : MonoBehaviour
     /// <summary>初期化時に保存された設定を読み込む。</summary>
     void Awake()
     {
+        if (currentInstance != null && currentInstance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        currentInstance = this;
+        DontDestroyOnLoad(gameObject);
+
         isBgmOn = SaveService.get_bgm_on();
         isSeOn = SaveService.get_se_on();
+    }
+
+    /// <summary>破棄時にシングルトン参照をクリアする。</summary>
+    void OnDestroy()
+    {
+        if (currentInstance == this)
+        {
+            currentInstance = null;
+        }
     }
 
     /// <summary>BGM の有効・無効を切り替える。</summary>

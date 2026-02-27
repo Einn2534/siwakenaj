@@ -26,9 +26,6 @@ public class GameController : MonoBehaviour
     PlayerAnimationController playerAnimationController;
 
     [SerializeField]
-    SoundManager soundManager;
-
-    [SerializeField]
     GameObject resultPanel;
 
     [SerializeField]
@@ -61,9 +58,9 @@ public class GameController : MonoBehaviour
 
         int stageNumber = Mathf.Max(DEFAULT_STAGE_NUMBER, GameSession.stageIndex);
         load_stage(stageNumber - 1);
-        if (soundManager)
+        if (SoundManager.instance)
         {
-            soundManager.play_bgm();
+            SoundManager.instance.play_bgm();
         }
 
         carSpawner.start_spawning();
@@ -81,9 +78,9 @@ public class GameController : MonoBehaviour
         currentState = GameState.GameOver;
         carSpawner.stop_spawning();
         carSpawner.stop_all_cars();
-        if (soundManager)
+        if (SoundManager.instance)
         {
-            soundManager.play_game_over();
+            SoundManager.instance.play_game_over();
         }
 
         if (playerAnimationController)
@@ -106,9 +103,9 @@ public class GameController : MonoBehaviour
         currentState = GameState.Result;
         carSpawner.stop_spawning();
         carSpawner.stop_all_cars();
-        if (soundManager)
+        if (SoundManager.instance)
         {
-            soundManager.play_clear();
+            SoundManager.instance.play_clear();
         }
 
         if (playerAnimationController)
