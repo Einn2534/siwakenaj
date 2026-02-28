@@ -14,7 +14,6 @@ public class SettingsPanelController : MonoBehaviour
     [SerializeField]
     Toggle seToggle;
 
-
     /// <summary>初期化時に保存済み設定をトグルへ反映し、リスナーを登録する。</summary>
     void Start()
     {

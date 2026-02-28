@@ -90,7 +90,7 @@ public class ButtonInputController : MonoBehaviour
 
         if (frame == pendingFrame)
         {
-            if (is_playing())
+            if (is_playing() && judgeController && carSpawner)
             {
                 judgeController.judge(carSpawner.get_active_car(), pendingLaneType);
                 lastInputTime = Time.time;

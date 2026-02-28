@@ -13,7 +13,6 @@ public class JudgeController : MonoBehaviour
     [SerializeField]
     PlayerAnimationController playerAnimationController;
 
-
     [SerializeField]
     GameController gameController;
 
@@ -29,8 +28,16 @@ public class JudgeController : MonoBehaviour
 
         if (!car)
         {
-            scoreManager.apply_miss();
-            playerAnimationController.play_cry();
+            if (scoreManager)
+            {
+                scoreManager.apply_miss();
+            }
+
+            if (playerAnimationController)
+            {
+                playerAnimationController.play_cry();
+            }
+
             SoundManager.instance?.play_miss();
             return;
         }
@@ -40,15 +47,31 @@ public class JudgeController : MonoBehaviour
 
         if (isCorrect)
         {
-            scoreManager.apply_success(expectedLane);
-            playerAnimationController.play_happy();
+            if (scoreManager)
+            {
+                scoreManager.apply_success(expectedLane);
+            }
+
+            if (playerAnimationController)
+            {
+                playerAnimationController.play_happy();
+            }
+
             SoundManager.instance?.play_correct();
             Destroy(car.gameObject);
         }
         else
         {
-            scoreManager.apply_miss();
-            playerAnimationController.play_cry();
+            if (scoreManager)
+            {
+                scoreManager.apply_miss();
+            }
+
+            if (playerAnimationController)
+            {
+                playerAnimationController.play_cry();
+            }
+
             SoundManager.instance?.play_miss();
         }
     }
