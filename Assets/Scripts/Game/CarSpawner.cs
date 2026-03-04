@@ -271,7 +271,7 @@ public class CarSpawner : MonoBehaviour
             return DEFAULT_CAR_WIDTH;
         }
 
-        if (try_get_bounds(prefab, out Bounds bounds))
+        if (BoundsHelper.try_get_bounds(prefab, out Bounds bounds))
         {
             return Mathf.Max(bounds.size.x, DEFAULT_CAR_WIDTH);
         }
@@ -298,7 +298,7 @@ public class CarSpawner : MonoBehaviour
         {
             if (!car) continue;
 
-            if (try_get_bounds(car.gameObject, out Bounds bounds))
+            if (BoundsHelper.try_get_bounds(car.gameObject, out Bounds bounds))
             {
                 rightMostMaxX = Mathf.Max(rightMostMaxX, bounds.max.x);
                 hasBounds = true;
@@ -315,34 +315,5 @@ public class CarSpawner : MonoBehaviour
         }
 
         return (spawnX - rightMostMaxX) < minSpawnGapX;
-    }
-
-    /// <summary>Collider2D か Renderer を優先して bounds を取得する。</summary>
-    /// <param name="target">対象オブジェクト。</param>
-    /// <param name="bounds">取得した bounds。</param>
-    /// <returns>取得に成功した場合 true。</returns>
-    bool try_get_bounds(GameObject target, out Bounds bounds)
-    {
-        bounds = new Bounds();
-        if (target == null)
-        {
-            return false;
-        }
-
-        Collider2D collider = target.GetComponentInChildren<Collider2D>();
-        if (collider != null)
-        {
-            bounds = collider.bounds;
-            return true;
-        }
-
-        Renderer renderer = target.GetComponentInChildren<Renderer>();
-        if (renderer != null)
-        {
-            bounds = renderer.bounds;
-            return true;
-        }
-
-        return false;
     }
 }

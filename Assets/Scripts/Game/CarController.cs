@@ -58,7 +58,7 @@ public class CarController : MonoBehaviour
     /// <returns>現在の左端座標。</returns>
     public float get_min_x()
     {
-        if (try_get_bounds(out Bounds bounds))
+        if (BoundsHelper.try_get_bounds(gameObject, out Bounds bounds))
         {
             return bounds.min.x;
         }
@@ -93,28 +93,5 @@ public class CarController : MonoBehaviour
     {
         float leftMinX = get_min_x();
         return leftMinX < (leftEdgeX - missMarginX);
-    }
-
-    /// <summary>Collider2D または Renderer から bounds を取得する。</summary>
-    /// <param name="bounds">取得した bounds。</param>
-    /// <returns>取得できた場合 true。</returns>
-    bool try_get_bounds(out Bounds bounds)
-    {
-        bounds = new Bounds();
-        Collider2D collider = GetComponentInChildren<Collider2D>();
-        if (collider != null)
-        {
-            bounds = collider.bounds;
-            return true;
-        }
-
-        Renderer renderer = GetComponentInChildren<Renderer>();
-        if (renderer != null)
-        {
-            bounds = renderer.bounds;
-            return true;
-        }
-
-        return false;
     }
 }

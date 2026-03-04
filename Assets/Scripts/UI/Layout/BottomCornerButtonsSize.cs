@@ -1,3 +1,6 @@
+// Created: 2026-02-27
+// Author: Einn
+
 using UnityEngine;
 using UnityEngine.UI;
 
