@@ -302,14 +302,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2000}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -964,7 +964,8 @@ MonoBehaviour:
   scoreManager: {fileID: 6002}
   carSpawner: {fileID: 7002}
   playerAnimationController: {fileID: 8002}
-  soundManager: {fileID: 9002}
+  resultPanel: {fileID: 0}
+  gameOverPanel: {fileID: 0}
   currentState: 0
 --- !u!1 &5000
 GameObject:
@@ -1073,6 +1074,7 @@ MonoBehaviour:
   allowedMisses: 3
   scoreLaneUi: {fileID: 3302}
   currentScore: 0
+  gameController: {fileID: 4002}
 --- !u!1 &7000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,11 +1121,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carPrefabs:
-  - {fileID: 8801121780770272133, guid: 9399c8cc63942ae4baa7fdba43461491, type: 3}
-  - {fileID: 8801121780770272133, guid: 9399c8cc63942ae4baa7fdba43461491, type: 3}
-  spawnIntervalSeconds: 1
+  - {fileID: 8801121780770272133, guid: 9f0e95b3e1652884db3b00c88d88097f, type: 3}
+  - {fileID: 8801121780770272133, guid: 132faafcbbbd83841a306318c8bd4bc3, type: 3}
+  - {fileID: 8801121780770272133, guid: 16e35227bba352b488ac83a308f3e9cc, type: 3}
+  playZone: {fileID: 987498573}
   spawnPoint: {fileID: 7101}
-  maxCarsOnScreen: 118
 --- !u!1 &7100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1226,6 +1228,7 @@ Animator:
   m_WriteDefaultValuesOnDisable: 0
 --- !u!212 &8004
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1271,6 +1274,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ede811a3036b36d47959fcc049c835b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1280,7 +1284,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &9000
 GameObject:
@@ -1330,6 +1333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmSource: {fileID: 9003}
   seSource: {fileID: 9004}
+  bgmClip: {fileID: 0}
   correctClip: {fileID: 0}
   missClip: {fileID: 0}
   clearClip: {fileID: 0}
@@ -1750,6 +1754,7 @@ MonoBehaviour:
   laneAType: 0
   laneBType: 1
   laneCType: 2
+  gameController: {fileID: 4002}
 --- !u!114 &395451127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1811,7 +1816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JudgeController
   scoreManager: {fileID: 6002}
   playerAnimationController: {fileID: 8002}
-  soundManager: {fileID: 9002}
+  gameController: {fileID: 4002}
 --- !u!4 &539476994
 Transform:
   m_ObjectHideFlags: 0
@@ -2614,6 +2619,7 @@ GameObject:
   m_IsActive: 0
 --- !u!212 &1856635836
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2659,6 +2665,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2668,7 +2675,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1856635837
 Transform:
