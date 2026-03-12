@@ -1,57 +1,45 @@
-// Created: 2025-02-14
-// Updated: 2026-02-26
-// Author: Einn
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
-/// <summary>タイトル画面のボタン動作を管理する。</summary>
 public class TitleController : MonoBehaviour
 {
-    private const string STAGE_SELECT_SCENE = "StageSelect";
+    private const string StageSelectScene = "StageSelect";
 
-    [SerializeField]
-    GameObject howToPanel;
+    [SerializeField, FormerlySerializedAs("howToPanel")]
+    private GameObject _howToPanel;
 
-    [SerializeField]
-    GameObject settingsPanel;
+    [SerializeField, FormerlySerializedAs("settingsPanel")]
+    private GameObject _settingsPanel;
 
-    /// <summary>スタートボタン押下時にステージ選択へ遷移する。</summary>
-    public void on_start_pressed()
+    public void OnStartPressed()
     {
-        SceneManager.LoadScene(STAGE_SELECT_SCENE);
+        SceneManager.LoadScene(StageSelectScene);
     }
 
-    /// <summary>HowTo パネルを表示する。</summary>
-    public void on_how_to_open()
+    public void OnHowToOpen()
     {
-        set_panel_active(howToPanel, true);
+        SetPanelActive(_howToPanel, true);
     }
 
-    /// <summary>HowTo パネルを閉じる。</summary>
-    public void on_how_to_close()
+    public void OnHowToClose()
     {
-        set_panel_active(howToPanel, false);
+        SetPanelActive(_howToPanel, false);
     }
 
-    /// <summary>設定パネルを表示する。</summary>
-    public void on_settings_open()
+    public void OnSettingsOpen()
     {
-        set_panel_active(settingsPanel, true);
+        SetPanelActive(_settingsPanel, true);
     }
 
-    /// <summary>設定パネルを閉じる。</summary>
-    public void on_settings_close()
+    public void OnSettingsClose()
     {
-        set_panel_active(settingsPanel, false);
+        SetPanelActive(_settingsPanel, false);
     }
 
-    /// <summary>パネルの表示状態を切り替える。</summary>
-    /// <param name="panel">対象パネル。</param>
-    /// <param name="isActive">表示する場合 true。</param>
-    void set_panel_active(GameObject panel, bool isActive)
+    private static void SetPanelActive(GameObject panel, bool isActive)
     {
-        if (panel)
+        if (panel != null)
         {
             panel.SetActive(isActive);
         }

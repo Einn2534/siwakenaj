@@ -1,148 +1,123 @@
-// Created: 2025-02-14
-// Updated: 2026-02-26
-// Author: Einn
-
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
-/// <summary>リザルト画面のスコアやボタン動作を管理する。</summary>
 public class ResultController : MonoBehaviour
 {
-    private const string MAIN_SCENE = "Main";
-    private const string STAGE_SELECT_SCENE = "StageSelect";
-    private const string SCORE_FORMAT = "{0}";
-    private const string STAGE_FORMAT = "Stage {0}";
-    private const string GAME_CLEAR_LABEL = "ゲームクリア！";
-    private const string GAME_OVER_LABEL = "ゲームオーバー…";
+    private const string MainSceneName = "Main";
+    private const string StageSelectSceneName = "StageSelect";
+    private const string ScoreFormat = "{0}";
+    private const string StageFormat = "Stage {0}";
+    private const string GameClearLabel = "ゲームクリア";
+    private const string GameOverLabel = "ゲームオーバー";
 
-    [SerializeField]
-    TMPro.TMP_Text scoreText;
+    [SerializeField, FormerlySerializedAs("scoreText")]
+    private TMP_Text _scoreText;
 
-    [SerializeField]
-    TMPro.TMP_Text bestScoreText;
+    [SerializeField, FormerlySerializedAs("bestScoreText")]
+    private TMP_Text _bestScoreText;
 
-    [SerializeField]
-    TMPro.TMP_Text stageText;
+    [SerializeField, FormerlySerializedAs("stageText")]
+    private TMP_Text _stageText;
 
-    [SerializeField]
-    TMPro.TMP_Text resultText;
+    [SerializeField, FormerlySerializedAs("resultText")]
+    private TMP_Text _resultText;
 
-    [SerializeField]
-    TMPro.TMP_Text countAText;
+    [SerializeField, FormerlySerializedAs("countAText")]
+    private TMP_Text _countAText;
 
-    [SerializeField]
-    TMPro.TMP_Text countBText;
+    [SerializeField, FormerlySerializedAs("countBText")]
+    private TMP_Text _countBText;
 
-    [SerializeField]
-    TMPro.TMP_Text countCText;
+    [SerializeField, FormerlySerializedAs("countCText")]
+    private TMP_Text _countCText;
 
-    [SerializeField]
-    TMPro.TMP_Text missCountText;
+    [SerializeField, FormerlySerializedAs("missCountText")]
+    private TMP_Text _missCountText;
 
-    [SerializeField]
-    GameObject clearPanel;
+    [SerializeField, FormerlySerializedAs("clearPanel")]
+    private GameObject _clearPanel;
 
-    [SerializeField]
-    GameObject gameOverPanel;
+    [SerializeField, FormerlySerializedAs("gameOverPanel")]
+    private GameObject _gameOverPanel;
 
-    [SerializeField]
-    PlayerAnimationController playerAnimationController;
+    [SerializeField, FormerlySerializedAs("playerAnimationController")]
+    private PlayerAnimationController _playerAnimationController;
 
-    /// <summary>開始時にリザルトデータを反映する。</summary>
-    void Start()
+    private void Start()
     {
-        apply_result();
+        ApplyResult();
     }
 
-    /// <summary>リトライボタンが押されたらメインへ遷移する。</summary>
-    public void on_retry_pressed()
+    public void OnRetryPressed()
     {
-        SceneManager.LoadScene(MAIN_SCENE);
+        SceneManager.LoadScene(MainSceneName);
     }
 
-    /// <summary>ステージ選択ボタンが押されたらステージ選択へ遷移する。</summary>
-    public void on_stage_select_pressed()
+    public void OnStageSelectPressed()
     {
-        SceneManager.LoadScene(STAGE_SELECT_SCENE);
+        SceneManager.LoadScene(StageSelectSceneName);
     }
 
-    /// <summary>GameSession のリザルトデータを画面に反映する。</summary>
-    void apply_result()
+    private void ApplyResult()
     {
-        int stageNumber = GameSession.stageIndex;
-        bool isClear = GameSession.isClear;
-        int score = GameSession.score;
-        int missCount = GameSession.missCount;
-        int countA = GameSession.correctCountA;
-        int countB = GameSession.correctCountB;
-        int countC = GameSession.correctCountC;
+        GameResultData result = SessionState.LastResult ?? GameResultData.Empty(SessionState.SelectedStageNumber);
+        SetText(_stageText, string.Format(StageFormat, result.StageNumber));
+        SetText(_scoreText, string.Format(ScoreFormat, result.Score));
+        SetText(_countAText, string.Format(ScoreFormat, result.LightTruckCount));
+        SetText(_countBText, string.Format(ScoreFormat, result.CompactCarCount));
+        SetText(_countCText, string.Format(ScoreFormat, result.SportsCarCount));
+        SetText(_missCountText, string.Format(ScoreFormat, result.MissCount));
 
-        set_text(stageText, string.Format(STAGE_FORMAT, stageNumber));
-        set_text(scoreText, string.Format(SCORE_FORMAT, score));
-        set_text(countAText, string.Format(SCORE_FORMAT, countA));
-        set_text(countBText, string.Format(SCORE_FORMAT, countB));
-        set_text(countCText, string.Format(SCORE_FORMAT, countC));
-        set_text(missCountText, string.Format(SCORE_FORMAT, missCount));
-
-        if (isClear)
+        if (result.IsClear)
         {
-            set_text(resultText, GAME_CLEAR_LABEL);
-            update_best_score(stageNumber, score);
+            SetText(_resultText, GameClearLabel);
+            UpdateBestScore(result.StageNumber, result.Score);
         }
         else
         {
-            set_text(resultText, GAME_OVER_LABEL);
+            SetText(_resultText, GameOverLabel);
         }
 
-        int bestScore = SaveService.get_best_score(stageNumber);
-        set_text(bestScoreText, string.Format(SCORE_FORMAT, bestScore));
+        SetText(_bestScoreText, string.Format(ScoreFormat, SaveService.GetBestScore(result.StageNumber)));
+        SetPanelActive(_clearPanel, result.IsClear);
+        SetPanelActive(_gameOverPanel, !result.IsClear);
 
-        set_panel_active(clearPanel, isClear);
-        set_panel_active(gameOverPanel, !isClear);
-
-        if (playerAnimationController)
+        if (_playerAnimationController != null)
         {
-            if (isClear)
+            if (result.IsClear)
             {
-                playerAnimationController.play_win();
+                _playerAnimationController.PlayWin();
             }
             else
             {
-                playerAnimationController.play_cry();
+                _playerAnimationController.PlayCry();
             }
         }
     }
 
-    /// <summary>今回のスコアがベストなら更新する。</summary>
-    /// <param name="stageNumber">1 から始まるステージ番号。</param>
-    /// <param name="score">今回スコア。</param>
-    void update_best_score(int stageNumber, int score)
+    private static void UpdateBestScore(int stageNumber, int score)
     {
-        int currentBest = SaveService.get_best_score(stageNumber);
+        int currentBest = SaveService.GetBestScore(stageNumber);
         if (score > currentBest)
         {
-            SaveService.set_best_score(stageNumber, score);
-            SaveService.save();
+            SaveService.SetBestScore(stageNumber, score);
+            SaveService.Save();
         }
     }
 
-    /// <summary>テキスト要素に文字列を設定する。</summary>
-    /// <param name="textElement">対象のテキスト要素。</param>
-    /// <param name="value">設定する文字列。</param>
-    void set_text(TMPro.TMP_Text textElement, string value)
+    private static void SetText(TMP_Text textElement, string value)
     {
-        if (textElement)
+        if (textElement != null)
         {
             textElement.text = value;
         }
     }
 
-    /// <summary>パネルの表示状態を切り替える。</summary>
-    /// <param name="panel">対象パネル。</param>
-    /// <param name="isActive">表示する場合 true。</param>
-    void set_panel_active(GameObject panel, bool isActive)
+    private static void SetPanelActive(GameObject panel, bool isActive)
     {
-        if (panel)
+        if (panel != null)
         {
             panel.SetActive(isActive);
         }

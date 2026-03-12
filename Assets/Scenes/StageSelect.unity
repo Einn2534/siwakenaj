@@ -3174,7 +3174,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1495010765}
         m_TargetAssemblyTypeName: StageSelectController, Assembly-CSharp
-        m_MethodName: on_back_pressed
+        m_MethodName: OnBackPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3926,7 +3926,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1495010765}
         m_TargetAssemblyTypeName: StageSelectController, Assembly-CSharp
-        m_MethodName: on_play_pressed
+        m_MethodName: OnPlayPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

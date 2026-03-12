@@ -1,50 +1,41 @@
-// Created: 2025-02-14
-// Updated: 2026-02-26
-// Author: Einn
-
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-/// <summary>ステージカード1枚分の表示を更新する。</summary>
 public class StageCardView : MonoBehaviour
 {
-    [SerializeField]
-    TMP_Text stageNumberText;
+    [SerializeField, FormerlySerializedAs("stageNumberText")]
+    private TMP_Text _stageNumberText;
 
-    [SerializeField]
-    TMP_Text targetScoreText;
+    [SerializeField, FormerlySerializedAs("targetScoreText")]
+    private TMP_Text _targetScoreText;
 
-    [SerializeField]
-    TMP_Text bestScoreText;
+    [SerializeField, FormerlySerializedAs("bestScoreText")]
+    private TMP_Text _bestScoreText;
 
-    [SerializeField]
-    TMP_Text statusText;
+    [SerializeField, FormerlySerializedAs("statusText")]
+    private TMP_Text _statusText;
 
-    /// <summary>カードの表示データを一括設定する。</summary>
-    /// <param name="stageNumber">ステージ番号。</param>
-    /// <param name="targetScore">目標スコア。</param>
-    /// <param name="bestScore">ベストスコア。</param>
-    /// <param name="status">状態ラベル。</param>
-    public void set_data(int stageNumber, int targetScore, int bestScore, string status)
+    public void SetData(int stageNumber, int targetScore, int bestScore, string status)
     {
-        if (stageNumberText)
+        if (_stageNumberText != null)
         {
-            stageNumberText.text = stageNumber.ToString();
+            _stageNumberText.text = stageNumber.ToString();
         }
 
-        if (targetScoreText)
+        if (_targetScoreText != null)
         {
-            targetScoreText.text = targetScore.ToString();
+            _targetScoreText.text = targetScore.ToString();
         }
 
-        if (bestScoreText)
+        if (_bestScoreText != null)
         {
-            bestScoreText.text = bestScore.ToString();
+            _bestScoreText.text = bestScore.ToString();
         }
 
-        if (statusText)
+        if (_statusText != null)
         {
-            statusText.text = status ?? "";
+            _statusText.text = status ?? string.Empty;
         }
     }
 }

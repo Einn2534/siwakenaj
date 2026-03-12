@@ -1,34 +1,27 @@
-// Created: 2026-02-27
-// Author: Codex
-
 using UnityEngine;
 
-/// <summary>RectTransform を Screen.safeArea に合わせて調整する。</summary>
 [RequireComponent(typeof(RectTransform))]
 public class SafeAreaFitter : MonoBehaviour
 {
-    private RectTransform targetRect;
-    private Rect lastSafeArea = Rect.zero;
-    private Vector2Int lastScreenSize = Vector2Int.zero;
+    private RectTransform _targetRect;
+    private Rect _lastSafeArea = Rect.zero;
+    private Vector2Int _lastScreenSize = Vector2Int.zero;
 
-    /// <summary>コンポーネント参照を初期化しセーフエリアを適用する。</summary>
     private void Awake()
     {
-        targetRect = GetComponent<RectTransform>();
-        apply_safe_area();
+        _targetRect = GetComponent<RectTransform>();
+        ApplySafeArea();
     }
 
-    /// <summary>画面サイズや safeArea 変化を監視し必要時のみ再適用する。</summary>
     private void Update()
     {
-        if (is_safe_area_changed())
+        if (IsSafeAreaChanged())
         {
-            apply_safe_area();
+            ApplySafeArea();
         }
     }
 
-    /// <summary>RectTransform のアンカーを現在の Screen.safeArea に合わせる。</summary>
-    private void apply_safe_area()
+    private void ApplySafeArea()
     {
         Rect safeArea = Screen.safeArea;
         Vector2 anchorMin = safeArea.position;
@@ -39,24 +32,22 @@ public class SafeAreaFitter : MonoBehaviour
         anchorMax.x /= Screen.width;
         anchorMax.y /= Screen.height;
 
-        targetRect.anchorMin = anchorMin;
-        targetRect.anchorMax = anchorMax;
-        targetRect.offsetMin = Vector2.zero;
-        targetRect.offsetMax = Vector2.zero;
+        _targetRect.anchorMin = anchorMin;
+        _targetRect.anchorMax = anchorMax;
+        _targetRect.offsetMin = Vector2.zero;
+        _targetRect.offsetMax = Vector2.zero;
 
-        lastSafeArea = safeArea;
-        lastScreenSize = new Vector2Int(Screen.width, Screen.height);
+        _lastSafeArea = safeArea;
+        _lastScreenSize = new Vector2Int(Screen.width, Screen.height);
     }
 
-    /// <summary>safeArea または画面サイズが前回値から変化したかを判定する。</summary>
-    /// <returns>変化していれば true、していなければ false。</returns>
-    private bool is_safe_area_changed()
+    private bool IsSafeAreaChanged()
     {
-        if (lastScreenSize.x != Screen.width || lastScreenSize.y != Screen.height)
+        if (_lastScreenSize.x != Screen.width || _lastScreenSize.y != Screen.height)
         {
             return true;
         }
 
-        return lastSafeArea != Screen.safeArea;
+        return _lastSafeArea != Screen.safeArea;
     }
 }

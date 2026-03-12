@@ -1,194 +1,171 @@
-// Created: 2025-02-14
-// Updated: 2026-02-26
-// Author: Einn
-
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 
-/// <summary>スワイプ操作でページをスナップスクロールする。</summary>
 public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
-    private const float SWIPE_THRESHOLD_RATIO = 0.2f;
-    private const float SNAP_LERP_SPEED = 10f;
-    private const float SNAP_EPSILON = 0.001f;
+    private const float SwipeThresholdRatio = 0.2f;
+    private const float SnapLerpSpeed = 10f;
+    private const float SnapEpsilon = 0.001f;
 
-    [SerializeField]
-    ScrollRect scrollRect;
+    [SerializeField, FormerlySerializedAs("scrollRect")]
+    private ScrollRect _scrollRect;
 
-    [SerializeField]
-    RectTransform content;
+    [SerializeField, FormerlySerializedAs("content")]
+    private RectTransform _content;
 
-    [SerializeField]
-    int pageCount = 1;
+    [SerializeField, FormerlySerializedAs("pageCount")]
+    private int _pageCount = 1;
 
-    /// <summary>選択インデックスが変わったときに呼ばれるイベント。</summary>
-    public event Action<int> onPageChanged;
+    private int _currentIndex;
+    private bool _isDragging;
+    private float _dragStartNormalizedX;
+    private RectTransform _viewportRect;
 
-    int currentIndex;
-    bool isDragging;
-    float dragStartNormalizedX;
-    RectTransform viewportRect;
+    public event Action<int> OnPageChanged;
 
-    /// <summary>初回表示時にページ0へスナップする。</summary>
-    void Start()
+    private void Start()
     {
-        resolve_references();
-        rebuild_layout();
-        jump_to_index(0);
+        ResolveReferences();
+        RebuildLayout();
+        JumpToIndex(0);
     }
 
-    /// <summary>スナップアニメーションを毎フレーム更新する。</summary>
-    void Update()
+    private void Update()
     {
-        if (isDragging || pageCount <= 1)
+        if (_isDragging || _pageCount <= 1 || _scrollRect == null)
         {
             return;
         }
 
-        float target = get_normalized_x(currentIndex);
-        float next = Mathf.Lerp(
-            scrollRect.horizontalNormalizedPosition,
-            target,
-            Time.deltaTime * SNAP_LERP_SPEED);
+        float target = GetNormalizedX(_currentIndex);
+        float next = Mathf.Lerp(_scrollRect.horizontalNormalizedPosition, target, Time.deltaTime * SnapLerpSpeed);
 
-        if (Mathf.Abs(next - target) <= SNAP_EPSILON)
+        if (Mathf.Abs(next - target) <= SnapEpsilon)
         {
             next = target;
         }
 
-        scrollRect.horizontalNormalizedPosition = next;
+        _scrollRect.horizontalNormalizedPosition = next;
     }
 
-    /// <summary>ドラッグ開始位置を記録する。</summary>
-    /// <param name="eventData">ポインタイベントデータ。</param>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        isDragging = true;
-        dragStartNormalizedX = scrollRect.horizontalNormalizedPosition;
+        _isDragging = true;
+        _dragStartNormalizedX = _scrollRect.horizontalNormalizedPosition;
     }
 
-    /// <summary>ドラッグ終了後にスナップ先を決定する。</summary>
-    /// <param name="eventData">ポインタイベントデータ。</param>
     public void OnEndDrag(PointerEventData eventData)
     {
-        isDragging = false;
+        _isDragging = false;
 
-        float delta = scrollRect.horizontalNormalizedPosition - dragStartNormalizedX;
-        float threshold = SWIPE_THRESHOLD_RATIO / Mathf.Max(1, pageCount - 1);
+        float delta = _scrollRect.horizontalNormalizedPosition - _dragStartNormalizedX;
+        float threshold = SwipeThresholdRatio / Mathf.Max(1, _pageCount - 1);
+        int newIndex = _currentIndex;
 
-        int newIndex = currentIndex;
-        if (delta > threshold && currentIndex < pageCount - 1)
+        if (delta > threshold && _currentIndex < _pageCount - 1)
         {
-            newIndex = currentIndex + 1;
+            newIndex = _currentIndex + 1;
         }
-        else if (delta < -threshold && currentIndex > 0)
+        else if (delta < -threshold && _currentIndex > 0)
         {
-            newIndex = currentIndex - 1;
+            newIndex = _currentIndex - 1;
         }
 
-        set_index(newIndex);
+        SetIndex(newIndex);
     }
 
-    /// <summary>指定インデックスへスナップする（即座に移動）。</summary>
-    /// <param name="index">移動先のインデックス。</param>
-    public void jump_to_index(int index)
+    public void JumpToIndex(int index)
     {
-        resolve_references();
-        rebuild_layout();
-        set_index(index);
-        scrollRect.horizontalNormalizedPosition = get_normalized_x(currentIndex);
+        ResolveReferences();
+        RebuildLayout();
+        SetIndex(index);
+        _scrollRect.horizontalNormalizedPosition = GetNormalizedX(_currentIndex);
     }
 
-    /// <summary>現在の選択インデックスを取得する。</summary>
-    /// <returns>選択中インデックス。</returns>
-    public int get_current_index()
+    public int GetCurrentIndex()
     {
-        return currentIndex;
+        return _currentIndex;
     }
 
-    /// <summary>インデックスを更新し、変更があればイベントを発火する。</summary>
-    /// <param name="index">新しいインデックス。</param>
-    void set_index(int index)
+    private void SetIndex(int index)
     {
-        int clamped = Mathf.Clamp(index, 0, Mathf.Max(0, pageCount - 1));
-        bool changed = clamped != currentIndex;
-        currentIndex = clamped;
+        int clamped = Mathf.Clamp(index, 0, Mathf.Max(0, _pageCount - 1));
+        bool changed = clamped != _currentIndex;
+        _currentIndex = clamped;
 
         if (changed)
         {
-            onPageChanged?.Invoke(currentIndex);
+            OnPageChanged?.Invoke(_currentIndex);
         }
     }
 
-    /// <summary>インデックスに対応する横方向の正規化座標を算出する。</summary>
-    /// <param name="index">対象インデックス。</param>
-    /// <returns>0〜1 の正規化値。</returns>
-    float get_normalized_x(int index)
+    private float GetNormalizedX(int index)
     {
-        resolve_references();
+        ResolveReferences();
 
-        if (pageCount <= 1 || !content || !viewportRect)
+        if (_pageCount <= 1 || _content == null || _viewportRect == null)
         {
             return 0f;
         }
 
-        int childCount = Mathf.Min(pageCount, content.childCount);
+        int childCount = Mathf.Min(_pageCount, _content.childCount);
         if (childCount <= 1)
         {
             return 0f;
         }
 
         int clampedIndex = Mathf.Clamp(index, 0, childCount - 1);
-        RectTransform child = content.GetChild(clampedIndex) as RectTransform;
-        if (!child)
+        RectTransform child = _content.GetChild(clampedIndex) as RectTransform;
+        if (child == null)
         {
             return 0f;
         }
 
-        float scrollableWidth = content.rect.width - viewportRect.rect.width;
+        float scrollableWidth = _content.rect.width - _viewportRect.rect.width;
         if (scrollableWidth <= 0f)
         {
             return 0f;
         }
 
-        Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(content, child);
-        float targetOffset = childBounds.center.x - (viewportRect.rect.width * 0.5f);
+        Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_content, child);
+        float targetOffset = childBounds.center.x - (_viewportRect.rect.width * 0.5f);
         return Mathf.Clamp01(targetOffset / scrollableWidth);
     }
 
-    void resolve_references()
+    private void ResolveReferences()
     {
-        if (!scrollRect)
+        if (_scrollRect == null)
         {
-            scrollRect = GetComponent<ScrollRect>();
+            _scrollRect = GetComponent<ScrollRect>();
         }
 
-        if (!content && scrollRect)
+        if (_content == null && _scrollRect != null)
         {
-            content = scrollRect.content;
+            _content = _scrollRect.content;
         }
 
-        if (!viewportRect && scrollRect)
+        if (_viewportRect == null && _scrollRect != null)
         {
-            viewportRect = scrollRect.viewport ? scrollRect.viewport : scrollRect.transform as RectTransform;
+            _viewportRect = _scrollRect.viewport ? _scrollRect.viewport : _scrollRect.transform as RectTransform;
         }
     }
 
-    void rebuild_layout()
+    private void RebuildLayout()
     {
-        if (!scrollRect || !content)
+        if (_scrollRect == null || _content == null)
         {
             return;
         }
 
         Canvas.ForceUpdateCanvases();
-        if (viewportRect)
+        if (_viewportRect != null)
         {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(viewportRect);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_viewportRect);
         }
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_content);
     }
 }

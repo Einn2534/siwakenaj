@@ -1,43 +1,36 @@
-// Created: 2025-11-28
-// Updated: 2026-02-26
-// Author: Einn
-
 using UnityEngine;
+using UnityEngine.Serialization;
 
-/// <summary>プレイヤーキャラクターのリアクションアニメを制御する。</summary>
 public class PlayerAnimationController : MonoBehaviour
 {
-    private const string HAPPY_TRIGGER = "Attack";
-    private const string CRY_TRIGGER = "Damage";
-    private const string WIN_TRIGGER = "Win";
+    private const string HappyTrigger = "Attack";
+    private const string CryTrigger = "Damage";
+    private const string WinTrigger = "Win";
 
-    [SerializeField]
-    Animator animator;
+    [SerializeField, FormerlySerializedAs("animator")]
+    private Animator _animator;
 
-    /// <summary>嬉しいリアクションアニメを再生する。</summary>
-    public void play_happy()
+    public void PlayHappy()
     {
-        if (animator)
+        if (_animator != null)
         {
-            animator.SetTrigger(HAPPY_TRIGGER);
+            _animator.SetTrigger(HappyTrigger);
         }
     }
 
-    /// <summary>泣きリアクションのアニメを再生する。</summary>
-    public void play_cry()
+    public void PlayCry()
     {
-        if (animator)
+        if (_animator != null)
         {
-            animator.SetTrigger(CRY_TRIGGER);
+            _animator.SetTrigger(CryTrigger);
         }
     }
 
-    /// <summary>勝利ポーズのアニメを再生する。</summary>
-    public void play_win()
+    public void PlayWin()
     {
-        if (animator)
+        if (_animator != null)
         {
-            animator.SetTrigger(WIN_TRIGGER);
+            _animator.SetTrigger(WinTrigger);
         }
     }
 }

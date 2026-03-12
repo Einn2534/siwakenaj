@@ -1,146 +1,42 @@
-// Created: 2025-11-28
-// Updated: 2026-02-26
-// Author: Einn
-
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-/// <summary>スコア・ミス回数・車種別正解数を集計する。</summary>
 public class ScoreManager : MonoBehaviour
 {
-    private const int SCORE_PER_CORRECT = 10;
-    private const int SCORE_PER_MISS = -5;
-    private const int SCORE_MIN = 0;
+    [SerializeField, FormerlySerializedAs("scoreLaneUi")]
+    private ScoreLaneUI _scoreLaneUi;
 
-    [SerializeField]
-    int targetScore;
+    public ScoreState State { get; private set; }
+    public int CurrentScore => State != null ? State.CurrentScore : 0;
+    public int MissCount => State != null ? State.MissCount : 0;
+    public bool HasReachedTargetScore => State != null && State.HasReachedTargetScore;
+    public bool HasReachedMissLimit => State != null && State.HasReachedMissLimit;
 
-    [SerializeField]
-    int allowedMisses = 3;
-
-    [SerializeField]
-    ScoreLaneUI scoreLaneUi;
-
-    [SerializeField]
-    int currentScore;
-
-    [SerializeField]
-    GameController gameController;
-
-    int missCount;
-    readonly Dictionary<CarType, int> laneCounts = new();
-
-    /// <summary>ステージ開始時にスコアとミス回数を初期化する。</summary>
-    /// <param name="stageTargetScore">クリアに必要なスコア。</param>
-    /// <param name="maxMisses">許容ミス回数。</param>
-    public void reset_metrics(int stageTargetScore, int maxMisses)
+    public void Initialize(StageDefinition stageDefinition)
     {
-        targetScore = stageTargetScore;
-        allowedMisses = maxMisses;
-        currentScore = 0;
-        missCount = 0;
-        laneCounts.Clear();
-        if (scoreLaneUi)
-        {
-            scoreLaneUi.reset_all();
-        }
+        StageDefinition safeStageDefinition = stageDefinition ?? StageDefinition.CreateFallback(1);
+        State = new ScoreState(safeStageDefinition.TargetScore, safeStageDefinition.MissLimit);
+        _scoreLaneUi?.ResetAll();
     }
 
-    /// <summary>正しく仕分けられた際の処理。</summary>
-    /// <param name="laneType">正解となった車種。</param>
-    public void apply_success(CarType laneType)
+    public void ApplySuccess(CarType laneType)
     {
-        if (!is_playing())
+        if (State == null)
         {
             return;
         }
 
-        currentScore += SCORE_PER_CORRECT;
-        increment_lane(laneType);
-        if (scoreLaneUi)
-        {
-            scoreLaneUi.update_lane(laneType, laneCounts[laneType]);
-        }
-
-        check_clear();
+        State.ApplySuccess(laneType);
+        _scoreLaneUi?.UpdateLane(laneType, State.GetCorrectCount(laneType));
     }
 
-    /// <summary>ミス時の処理とゲームオーバー判定。</summary>
-    public void apply_miss()
+    public void ApplyMiss()
     {
-        if (!is_playing())
-        {
-            return;
-        }
-
-        currentScore += SCORE_PER_MISS;
-        currentScore = Mathf.Max(currentScore, SCORE_MIN);
-        missCount += 1;
-
-        if (missCount >= allowedMisses)
-        {
-            if (gameController)
-            {
-                gameController.handle_game_over();
-            }
-        }
+        State?.ApplyMiss();
     }
 
-    /// <summary>現在スコアが目標に達したか確認する。</summary>
-    void check_clear()
+    public int GetCorrectCount(CarType laneType)
     {
-        if (currentScore >= targetScore)
-        {
-            if (gameController)
-            {
-                gameController.finish_stage();
-            }
-        }
-    }
-
-    /// <summary>車種別の正解数を加算する。</summary>
-    /// <param name="laneType">加算対象の車種。</param>
-    void increment_lane(CarType laneType)
-    {
-        if (!laneCounts.ContainsKey(laneType))
-        {
-            laneCounts[laneType] = 0;
-        }
-
-        laneCounts[laneType] += 1;
-    }
-
-    /// <summary>現在のミス回数を取得する。</summary>
-    /// <returns>累計ミス回数。</returns>
-    public int get_miss_count()
-    {
-        return missCount;
-    }
-
-    /// <summary>現在のスコアを取得する。</summary>
-    /// <returns>現在スコア。</returns>
-    public int get_current_score()
-    {
-        return currentScore;
-    }
-
-    /// <summary>指定した車種の正解数を取得する。</summary>
-    /// <param name="laneType">取得対象の車種。</param>
-    /// <returns>正解数。</returns>
-    public int get_correct_count(CarType laneType)
-    {
-        if (laneCounts.TryGetValue(laneType, out int count))
-        {
-            return count;
-        }
-
-        return 0;
-    }
-
-    /// <summary>ゲームがプレイ中かどうかを確認する。</summary>
-    /// <returns>プレイ中なら true。</returns>
-    bool is_playing()
-    {
-        return gameController != null && gameController.is_playing();
+        return State != null ? State.GetCorrectCount(laneType) : 0;
     }
 }

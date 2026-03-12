@@ -206,7 +206,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1369282093}
         m_TargetAssemblyTypeName: TitleController, Assembly-CSharp
-        m_MethodName: on_settings_open
+        m_MethodName: OnSettingsOpen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1933,7 +1933,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1369282093}
         m_TargetAssemblyTypeName: TitleController, Assembly-CSharp
-        m_MethodName: on_start_pressed
+        m_MethodName: OnStartPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2066,7 +2066,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1369282093}
         m_TargetAssemblyTypeName: TitleController, Assembly-CSharp
-        m_MethodName: on_settings_close
+        m_MethodName: OnSettingsClose
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

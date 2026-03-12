@@ -1014,14 +1014,14 @@ MonoBehaviour:
   stageConfigs:
   - targetScore: 51
     missLimit: 3
-    carSpeed: 1
+    carSpeed: 0.7
     spawnInterval: 1
     weightLightTruck: 1
     weightCompactCar: 1
     weightSportsCar: 1
   - targetScore: 300
     missLimit: 3
-    carSpeed: 1
+    carSpeed: 0.7
     spawnInterval: 1
     weightLightTruck: 1
     weightCompactCar: 1
@@ -1916,8 +1916,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 395451126}
-        m_TargetAssemblyTypeName: ButtonInputController, Assembly-CSharp
-        m_MethodName: press_lane_a
+        m_TargetAssemblyTypeName: LaneInputController, Assembly-CSharp
+        m_MethodName: PressLaneA
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2268,8 +2268,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 395451126}
-        m_TargetAssemblyTypeName: ButtonInputController, Assembly-CSharp
-        m_MethodName: press_lane_c
+        m_TargetAssemblyTypeName: LaneInputController, Assembly-CSharp
+        m_MethodName: PressLaneC
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2473,8 +2473,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 395451126}
-        m_TargetAssemblyTypeName: ButtonInputController, Assembly-CSharp
-        m_MethodName: press_lane_b
+        m_TargetAssemblyTypeName: LaneInputController, Assembly-CSharp
+        m_MethodName: PressLaneB
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

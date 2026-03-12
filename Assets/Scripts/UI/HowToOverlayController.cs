@@ -1,58 +1,49 @@
-// Created: 2025-02-14
-// Updated: 2026-02-26
-// Author: Einn
-
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-/// <summary>HowTo オーバーレイの表示・非表示を制御する。</summary>
 public class HowToOverlayController : MonoBehaviour
 {
-    [SerializeField]
-    GameObject overlayPanel;
+    [SerializeField, FormerlySerializedAs("overlayPanel")]
+    private GameObject _overlayPanel;
 
-    [SerializeField]
-    Button closeButton;
+    [SerializeField, FormerlySerializedAs("closeButton")]
+    private Button _closeButton;
 
-    /// <summary>初回表示判定とボタンリスナー登録を行う。</summary>
-    void Start()
+    private void Start()
     {
-        if (closeButton)
+        if (_closeButton != null)
         {
-            closeButton.onClick.AddListener(close_overlay);
+            _closeButton.onClick.AddListener(CloseOverlay);
         }
 
-        if (!SaveService.get_how_to_shown())
+        if (!SaveService.GetHowToShown())
         {
-            show_overlay();
+            ShowOverlay();
         }
         else
         {
-            set_overlay_active(false);
+            SetOverlayActive(false);
         }
     }
 
-    /// <summary>オーバーレイを表示する。</summary>
-    public void show_overlay()
+    public void ShowOverlay()
     {
-        set_overlay_active(true);
+        SetOverlayActive(true);
     }
 
-    /// <summary>オーバーレイを閉じ、表示済みとして保存する。</summary>
-    public void close_overlay()
+    public void CloseOverlay()
     {
-        set_overlay_active(false);
-        SaveService.set_how_to_shown(true);
-        SaveService.save();
+        SetOverlayActive(false);
+        SaveService.SetHowToShown(true);
+        SaveService.Save();
     }
 
-    /// <summary>オーバーレイの表示状態を変更する。</summary>
-    /// <param name="isActive">表示する場合 true。</param>
-    void set_overlay_active(bool isActive)
+    private void SetOverlayActive(bool isActive)
     {
-        if (overlayPanel)
+        if (_overlayPanel != null)
         {
-            overlayPanel.SetActive(isActive);
+            _overlayPanel.SetActive(isActive);
         }
     }
 }

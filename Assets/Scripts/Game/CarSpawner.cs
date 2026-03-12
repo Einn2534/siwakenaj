@@ -1,108 +1,86 @@
-// Created: 2025-11-28
-// Updated: 2026-02-26
-// Author: Einn
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-/// <summary>一定間隔で車をランダム生成し、判定対象の車を提供する。</summary>
 public class CarSpawner : MonoBehaviour
 {
-    private const float MINIMUM_INTERVAL_SECONDS = 0.2f;
-    private const int MAX_CARS_ON_SCREEN = 3;
-    private const float SPAWN_MARGIN_RATIO = 0.6f;
-    private const float MIN_SPAWN_GAP_RATIO = 0.25f;
-    private const float DEFAULT_CAR_WIDTH = 1f;
+    private const float MinimumIntervalSeconds = 0.2f;
+    private const int MaxCarsOnScreen = 3;
+    private const float SpawnMarginRatio = 0.6f;
+    private const float MinSpawnGapRatio = 0.25f;
+    private const float DefaultCarWidth = 1f;
 
-    [SerializeField]
-    GameObject[] carPrefabs;
+    [SerializeField, FormerlySerializedAs("carPrefabs")]
+    private GameObject[] _carPrefabs;
 
-    [SerializeField]
-    RectTransform playZone;
+    [SerializeField, FormerlySerializedAs("playZone")]
+    private RectTransform _playZone;
 
-    [SerializeField]
-    Transform spawnPoint;
+    [SerializeField, FormerlySerializedAs("spawnPoint")]
+    private Transform _spawnPoint;
 
-    float spawnIntervalSeconds = 1f;
-    float carSpeed = 1f;
-    int weightLightTruck = 1;
-    int weightCompactCar = 1;
-    int weightSportsCar = 1;
+    private readonly List<CarController> _activeCars = new();
+    private StageDefinition _stageDefinition;
+    private Coroutine _spawnCoroutine;
+    private bool _isSpawning;
 
-    bool isSpawning;
-    Coroutine spawnCoroutine;
+    public event Action<CarController> CarMissed;
 
-    /// <summary>ステージ設定を反映する。</summary>
-    /// <param name="stageConfig">ステージ設定。</param>
-    public void apply_stage_config(StageConfig stageConfig)
+    public void Initialize(StageDefinition stageDefinition)
     {
-        if (stageConfig == null)
+        _stageDefinition = stageDefinition;
+        _isSpawning = false;
+        _spawnCoroutine = null;
+        CleanupNullCars();
+    }
+
+    public void StartSpawning()
+    {
+        if (_isSpawning)
         {
             return;
         }
 
-        spawnIntervalSeconds = Mathf.Max(stageConfig.spawnInterval, MINIMUM_INTERVAL_SECONDS);
-        carSpeed = Mathf.Max(stageConfig.carSpeed, 0f);
-        weightLightTruck = Mathf.Max(0, stageConfig.weightLightTruck);
-        weightCompactCar = Mathf.Max(0, stageConfig.weightCompactCar);
-        weightSportsCar = Mathf.Max(0, stageConfig.weightSportsCar);
+        _isSpawning = true;
+        _spawnCoroutine = StartCoroutine(SpawnLoop());
     }
 
-    /// <summary>スポーンを開始する。</summary>
-    public void start_spawning()
+    public void StopSpawning()
     {
-        if (isSpawning) return;
-
-        isSpawning = true;
-        spawnCoroutine = StartCoroutine(spawn_loop());
-    }
-
-    /// <summary>スポーンを停止する。</summary>
-    public void stop_spawning()
-    {
-        if (!isSpawning) return;
-
-        isSpawning = false;
-
-        if (spawnCoroutine != null)
+        if (!_isSpawning)
         {
-            StopCoroutine(spawnCoroutine);
-            spawnCoroutine = null;
+            return;
+        }
+
+        _isSpawning = false;
+        if (_spawnCoroutine != null)
+        {
+            StopCoroutine(_spawnCoroutine);
+            _spawnCoroutine = null;
         }
     }
 
-    /// <summary>既存車の移動を停止する。</summary>
-    public void stop_all_cars()
+    public void StopAllCars()
     {
-        CarController[] cars = FindObjectsByType<CarController>(FindObjectsSortMode.None);
-        foreach (var car in cars)
+        CleanupNullCars();
+        foreach (CarController car in _activeCars)
         {
-            if (car != null)
-            {
-                car.set_speed_world(0f);
-            }
+            car.Stop();
         }
     }
 
-    /// <summary>判定対象となる「一番左に進んでいる車」を返す。</summary>
-    /// <returns>判定対象の車。車が1台もなければ null。</returns>
-    public CarController get_active_car()
+    public CarController GetActiveCar()
     {
-        CarController[] cars = FindObjectsByType<CarController>(FindObjectsSortMode.None);
-        if (cars == null || cars.Length == 0)
-        {
-            return null;
-        }
+        CleanupNullCars();
 
         CarController best = null;
         float minX = float.PositiveInfinity;
 
-        foreach (var car in cars)
+        foreach (CarController car in _activeCars)
         {
-            if (!car) continue;
-
-            float x = car.get_min_x();
+            float x = car.GetMinX();
             if (x < minX)
             {
                 minX = x;
@@ -113,127 +91,162 @@ public class CarSpawner : MonoBehaviour
         return best;
     }
 
-    /// <summary>インスペクタ入力を最低値に補正する。</summary>
-    void OnValidate()
+    public void DespawnCar(CarController car)
     {
-        spawnIntervalSeconds = Mathf.Max(spawnIntervalSeconds, MINIMUM_INTERVAL_SECONDS);
+        if (car == null)
+        {
+            return;
+        }
+
+        UnregisterCar(car);
+        car.Despawn();
     }
 
-    /// <summary>スポーン間隔ごとに生成処理を回すループ。</summary>
-    /// <returns>コルーチン。</returns>
-    IEnumerator spawn_loop()
+    private IEnumerator SpawnLoop()
     {
-        while (isSpawning)
+        while (_isSpawning)
         {
-            spawn_if_possible();
+            SpawnIfPossible();
 
-            float interval = Mathf.Max(spawnIntervalSeconds, MINIMUM_INTERVAL_SECONDS);
+            float interval = _stageDefinition != null
+                ? Mathf.Max(_stageDefinition.SpawnInterval, MinimumIntervalSeconds)
+                : MinimumIntervalSeconds;
             yield return new WaitForSeconds(interval);
         }
     }
 
-    /// <summary>条件を満たしていれば車を1台スポーンする。</summary>
-    void spawn_if_possible()
+    private void SpawnIfPossible()
     {
-        if (carPrefabs == null || carPrefabs.Length == 0)
+        if (_stageDefinition == null || _carPrefabs == null || _carPrefabs.Length == 0)
         {
             return;
         }
 
-        if (!try_get_play_zone_world_rect(out Rect playZoneWorldRect))
+        if (!TryGetPlayZoneWorldRect(out Rect playZoneWorldRect))
         {
             return;
         }
 
-        CarController[] existingCars = FindObjectsByType<CarController>(FindObjectsSortMode.None);
-        if (existingCars.Length >= MAX_CARS_ON_SCREEN)
+        CleanupNullCars();
+        if (_activeCars.Count >= MaxCarsOnScreen)
         {
             return;
         }
 
-        CarType? selectedType = select_weighted_car_type();
+        CarType? selectedType = SelectWeightedCarType();
         if (!selectedType.HasValue)
         {
             return;
         }
 
-        List<GameObject> candidates = get_prefabs_by_type(selectedType.Value);
+        List<GameObject> candidates = GetPrefabsByType(selectedType.Value);
         if (candidates.Count == 0)
         {
             return;
         }
 
-        GameObject prefab = candidates[Random.Range(0, candidates.Count)];
-        float carWidth = get_car_width(prefab);
-        float spawnMarginX = carWidth * SPAWN_MARGIN_RATIO;
-        float minSpawnGapX = carWidth * MIN_SPAWN_GAP_RATIO;
-
+        GameObject prefab = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        float carWidth = GetCarWidth(prefab);
+        float spawnMarginX = carWidth * SpawnMarginRatio;
+        float minSpawnGapX = carWidth * MinSpawnGapRatio;
         float spawnX = playZoneWorldRect.xMax + spawnMarginX;
         float spawnY = playZoneWorldRect.center.y;
 
-        if (should_skip_spawn_for_gap(existingCars, spawnX, minSpawnGapX))
+        if (ShouldSkipSpawnForGap(spawnX, minSpawnGapX))
         {
             return;
         }
 
-        Vector3 position = new Vector3(spawnX, spawnY, transform.position.z);
-        if (spawnPoint)
-        {
-            position.z = spawnPoint.position.z;
-        }
-
+        Vector3 position = new(spawnX, spawnY, _spawnPoint ? _spawnPoint.position.z : transform.position.z);
         GameObject carObject = Instantiate(prefab, position, Quaternion.identity);
         CarController car = carObject.GetComponent<CarController>();
-        if (car != null)
+        if (car == null)
         {
-            float speedWorld = playZoneWorldRect.width * carSpeed;
-            car.set_speed_world(speedWorld);
-            car.set_miss_line(playZoneWorldRect.xMin, playZoneWorldRect.width);
+            Destroy(carObject);
+            return;
         }
+
+        float speedWorld = playZoneWorldRect.width * Mathf.Max(_stageDefinition.CarSpeed, 0f);
+        car.Initialize(speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
+        RegisterCar(car);
     }
 
-    /// <summary>PlayZone のワールド矩形を取得する。</summary>
-    /// <param name="worldRect">取得したワールド矩形。</param>
-    /// <returns>取得に成功した場合 true。</returns>
-    bool try_get_play_zone_world_rect(out Rect worldRect)
+    private void RegisterCar(CarController car)
+    {
+        if (car == null)
+        {
+            return;
+        }
+
+        car.Missed += HandleCarMissed;
+        car.Despawned += HandleCarDespawned;
+        _activeCars.Add(car);
+    }
+
+    private void UnregisterCar(CarController car)
+    {
+        if (car == null)
+        {
+            return;
+        }
+
+        car.Missed -= HandleCarMissed;
+        car.Despawned -= HandleCarDespawned;
+        _activeCars.Remove(car);
+    }
+
+    private void HandleCarMissed(CarController car)
+    {
+        UnregisterCar(car);
+        CarMissed?.Invoke(car);
+        car.Despawn();
+    }
+
+    private void HandleCarDespawned(CarController car)
+    {
+        UnregisterCar(car);
+    }
+
+    private void CleanupNullCars()
+    {
+        _activeCars.RemoveAll(car => car == null);
+    }
+
+    private bool TryGetPlayZoneWorldRect(out Rect worldRect)
     {
         worldRect = new Rect();
-        if (!playZone)
+        if (_playZone == null)
         {
             return false;
         }
 
         Vector3[] corners = new Vector3[4];
-        playZone.GetWorldCorners(corners);
+        _playZone.GetWorldCorners(corners);
         Vector3 bottomLeft = corners[0];
         Vector3 topRight = corners[2];
-
-        worldRect = new Rect(
-            bottomLeft.x,
-            bottomLeft.y,
-            topRight.x - bottomLeft.x,
-            topRight.y - bottomLeft.y);
+        worldRect = new Rect(bottomLeft.x, bottomLeft.y, topRight.x - bottomLeft.x, topRight.y - bottomLeft.y);
         return worldRect.width > 0f && worldRect.height > 0f;
     }
 
-    /// <summary>重みに応じて車種を抽選する。</summary>
-    /// <returns>抽選された車種。全重みが0なら null。</returns>
-    CarType? select_weighted_car_type()
+    private CarType? SelectWeightedCarType()
     {
-        int totalWeight = weightLightTruck + weightCompactCar + weightSportsCar;
+        int lightTruckWeight = Mathf.Max(0, _stageDefinition.WeightLightTruck);
+        int compactCarWeight = Mathf.Max(0, _stageDefinition.WeightCompactCar);
+        int sportsCarWeight = Mathf.Max(0, _stageDefinition.WeightSportsCar);
+        int totalWeight = lightTruckWeight + compactCarWeight + sportsCarWeight;
         if (totalWeight <= 0)
         {
             return null;
         }
 
-        int roll = Random.Range(0, totalWeight);
-        if (roll < weightLightTruck)
+        int roll = UnityEngine.Random.Range(0, totalWeight);
+        if (roll < lightTruckWeight)
         {
             return CarType.LightTruck;
         }
 
-        roll -= weightLightTruck;
-        if (roll < weightCompactCar)
+        roll -= lightTruckWeight;
+        if (roll < compactCarWeight)
         {
             return CarType.CompactCar;
         }
@@ -241,18 +254,18 @@ public class CarSpawner : MonoBehaviour
         return CarType.SportsCar;
     }
 
-    /// <summary>指定車種のプレハブを抽出する。</summary>
-    /// <param name="carType">抽出対象の車種。</param>
-    /// <returns>対象プレハブのリスト。</returns>
-    List<GameObject> get_prefabs_by_type(CarType carType)
+    private List<GameObject> GetPrefabsByType(CarType carType)
     {
         List<GameObject> results = new();
-        foreach (var prefab in carPrefabs)
+        foreach (GameObject prefab in _carPrefabs)
         {
-            if (prefab == null) continue;
+            if (prefab == null)
+            {
+                continue;
+            }
 
             CarController car = prefab.GetComponent<CarController>();
-            if (car != null && car.get_car_type() == carType)
+            if (car != null && car.CarType == carType)
             {
                 results.Add(prefab);
             }
@@ -261,32 +274,24 @@ public class CarSpawner : MonoBehaviour
         return results;
     }
 
-    /// <summary>プレハブの車幅を取得する。</summary>
-    /// <param name="prefab">車プレハブ。</param>
-    /// <returns>車幅。</returns>
-    float get_car_width(GameObject prefab)
+    private float GetCarWidth(GameObject prefab)
     {
         if (prefab == null)
         {
-            return DEFAULT_CAR_WIDTH;
+            return DefaultCarWidth;
         }
 
-        if (BoundsHelper.try_get_bounds(prefab, out Bounds bounds))
+        if (BoundsHelper.TryGetBounds(prefab, out Bounds bounds))
         {
-            return Mathf.Max(bounds.size.x, DEFAULT_CAR_WIDTH);
+            return Mathf.Max(bounds.size.x, DefaultCarWidth);
         }
 
-        return DEFAULT_CAR_WIDTH;
+        return DefaultCarWidth;
     }
 
-    /// <summary>最右車両との距離を見てスポーンを延期すべきか判定する。</summary>
-    /// <param name="existingCars">既存の車両一覧。</param>
-    /// <param name="spawnX">次のスポーン位置X。</param>
-    /// <param name="minSpawnGapX">最低スポーン間隔。</param>
-    /// <returns>延期する場合 true。</returns>
-    bool should_skip_spawn_for_gap(CarController[] existingCars, float spawnX, float minSpawnGapX)
+    private bool ShouldSkipSpawnForGap(float spawnX, float minSpawnGapX)
     {
-        if (existingCars == null || existingCars.Length == 0)
+        if (_activeCars.Count == 0)
         {
             return false;
         }
@@ -294,11 +299,9 @@ public class CarSpawner : MonoBehaviour
         float rightMostMaxX = float.NegativeInfinity;
         bool hasBounds = false;
 
-        foreach (var car in existingCars)
+        foreach (CarController car in _activeCars)
         {
-            if (!car) continue;
-
-            if (BoundsHelper.try_get_bounds(car.gameObject, out Bounds bounds))
+            if (BoundsHelper.TryGetBounds(car.gameObject, out Bounds bounds))
             {
                 rightMostMaxX = Mathf.Max(rightMostMaxX, bounds.max.x);
                 hasBounds = true;

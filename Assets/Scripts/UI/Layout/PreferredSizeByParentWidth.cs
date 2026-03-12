@@ -1,6 +1,3 @@
-// Created: 2026-02-26
-// Author: Einn
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,41 +9,62 @@ public class PreferredSizeByParentWidth : MonoBehaviour
     [Range(0.1f, 1.0f)] public float heightRatio = 0.72f;
     public float minWidth = 400f;
     public float maxWidth = 1000f;
-
     public float aspect = 0f;
 
-    LayoutElement le;
-    RectTransform referenceRt;
+    private LayoutElement _layoutElement;
+    private RectTransform _referenceRectTransform;
 
-    void OnEnable()
+    private void OnEnable()
     {
-        le = GetComponent<LayoutElement>();
-        referenceRt = get_reference_parent();
+        _layoutElement = GetComponent<LayoutElement>();
+        _referenceRectTransform = GetReferenceParent();
         Apply();
     }
 
-    void Start()
+    private void Start()
     {
-        if (!le) le = GetComponent<LayoutElement>();
-        if (!referenceRt) referenceRt = get_reference_parent();
+        if (_layoutElement == null)
+        {
+            _layoutElement = GetComponent<LayoutElement>();
+        }
+
+        if (_referenceRectTransform == null)
+        {
+            _referenceRectTransform = GetReferenceParent();
+        }
+
         Apply();
     }
 
-    void OnRectTransformDimensionsChange() => Apply();
-
-    void Apply()
+    private void OnRectTransformDimensionsChange()
     {
-        if (!le) le = GetComponent<LayoutElement>();
-        if (!referenceRt) referenceRt = get_reference_parent();
-        if (!referenceRt) return;
+        Apply();
+    }
+
+    private void Apply()
+    {
+        if (_layoutElement == null)
+        {
+            _layoutElement = GetComponent<LayoutElement>();
+        }
+
+        if (_referenceRectTransform == null)
+        {
+            _referenceRectTransform = GetReferenceParent();
+        }
+
+        if (_referenceRectTransform == null)
+        {
+            return;
+        }
 
         float resolvedAspect = aspect;
         if (resolvedAspect <= 0f)
         {
-            Image img = GetComponentInChildren<Image>();
-            if (img && img.sprite)
+            Image image = GetComponentInChildren<Image>();
+            if (image != null && image.sprite != null)
             {
-                Rect spriteRect = img.sprite.rect;
+                Rect spriteRect = image.sprite.rect;
                 if (spriteRect.height > 0f)
                 {
                     resolvedAspect = spriteRect.width / spriteRect.height;
@@ -59,10 +77,10 @@ public class PreferredSizeByParentWidth : MonoBehaviour
             resolvedAspect = 1f;
         }
 
-        float parentW = referenceRt.rect.width;
-        float parentH = referenceRt.rect.height;
-        float widthByParent = parentW * widthRatio;
-        float widthByHeight = parentH * heightRatio * resolvedAspect;
+        float parentWidth = _referenceRectTransform.rect.width;
+        float parentHeight = _referenceRectTransform.rect.height;
+        float widthByParent = parentWidth * widthRatio;
+        float widthByHeight = parentHeight * heightRatio * resolvedAspect;
         float width = Mathf.Min(widthByParent, widthByHeight, maxWidth);
 
         if (widthByParent >= minWidth && widthByHeight >= minWidth)
@@ -70,29 +88,28 @@ public class PreferredSizeByParentWidth : MonoBehaviour
             width = Mathf.Max(width, minWidth);
         }
 
-        le.preferredWidth = width;
-        le.preferredHeight = width / resolvedAspect;
+        _layoutElement.preferredWidth = width;
+        _layoutElement.preferredHeight = width / resolvedAspect;
 
-        update_scroll_padding(width);
-
-        LayoutRebuilder.MarkLayoutForRebuild(referenceRt);
+        UpdateScrollPadding(width);
+        LayoutRebuilder.MarkLayoutForRebuild(_referenceRectTransform);
     }
 
-    void update_scroll_padding(float childWidth)
+    private void UpdateScrollPadding(float childWidth)
     {
         RectTransform directParent = transform.parent as RectTransform;
-        if (!directParent)
+        if (directParent == null)
         {
             return;
         }
 
         HorizontalLayoutGroup layout = directParent.GetComponent<HorizontalLayoutGroup>();
-        if (!layout || referenceRt == directParent)
+        if (layout == null || _referenceRectTransform == directParent)
         {
             return;
         }
 
-        int sidePadding = Mathf.Max(0, Mathf.RoundToInt((referenceRt.rect.width - childWidth) * 0.5f));
+        int sidePadding = Mathf.Max(0, Mathf.RoundToInt((_referenceRectTransform.rect.width - childWidth) * 0.5f));
         if (layout.padding.left == sidePadding && layout.padding.right == sidePadding)
         {
             return;
@@ -103,10 +120,10 @@ public class PreferredSizeByParentWidth : MonoBehaviour
         LayoutRebuilder.MarkLayoutForRebuild(directParent);
     }
 
-    RectTransform get_reference_parent()
+    private RectTransform GetReferenceParent()
     {
         RectTransform directParent = transform.parent as RectTransform;
-        if (!directParent)
+        if (directParent == null)
         {
             return null;
         }
@@ -114,7 +131,7 @@ public class PreferredSizeByParentWidth : MonoBehaviour
         if (directParent.GetComponent<ContentSizeFitter>() || directParent.GetComponent<HorizontalLayoutGroup>())
         {
             RectTransform viewport = directParent.parent as RectTransform;
-            if (viewport)
+            if (viewport != null)
             {
                 return viewport;
             }

@@ -1,144 +1,120 @@
-// Created: 2025-11-28
-// Updated: 2026-02-26
-// Author: Einn
-
 using UnityEngine;
+using UnityEngine.Serialization;
 
-/// <summary>BGM およびサウンドエフェクトの再生を管理する。</summary>
 public class SoundManager : MonoBehaviour
 {
-    static SoundManager currentInstance;
+    private static SoundManager _currentInstance;
 
-    /// <summary>シングルトンインスタンス。</summary>
-    public static SoundManager instance
+    [SerializeField, FormerlySerializedAs("bgmSource")]
+    private AudioSource _bgmSource;
+
+    [SerializeField, FormerlySerializedAs("seSource")]
+    private AudioSource _seSource;
+
+    [SerializeField, FormerlySerializedAs("bgmClip")]
+    private AudioClip _bgmClip;
+
+    [SerializeField, FormerlySerializedAs("correctClip")]
+    private AudioClip _correctClip;
+
+    [SerializeField, FormerlySerializedAs("missClip")]
+    private AudioClip _missClip;
+
+    [SerializeField, FormerlySerializedAs("clearClip")]
+    private AudioClip _clearClip;
+
+    [SerializeField, FormerlySerializedAs("gameOverClip")]
+    private AudioClip _gameOverClip;
+
+    private bool _isBgmOn = true;
+    private bool _isSeOn = true;
+
+    public static SoundManager Instance => _currentInstance;
+
+    private void Awake()
     {
-        get { return currentInstance; }
-    }
-
-    [SerializeField]
-    AudioSource bgmSource;
-
-    [SerializeField]
-    AudioSource seSource;
-
-    [SerializeField]
-    AudioClip bgmClip;
-
-    [SerializeField]
-    AudioClip correctClip;
-
-    [SerializeField]
-    AudioClip missClip;
-
-    [SerializeField]
-    AudioClip clearClip;
-
-    [SerializeField]
-    AudioClip gameOverClip;
-
-    bool isBgmOn = true;
-    bool isSeOn = true;
-
-    /// <summary>初期化時に保存された設定を読み込む。</summary>
-    void Awake()
-    {
-        if (currentInstance != null && currentInstance != this)
+        if (_currentInstance != null && _currentInstance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        currentInstance = this;
+        _currentInstance = this;
         DontDestroyOnLoad(gameObject);
-
-        isBgmOn = SaveService.get_bgm_on();
-        isSeOn = SaveService.get_se_on();
+        _isBgmOn = SaveService.GetBgmOn();
+        _isSeOn = SaveService.GetSeOn();
     }
 
-    /// <summary>破棄時にシングルトン参照をクリアする。</summary>
-    void OnDestroy()
+    private void OnDestroy()
     {
-        if (currentInstance == this)
+        if (_currentInstance == this)
         {
-            currentInstance = null;
+            _currentInstance = null;
         }
     }
 
-    /// <summary>BGM の有効・無効を切り替える。</summary>
-    /// <param name="isOn">有効にする場合 true。</param>
-    public void set_bgm_enabled(bool isOn)
+    public void SetBgmEnabled(bool isOn)
     {
-        isBgmOn = isOn;
-
-        if (bgmSource)
+        _isBgmOn = isOn;
+        if (_bgmSource != null)
         {
-            bgmSource.mute = !isBgmOn;
+            _bgmSource.mute = !_isBgmOn;
         }
     }
 
-    /// <summary>SE の有効・無効を切り替える。</summary>
-    /// <param name="isOn">有効にする場合 true。</param>
-    public void set_se_enabled(bool isOn)
+    public void SetSeEnabled(bool isOn)
     {
-        isSeOn = isOn;
+        _isSeOn = isOn;
     }
 
-    /// <summary>BGM を再生する。</summary>
-    public void play_bgm()
+    public void PlayBgm()
     {
-        if (!bgmSource || !bgmClip)
+        if (_bgmSource == null || _bgmClip == null)
         {
             return;
         }
 
-        bgmSource.clip = bgmClip;
-        bgmSource.loop = true;
-        bgmSource.mute = !isBgmOn;
-        bgmSource.Play();
+        _bgmSource.clip = _bgmClip;
+        _bgmSource.loop = true;
+        _bgmSource.mute = !_isBgmOn;
+        _bgmSource.Play();
     }
 
-    /// <summary>BGM を停止する。</summary>
-    public void stop_bgm()
+    public void StopBgm()
     {
-        if (bgmSource)
+        if (_bgmSource != null)
         {
-            bgmSource.Stop();
+            _bgmSource.Stop();
         }
     }
 
-    /// <summary>正解 SE を再生する。</summary>
-    public void play_correct()
+    public void PlayCorrect()
     {
-        play_se(correctClip);
+        PlaySe(_correctClip);
     }
 
-    /// <summary>ミス SE を再生する。</summary>
-    public void play_miss()
+    public void PlayMiss()
     {
-        play_se(missClip);
+        PlaySe(_missClip);
     }
 
-    /// <summary>クリア SE を再生する。</summary>
-    public void play_clear()
+    public void PlayClear()
     {
-        play_se(clearClip);
+        PlaySe(_clearClip);
     }
 
-    /// <summary>ゲームオーバー SE を再生する。</summary>
-    public void play_game_over()
+    public void PlayGameOver()
     {
-        play_se(gameOverClip);
+        PlaySe(_gameOverClip);
     }
 
-    /// <summary>SE を1回だけ再生する。</summary>
-    /// <param name="clip">再生するオーディオクリップ。</param>
-    void play_se(AudioClip clip)
+    private void PlaySe(AudioClip clip)
     {
-        if (!isSeOn || !seSource || !clip)
+        if (!_isSeOn || _seSource == null || clip == null)
         {
             return;
         }
 
-        seSource.PlayOneShot(clip);
+        _seSource.PlayOneShot(clip);
     }
 }
