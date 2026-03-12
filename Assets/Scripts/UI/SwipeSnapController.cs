@@ -12,6 +12,7 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
 {
     private const float SWIPE_THRESHOLD_RATIO = 0.2f;
     private const float SNAP_LERP_SPEED = 10f;
+    private const float SNAP_EPSILON = 0.001f;
 
     [SerializeField]
     ScrollRect scrollRect;
@@ -28,10 +29,13 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
     int currentIndex;
     bool isDragging;
     float dragStartNormalizedX;
+    RectTransform viewportRect;
 
     /// <summary>初回表示時にページ0へスナップする。</summary>
     void Start()
     {
+        resolve_references();
+        rebuild_layout();
         jump_to_index(0);
     }
 
@@ -44,10 +48,17 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         }
 
         float target = get_normalized_x(currentIndex);
-        scrollRect.horizontalNormalizedPosition = Mathf.Lerp(
+        float next = Mathf.Lerp(
             scrollRect.horizontalNormalizedPosition,
             target,
             Time.deltaTime * SNAP_LERP_SPEED);
+
+        if (Mathf.Abs(next - target) <= SNAP_EPSILON)
+        {
+            next = target;
+        }
+
+        scrollRect.horizontalNormalizedPosition = next;
     }
 
     /// <summary>ドラッグ開始位置を記録する。</summary>
@@ -84,6 +95,8 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
     /// <param name="index">移動先のインデックス。</param>
     public void jump_to_index(int index)
     {
+        resolve_references();
+        rebuild_layout();
         set_index(index);
         scrollRect.horizontalNormalizedPosition = get_normalized_x(currentIndex);
     }
@@ -114,11 +127,68 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
     /// <returns>0〜1 の正規化値。</returns>
     float get_normalized_x(int index)
     {
-        if (pageCount <= 1)
+        resolve_references();
+
+        if (pageCount <= 1 || !content || !viewportRect)
         {
             return 0f;
         }
 
-        return (float)index / (pageCount - 1);
+        int childCount = Mathf.Min(pageCount, content.childCount);
+        if (childCount <= 1)
+        {
+            return 0f;
+        }
+
+        int clampedIndex = Mathf.Clamp(index, 0, childCount - 1);
+        RectTransform child = content.GetChild(clampedIndex) as RectTransform;
+        if (!child)
+        {
+            return 0f;
+        }
+
+        float scrollableWidth = content.rect.width - viewportRect.rect.width;
+        if (scrollableWidth <= 0f)
+        {
+            return 0f;
+        }
+
+        Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(content, child);
+        float targetOffset = childBounds.center.x - (viewportRect.rect.width * 0.5f);
+        return Mathf.Clamp01(targetOffset / scrollableWidth);
+    }
+
+    void resolve_references()
+    {
+        if (!scrollRect)
+        {
+            scrollRect = GetComponent<ScrollRect>();
+        }
+
+        if (!content && scrollRect)
+        {
+            content = scrollRect.content;
+        }
+
+        if (!viewportRect && scrollRect)
+        {
+            viewportRect = scrollRect.viewport ? scrollRect.viewport : scrollRect.transform as RectTransform;
+        }
+    }
+
+    void rebuild_layout()
+    {
+        if (!scrollRect || !content)
+        {
+            return;
+        }
+
+        Canvas.ForceUpdateCanvases();
+        if (viewportRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(viewportRect);
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
     }
 }

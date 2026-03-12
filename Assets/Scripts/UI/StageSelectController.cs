@@ -1,7 +1,8 @@
 // Created: 2025-02-14
-// Updated: 2026-02-26
+// Updated: 2026-03-12
 // Author: Einn
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,7 +32,7 @@ public class StageSelectController : MonoBehaviour
     int selectedStageNumber = DEFAULT_STAGE_NUMBER;
 
     /// <summary>開始時にカード情報を更新し、前回選択ステージへ移動する。</summary>
-    void Start()
+    IEnumerator Start()
     {
         if (swipeSnapController)
         {
@@ -39,16 +40,16 @@ public class StageSelectController : MonoBehaviour
         }
 
         update_cards();
+        yield return null;
+
         int lastStageNumber = SaveService.get_last_stage();
         int startIndex = get_index_from_stage_number(lastStageNumber);
         if (swipeSnapController)
         {
             swipeSnapController.jump_to_index(startIndex);
         }
-        else
-        {
-            apply_selection_index(startIndex);
-        }
+
+        apply_selection_index(startIndex);
     }
 
     /// <summary>破棄時にイベント購読を解除する。</summary>
