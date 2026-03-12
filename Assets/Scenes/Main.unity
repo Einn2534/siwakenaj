@@ -1010,8 +1010,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b4f98188b4ce4d8a9bd0dff8c2741c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageTargetScores: 03090000
-  stageAllowedMisses: 03000000
+  stageConfigs:
+  - targetScore: 51
+    missLimit: 3
+    carSpeed: 1
+    spawnInterval: 1
+    weightLightTruck: 1
+    weightCompactCar: 1
+    weightSportsCar: 1
+  - targetScore: 300
+    missLimit: 3
+    carSpeed: 1
+    spawnInterval: 1
+    weightLightTruck: 1
+    weightCompactCar: 1
+    weightSportsCar: 1
 --- !u!1 &6000
 GameObject:
   m_ObjectHideFlags: 0
