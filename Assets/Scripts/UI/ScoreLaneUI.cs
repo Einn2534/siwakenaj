@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class ScoreLaneUI : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class ScoreLaneUI : MonoBehaviour
 
     [SerializeField, FormerlySerializedAs("iconPrefab")]
     private GameObject _iconPrefab;
+
+    [SerializeField]
+    private CarVisualDatabase _visualDatabase;
 
     [Header("Layout")]
     [SerializeField, Min(1), FormerlySerializedAs("maxRows")]
@@ -54,7 +58,10 @@ public class ScoreLaneUI : MonoBehaviour
     private bool _metricsValid;
     private float _iconWidth = 64f;
     private float _iconHeight = 64f;
-    private Vector2 _iconPivot = new(0.5f, 0.5f);
+    private float _iconLeftExtent = 32f;
+    private float _iconRightExtent = 32f;
+    private float _iconBottomExtent = 32f;
+    private float _iconTopExtent = 32f;
 
     private void Awake()
     {
@@ -64,6 +71,16 @@ public class ScoreLaneUI : MonoBehaviour
     private void OnEnable()
     {
         StartCoroutine(RefreshNextFrame());
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
+        RefreshAll();
     }
 
 #if UNITY_EDITOR
@@ -151,7 +168,8 @@ public class ScoreLaneUI : MonoBehaviour
             return;
         }
 
-        EnsureIconInstances(icons, lane, count);
+        EnsureIconInstances(icons, lane, laneType, count);
+        CacheInstanceMetrics(icons);
         SetActiveIcons(icons, count);
         _tmpTargets.Clear();
         FillTargets(lane, count, _tmpTargets);
@@ -169,6 +187,8 @@ public class ScoreLaneUI : MonoBehaviour
             {
                 continue;
             }
+
+            ApplyIconVisual(icon, laneType);
 
             Vector2 target = _tmpTargets[i];
             if (!(animateLast && i == count - 1))
@@ -211,11 +231,13 @@ public class ScoreLaneUI : MonoBehaviour
         }
     }
 
-    private void EnsureIconInstances(List<GameObject> icons, RectTransform parent, int count)
+    private void EnsureIconInstances(List<GameObject> icons, RectTransform parent, CarType laneType, int count)
     {
         for (int i = icons.Count; i < count; i += 1)
         {
-            icons.Add(Instantiate(_iconPrefab, parent));
+            GameObject icon = Instantiate(_iconPrefab, parent);
+            ApplyIconVisual(icon, laneType);
+            icons.Add(icon);
         }
     }
 
@@ -230,6 +252,34 @@ public class ScoreLaneUI : MonoBehaviour
         }
     }
 
+    private void ApplyIconVisual(GameObject icon, CarType laneType)
+    {
+        if (icon == null)
+        {
+            return;
+        }
+
+        Sprite sprite = GetSpriteForLane(laneType);
+        if (sprite == null)
+        {
+            return;
+        }
+
+        Image[] images = icon.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i += 1)
+        {
+            if (images[i] != null)
+            {
+                images[i].sprite = sprite;
+            }
+        }
+    }
+
+    private Sprite GetSpriteForLane(CarType laneType)
+    {
+        return _visualDatabase != null ? _visualDatabase.GetIconSprite(laneType) : null;
+    }
+
     private void CachePrefabMetrics()
     {
         if (_metricsValid)
@@ -239,22 +289,59 @@ public class ScoreLaneUI : MonoBehaviour
 
         _iconWidth = 64f;
         _iconHeight = 64f;
-        _iconPivot = new Vector2(0.5f, 0.5f);
+        _iconLeftExtent = 32f;
+        _iconRightExtent = 32f;
+        _iconBottomExtent = 32f;
+        _iconTopExtent = 32f;
 
         if (_iconPrefab != null)
         {
             RectTransform prefabRect = _iconPrefab.GetComponent<RectTransform>();
             if (prefabRect != null)
             {
-                _iconPivot = prefabRect.pivot;
                 float width = prefabRect.rect.width;
                 float height = prefabRect.rect.height;
                 _iconWidth = width > 0f ? width : Mathf.Max(1f, prefabRect.sizeDelta.x);
                 _iconHeight = height > 0f ? height : Mathf.Max(1f, prefabRect.sizeDelta.y);
+                _iconLeftExtent = _iconWidth * prefabRect.pivot.x;
+                _iconRightExtent = _iconWidth * (1f - prefabRect.pivot.x);
+                _iconBottomExtent = _iconHeight * prefabRect.pivot.y;
+                _iconTopExtent = _iconHeight * (1f - prefabRect.pivot.y);
             }
         }
 
         _metricsValid = true;
+    }
+
+    private void CacheInstanceMetrics(List<GameObject> icons)
+    {
+        if (icons == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < icons.Count; i += 1)
+        {
+            RectTransform iconRect = icons[i] != null ? icons[i].transform as RectTransform : null;
+            if (iconRect == null)
+            {
+                continue;
+            }
+
+            Bounds bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(iconRect, iconRect);
+            if (bounds.size.x <= 0f || bounds.size.y <= 0f)
+            {
+                continue;
+            }
+
+            _iconWidth = bounds.size.x;
+            _iconHeight = bounds.size.y;
+            _iconLeftExtent = Mathf.Max(0f, -bounds.min.x);
+            _iconRightExtent = Mathf.Max(0f, bounds.max.x);
+            _iconBottomExtent = Mathf.Max(0f, -bounds.min.y);
+            _iconTopExtent = Mathf.Max(0f, bounds.max.y);
+            return;
+        }
     }
 
     private void FillTargets(RectTransform lane, int count, List<Vector2> output)
@@ -264,10 +351,10 @@ public class ScoreLaneUI : MonoBehaviour
         float innerXMax = rect.xMax - _rightPadding;
         float innerYMin = rect.yMin + _bottomPadding;
         float innerYMax = rect.yMax - _topPadding;
-        float minX = innerXMin + _iconWidth * _iconPivot.x;
-        float maxX = innerXMax - _iconWidth * (1f - _iconPivot.x);
-        float minY = innerYMin + _iconHeight * _iconPivot.y;
-        float maxY = innerYMax - _iconHeight * (1f - _iconPivot.y);
+        float minX = innerXMin + _iconLeftExtent;
+        float maxX = innerXMax - _iconRightExtent;
+        float minY = innerYMin + _iconBottomExtent;
+        float maxY = innerYMax - _iconTopExtent;
 
         if (maxX < minX)
         {

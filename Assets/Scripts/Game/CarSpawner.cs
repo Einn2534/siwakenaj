@@ -12,8 +12,8 @@ public class CarSpawner : MonoBehaviour
     private const float MinSpawnGapRatio = 0.25f;
     private const float DefaultCarWidth = 1f;
 
-    [SerializeField, FormerlySerializedAs("carPrefabs")]
-    private GameObject[] _carPrefabs;
+    [SerializeField]
+    private GameObject _carPrefab;
 
     [SerializeField, FormerlySerializedAs("playZone")]
     private RectTransform _playZone;
@@ -117,7 +117,7 @@ public class CarSpawner : MonoBehaviour
 
     private void SpawnIfPossible()
     {
-        if (_stageDefinition == null || _carPrefabs == null || _carPrefabs.Length == 0)
+        if (_stageDefinition == null || _carPrefab == null)
         {
             return;
         }
@@ -139,26 +139,11 @@ public class CarSpawner : MonoBehaviour
             return;
         }
 
-        List<GameObject> candidates = GetPrefabsByType(selectedType.Value);
-        if (candidates.Count == 0)
-        {
-            return;
-        }
-
-        GameObject prefab = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-        float carWidth = GetCarWidth(prefab);
-        float spawnMarginX = carWidth * SpawnMarginRatio;
-        float minSpawnGapX = carWidth * MinSpawnGapRatio;
-        float spawnX = playZoneWorldRect.xMax + spawnMarginX;
-        float spawnY = playZoneWorldRect.center.y;
-
-        if (ShouldSkipSpawnForGap(spawnX, minSpawnGapX))
-        {
-            return;
-        }
-
-        Vector3 position = new(spawnX, spawnY, _spawnPoint ? _spawnPoint.position.z : transform.position.z);
-        GameObject carObject = Instantiate(prefab, position, Quaternion.identity);
+        Vector3 position = new(
+            playZoneWorldRect.xMax,
+            playZoneWorldRect.center.y,
+            _spawnPoint ? _spawnPoint.position.z : transform.position.z);
+        GameObject carObject = Instantiate(_carPrefab, position, Quaternion.identity);
         CarController car = carObject.GetComponent<CarController>();
         if (car == null)
         {
@@ -167,7 +152,24 @@ public class CarSpawner : MonoBehaviour
         }
 
         float speedWorld = playZoneWorldRect.width * Mathf.Max(_stageDefinition.CarSpeed, 0f);
-        car.Initialize(speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
+        car.Initialize(selectedType.Value, speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
+
+        float carWidth = GetCarWidth(carObject);
+        float spawnMarginX = carWidth * SpawnMarginRatio;
+        float minSpawnGapX = carWidth * MinSpawnGapRatio;
+        float spawnX = playZoneWorldRect.xMax + spawnMarginX;
+        float spawnY = playZoneWorldRect.center.y;
+
+        if (ShouldSkipSpawnForGap(spawnX, minSpawnGapX))
+        {
+            Destroy(carObject);
+            return;
+        }
+
+        carObject.transform.position = new Vector3(
+            spawnX,
+            spawnY,
+            _spawnPoint ? _spawnPoint.position.z : transform.position.z);
         RegisterCar(car);
     }
 
@@ -254,34 +256,14 @@ public class CarSpawner : MonoBehaviour
         return CarType.SportsCar;
     }
 
-    private List<GameObject> GetPrefabsByType(CarType carType)
+    private float GetCarWidth(GameObject target)
     {
-        List<GameObject> results = new();
-        foreach (GameObject prefab in _carPrefabs)
-        {
-            if (prefab == null)
-            {
-                continue;
-            }
-
-            CarController car = prefab.GetComponent<CarController>();
-            if (car != null && car.CarType == carType)
-            {
-                results.Add(prefab);
-            }
-        }
-
-        return results;
-    }
-
-    private float GetCarWidth(GameObject prefab)
-    {
-        if (prefab == null)
+        if (target == null)
         {
             return DefaultCarWidth;
         }
 
-        if (BoundsHelper.TryGetBounds(prefab, out Bounds bounds))
+        if (BoundsHelper.TryGetBounds(target, out Bounds bounds))
         {
             return Mathf.Max(bounds.size.x, DefaultCarWidth);
         }

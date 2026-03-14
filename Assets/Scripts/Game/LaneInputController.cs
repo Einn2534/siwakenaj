@@ -26,6 +26,10 @@ public class LaneInputController : MonoBehaviour
     private CarType _pendingLaneType;
     private Coroutine _pendingCoroutine;
 
+    public CarType LaneAType => _laneAType;
+    public CarType LaneBType => _laneBType;
+    public CarType LaneCType => _laneCType;
+
     private void Awake()
     {
         if (!TryGetComponent(out LaneButtonLayoutController _))

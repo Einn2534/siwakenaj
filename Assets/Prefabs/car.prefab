@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 226664933237660528}
   - component: {fileID: 2882595755411278031}
   - component: {fileID: 679669147625996731}
+  - component: {fileID: 3434065311066264871}
   m_Layer: 0
   m_Name: car
   m_TagString: Untagged
@@ -107,3 +108,17 @@ MonoBehaviour:
   leftLimit: -15
   carType: 0
   scoreManager: {fileID: 0}
+--- !u!114 &3434065311066264871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8801121780770272133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f36c38a3704d8f8de74fbf01e5b534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _visualDatabase: {fileID: 11400000, guid: ef0e8ac51ec14df9a7808f1582f8d2b3, type: 2}
+  _spriteRenderer: {fileID: 2882595755411278031}

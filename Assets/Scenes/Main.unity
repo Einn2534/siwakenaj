@@ -540,7 +540,7 @@ MonoBehaviour:
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -608,7 +608,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 420}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &3112
 MonoBehaviour:
@@ -664,7 +664,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 420}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &3122
 MonoBehaviour:
@@ -720,7 +720,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 420}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &3132
 MonoBehaviour:
@@ -791,21 +791,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6573b903b8e4a8791eceb376deaf5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreLaneUI
-  lanes:
+  _lanes:
   - {fileID: 3111}
   - {fileID: 3121}
   - {fileID: 3131}
-  iconPrefab: {fileID: 7406463623008157308, guid: 837df435755f7c74b869a6777de0b2bb, type: 3}
-  maxRows: 10
-  normalFillRatio: 1
-  topPadding: 20
-  bottomPadding: 20
-  leftPadding: 20
-  rightPadding: 20
-  columnSpacing: 20
-  dropStartOffset: 120
-  dropDuration: 0.25
-  dropCurve:
+  _iconPrefab: {fileID: 7406463623008157308, guid: 837df435755f7c74b869a6777de0b2bb, type: 3}
+  _visualDatabase: {fileID: 11400000, guid: ef0e8ac51ec14df9a7808f1582f8d2b3, type: 2}
+  _maxRows: 10
+  _normalFillRatio: 1
+  _topPadding: 20
+  _bottomPadding: 20
+  _leftPadding: 20
+  _rightPadding: 20
+  _columnSpacing: 20
+  _dropStartOffset: 120
+  _dropDuration: 0.25
+  _dropCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -960,13 +961,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcc5c7c731d734a6ba6c6fe90f4c0d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageManager: {fileID: 5002}
-  scoreManager: {fileID: 6002}
-  carSpawner: {fileID: 7002}
-  playerAnimationController: {fileID: 8002}
-  resultPanel: {fileID: 0}
-  gameOverPanel: {fileID: 0}
-  currentState: 0
+  _scoreManager: {fileID: 6002}
+  _carSpawner: {fileID: 7002}
+  _playerAnimationController: {fileID: 8002}
+  _currentState: 0
 --- !u!1 &5000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,21 +1009,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b4f98188b4ce4d8a9bd0dff8c2741c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageConfigs:
-  - targetScore: 51
-    missLimit: 3
-    carSpeed: 0.7
-    spawnInterval: 1
-    weightLightTruck: 1
-    weightCompactCar: 1
-    weightSportsCar: 1
-  - targetScore: 300
-    missLimit: 3
-    carSpeed: 0.7
-    spawnInterval: 1
-    weightLightTruck: 1
-    weightCompactCar: 1
-    weightSportsCar: 1
 --- !u!1 &6000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,11 +1053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21fcb84247b9e416493c0ba8012bce28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetScore: 1
-  allowedMisses: 3
-  scoreLaneUi: {fileID: 3302}
-  currentScore: 0
-  gameController: {fileID: 4002}
+  _scoreLaneUi: {fileID: 3302}
 --- !u!1 &7000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,12 +1099,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57904795ed5a54e8c83b24d44b21fd96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPrefabs:
-  - {fileID: 8801121780770272133, guid: 9f0e95b3e1652884db3b00c88d88097f, type: 3}
-  - {fileID: 8801121780770272133, guid: 132faafcbbbd83841a306318c8bd4bc3, type: 3}
-  - {fileID: 8801121780770272133, guid: 16e35227bba352b488ac83a308f3e9cc, type: 3}
-  playZone: {fileID: 987498573}
-  spawnPoint: {fileID: 7101}
+  _carPrefab: {fileID: 8801121780770272133, guid: 9399c8cc63942ae4baa7fdba43461491, type: 3}
+  _playZone: {fileID: 987498573}
+  _spawnPoint: {fileID: 7101}
 --- !u!1 &7100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,7 +1179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d2ffbf48a95400d865655b4b0b5e2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 8003}
+  _animator: {fileID: 8003}
 --- !u!95 &8003
 Animator:
   serializedVersion: 7
@@ -1331,13 +1307,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70fc436998c3b4e918b0e40f93c3f3d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgmSource: {fileID: 9003}
-  seSource: {fileID: 9004}
-  bgmClip: {fileID: 0}
-  correctClip: {fileID: 0}
-  missClip: {fileID: 0}
-  clearClip: {fileID: 0}
-  gameOverClip: {fileID: 0}
+  _bgmSource: {fileID: 9003}
+  _seSource: {fileID: 9004}
+  _bgmClip: {fileID: 0}
+  _correctClip: {fileID: 0}
+  _missClip: {fileID: 0}
+  _clearClip: {fileID: 0}
+  _gameOverClip: {fileID: 0}
 --- !u!82 &9003
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1674,6 +1650,8 @@ GameObject:
   - component: {fileID: 395451124}
   - component: {fileID: 395451126}
   - component: {fileID: 395451127}
+  - component: {fileID: 395451128}
+  - component: {fileID: 395451129}
   m_Layer: 5
   m_Name: ButtonZone
   m_TagString: Untagged
@@ -1749,12 +1727,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d031ed915e8c4c17aa31f5fb0e95382e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonInputController
-  judgeController: {fileID: 539476993}
-  carSpawner: {fileID: 7002}
-  laneAType: 0
-  laneBType: 1
-  laneCType: 2
-  gameController: {fileID: 4002}
+  _laneAType: 0
+  _laneBType: 1
+  _laneCType: 2
+  _gameFlowController: {fileID: 4002}
 --- !u!114 &395451127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1785,6 +1761,34 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &395451128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395451121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c7f191edce74f1d8dc3b2978ae758cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LaneButtonVisualController
+  _visualDatabase: {fileID: 11400000, guid: ef0e8ac51ec14df9a7808f1582f8d2b3, type: 2}
+  _laneAImage: {fileID: 1224357996}
+  _laneBImage: {fileID: 1565956337}
+  _laneCImage: {fileID: 859198691}
+--- !u!114 &395451129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395451121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69dbab1d1f8b45f6a6ae6658461cb2c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LaneButtonLayoutController
 --- !u!1 &539476992
 GameObject:
   m_ObjectHideFlags: 0
@@ -1814,9 +1818,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d7f6e2a32f94cbb9c4b6b8b8f0b4f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JudgeController
-  scoreManager: {fileID: 6002}
-  playerAnimationController: {fileID: 8002}
-  gameController: {fileID: 4002}
 --- !u!4 &539476994
 Transform:
   m_ObjectHideFlags: 0
@@ -2022,13 +2023,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 55463c0df174ed949b24554b419851ce, type: 3}
+  m_Texture: {fileID: 2800000, guid: 4d1373d91e161554e91e5e3483a029a2, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
-    y: 0
-    width: 1
-    height: 1
+    y: 0.16602193
+    width: 0.9799433
+    height: 0.66743696
 --- !u!222 &859198692
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2169,13 +2170,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: c4532249822142d4ea34477f32f39a65, type: 3}
+  m_Texture: {fileID: 2800000, guid: 55463c0df174ed949b24554b419851ce, type: 3}
   m_UVRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: 0.12110681
+    y: 0.2754278
+    width: 0.76218766
+    height: 0.44182017
 --- !u!222 &1224357997
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2374,13 +2375,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 4d1373d91e161554e91e5e3483a029a2, type: 3}
+  m_Texture: {fileID: 2800000, guid: c4532249822142d4ea34477f32f39a65, type: 3}
   m_UVRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: 0.007361387
+    y: 0.16602193
+    width: 0.9926386
+    height: 0.6679561
 --- !u!222 &1565956338
 CanvasRenderer:
   m_ObjectHideFlags: 0
