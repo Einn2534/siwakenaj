@@ -75,3 +75,12 @@ crashlytics-build.properties
 +/[Aa]ssets/*
 
 +!/[Aa]ssets/Project/
+.agent/
+Assets/_Recovery/
+diff_staged.txt
+diff_staged_utf8.txt
+diff_unstaged.txt
+diff_unstaged_utf8.txt
+status.txt
+status_utf8.txt
+Assets/_Recovery.meta
