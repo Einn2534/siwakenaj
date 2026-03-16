@@ -41,6 +41,11 @@ public class PreferredSizeByParentWidth : MonoBehaviour
         Apply();
     }
 
+    public void Refresh()
+    {
+        Apply();
+    }
+
     private void Apply()
     {
         if (_layoutElement == null)
