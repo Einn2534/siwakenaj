@@ -68,6 +68,8 @@ public class StageSelectResponsiveLayout : MonoBehaviour
     private Vector2 _defaultScrollOffsetMax;
     private float _defaultContentSpacing;
     private CardLayoutState[] _defaultCardStates;
+    private CardLayoutState _fallbackCardState;
+    private bool _hasFallbackCardState;
     private Vector2Int _lastAppliedScreenSize = new Vector2Int(-1, -1);
     private Rect _lastAppliedSafeArea = Rect.zero;
     private Vector2 _lastAppliedSafeAreaRectSize = new Vector2(-1f, -1f);
@@ -207,13 +209,12 @@ public class StageSelectResponsiveLayout : MonoBehaviour
             _contentLayoutGroup.spacing = _defaultContentSpacing;
         }
 
-        if (_cardSizers == null || _defaultCardStates == null)
+        if (_cardSizers == null)
         {
             return;
         }
 
-        int count = Mathf.Min(_cardSizers.Length, _defaultCardStates.Length);
-        for (int i = 0; i < count; i += 1)
+        for (int i = 0; i < _cardSizers.Length; i += 1)
         {
             PreferredSizeByParentWidth cardSizer = _cardSizers[i];
             if (cardSizer == null)
@@ -221,7 +222,7 @@ public class StageSelectResponsiveLayout : MonoBehaviour
                 continue;
             }
 
-            CardLayoutState state = _defaultCardStates[i];
+            CardLayoutState state = GetDefaultCardState(i, cardSizer);
             cardSizer.widthRatio = state.WidthRatio;
             cardSizer.heightRatio = state.HeightRatio;
             cardSizer.minWidth = state.MinWidth;
@@ -419,6 +420,14 @@ public class StageSelectResponsiveLayout : MonoBehaviour
                     MinWidth = cardSizer.minWidth,
                     MaxWidth = cardSizer.maxWidth,
                 };
+
+                if (_hasFallbackCardState)
+                {
+                    continue;
+                }
+
+                _fallbackCardState = _defaultCardStates[i];
+                _hasFallbackCardState = true;
             }
         }
 
@@ -476,15 +485,43 @@ public class StageSelectResponsiveLayout : MonoBehaviour
             _contentLayoutGroup = _scrollViewRect.GetComponentInChildren<HorizontalLayoutGroup>(true);
         }
 
+        if (_contentLayoutGroup != null)
+        {
+            PreferredSizeByParentWidth[] contentCardSizers = _contentLayoutGroup.GetComponentsInChildren<PreferredSizeByParentWidth>(true);
+            if (_cardSizers == null || _cardSizers.Length != contentCardSizers.Length)
+            {
+                _cardSizers = contentCardSizers;
+            }
+        }
+
         if (_swipeSnapController == null && _scrollViewRect != null)
         {
             _swipeSnapController = _scrollViewRect.GetComponent<SwipeSnapController>();
         }
+    }
 
-        if ((_cardSizers == null || _cardSizers.Length == 0) && _contentLayoutGroup != null)
+    private CardLayoutState GetDefaultCardState(int index, PreferredSizeByParentWidth cardSizer)
+    {
+        if (_defaultCardStates != null
+            && index >= 0
+            && index < _defaultCardStates.Length
+            && _defaultCardStates[index].MaxWidth > 0f)
         {
-            _cardSizers = _contentLayoutGroup.GetComponentsInChildren<PreferredSizeByParentWidth>(true);
+            return _defaultCardStates[index];
         }
+
+        if (_hasFallbackCardState)
+        {
+            return _fallbackCardState;
+        }
+
+        return new CardLayoutState
+        {
+            WidthRatio = cardSizer.widthRatio,
+            HeightRatio = cardSizer.heightRatio,
+            MinWidth = cardSizer.minWidth,
+            MaxWidth = cardSizer.maxWidth,
+        };
     }
 
     private static RectTransformState CaptureRectTransformState(RectTransform rectTransform)

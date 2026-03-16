@@ -35,7 +35,7 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
 
     private void Update()
     {
-        if (_isDragging || _pageCount <= 1 || _scrollRect == null)
+        if (_isDragging || GetPageCount() <= 1 || _scrollRect == null)
         {
             return;
         }
@@ -61,11 +61,17 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
     {
         _isDragging = false;
 
+        int pageCount = GetPageCount();
+        if (pageCount <= 0)
+        {
+            return;
+        }
+
         float delta = _scrollRect.horizontalNormalizedPosition - _dragStartNormalizedX;
-        float threshold = SwipeThresholdRatio / Mathf.Max(1, _pageCount - 1);
+        float threshold = SwipeThresholdRatio / Mathf.Max(1, pageCount - 1);
         int newIndex = _currentIndex;
 
-        if (delta > threshold && _currentIndex < _pageCount - 1)
+        if (delta > threshold && _currentIndex < pageCount - 1)
         {
             newIndex = _currentIndex + 1;
         }
@@ -82,7 +88,11 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         ResolveReferences();
         RebuildLayout();
         SetIndex(index);
-        _scrollRect.horizontalNormalizedPosition = GetNormalizedX(_currentIndex);
+
+        if (_scrollRect != null)
+        {
+            _scrollRect.horizontalNormalizedPosition = GetNormalizedX(_currentIndex);
+        }
     }
 
     public int GetCurrentIndex()
@@ -90,9 +100,27 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         return _currentIndex;
     }
 
+    public RectTransform GetContent()
+    {
+        ResolveReferences();
+        return _content;
+    }
+
+    public void Refresh()
+    {
+        ResolveReferences();
+        RebuildLayout();
+        SetIndex(_currentIndex);
+
+        if (_scrollRect != null)
+        {
+            _scrollRect.horizontalNormalizedPosition = GetNormalizedX(_currentIndex);
+        }
+    }
+
     private void SetIndex(int index)
     {
-        int clamped = Mathf.Clamp(index, 0, Mathf.Max(0, _pageCount - 1));
+        int clamped = Mathf.Clamp(index, 0, Mathf.Max(0, GetPageCount() - 1));
         bool changed = clamped != _currentIndex;
         _currentIndex = clamped;
 
@@ -105,20 +133,15 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
     private float GetNormalizedX(int index)
     {
         ResolveReferences();
+        int pageCount = GetPageCount();
 
-        if (_pageCount <= 1 || _content == null || _viewportRect == null)
+        if (pageCount <= 1 || _content == null || _viewportRect == null)
         {
             return 0f;
         }
 
-        int childCount = Mathf.Min(_pageCount, _content.childCount);
-        if (childCount <= 1)
-        {
-            return 0f;
-        }
-
-        int clampedIndex = Mathf.Clamp(index, 0, childCount - 1);
-        RectTransform child = _content.GetChild(clampedIndex) as RectTransform;
+        int clampedIndex = Mathf.Clamp(index, 0, pageCount - 1);
+        RectTransform child = GetPageRect(clampedIndex);
         if (child == null)
         {
             return 0f;
@@ -167,5 +190,53 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_content);
+    }
+
+    private int GetPageCount()
+    {
+        ResolveReferences();
+
+        if (_content == null)
+        {
+            return Mathf.Max(1, _pageCount);
+        }
+
+        int count = 0;
+        for (int i = 0; i < _content.childCount; i += 1)
+        {
+            if (_content.GetChild(i).gameObject.activeSelf)
+            {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
+
+    private RectTransform GetPageRect(int pageIndex)
+    {
+        if (_content == null || pageIndex < 0)
+        {
+            return null;
+        }
+
+        int activeIndex = 0;
+        for (int i = 0; i < _content.childCount; i += 1)
+        {
+            RectTransform child = _content.GetChild(i) as RectTransform;
+            if (child == null || !child.gameObject.activeSelf)
+            {
+                continue;
+            }
+
+            if (activeIndex == pageIndex)
+            {
+                return child;
+            }
+
+            activeIndex += 1;
+        }
+
+        return null;
     }
 }
