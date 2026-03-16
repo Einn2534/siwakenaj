@@ -69,18 +69,18 @@ public class ResultController : MonoBehaviour
         SetText(_countBText, string.Format(ScoreFormat, result.CompactCarCount));
         SetText(_countCText, string.Format(ScoreFormat, result.SportsCarCount));
         SetText(_missCountText, string.Format(ScoreFormat, result.MissCount));
+        int bestScore = UpdateBestScore(result.StageNumber, result.Score);
 
         if (result.IsClear)
         {
             SetText(_resultText, GameClearLabel);
-            UpdateBestScore(result.StageNumber, result.Score);
         }
         else
         {
             SetText(_resultText, GameOverLabel);
         }
 
-        SetText(_bestScoreText, string.Format(ScoreFormat, SaveService.GetBestScore(result.StageNumber)));
+        SetText(_bestScoreText, string.Format(ScoreFormat, bestScore));
         SetPanelActive(_clearPanel, result.IsClear);
         SetPanelActive(_gameOverPanel, !result.IsClear);
 
@@ -97,14 +97,17 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private static void UpdateBestScore(int stageNumber, int score)
+    private static int UpdateBestScore(int stageNumber, int score)
     {
         int currentBest = SaveService.GetBestScore(stageNumber);
         if (score > currentBest)
         {
             SaveService.SetBestScore(stageNumber, score);
             SaveService.Save();
+            return score;
         }
+
+        return currentBest;
     }
 
     private static void SetText(TMP_Text textElement, string value)
