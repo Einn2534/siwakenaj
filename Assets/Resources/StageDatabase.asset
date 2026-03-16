@@ -14,47 +14,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stages:
   - StageNumber: 1
-    TargetScore: 51
-    MissLimit: 3
-    CarSpeed: 0.7
-    SpawnInterval: 1
-    WeightLightTruck: 1
-    WeightCompactCar: 1
+    TargetScore: 60
+    MissLimit: 4
+    CarSpeed: 0.62
+    SpawnInterval: 1.15
+    WeightLightTruck: 3
+    WeightCompactCar: 2
     WeightSportsCar: 1
     IsImplemented: 1
   - StageNumber: 2
-    TargetScore: 300
-    MissLimit: 3
-    CarSpeed: 0.7
-    SpawnInterval: 1
-    WeightLightTruck: 1
-    WeightCompactCar: 1
+    TargetScore: 140
+    MissLimit: 4
+    CarSpeed: 0.74
+    SpawnInterval: 0.95
+    WeightLightTruck: 2
+    WeightCompactCar: 3
     WeightSportsCar: 1
     IsImplemented: 1
   - StageNumber: 3
-    TargetScore: 0
+    TargetScore: 220
     MissLimit: 3
-    CarSpeed: 0.7
-    SpawnInterval: 1
-    WeightLightTruck: 1
-    WeightCompactCar: 1
-    WeightSportsCar: 1
-    IsImplemented: 0
+    CarSpeed: 0.86
+    SpawnInterval: 0.82
+    WeightLightTruck: 2
+    WeightCompactCar: 2
+    WeightSportsCar: 2
+    IsImplemented: 1
   - StageNumber: 4
-    TargetScore: 0
+    TargetScore: 310
     MissLimit: 3
-    CarSpeed: 0.7
-    SpawnInterval: 1
+    CarSpeed: 0.98
+    SpawnInterval: 0.68
     WeightLightTruck: 1
-    WeightCompactCar: 1
-    WeightSportsCar: 1
-    IsImplemented: 0
+    WeightCompactCar: 2
+    WeightSportsCar: 3
+    IsImplemented: 1
   - StageNumber: 5
-    TargetScore: 0
+    TargetScore: 420
     MissLimit: 3
-    CarSpeed: 0.7
-    SpawnInterval: 1
+    CarSpeed: 1.12
+    SpawnInterval: 0.56
     WeightLightTruck: 1
     WeightCompactCar: 1
-    WeightSportsCar: 1
-    IsImplemented: 0
+    WeightSportsCar: 4
+    IsImplemented: 1
