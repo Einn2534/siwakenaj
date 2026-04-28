@@ -12,6 +12,9 @@ public class TitleController : MonoBehaviour
     [SerializeField, FormerlySerializedAs("settingsPanel")]
     private GameObject _settingsPanel;
 
+    [SerializeField]
+    private HowToOverlayController _howToOverlayController;
+
     public void OnStartPressed()
     {
         SceneManager.LoadScene(StageSelectScene);
@@ -19,11 +22,23 @@ public class TitleController : MonoBehaviour
 
     public void OnHowToOpen()
     {
+        if (_howToOverlayController != null)
+        {
+            _howToOverlayController.ShowOverlay();
+            return;
+        }
+
         SetPanelActive(_howToPanel, true);
     }
 
     public void OnHowToClose()
     {
+        if (_howToOverlayController != null)
+        {
+            _howToOverlayController.CloseOverlay();
+            return;
+        }
+
         SetPanelActive(_howToPanel, false);
     }
 

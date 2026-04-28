@@ -10,11 +10,19 @@ public class HowToOverlayController : MonoBehaviour
     [SerializeField, FormerlySerializedAs("closeButton")]
     private Button _closeButton;
 
+    [SerializeField]
+    private Button[] _extraCloseButtons;
+
     private void Start()
     {
-        if (_closeButton != null)
+        AddCloseListener(_closeButton);
+
+        if (_extraCloseButtons != null)
         {
-            _closeButton.onClick.AddListener(CloseOverlay);
+            foreach (Button closeButton in _extraCloseButtons)
+            {
+                AddCloseListener(closeButton);
+            }
         }
 
         if (!SaveService.GetHowToShown())
@@ -24,6 +32,21 @@ public class HowToOverlayController : MonoBehaviour
         else
         {
             SetOverlayActive(false);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        RemoveCloseListener(_closeButton);
+
+        if (_extraCloseButtons == null)
+        {
+            return;
+        }
+
+        foreach (Button closeButton in _extraCloseButtons)
+        {
+            RemoveCloseListener(closeButton);
         }
     }
 
@@ -44,6 +67,22 @@ public class HowToOverlayController : MonoBehaviour
         if (_overlayPanel != null)
         {
             _overlayPanel.SetActive(isActive);
+        }
+    }
+
+    private void AddCloseListener(Button closeButton)
+    {
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(CloseOverlay);
+        }
+    }
+
+    private void RemoveCloseListener(Button closeButton)
+    {
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(CloseOverlay);
         }
     }
 }
