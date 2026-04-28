@@ -9,9 +9,6 @@ public class StageSelectController : MonoBehaviour
 {
     private const string MainSceneName = "Main";
     private const string TitleSceneName = "Title";
-    private const string StatusUnlocked = "Unlocked";
-    private const string StatusLocked = "Locked";
-    private const string StatusComingSoon = "ComingSoon";
     private const string StageDatabaseResourcePath = "StageDatabase";
 
     [SerializeField, FormerlySerializedAs("swipeSnapController")]
@@ -32,6 +29,14 @@ public class StageSelectController : MonoBehaviour
     private StageDatabase _stageDatabase;
     private StageCardView _stageCardTemplate;
     private int _selectedStageNumber = 1;
+
+    private void OnEnable()
+    {
+        if (_stageDatabase != null)
+        {
+            UpdateCards();
+        }
+    }
 
     private IEnumerator Start()
     {
@@ -73,6 +78,7 @@ public class StageSelectController : MonoBehaviour
         }
 
         SessionState.SelectStage(_selectedStageNumber);
+        SaveService.SetSelectedStage(_selectedStageNumber);
         SaveService.SetLastStage(_selectedStageNumber);
         SaveService.Save();
         SceneManager.LoadScene(MainSceneName);
@@ -120,12 +126,17 @@ public class StageSelectController : MonoBehaviour
         {
             StageDefinition stageDefinition = _stageDatabase.Stages[i];
             int bestScore = SaveService.GetBestScore(stageDefinition.StageNumber);
+            int starRating = SaveService.GetStarRating(stageDefinition.StageNumber);
             bool isUnlocked = _stageDatabase.IsStageUnlocked(i, SaveService.GetBestScore);
+            StageCardStatus cardStatus = GetCardStatus(stageDefinition, isUnlocked);
             _stageCardViews[i].SetData(
                 stageDefinition.StageNumber,
                 stageDefinition.TargetScore,
                 bestScore,
-                GetStatusLabel(stageDefinition, isUnlocked));
+                cardStatus,
+                starRating,
+                cardStatus == StageCardStatus.Locked ? GetRequiredStageNumber(i) : 0);
+            _stageCardViews[i].SetSelected(stageDefinition.StageNumber == _selectedStageNumber);
         }
     }
 
@@ -276,13 +287,18 @@ public class StageSelectController : MonoBehaviour
             && _stageDatabase.IsStageUnlocked(index, SaveService.GetBestScore);
     }
 
-    private static string GetStatusLabel(StageDefinition stageDefinition, bool isUnlocked)
+    private static StageCardStatus GetCardStatus(StageDefinition stageDefinition, bool isUnlocked)
     {
         if (stageDefinition == null || !stageDefinition.IsImplemented)
         {
-            return StatusComingSoon;
+            return StageCardStatus.ComingSoon;
         }
 
-        return isUnlocked ? StatusUnlocked : StatusLocked;
+        return isUnlocked ? StageCardStatus.Unlocked : StageCardStatus.Locked;
+    }
+
+    private int GetRequiredStageNumber(int stageIndex)
+    {
+        return _stageDatabase != null ? _stageDatabase.GetRequiredClearStageNumber(stageIndex) : 0;
     }
 }

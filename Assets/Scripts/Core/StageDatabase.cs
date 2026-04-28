@@ -43,6 +43,40 @@ public class StageDatabase : ScriptableObject
         return 0;
     }
 
+    public bool TryGetStageIndex(int stageNumber, out int stageIndex)
+    {
+        int safeStageNumber = Mathf.Max(1, stageNumber);
+        for (int i = 0; i < Stages.Count; i += 1)
+        {
+            if (Stages[i] != null && Stages[i].StageNumber == safeStageNumber)
+            {
+                stageIndex = i;
+                return true;
+            }
+        }
+
+        stageIndex = -1;
+        return false;
+    }
+
+    public StageDefinition GetNextStageDefinition(int stageNumber)
+    {
+        if (!TryGetStageIndex(stageNumber, out int stageIndex))
+        {
+            return null;
+        }
+
+        for (int i = stageIndex + 1; i < Stages.Count; i += 1)
+        {
+            if (Stages[i] != null)
+            {
+                return Stages[i];
+            }
+        }
+
+        return null;
+    }
+
     public bool IsStageUnlocked(int stageIndex, Func<int, int> getBestScore)
     {
         if (stageIndex < 0 || stageIndex >= Stages.Count)
@@ -61,18 +95,42 @@ public class StageDatabase : ScriptableObject
             return true;
         }
 
-        int previousIndex = Mathf.Clamp(stageIndex - 1, 0, Stages.Count - 1);
-        StageDefinition previousStage = Stages[previousIndex];
-        if (previousStage == null || !previousStage.IsImplemented)
+        StageDefinition requiredStage = GetRequiredClearStage(stageIndex);
+        if (requiredStage == null)
         {
             return false;
         }
 
-        return getBestScore(previousStage.StageNumber) >= previousStage.TargetScore;
+        return getBestScore != null && getBestScore(requiredStage.StageNumber) >= requiredStage.TargetScore;
+    }
+
+    public int GetRequiredClearStageNumber(int stageIndex)
+    {
+        StageDefinition requiredStage = GetRequiredClearStage(stageIndex);
+        return requiredStage != null ? Mathf.Max(1, requiredStage.StageNumber) : 0;
     }
 
     public void SetStages(StageDefinition[] stages)
     {
         _stages = stages ?? Array.Empty<StageDefinition>();
+    }
+
+    private StageDefinition GetRequiredClearStage(int stageIndex)
+    {
+        if (stageIndex <= 0 || stageIndex >= Stages.Count)
+        {
+            return null;
+        }
+
+        for (int i = stageIndex - 1; i >= 0; i -= 1)
+        {
+            StageDefinition previousStage = Stages[i];
+            if (previousStage != null && previousStage.IsImplemented)
+            {
+                return previousStage;
+            }
+        }
+
+        return null;
     }
 }
