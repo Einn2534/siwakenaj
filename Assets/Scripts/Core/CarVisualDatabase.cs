@@ -4,6 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CarVisualDatabase", menuName = "Game/Car Visual Database")]
 public class CarVisualDatabase : ScriptableObject
 {
+    private const string ResourcePath = "CarVisualDatabase";
+    private static CarVisualDatabase _defaultDatabase;
+
     [Serializable]
     public struct VisualEntry
     {
@@ -23,6 +26,16 @@ public class CarVisualDatabase : ScriptableObject
 
     [SerializeField]
     private VisualEntry[] _entries;
+
+    public static CarVisualDatabase LoadDefault()
+    {
+        if (_defaultDatabase == null)
+        {
+            _defaultDatabase = Resources.Load<CarVisualDatabase>(ResourcePath);
+        }
+
+        return _defaultDatabase;
+    }
 
     public bool TryGetEntry(CarType carType, out VisualEntry entry)
     {

@@ -13,7 +13,7 @@ public class CarSpawner : MonoBehaviour
     private const float DefaultCarWidth = 1f;
 
     [SerializeField]
-    private GameObject _carPrefab;
+    private CarVisualDatabase _visualDatabase;
 
     [SerializeField, FormerlySerializedAs("playZone")]
     private RectTransform _playZone;
@@ -31,6 +31,7 @@ public class CarSpawner : MonoBehaviour
     public void Initialize(StageDefinition stageDefinition)
     {
         _stageDefinition = stageDefinition;
+        _visualDatabase ??= CarVisualDatabase.LoadDefault();
         _isSpawning = false;
         _spawnCoroutine = null;
         CleanupNullCars();
@@ -117,7 +118,7 @@ public class CarSpawner : MonoBehaviour
 
     private void SpawnIfPossible()
     {
-        if (_stageDefinition == null || _carPrefab == null)
+        if (_stageDefinition == null)
         {
             return;
         }
@@ -143,7 +144,7 @@ public class CarSpawner : MonoBehaviour
             playZoneWorldRect.xMax,
             playZoneWorldRect.center.y,
             _spawnPoint ? _spawnPoint.position.z : transform.position.z);
-        GameObject carObject = Instantiate(_carPrefab, position, Quaternion.identity);
+        GameObject carObject = CreateCarObject(position);
         CarController car = carObject.GetComponent<CarController>();
         if (car == null)
         {
@@ -171,6 +172,16 @@ public class CarSpawner : MonoBehaviour
             spawnY,
             _spawnPoint ? _spawnPoint.position.z : transform.position.z);
         RegisterCar(car);
+    }
+
+    private GameObject CreateCarObject(Vector3 position)
+    {
+        GameObject carObject = new("Car");
+        carObject.transform.SetPositionAndRotation(position, Quaternion.identity);
+        carObject.AddComponent<SpriteRenderer>();
+        carObject.AddComponent<CarVisualController>();
+        carObject.AddComponent<CarController>();
+        return carObject;
     }
 
     private void RegisterCar(CarController car)

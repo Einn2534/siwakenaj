@@ -65,6 +65,7 @@ public class ScoreLaneUI : MonoBehaviour
 
     private void Awake()
     {
+        _visualDatabase ??= CarVisualDatabase.LoadDefault();
         CachePrefabMetrics();
     }
 
@@ -277,6 +278,7 @@ public class ScoreLaneUI : MonoBehaviour
 
     private Sprite GetSpriteForLane(CarType laneType)
     {
+        _visualDatabase ??= CarVisualDatabase.LoadDefault();
         return _visualDatabase != null ? _visualDatabase.GetIconSprite(laneType) : null;
     }
 

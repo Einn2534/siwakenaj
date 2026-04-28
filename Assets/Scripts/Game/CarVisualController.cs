@@ -38,6 +38,11 @@ public class CarVisualController : MonoBehaviour
 
     private void CacheReferences()
     {
+        if (_visualDatabase == null)
+        {
+            _visualDatabase = CarVisualDatabase.LoadDefault();
+        }
+
         if (_spriteRenderer == null)
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();

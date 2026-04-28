@@ -52,6 +52,11 @@ public class LaneButtonVisualController : MonoBehaviour
 
     private void CacheReferences()
     {
+        if (_visualDatabase == null)
+        {
+            _visualDatabase = CarVisualDatabase.LoadDefault();
+        }
+
         if (_laneInputController == null)
         {
             _laneInputController = GetComponent<LaneInputController>();
