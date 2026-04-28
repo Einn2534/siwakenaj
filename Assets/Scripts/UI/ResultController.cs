@@ -16,7 +16,6 @@ public class ResultController : MonoBehaviour
     private const string GameOverLabel = "GAME OVER";
     private const float ScoreCountDuration = 0.65f;
     private const float StarRevealInterval = 0.18f;
-    private const int FallbackFinalStageNumber = 5;
     private const int MaxStarCount = 3;
 
     private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
@@ -54,6 +53,19 @@ public class ResultController : MonoBehaviour
         public bool IsNewBest { get; }
     }
 
+    private readonly struct NextStageNavigation
+    {
+        public NextStageNavigation(StageDefinition stageDefinition, bool loadsMainScene)
+        {
+            StageDefinition = stageDefinition;
+            LoadsMainScene = loadsMainScene;
+        }
+
+        public StageDefinition StageDefinition { get; }
+        public bool LoadsMainScene { get; }
+        public bool HasDestination => StageDefinition != null;
+    }
+
     [SerializeField, FormerlySerializedAs("scoreText")]
     private TMP_Text _scoreText;
 
@@ -83,6 +95,9 @@ public class ResultController : MonoBehaviour
 
     [SerializeField, FormerlySerializedAs("missCountText")]
     private TMP_Text _missCountText;
+
+    [SerializeField]
+    private CarVisualDatabase _visualDatabase;
 
     [SerializeField, FormerlySerializedAs("clearPanel")]
     private GameObject _clearPanel;
@@ -151,6 +166,15 @@ public class ResultController : MonoBehaviour
     private Image _missRowBackground;
 
     [SerializeField]
+    private Image _lightTruckIcon;
+
+    [SerializeField]
+    private Image _compactCarIcon;
+
+    [SerializeField]
+    private Image _sportsCarIcon;
+
+    [SerializeField]
     private GameObject _starRowRoot;
 
     [SerializeField]
@@ -177,11 +201,14 @@ public class ResultController : MonoBehaviour
     private StageDatabase _stageDatabase;
     private Coroutine _scoreCountCoroutine;
     private Coroutine _starRevealCoroutine;
+    private int _resultStageNumber = 1;
 
     private void Awake()
     {
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
+        _visualDatabase ??= CarVisualDatabase.LoadDefault();
         BindDynamicReferences();
+        ApplyCarIcons();
     }
 
     private void Start()
@@ -199,20 +226,32 @@ public class ResultController : MonoBehaviour
 
     public void OnRetryPressed()
     {
+        SelectPlayableStage(_resultStageNumber);
         SceneManager.LoadScene(MainSceneName);
     }
 
     public void OnStageSelectPressed()
     {
-        SceneManager.LoadScene(StageSelectSceneName);
+        LoadStageSelectFocused(_resultStageNumber);
     }
 
     public void OnNextStagePressed()
     {
-        int nextStageNumber = Mathf.Min(GetFinalStageNumber(), SessionState.SelectedStageNumber + 1);
-        SessionState.SelectStage(nextStageNumber);
-        SaveService.SetLastStage(nextStageNumber);
-        SaveService.Save();
+        NextStageNavigation navigation = GetNextStageNavigation(_resultStageNumber);
+        if (!navigation.HasDestination)
+        {
+            OnStageSelectPressed();
+            return;
+        }
+
+        int nextStageNumber = Mathf.Max(1, navigation.StageDefinition.StageNumber);
+        if (!navigation.LoadsMainScene)
+        {
+            LoadStageSelectFocused(nextStageNumber);
+            return;
+        }
+
+        SelectPlayableStage(nextStageNumber);
         SceneManager.LoadScene(MainSceneName);
     }
 
@@ -226,6 +265,9 @@ public class ResultController : MonoBehaviour
         _countAText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_LightTruck/Value");
         _countBText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_CompactCar/Value");
         _countCText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_SportsCar/Value");
+        _lightTruckIcon ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_LightTruck/Icon");
+        _compactCarIcon ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_CompactCar/Icon");
+        _sportsCarIcon ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_SportsCar/Icon");
         _missLabelText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_Misses/Label");
         _missCountText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_Misses/Value");
         _newBestBadge ??= FindChild("SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/NewBestBadge")?.gameObject;
@@ -244,13 +286,13 @@ public class ResultController : MonoBehaviour
         _scoreAccentImage ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/ScoreCard/Card/AccentBar");
         _detailAccentImage ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/AccentBar");
         _missRowBackground ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_Misses");
-        _starRowRoot ??= FindChild("SafeAreaRoot/ContentRoot/HeroCard/Card/Body/StarRow")?.gameObject;
+        _starRowRoot ??= FindChild("SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/StarRow")?.gameObject;
         _clearPanel ??= FindChild("Background/FX_Back/ClearPanel")?.gameObject;
         _gameOverPanel ??= FindChild("Background/FX_Back/GameOverPanel")?.gameObject;
 
         if (_starImages == null || _starImages.Length == 0 || _starLabels == null || _starLabels.Length == 0)
         {
-            Transform starRow = FindChild("SafeAreaRoot/ContentRoot/HeroCard/Card/Body/StarRow");
+            Transform starRow = FindChild("SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/StarRow");
             if (starRow != null)
             {
                 _starImages = new Image[Mathf.Min(starRow.childCount, MaxStarCount)];
@@ -278,21 +320,50 @@ public class ResultController : MonoBehaviour
         return transform.Find(path);
     }
 
+    private void ApplyCarIcons()
+    {
+        ApplyCarIcon(_lightTruckIcon, CarType.LightTruck);
+        ApplyCarIcon(_compactCarIcon, CarType.CompactCar);
+        ApplyCarIcon(_sportsCarIcon, CarType.SportsCar);
+    }
+
+    private void ApplyCarIcon(Image targetImage, CarType carType)
+    {
+        if (targetImage == null)
+        {
+            return;
+        }
+
+        _visualDatabase ??= CarVisualDatabase.LoadDefault();
+        Sprite sprite = _visualDatabase != null ? _visualDatabase.GetIconSprite(carType) : null;
+        if (sprite == null)
+        {
+            targetImage.enabled = false;
+            return;
+        }
+
+        targetImage.sprite = sprite;
+        targetImage.enabled = true;
+        targetImage.preserveAspect = true;
+    }
+
     private void ApplyResult()
     {
         GameResultData result = SessionState.LastResult ?? GameResultData.Empty(SessionState.SelectedStageNumber);
         int stageNumber = Mathf.Max(1, result.StageNumber);
+        _resultStageNumber = stageNumber;
         int starRating = CalculateStarRating(result);
         BestUpdateInfo bestUpdate = UpdateBestResults(stageNumber, result.Score, starRating);
         StageDefinition stageDefinition = _stageDatabase != null ? _stageDatabase.GetStageDefinition(stageNumber) : null;
 
+        ApplyCarIcons();
         SetText(_stageText, string.Format(StageFormat, stageNumber));
         SetText(_scoreText, string.Format(ScoreFormat, 0));
         SetText(_bestScoreText, string.Format(ScoreFormat, bestUpdate.BestScore));
         SetText(_countAText, string.Format(ScoreFormat, result.LightTruckCount));
         SetText(_countBText, string.Format(ScoreFormat, result.CompactCarCount));
         SetText(_countCText, string.Format(ScoreFormat, result.SportsCarCount));
-        SetText(_missLabelText, "Misses");
+        SetText(_missLabelText, "Mistakes");
         SetText(_missCountText, FormatMissCount(result, stageDefinition));
         SetText(_resultText, result.IsClear ? GameClearLabel + "!" : GameOverLabel);
         SetText(_subMessageText, GetSubMessage(result, stageDefinition));
@@ -333,7 +404,7 @@ public class ResultController : MonoBehaviour
         SetImageColor(_scoreAccentImage, stateColor);
         SetImageColor(_detailAccentImage, stateColor);
         SetImageColor(_missRowBackground, isClear ? ClearMissRowColor : GameOverMissRowColor);
-        SetPanelActive(_starRowRoot, isClear);
+        SetPanelActive(_starRowRoot, true);
 
         if (_stageBadgeBackground != null)
         {
@@ -365,10 +436,10 @@ public class ResultController : MonoBehaviour
 
     private void ConfigureButtons(bool isClear, int stageNumber)
     {
-        int finalStageNumber = GetFinalStageNumber();
-        bool canAdvance = stageNumber < finalStageNumber;
+        NextStageNavigation nextStageNavigation = GetNextStageNavigation(stageNumber);
+        bool hasNextStage = nextStageNavigation.HasDestination;
 
-        if (isClear && canAdvance)
+        if (isClear && hasNextStage)
         {
             ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Next Stage", ResultButtonAction.NextStage, true, true, new Color(0.43f, 0.24f, 0f, 1f));
             ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Retry", ResultButtonAction.Retry, true, false, NeutralTextColor);
@@ -380,13 +451,13 @@ public class ResultController : MonoBehaviour
         {
             ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, true, new Color(0.43f, 0.24f, 0f, 1f));
             ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Retry", ResultButtonAction.Retry, true, false, NeutralTextColor);
-            ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Next Stage", ResultButtonAction.NextStage, false, false, DisabledTextColor);
+            HideButton(_secondaryRightButton);
             return;
         }
 
         ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Retry", ResultButtonAction.Retry, true, true, new Color(0.43f, 0.24f, 0f, 1f));
         ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, false, NeutralTextColor);
-        ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Next Stage", ResultButtonAction.NextStage, false, false, DisabledTextColor);
+        HideButton(_secondaryRightButton);
     }
 
     private void ConfigureButton(Button button, TMP_Text label, Image icon, string text, ResultButtonAction action, bool interactable, bool usePrimaryStyle, Color textColor)
@@ -396,6 +467,7 @@ public class ResultController : MonoBehaviour
             return;
         }
 
+        button.gameObject.SetActive(true);
         Image buttonImage = button.targetGraphic as Image ?? button.GetComponent<Image>();
         Color resolvedBackground = usePrimaryStyle ? AccentColor : NeutralButtonColor;
         Color resolvedText = interactable ? textColor : DisabledTextColor;
@@ -420,7 +492,6 @@ public class ResultController : MonoBehaviour
         }
 
         button.interactable = interactable;
-        button.gameObject.SetActive(true);
         ClearButtonListeners(button);
         if (interactable)
         {
@@ -437,6 +508,18 @@ public class ResultController : MonoBehaviour
         button.colors = colors;
     }
 
+    private static void HideButton(Button button)
+    {
+        if (button == null)
+        {
+            return;
+        }
+
+        ClearButtonListeners(button);
+        button.interactable = false;
+        button.gameObject.SetActive(false);
+    }
+
     private Sprite ResolveButtonSprite(bool usePrimaryStyle)
     {
         return usePrimaryStyle ? _nextStageButtonSprite : _retryButtonSprite;
@@ -447,6 +530,7 @@ public class ResultController : MonoBehaviour
         return action switch
         {
             ResultButtonAction.Retry => _retryIconSprite,
+            ResultButtonAction.StageSelect => _stageSelectIconSprite,
             _ => null
         };
     }
@@ -637,22 +721,36 @@ public class ResultController : MonoBehaviour
         return new BestUpdateInfo(currentBestScore, isScoreUpdated || isStarUpdated);
     }
 
-    private int GetFinalStageNumber()
+    private NextStageNavigation GetNextStageNavigation(int stageNumber)
     {
-        int finalStageNumber = 0;
-        if (_stageDatabase != null)
+        if (_stageDatabase == null)
         {
-            for (int i = 0; i < _stageDatabase.Stages.Count; i += 1)
-            {
-                StageDefinition stage = _stageDatabase.Stages[i];
-                if (stage != null && stage.IsImplemented)
-                {
-                    finalStageNumber = Mathf.Max(finalStageNumber, stage.StageNumber);
-                }
-            }
+            return default;
         }
 
-        return finalStageNumber > 0 ? finalStageNumber : FallbackFinalStageNumber;
+        StageDefinition nextStage = _stageDatabase.GetNextStageDefinition(stageNumber);
+        if (nextStage == null)
+        {
+            return default;
+        }
+
+        return new NextStageNavigation(nextStage, nextStage.IsImplemented);
+    }
+
+    private static void SelectPlayableStage(int stageNumber)
+    {
+        int safeStageNumber = Mathf.Max(1, stageNumber);
+        SessionState.SelectStage(safeStageNumber);
+        SaveService.SetSelectedStage(safeStageNumber);
+        SaveService.SetLastStage(safeStageNumber);
+        SaveService.Save();
+    }
+
+    private static void LoadStageSelectFocused(int stageNumber)
+    {
+        SaveService.SetLastStage(Mathf.Max(1, stageNumber));
+        SaveService.Save();
+        SceneManager.LoadScene(StageSelectSceneName);
     }
 
     private static int CalculateStarRating(GameResultData result)
