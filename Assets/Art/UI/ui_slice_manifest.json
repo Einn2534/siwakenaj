@@ -1,0 +1,5330 @@
+{
+  "version": 1,
+  "sourceGlobs": [
+    "C:/Users/einn/Downloads/ChatGPT Image 2026年4月2*.png"
+  ],
+  "outputRoot": "Assets/Art/UI",
+  "spritesRoot": "Assets/Art/UI/Sprites",
+  "sourceSheetsRoot": "Assets/Art/UI/_SourceSheets",
+  "sheets": [
+    {
+      "sheetIndex": 1,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 03_55_09 (1).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 03_55_09 (1).png",
+      "sourceSha1": "86a1cd598d9a0e33a4b066914a67e246f5bf238f",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet01_20260427_035509_1.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet01_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet01_item01.png",
+          "cropRect": {
+            "x": -12,
+            "y": -12,
+            "width": 1700,
+            "height": 969,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          },
+          "componentRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 2,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 03_55_09 (2).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 03_55_09 (2).png",
+      "sourceSha1": "b190a97d1c85b3ef66b4d7cd5bb096c2be703a25",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet02_20260427_035509_2.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet02_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet02_item01.png",
+          "cropRect": {
+            "x": -12,
+            "y": -12,
+            "width": 1700,
+            "height": 969,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          },
+          "componentRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 3,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 03_55_09 (3).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 03_55_09 (3).png",
+      "sourceSha1": "2caf52ea751a6b97b1ee6dba1b5c840c02e0d0b7",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet03_20260427_035509_3.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet03_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet03_item01.png",
+          "cropRect": {
+            "x": -12,
+            "y": -12,
+            "width": 1700,
+            "height": 969,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          },
+          "componentRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 4,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 03_55_09 (4).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 03_55_09 (4).png",
+      "sourceSha1": "b99ccc117db29d0843fdeb3f9a53cc6fe9fe5d40",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet04_20260427_035509_4.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet04_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet04_item01.png",
+          "cropRect": {
+            "x": -12,
+            "y": -12,
+            "width": 1700,
+            "height": 969,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          },
+          "componentRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Misc",
+          "name": "ui_misc_sheet04_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet04_item02.png",
+          "cropRect": {
+            "x": 1274,
+            "y": 303,
+            "width": 348,
+            "height": 83,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1274,
+            "y": 303,
+            "width": 344,
+            "height": 79
+          },
+          "componentRect": {
+            "x": 1286,
+            "y": 315,
+            "width": 320,
+            "height": 55
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Misc",
+          "name": "ui_misc_sheet04_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet04_item03.png",
+          "cropRect": {
+            "x": 1274,
+            "y": 370,
+            "width": 348,
+            "height": 83,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1274,
+            "y": 370,
+            "width": 344,
+            "height": 79
+          },
+          "componentRect": {
+            "x": 1286,
+            "y": 382,
+            "width": 320,
+            "height": 55
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Misc",
+          "name": "ui_misc_sheet04_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet04_item04.png",
+          "cropRect": {
+            "x": 1274,
+            "y": 437,
+            "width": 335,
+            "height": 148,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1274,
+            "y": 437,
+            "width": 331,
+            "height": 144
+          },
+          "componentRect": {
+            "x": 1286,
+            "y": 449,
+            "width": 307,
+            "height": 120
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Misc",
+          "name": "ui_misc_sheet04_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet04_item05.png",
+          "cropRect": {
+            "x": 1274,
+            "y": 568,
+            "width": 348,
+            "height": 83,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1274,
+            "y": 568,
+            "width": 344,
+            "height": 79
+          },
+          "componentRect": {
+            "x": 1286,
+            "y": 580,
+            "width": 320,
+            "height": 55
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 5,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 17_26_33.png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 17_26_33.png",
+      "sourceSha1": "6440ccf16384301d691d15338f25d7eab4192bfd",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet05_20260427_172633_0.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item01.png",
+          "cropRect": {
+            "x": 35,
+            "y": 34,
+            "width": 462,
+            "height": 353,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 35,
+            "y": 34,
+            "width": 458,
+            "height": 349
+          },
+          "componentRect": {
+            "x": 47,
+            "y": 46,
+            "width": 434,
+            "height": 325
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item02.png",
+          "cropRect": {
+            "x": 495,
+            "y": 34,
+            "width": 460,
+            "height": 353,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 495,
+            "y": 34,
+            "width": 456,
+            "height": 349
+          },
+          "componentRect": {
+            "x": 507,
+            "y": 46,
+            "width": 432,
+            "height": 325
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item03.png",
+          "cropRect": {
+            "x": 952,
+            "y": 34,
+            "width": 464,
+            "height": 353,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 952,
+            "y": 34,
+            "width": 460,
+            "height": 349
+          },
+          "componentRect": {
+            "x": 964,
+            "y": 46,
+            "width": 436,
+            "height": 325
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item04.png",
+          "cropRect": {
+            "x": 34,
+            "y": 369,
+            "width": 464,
+            "height": 367,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 34,
+            "y": 369,
+            "width": 460,
+            "height": 363
+          },
+          "componentRect": {
+            "x": 46,
+            "y": 381,
+            "width": 436,
+            "height": 339
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item05.png",
+          "cropRect": {
+            "x": 493,
+            "y": 369,
+            "width": 463,
+            "height": 363,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 493,
+            "y": 369,
+            "width": 459,
+            "height": 359
+          },
+          "componentRect": {
+            "x": 505,
+            "y": 381,
+            "width": 435,
+            "height": 335
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item06.png",
+          "cropRect": {
+            "x": 951,
+            "y": 369,
+            "width": 465,
+            "height": 364,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 951,
+            "y": 369,
+            "width": 461,
+            "height": 360
+          },
+          "componentRect": {
+            "x": 963,
+            "y": 381,
+            "width": 437,
+            "height": 336
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item07.png",
+          "cropRect": {
+            "x": 36,
+            "y": 710,
+            "width": 460,
+            "height": 350,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 36,
+            "y": 710,
+            "width": 456,
+            "height": 346
+          },
+          "componentRect": {
+            "x": 48,
+            "y": 722,
+            "width": 432,
+            "height": 322
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item08",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item08.png",
+          "cropRect": {
+            "x": 495,
+            "y": 710,
+            "width": 459,
+            "height": 350,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 495,
+            "y": 710,
+            "width": 455,
+            "height": 346
+          },
+          "componentRect": {
+            "x": 507,
+            "y": 722,
+            "width": 431,
+            "height": 322
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Misc",
+          "name": "ui_misc_sheet05_item09",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet05_item09.png",
+          "cropRect": {
+            "x": 953,
+            "y": 710,
+            "width": 461,
+            "height": 350,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 953,
+            "y": 710,
+            "width": 457,
+            "height": 346
+          },
+          "componentRect": {
+            "x": 965,
+            "y": 722,
+            "width": 433,
+            "height": 322
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 6,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 17_26_44 (1).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 17_26_44 (1).png",
+      "sourceSha1": "6440ccf16384301d691d15338f25d7eab4192bfd",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet06_20260427_172644_1.png",
+      "sprites": [],
+      "duplicateOf": "ChatGPT Image 2026年4月27日 17_26_33.png"
+    },
+    {
+      "sheetIndex": 7,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 17_26_44 (2).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 17_26_44 (2).png",
+      "sourceSha1": "a04b05ca9bd8241a755da06b8b4144d927edcc18",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet07_20260427_172644_2.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item01.png",
+          "cropRect": {
+            "x": 63,
+            "y": 79,
+            "width": 519,
+            "height": 259,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 63,
+            "y": 79,
+            "width": 515,
+            "height": 255
+          },
+          "componentRect": {
+            "x": 75,
+            "y": 91,
+            "width": 491,
+            "height": 231
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item02.png",
+          "cropRect": {
+            "x": 597,
+            "y": 79,
+            "width": 492,
+            "height": 259,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 597,
+            "y": 79,
+            "width": 488,
+            "height": 255
+          },
+          "componentRect": {
+            "x": 609,
+            "y": 91,
+            "width": 464,
+            "height": 231
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item03.png",
+          "cropRect": {
+            "x": 1135,
+            "y": 88,
+            "width": 251,
+            "height": 262,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1135,
+            "y": 88,
+            "width": 247,
+            "height": 258
+          },
+          "componentRect": {
+            "x": 1147,
+            "y": 100,
+            "width": 223,
+            "height": 234
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item04.png",
+          "cropRect": {
+            "x": 62,
+            "y": 340,
+            "width": 516,
+            "height": 193,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 62,
+            "y": 340,
+            "width": 512,
+            "height": 189
+          },
+          "componentRect": {
+            "x": 74,
+            "y": 352,
+            "width": 488,
+            "height": 165
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item05.png",
+          "cropRect": {
+            "x": 582,
+            "y": 341,
+            "width": 809,
+            "height": 192,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 582,
+            "y": 341,
+            "width": 805,
+            "height": 188
+          },
+          "componentRect": {
+            "x": 594,
+            "y": 353,
+            "width": 781,
+            "height": 164
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item06.png",
+          "cropRect": {
+            "x": 533,
+            "y": 543,
+            "width": 215,
+            "height": 215,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 533,
+            "y": 543,
+            "width": 211,
+            "height": 211
+          },
+          "componentRect": {
+            "x": 545,
+            "y": 555,
+            "width": 187,
+            "height": 187
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item07.png",
+          "cropRect": {
+            "x": 84,
+            "y": 544,
+            "width": 218,
+            "height": 214,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 84,
+            "y": 544,
+            "width": 214,
+            "height": 210
+          },
+          "componentRect": {
+            "x": 96,
+            "y": 556,
+            "width": 190,
+            "height": 186
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item08",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item08.png",
+          "cropRect": {
+            "x": 314,
+            "y": 544,
+            "width": 215,
+            "height": 214,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 314,
+            "y": 544,
+            "width": 211,
+            "height": 210
+          },
+          "componentRect": {
+            "x": 326,
+            "y": 556,
+            "width": 187,
+            "height": 186
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item09",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item09.png",
+          "cropRect": {
+            "x": 774,
+            "y": 579,
+            "width": 285,
+            "height": 139,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 774,
+            "y": 579,
+            "width": 281,
+            "height": 135
+          },
+          "componentRect": {
+            "x": 786,
+            "y": 591,
+            "width": 257,
+            "height": 111
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item10",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item10.png",
+          "cropRect": {
+            "x": 945,
+            "y": 732,
+            "width": 451,
+            "height": 255,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 945,
+            "y": 732,
+            "width": 447,
+            "height": 251
+          },
+          "componentRect": {
+            "x": 957,
+            "y": 744,
+            "width": 423,
+            "height": 227
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item11",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item11.png",
+          "cropRect": {
+            "x": 580,
+            "y": 758,
+            "width": 383,
+            "height": 211,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 580,
+            "y": 758,
+            "width": 379,
+            "height": 207
+          },
+          "componentRect": {
+            "x": 592,
+            "y": 770,
+            "width": 355,
+            "height": 183
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "Icons",
+          "name": "ui_icons_sheet07_item12",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet07_item12.png",
+          "cropRect": {
+            "x": 52,
+            "y": 793,
+            "width": 514,
+            "height": 135,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 52,
+            "y": 793,
+            "width": 510,
+            "height": 131
+          },
+          "componentRect": {
+            "x": 64,
+            "y": 805,
+            "width": 486,
+            "height": 107
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 8,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 17_26_44 (3).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 17_26_44 (3).png",
+      "sourceSha1": "277d6151bd417a9d4b8bd6e2c38789d425abdd94",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet08_20260427_172644_3.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "HUD",
+          "name": "ui_title_logo_full",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_title_logo_full.png",
+          "cropRect": {
+            "x": 950,
+            "y": 22,
+            "width": 474,
+            "height": 356,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 950,
+            "y": 22,
+            "width": 470,
+            "height": 352
+          },
+          "componentRect": {
+            "x": 962,
+            "y": 34,
+            "width": 446,
+            "height": 328
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Buttons",
+          "name": "ui_button_start_yellow",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_start_yellow.png",
+          "cropRect": {
+            "x": 21,
+            "y": 32,
+            "width": 951,
+            "height": 325,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 21,
+            "y": 32,
+            "width": 947,
+            "height": 321
+          },
+          "componentRect": {
+            "x": 33,
+            "y": 44,
+            "width": 923,
+            "height": 297
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "StageSelect",
+          "name": "ui_stage_select_panel_comp",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_select_panel_comp.png",
+          "cropRect": {
+            "x": 86,
+            "y": 352,
+            "width": 443,
+            "height": 380,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 86,
+            "y": 352,
+            "width": 439,
+            "height": 376
+          },
+          "componentRect": {
+            "x": 98,
+            "y": 364,
+            "width": 415,
+            "height": 352
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Result",
+          "name": "ui_result_panel_comp",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_panel_comp.png",
+          "cropRect": {
+            "x": 533,
+            "y": 359,
+            "width": 434,
+            "height": 379,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 533,
+            "y": 359,
+            "width": 430,
+            "height": 375
+          },
+          "componentRect": {
+            "x": 545,
+            "y": 371,
+            "width": 406,
+            "height": 351
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Result",
+          "name": "ui_gameover_panel_comp",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_gameover_panel_comp.png",
+          "cropRect": {
+            "x": 979,
+            "y": 371,
+            "width": 398,
+            "height": 346,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 979,
+            "y": 371,
+            "width": 394,
+            "height": 342
+          },
+          "componentRect": {
+            "x": 991,
+            "y": 383,
+            "width": 370,
+            "height": 318
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Buttons",
+          "name": "ui_result_buttons_stack_comp",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_result_buttons_stack_comp.png",
+          "cropRect": {
+            "x": 171,
+            "y": 705,
+            "width": 275,
+            "height": 348,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 171,
+            "y": 705,
+            "width": 271,
+            "height": 344
+          },
+          "componentRect": {
+            "x": 183,
+            "y": 717,
+            "width": 247,
+            "height": 320
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "StageSelect",
+          "name": "ui_stage_card_comp",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_card_comp.png",
+          "cropRect": {
+            "x": 482,
+            "y": 744,
+            "width": 826,
+            "height": 276,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 482,
+            "y": 744,
+            "width": 822,
+            "height": 272
+          },
+          "componentRect": {
+            "x": 494,
+            "y": 756,
+            "width": 798,
+            "height": 248
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 9,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 17_26_44 (4).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 17_26_44 (4).png",
+      "sourceSha1": "3e7a19fc11646879a8fc5b5f44ae4ece917d86e1",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet09_20260427_172644_4.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item01.png",
+          "cropRect": {
+            "x": 770,
+            "y": -4,
+            "width": 279,
+            "height": 280,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 770,
+            "y": 0,
+            "width": 275,
+            "height": 272
+          },
+          "componentRect": {
+            "x": 782,
+            "y": 8,
+            "width": 251,
+            "height": 252
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item02.png",
+          "cropRect": {
+            "x": 3,
+            "y": 19,
+            "width": 383,
+            "height": 242,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 3,
+            "y": 19,
+            "width": 379,
+            "height": 238
+          },
+          "componentRect": {
+            "x": 15,
+            "y": 31,
+            "width": 355,
+            "height": 214
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item03.png",
+          "cropRect": {
+            "x": 385,
+            "y": 33,
+            "width": 387,
+            "height": 209,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 385,
+            "y": 33,
+            "width": 383,
+            "height": 205
+          },
+          "componentRect": {
+            "x": 397,
+            "y": 45,
+            "width": 359,
+            "height": 181
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item04.png",
+          "cropRect": {
+            "x": 1042,
+            "y": 57,
+            "width": 398,
+            "height": 162,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1042,
+            "y": 57,
+            "width": 394,
+            "height": 158
+          },
+          "componentRect": {
+            "x": 1054,
+            "y": 69,
+            "width": 370,
+            "height": 134
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item05.png",
+          "cropRect": {
+            "x": 589,
+            "y": 253,
+            "width": 399,
+            "height": 309,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 589,
+            "y": 253,
+            "width": 395,
+            "height": 305
+          },
+          "componentRect": {
+            "x": 601,
+            "y": 265,
+            "width": 371,
+            "height": 281
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item06.png",
+          "cropRect": {
+            "x": 1042,
+            "y": 285,
+            "width": 302,
+            "height": 205,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1042,
+            "y": 285,
+            "width": 298,
+            "height": 201
+          },
+          "componentRect": {
+            "x": 1054,
+            "y": 297,
+            "width": 274,
+            "height": 177
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item07.png",
+          "cropRect": {
+            "x": 41,
+            "y": 292,
+            "width": 201,
+            "height": 197,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 41,
+            "y": 292,
+            "width": 197,
+            "height": 193
+          },
+          "componentRect": {
+            "x": 53,
+            "y": 304,
+            "width": 173,
+            "height": 169
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Icons",
+          "name": "ui_icons_sheet09_item08",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet09_item08.png",
+          "cropRect": {
+            "x": 316,
+            "y": 295,
+            "width": 216,
+            "height": 196,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 316,
+            "y": 295,
+            "width": 212,
+            "height": 192
+          },
+          "componentRect": {
+            "x": 328,
+            "y": 307,
+            "width": 188,
+            "height": 168
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 10,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_51 (1).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_51 (1).png",
+      "sourceSha1": "9703a2ee6c93bc570046207f915a36ce0e20ef8a",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet10_20260427_215751_1.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "HUD",
+          "name": "ui_hud_score_panel",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_hud_score_panel.png",
+          "cropRect": {
+            "x": 28,
+            "y": 27,
+            "width": 551,
+            "height": 274,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 28,
+            "y": 27,
+            "width": 547,
+            "height": 270
+          },
+          "componentRect": {
+            "x": 40,
+            "y": 39,
+            "width": 523,
+            "height": 246
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "HUD",
+          "name": "ui_hud_heart_panel_empty",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_hud_heart_panel_empty.png",
+          "cropRect": {
+            "x": 1137,
+            "y": 47,
+            "width": 294,
+            "height": 701,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1137,
+            "y": 47,
+            "width": 290,
+            "height": 697
+          },
+          "componentRect": {
+            "x": 1149,
+            "y": 59,
+            "width": 266,
+            "height": 673
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "HUD",
+          "name": "ui_hud_miss_badge",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_hud_miss_badge.png",
+          "cropRect": {
+            "x": 561,
+            "y": 48,
+            "width": 590,
+            "height": 232,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 561,
+            "y": 48,
+            "width": 586,
+            "height": 228
+          },
+          "componentRect": {
+            "x": 573,
+            "y": 60,
+            "width": 562,
+            "height": 204
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "HUD",
+          "name": "ui_hud_stage_label",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_hud_stage_label.png",
+          "cropRect": {
+            "x": 48,
+            "y": 283,
+            "width": 400,
+            "height": 163,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 48,
+            "y": 283,
+            "width": 396,
+            "height": 159
+          },
+          "componentRect": {
+            "x": 60,
+            "y": 295,
+            "width": 372,
+            "height": 135
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Buttons",
+          "name": "ui_button_pause",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_pause.png",
+          "cropRect": {
+            "x": 21,
+            "y": 434,
+            "width": 308,
+            "height": 315,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 21,
+            "y": 434,
+            "width": 304,
+            "height": 311
+          },
+          "componentRect": {
+            "x": 33,
+            "y": 446,
+            "width": 280,
+            "height": 287
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "HUD",
+          "name": "ui_countdown_ready",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_countdown_ready.png",
+          "cropRect": {
+            "x": 311,
+            "y": 434,
+            "width": 295,
+            "height": 312,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 311,
+            "y": 434,
+            "width": 291,
+            "height": 308
+          },
+          "componentRect": {
+            "x": 323,
+            "y": 446,
+            "width": 267,
+            "height": 284
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "HUD",
+          "name": "ui_countdown_3",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_countdown_3.png",
+          "cropRect": {
+            "x": 870,
+            "y": 434,
+            "width": 291,
+            "height": 312,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 870,
+            "y": 434,
+            "width": 287,
+            "height": 308
+          },
+          "componentRect": {
+            "x": 882,
+            "y": 446,
+            "width": 263,
+            "height": 284
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "HUD",
+          "name": "ui_countdown_2",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_countdown_2.png",
+          "cropRect": {
+            "x": 592,
+            "y": 435,
+            "width": 294,
+            "height": 312,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 592,
+            "y": 435,
+            "width": 290,
+            "height": 308
+          },
+          "componentRect": {
+            "x": 604,
+            "y": 447,
+            "width": 266,
+            "height": 284
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "HUD",
+          "name": "ui_countdown_1",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_countdown_1.png",
+          "cropRect": {
+            "x": 6,
+            "y": 748,
+            "width": 1437,
+            "height": 317,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 6,
+            "y": 748,
+            "width": 1433,
+            "height": 313
+          },
+          "componentRect": {
+            "x": 18,
+            "y": 760,
+            "width": 1409,
+            "height": 289
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 11,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_52 (2).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_52 (2).png",
+      "sourceSha1": "8dd861d873a14d431ae1c0af078c4908bbad1dfb",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet11_20260427_215752_2.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item01.png",
+          "cropRect": {
+            "x": 25,
+            "y": 34,
+            "width": 1405,
+            "height": 1023,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 25,
+            "y": 34,
+            "width": 1401,
+            "height": 1019
+          },
+          "componentRect": {
+            "x": 37,
+            "y": 46,
+            "width": 1377,
+            "height": 995
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item02.png",
+          "cropRect": {
+            "x": 583,
+            "y": 35,
+            "width": 453,
+            "height": 205,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 583,
+            "y": 35,
+            "width": 449,
+            "height": 201
+          },
+          "componentRect": {
+            "x": 595,
+            "y": 47,
+            "width": 425,
+            "height": 177
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item03.png",
+          "cropRect": {
+            "x": 43,
+            "y": 40,
+            "width": 567,
+            "height": 530,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 43,
+            "y": 40,
+            "width": 563,
+            "height": 526
+          },
+          "componentRect": {
+            "x": 55,
+            "y": 52,
+            "width": 539,
+            "height": 502
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item04.png",
+          "cropRect": {
+            "x": 777,
+            "y": 854,
+            "width": 255,
+            "height": 208,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 777,
+            "y": 854,
+            "width": 251,
+            "height": 204
+          },
+          "componentRect": {
+            "x": 789,
+            "y": 866,
+            "width": 227,
+            "height": 180
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item05.png",
+          "cropRect": {
+            "x": 56,
+            "y": 865,
+            "width": 237,
+            "height": 196,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 56,
+            "y": 865,
+            "width": 233,
+            "height": 192
+          },
+          "componentRect": {
+            "x": 68,
+            "y": 877,
+            "width": 209,
+            "height": 168
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item06.png",
+          "cropRect": {
+            "x": 305,
+            "y": 865,
+            "width": 235,
+            "height": 197,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 305,
+            "y": 865,
+            "width": 231,
+            "height": 193
+          },
+          "componentRect": {
+            "x": 317,
+            "y": 877,
+            "width": 207,
+            "height": 169
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Misc",
+          "name": "ui_misc_sheet11_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet11_item07.png",
+          "cropRect": {
+            "x": 543,
+            "y": 865,
+            "width": 235,
+            "height": 196,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 543,
+            "y": 865,
+            "width": 231,
+            "height": 192
+          },
+          "componentRect": {
+            "x": 555,
+            "y": 877,
+            "width": 207,
+            "height": 168
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 12,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_52 (3).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_52 (3).png",
+      "sourceSha1": "4a1d74dd4ab709d4c02e94ad6e29217d98be0131",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet12_20260427_215752_3.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item01.png",
+          "cropRect": {
+            "x": 572,
+            "y": 49,
+            "width": 613,
+            "height": 187,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 572,
+            "y": 49,
+            "width": 609,
+            "height": 183
+          },
+          "componentRect": {
+            "x": 584,
+            "y": 61,
+            "width": 585,
+            "height": 159
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item02.png",
+          "cropRect": {
+            "x": 27,
+            "y": 56,
+            "width": 498,
+            "height": 695,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 27,
+            "y": 56,
+            "width": 494,
+            "height": 691
+          },
+          "componentRect": {
+            "x": 39,
+            "y": 68,
+            "width": 470,
+            "height": 667
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item03.png",
+          "cropRect": {
+            "x": 503,
+            "y": 237,
+            "width": 768,
+            "height": 157,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 503,
+            "y": 237,
+            "width": 764,
+            "height": 153
+          },
+          "componentRect": {
+            "x": 515,
+            "y": 249,
+            "width": 740,
+            "height": 129
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item04.png",
+          "cropRect": {
+            "x": 1256,
+            "y": 245,
+            "width": 136,
+            "height": 148,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1256,
+            "y": 245,
+            "width": 132,
+            "height": 144
+          },
+          "componentRect": {
+            "x": 1268,
+            "y": 257,
+            "width": 108,
+            "height": 120
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item05.png",
+          "cropRect": {
+            "x": 503,
+            "y": 395,
+            "width": 768,
+            "height": 158,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 503,
+            "y": 395,
+            "width": 764,
+            "height": 154
+          },
+          "componentRect": {
+            "x": 515,
+            "y": 407,
+            "width": 740,
+            "height": 130
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item06.png",
+          "cropRect": {
+            "x": 1256,
+            "y": 403,
+            "width": 136,
+            "height": 148,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1256,
+            "y": 403,
+            "width": 132,
+            "height": 144
+          },
+          "componentRect": {
+            "x": 1268,
+            "y": 415,
+            "width": 108,
+            "height": 120
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item07.png",
+          "cropRect": {
+            "x": 503,
+            "y": 564,
+            "width": 365,
+            "height": 156,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 503,
+            "y": 564,
+            "width": 361,
+            "height": 152
+          },
+          "componentRect": {
+            "x": 515,
+            "y": 576,
+            "width": 337,
+            "height": 128
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item08",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item08.png",
+          "cropRect": {
+            "x": 852,
+            "y": 565,
+            "width": 254,
+            "height": 156,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 852,
+            "y": 565,
+            "width": 250,
+            "height": 152
+          },
+          "componentRect": {
+            "x": 864,
+            "y": 577,
+            "width": 226,
+            "height": 128
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item09",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item09.png",
+          "cropRect": {
+            "x": 1087,
+            "y": 565,
+            "width": 253,
+            "height": 157,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1087,
+            "y": 565,
+            "width": 249,
+            "height": 153
+          },
+          "componentRect": {
+            "x": 1099,
+            "y": 577,
+            "width": 225,
+            "height": 129
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item10",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item10.png",
+          "cropRect": {
+            "x": 384,
+            "y": 748,
+            "width": 930,
+            "height": 240,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 384,
+            "y": 748,
+            "width": 926,
+            "height": 236
+          },
+          "componentRect": {
+            "x": 396,
+            "y": 760,
+            "width": 902,
+            "height": 212
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item11",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item11.png",
+          "cropRect": {
+            "x": 29,
+            "y": 770,
+            "width": 364,
+            "height": 197,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 29,
+            "y": 770,
+            "width": 360,
+            "height": 193
+          },
+          "componentRect": {
+            "x": 41,
+            "y": 782,
+            "width": 336,
+            "height": 169
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "Misc",
+          "name": "ui_misc_sheet12_item12",
+          "outputPath": "Assets/Art/UI/Sprites/Misc/ui_misc_sheet12_item12.png",
+          "cropRect": {
+            "x": 1299,
+            "y": 831,
+            "width": 133,
+            "height": 135,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1299,
+            "y": 831,
+            "width": 129,
+            "height": 131
+          },
+          "componentRect": {
+            "x": 1311,
+            "y": 843,
+            "width": 105,
+            "height": 107
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 13,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_52 (4).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_52 (4).png",
+      "sourceSha1": "8657247c8452dc29d6d3dbf8bf6a1b695efb0cad",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet13_20260427_215752_4.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_card_green_empty",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_card_green_empty.png",
+          "cropRect": {
+            "x": 23,
+            "y": 12,
+            "width": 443,
+            "height": 338,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 23,
+            "y": 12,
+            "width": 439,
+            "height": 334
+          },
+          "componentRect": {
+            "x": 35,
+            "y": 24,
+            "width": 415,
+            "height": 310
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_card_blue_empty",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_card_blue_empty.png",
+          "cropRect": {
+            "x": 461,
+            "y": 12,
+            "width": 445,
+            "height": 338,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 461,
+            "y": 12,
+            "width": 441,
+            "height": 334
+          },
+          "componentRect": {
+            "x": 473,
+            "y": 24,
+            "width": 417,
+            "height": 310
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_card_red_empty",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_card_red_empty.png",
+          "cropRect": {
+            "x": 899,
+            "y": 12,
+            "width": 446,
+            "height": 338,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 899,
+            "y": 12,
+            "width": 442,
+            "height": 334
+          },
+          "componentRect": {
+            "x": 911,
+            "y": 24,
+            "width": 418,
+            "height": 310
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_icon_light_truck",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_icon_light_truck.png",
+          "cropRect": {
+            "x": 98,
+            "y": 325,
+            "width": 335,
+            "height": 218,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 98,
+            "y": 325,
+            "width": 331,
+            "height": 214
+          },
+          "componentRect": {
+            "x": 110,
+            "y": 337,
+            "width": 307,
+            "height": 190
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_icon_compact_car",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_icon_compact_car.png",
+          "cropRect": {
+            "x": 533,
+            "y": 339,
+            "width": 336,
+            "height": 202,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 533,
+            "y": 339,
+            "width": 332,
+            "height": 198
+          },
+          "componentRect": {
+            "x": 545,
+            "y": 351,
+            "width": 308,
+            "height": 174
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_icon_sports_car",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_icon_sports_car.png",
+          "cropRect": {
+            "x": 951,
+            "y": 355,
+            "width": 391,
+            "height": 174,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 951,
+            "y": 355,
+            "width": 387,
+            "height": 170
+          },
+          "componentRect": {
+            "x": 963,
+            "y": 367,
+            "width": 363,
+            "height": 146
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_label_light_truck",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_label_light_truck.png",
+          "cropRect": {
+            "x": 23,
+            "y": 529,
+            "width": 463,
+            "height": 136,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 23,
+            "y": 529,
+            "width": 459,
+            "height": 132
+          },
+          "componentRect": {
+            "x": 35,
+            "y": 541,
+            "width": 435,
+            "height": 108
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_label_compact_car",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_label_compact_car.png",
+          "cropRect": {
+            "x": 464,
+            "y": 530,
+            "width": 467,
+            "height": 136,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 464,
+            "y": 530,
+            "width": 463,
+            "height": 132
+          },
+          "componentRect": {
+            "x": 476,
+            "y": 542,
+            "width": 439,
+            "height": 108
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_label_sports_car",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_label_sports_car.png",
+          "cropRect": {
+            "x": 907,
+            "y": 530,
+            "width": 459,
+            "height": 136,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 907,
+            "y": 530,
+            "width": 455,
+            "height": 132
+          },
+          "componentRect": {
+            "x": 919,
+            "y": 542,
+            "width": 431,
+            "height": 108
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_label_green_blank",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_label_green_blank.png",
+          "cropRect": {
+            "x": 23,
+            "y": 654,
+            "width": 463,
+            "height": 129,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 23,
+            "y": 654,
+            "width": 459,
+            "height": 125
+          },
+          "componentRect": {
+            "x": 35,
+            "y": 666,
+            "width": 435,
+            "height": 101
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_label_blue_blank",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_label_blue_blank.png",
+          "cropRect": {
+            "x": 464,
+            "y": 654,
+            "width": 467,
+            "height": 129,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 464,
+            "y": 654,
+            "width": 463,
+            "height": 125
+          },
+          "componentRect": {
+            "x": 476,
+            "y": 666,
+            "width": 439,
+            "height": 101
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_label_red_blank",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_label_red_blank.png",
+          "cropRect": {
+            "x": 907,
+            "y": 654,
+            "width": 459,
+            "height": 130,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 907,
+            "y": 654,
+            "width": 455,
+            "height": 126
+          },
+          "componentRect": {
+            "x": 919,
+            "y": 666,
+            "width": 431,
+            "height": 102
+          }
+        },
+        {
+          "sheetItemIndex": 13,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_card_locked_dark",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_card_locked_dark.png",
+          "cropRect": {
+            "x": 212,
+            "y": 770,
+            "width": 585,
+            "height": 287,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 212,
+            "y": 770,
+            "width": 581,
+            "height": 283
+          },
+          "componentRect": {
+            "x": 224,
+            "y": 782,
+            "width": 557,
+            "height": 259
+          }
+        },
+        {
+          "sheetItemIndex": 14,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_card_locked_gray_left",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_card_locked_gray_left.png",
+          "cropRect": {
+            "x": 773,
+            "y": 774,
+            "width": 339,
+            "height": 283,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 773,
+            "y": 774,
+            "width": 335,
+            "height": 279
+          },
+          "componentRect": {
+            "x": 785,
+            "y": 786,
+            "width": 311,
+            "height": 255
+          }
+        },
+        {
+          "sheetItemIndex": 15,
+          "category": "VehicleSelect",
+          "name": "ui_vehicle_card_locked_gray_right",
+          "outputPath": "Assets/Art/UI/Sprites/VehicleSelect/ui_vehicle_card_locked_gray_right.png",
+          "cropRect": {
+            "x": 1091,
+            "y": 774,
+            "width": 338,
+            "height": 283,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1091,
+            "y": 774,
+            "width": 334,
+            "height": 279
+          },
+          "componentRect": {
+            "x": 1103,
+            "y": 786,
+            "width": 310,
+            "height": 255
+          }
+        },
+        {
+          "sheetItemIndex": 16,
+          "category": "Icons",
+          "name": "ui_icon_lock_vehicle_badge",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icon_lock_vehicle_badge.png",
+          "cropRect": {
+            "x": 30,
+            "y": 794,
+            "width": 200,
+            "height": 222,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 30,
+            "y": 794,
+            "width": 196,
+            "height": 218
+          },
+          "componentRect": {
+            "x": 42,
+            "y": 806,
+            "width": 172,
+            "height": 194
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 14,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_52 (5).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_52 (5).png",
+      "sourceSha1": "de56c8a3ce19da4973e331ec3208e2289b8da7b8",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet14_20260427_215752_5.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Result",
+          "name": "ui_result_sheet14_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet14_item01.png",
+          "cropRect": {
+            "x": 22,
+            "y": 11,
+            "width": 705,
+            "height": 564,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 22,
+            "y": 11,
+            "width": 701,
+            "height": 560
+          },
+          "componentRect": {
+            "x": 34,
+            "y": 23,
+            "width": 677,
+            "height": 536
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Result",
+          "name": "ui_result_sheet14_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet14_item02.png",
+          "cropRect": {
+            "x": 718,
+            "y": 12,
+            "width": 697,
+            "height": 856,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 718,
+            "y": 12,
+            "width": 693,
+            "height": 852
+          },
+          "componentRect": {
+            "x": 730,
+            "y": 24,
+            "width": 669,
+            "height": 828
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Result",
+          "name": "ui_result_sheet14_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet14_item03.png",
+          "cropRect": {
+            "x": 27,
+            "y": 549,
+            "width": 697,
+            "height": 320,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 27,
+            "y": 549,
+            "width": 693,
+            "height": 316
+          },
+          "componentRect": {
+            "x": 39,
+            "y": 561,
+            "width": 669,
+            "height": 292
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Result",
+          "name": "ui_result_sheet14_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet14_item04.png",
+          "cropRect": {
+            "x": 79,
+            "y": 847,
+            "width": 425,
+            "height": 222,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 79,
+            "y": 847,
+            "width": 421,
+            "height": 218
+          },
+          "componentRect": {
+            "x": 91,
+            "y": 859,
+            "width": 397,
+            "height": 194
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Result",
+          "name": "ui_result_sheet14_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet14_item05.png",
+          "cropRect": {
+            "x": 503,
+            "y": 847,
+            "width": 446,
+            "height": 222,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 503,
+            "y": 847,
+            "width": 442,
+            "height": 218
+          },
+          "componentRect": {
+            "x": 515,
+            "y": 859,
+            "width": 418,
+            "height": 194
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Result",
+          "name": "ui_result_sheet14_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet14_item06.png",
+          "cropRect": {
+            "x": 944,
+            "y": 847,
+            "width": 431,
+            "height": 227,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 944,
+            "y": 847,
+            "width": 427,
+            "height": 223
+          },
+          "componentRect": {
+            "x": 956,
+            "y": 859,
+            "width": 403,
+            "height": 199
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 15,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_52 (6).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_52 (6).png",
+      "sourceSha1": "245386cf1e5ab1f9ee954e64d216b311ad140766",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet15_20260427_215752_6.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item01",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item01.png",
+          "cropRect": {
+            "x": 24,
+            "y": 9,
+            "width": 395,
+            "height": 603,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 24,
+            "y": 9,
+            "width": 391,
+            "height": 599
+          },
+          "componentRect": {
+            "x": 36,
+            "y": 21,
+            "width": 367,
+            "height": 575
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item02",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item02.png",
+          "cropRect": {
+            "x": 399,
+            "y": 23,
+            "width": 332,
+            "height": 517,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 399,
+            "y": 23,
+            "width": 328,
+            "height": 513
+          },
+          "componentRect": {
+            "x": 411,
+            "y": 35,
+            "width": 304,
+            "height": 489
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item03",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item03.png",
+          "cropRect": {
+            "x": 717,
+            "y": 31,
+            "width": 686,
+            "height": 271,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 717,
+            "y": 31,
+            "width": 682,
+            "height": 267
+          },
+          "componentRect": {
+            "x": 729,
+            "y": 43,
+            "width": 658,
+            "height": 243
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "StageSelect",
+          "name": "ui_stage_thumb_city",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_thumb_city.png",
+          "derivedFrom": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item03.png",
+          "derivedRect": {
+            "x": 0,
+            "y": 0,
+            "width": 229,
+            "height": 271
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "StageSelect",
+          "name": "ui_stage_thumb_overpass",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_thumb_overpass.png",
+          "derivedFrom": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item03.png",
+          "derivedRect": {
+            "x": 229,
+            "y": 0,
+            "width": 229,
+            "height": 271
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "StageSelect",
+          "name": "ui_stage_thumb_crane",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_thumb_crane.png",
+          "derivedFrom": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item03.png",
+          "derivedRect": {
+            "x": 458,
+            "y": 0,
+            "width": 228,
+            "height": 271
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item04",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item04.png",
+          "cropRect": {
+            "x": 1175,
+            "y": 310,
+            "width": 199,
+            "height": 186,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1175,
+            "y": 310,
+            "width": 195,
+            "height": 182
+          },
+          "componentRect": {
+            "x": 1187,
+            "y": 322,
+            "width": 171,
+            "height": 158
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item05",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item05.png",
+          "cropRect": {
+            "x": 746,
+            "y": 314,
+            "width": 404,
+            "height": 161,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 746,
+            "y": 314,
+            "width": 400,
+            "height": 157
+          },
+          "componentRect": {
+            "x": 758,
+            "y": 326,
+            "width": 376,
+            "height": 133
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item06",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item06.png",
+          "cropRect": {
+            "x": 737,
+            "y": 452,
+            "width": 428,
+            "height": 167,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 737,
+            "y": 452,
+            "width": 424,
+            "height": 163
+          },
+          "componentRect": {
+            "x": 749,
+            "y": 464,
+            "width": 400,
+            "height": 139
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "StageSelect",
+          "name": "ui_stage_star_empty",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_star_empty.png",
+          "derivedFrom": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item06.png",
+          "derivedRect": {
+            "x": 0,
+            "y": 0,
+            "width": 143,
+            "height": 167
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item07",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item07.png",
+          "cropRect": {
+            "x": 391,
+            "y": 592,
+            "width": 374,
+            "height": 473,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 391,
+            "y": 592,
+            "width": 370,
+            "height": 469
+          },
+          "componentRect": {
+            "x": 403,
+            "y": 604,
+            "width": 346,
+            "height": 445
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item08",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item08.png",
+          "cropRect": {
+            "x": 761,
+            "y": 592,
+            "width": 395,
+            "height": 484,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 761,
+            "y": 592,
+            "width": 391,
+            "height": 480
+          },
+          "componentRect": {
+            "x": 773,
+            "y": 604,
+            "width": 367,
+            "height": 456
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet15_item09",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet15_item09.png",
+          "cropRect": {
+            "x": 157,
+            "y": 694,
+            "width": 194,
+            "height": 244,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 157,
+            "y": 694,
+            "width": 190,
+            "height": 240
+          },
+          "componentRect": {
+            "x": 169,
+            "y": 706,
+            "width": 166,
+            "height": 216
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 16,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月27日 21_57_52 (7).png",
+      "sourceFileName": "ChatGPT Image 2026年4月27日 21_57_52 (7).png",
+      "sourceSha1": "5e6f00bb9c8ab9452d3374bc255206e3d06238c8",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet16_20260427_215752_7.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item01.png",
+          "cropRect": {
+            "x": 356,
+            "y": 22,
+            "width": 256,
+            "height": 247,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 356,
+            "y": 22,
+            "width": 252,
+            "height": 243
+          },
+          "componentRect": {
+            "x": 368,
+            "y": 34,
+            "width": 228,
+            "height": 219
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item02.png",
+          "cropRect": {
+            "x": 59,
+            "y": 23,
+            "width": 253,
+            "height": 245,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 59,
+            "y": 23,
+            "width": 249,
+            "height": 241
+          },
+          "componentRect": {
+            "x": 71,
+            "y": 35,
+            "width": 225,
+            "height": 217
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item03.png",
+          "cropRect": {
+            "x": 664,
+            "y": 23,
+            "width": 251,
+            "height": 245,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 664,
+            "y": 23,
+            "width": 247,
+            "height": 241
+          },
+          "componentRect": {
+            "x": 676,
+            "y": 35,
+            "width": 223,
+            "height": 217
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item04.png",
+          "cropRect": {
+            "x": 71,
+            "y": 262,
+            "width": 208,
+            "height": 263,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 71,
+            "y": 262,
+            "width": 204,
+            "height": 259
+          },
+          "componentRect": {
+            "x": 83,
+            "y": 274,
+            "width": 180,
+            "height": 235
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item05.png",
+          "cropRect": {
+            "x": 869,
+            "y": 263,
+            "width": 275,
+            "height": 259,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 869,
+            "y": 263,
+            "width": 271,
+            "height": 255
+          },
+          "componentRect": {
+            "x": 881,
+            "y": 275,
+            "width": 247,
+            "height": 231
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item06.png",
+          "cropRect": {
+            "x": 1142,
+            "y": 278,
+            "width": 246,
+            "height": 240,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1142,
+            "y": 278,
+            "width": 242,
+            "height": 236
+          },
+          "componentRect": {
+            "x": 1154,
+            "y": 290,
+            "width": 218,
+            "height": 212
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item07.png",
+          "cropRect": {
+            "x": 311,
+            "y": 283,
+            "width": 275,
+            "height": 236,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 311,
+            "y": 283,
+            "width": 271,
+            "height": 232
+          },
+          "componentRect": {
+            "x": 323,
+            "y": 295,
+            "width": 247,
+            "height": 208
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item08",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item08.png",
+          "cropRect": {
+            "x": 589,
+            "y": 286,
+            "width": 272,
+            "height": 233,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 589,
+            "y": 286,
+            "width": 268,
+            "height": 229
+          },
+          "componentRect": {
+            "x": 601,
+            "y": 298,
+            "width": 244,
+            "height": 205
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item09",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item09.png",
+          "cropRect": {
+            "x": 106,
+            "y": 508,
+            "width": 234,
+            "height": 254,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 106,
+            "y": 508,
+            "width": 230,
+            "height": 250
+          },
+          "componentRect": {
+            "x": 118,
+            "y": 520,
+            "width": 206,
+            "height": 226
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item10",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item10.png",
+          "cropRect": {
+            "x": 386,
+            "y": 513,
+            "width": 250,
+            "height": 246,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 386,
+            "y": 513,
+            "width": 246,
+            "height": 242
+          },
+          "componentRect": {
+            "x": 398,
+            "y": 525,
+            "width": 222,
+            "height": 218
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item11",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item11.png",
+          "cropRect": {
+            "x": 1037,
+            "y": 513,
+            "width": 251,
+            "height": 252,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1037,
+            "y": 513,
+            "width": 247,
+            "height": 248
+          },
+          "componentRect": {
+            "x": 1049,
+            "y": 525,
+            "width": 223,
+            "height": 224
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item12",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item12.png",
+          "cropRect": {
+            "x": 704,
+            "y": 516,
+            "width": 277,
+            "height": 235,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 704,
+            "y": 516,
+            "width": 273,
+            "height": 231
+          },
+          "componentRect": {
+            "x": 716,
+            "y": 528,
+            "width": 249,
+            "height": 207
+          }
+        },
+        {
+          "sheetItemIndex": 13,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item13",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item13.png",
+          "cropRect": {
+            "x": 761,
+            "y": 734,
+            "width": 360,
+            "height": 333,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 761,
+            "y": 734,
+            "width": 356,
+            "height": 329
+          },
+          "componentRect": {
+            "x": 773,
+            "y": 746,
+            "width": 332,
+            "height": 305
+          }
+        },
+        {
+          "sheetItemIndex": 14,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item14",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item14.png",
+          "cropRect": {
+            "x": 45,
+            "y": 743,
+            "width": 364,
+            "height": 304,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 45,
+            "y": 743,
+            "width": 360,
+            "height": 300
+          },
+          "componentRect": {
+            "x": 57,
+            "y": 755,
+            "width": 336,
+            "height": 276
+          }
+        },
+        {
+          "sheetItemIndex": 15,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item15",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item15.png",
+          "cropRect": {
+            "x": 407,
+            "y": 756,
+            "width": 362,
+            "height": 289,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 407,
+            "y": 756,
+            "width": 358,
+            "height": 285
+          },
+          "componentRect": {
+            "x": 419,
+            "y": 768,
+            "width": 334,
+            "height": 261
+          }
+        },
+        {
+          "sheetItemIndex": 16,
+          "category": "Icons",
+          "name": "ui_icons_sheet16_item16",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icons_sheet16_item16.png",
+          "cropRect": {
+            "x": 1132,
+            "y": 788,
+            "width": 225,
+            "height": 218,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1132,
+            "y": 788,
+            "width": 221,
+            "height": 214
+          },
+          "componentRect": {
+            "x": 1144,
+            "y": 800,
+            "width": 197,
+            "height": 190
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 17,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月28日 01_31_27 (1).png",
+      "sourceFileName": "ChatGPT Image 2026年4月28日 01_31_27 (1).png",
+      "sourceSha1": "bc8b2955c62b82fc5636dcce6444744d87c34250",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet17_20260428_013127_1.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Result",
+          "name": "ui_result_sheet17_item01",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item01.png",
+          "cropRect": {
+            "x": 61,
+            "y": 12,
+            "width": 579,
+            "height": 542,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 61,
+            "y": 12,
+            "width": 575,
+            "height": 538
+          },
+          "componentRect": {
+            "x": 73,
+            "y": 24,
+            "width": 551,
+            "height": 514
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Result",
+          "name": "ui_result_sheet17_item02",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item02.png",
+          "cropRect": {
+            "x": 521,
+            "y": 12,
+            "width": 910,
+            "height": 880,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 521,
+            "y": 12,
+            "width": 906,
+            "height": 876
+          },
+          "componentRect": {
+            "x": 533,
+            "y": 24,
+            "width": 882,
+            "height": 852
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Result",
+          "name": "ui_result_sheet17_item03",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item03.png",
+          "cropRect": {
+            "x": 1268,
+            "y": 17,
+            "width": 166,
+            "height": 159,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1268,
+            "y": 17,
+            "width": 162,
+            "height": 155
+          },
+          "componentRect": {
+            "x": 1280,
+            "y": 29,
+            "width": 138,
+            "height": 131
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Result",
+          "name": "ui_result_sheet17_item04",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item04.png",
+          "cropRect": {
+            "x": 29,
+            "y": 541,
+            "width": 267,
+            "height": 351,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 29,
+            "y": 541,
+            "width": 263,
+            "height": 347
+          },
+          "componentRect": {
+            "x": 41,
+            "y": 553,
+            "width": 239,
+            "height": 323
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Result",
+          "name": "ui_result_sheet17_item05",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item05.png",
+          "cropRect": {
+            "x": 278,
+            "y": 541,
+            "width": 267,
+            "height": 351,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 278,
+            "y": 541,
+            "width": 263,
+            "height": 347
+          },
+          "componentRect": {
+            "x": 290,
+            "y": 553,
+            "width": 239,
+            "height": 323
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Result",
+          "name": "ui_result_sheet17_item06",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item06.png",
+          "cropRect": {
+            "x": 539,
+            "y": 868,
+            "width": 346,
+            "height": 218,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 539,
+            "y": 868,
+            "width": 342,
+            "height": 214
+          },
+          "componentRect": {
+            "x": 551,
+            "y": 880,
+            "width": 318,
+            "height": 190
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Result",
+          "name": "ui_result_sheet17_item07",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item07.png",
+          "cropRect": {
+            "x": 320,
+            "y": 912,
+            "width": 220,
+            "height": 174,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 320,
+            "y": 912,
+            "width": 216,
+            "height": 170
+          },
+          "componentRect": {
+            "x": 332,
+            "y": 924,
+            "width": 192,
+            "height": 146
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Result",
+          "name": "ui_result_sheet17_item08",
+          "outputPath": "Assets/Art/UI/Sprites/Result/ui_result_sheet17_item08.png",
+          "cropRect": {
+            "x": 809,
+            "y": 917,
+            "width": 255,
+            "height": 169,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 809,
+            "y": 917,
+            "width": 251,
+            "height": 165
+          },
+          "componentRect": {
+            "x": 821,
+            "y": 929,
+            "width": 227,
+            "height": 141
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 18,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月28日 01_31_28 (2).png",
+      "sourceFileName": "ChatGPT Image 2026年4月28日 01_31_28 (2).png",
+      "sourceSha1": "ac620b626393c4a034b3825eafddc24dfbd9bfe2",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet18_20260428_013128_2.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Settings",
+          "name": "ui_settings_panel_bg",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_panel_bg.png",
+          "cropRect": {
+            "x": 36,
+            "y": 54,
+            "width": 560,
+            "height": 727,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 36,
+            "y": 54,
+            "width": 556,
+            "height": 723
+          },
+          "componentRect": {
+            "x": 48,
+            "y": 66,
+            "width": 532,
+            "height": 699
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Settings",
+          "name": "ui_settings_title",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_title.png",
+          "cropRect": {
+            "x": 715,
+            "y": 55,
+            "width": 633,
+            "height": 188,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 715,
+            "y": 55,
+            "width": 629,
+            "height": 184
+          },
+          "componentRect": {
+            "x": 727,
+            "y": 67,
+            "width": 605,
+            "height": 160
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Settings",
+          "name": "ui_settings_knob_bgm",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_knob_bgm.png",
+          "cropRect": {
+            "x": 1286,
+            "y": 236,
+            "width": 141,
+            "height": 153,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1286,
+            "y": 236,
+            "width": 137,
+            "height": 149
+          },
+          "componentRect": {
+            "x": 1298,
+            "y": 248,
+            "width": 113,
+            "height": 125
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Settings",
+          "name": "ui_settings_slider_track_bgm",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_slider_track_bgm.png",
+          "cropRect": {
+            "x": 818,
+            "y": 248,
+            "width": 479,
+            "height": 191,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 818,
+            "y": 248,
+            "width": 475,
+            "height": 187
+          },
+          "componentRect": {
+            "x": 830,
+            "y": 260,
+            "width": 451,
+            "height": 163
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Settings",
+          "name": "ui_settings_label_bgm",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_label_bgm.png",
+          "cropRect": {
+            "x": 590,
+            "y": 249,
+            "width": 231,
+            "height": 140,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 590,
+            "y": 249,
+            "width": 227,
+            "height": 136
+          },
+          "componentRect": {
+            "x": 602,
+            "y": 261,
+            "width": 203,
+            "height": 112
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Settings",
+          "name": "ui_settings_knob_se",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_knob_se.png",
+          "cropRect": {
+            "x": 1286,
+            "y": 425,
+            "width": 141,
+            "height": 154,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1286,
+            "y": 425,
+            "width": 137,
+            "height": 150
+          },
+          "componentRect": {
+            "x": 1298,
+            "y": 437,
+            "width": 113,
+            "height": 126
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Settings",
+          "name": "ui_settings_slider_track_se",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_slider_track_se.png",
+          "cropRect": {
+            "x": 818,
+            "y": 444,
+            "width": 479,
+            "height": 190,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 818,
+            "y": 444,
+            "width": 475,
+            "height": 186
+          },
+          "componentRect": {
+            "x": 830,
+            "y": 456,
+            "width": 451,
+            "height": 162
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Settings",
+          "name": "ui_settings_label_se",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_label_se.png",
+          "cropRect": {
+            "x": 590,
+            "y": 445,
+            "width": 231,
+            "height": 139,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 590,
+            "y": 445,
+            "width": 227,
+            "height": 135
+          },
+          "componentRect": {
+            "x": 602,
+            "y": 457,
+            "width": 203,
+            "height": 111
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Settings",
+          "name": "ui_settings_toggle_on",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_on.png",
+          "cropRect": {
+            "x": 818,
+            "y": 624,
+            "width": 267,
+            "height": 152,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 818,
+            "y": 624,
+            "width": 263,
+            "height": 148
+          },
+          "componentRect": {
+            "x": 830,
+            "y": 636,
+            "width": 239,
+            "height": 124
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "Settings",
+          "name": "ui_settings_toggle_off",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_off.png",
+          "cropRect": {
+            "x": 1086,
+            "y": 624,
+            "width": 283,
+            "height": 152,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1086,
+            "y": 624,
+            "width": 279,
+            "height": 148
+          },
+          "componentRect": {
+            "x": 1098,
+            "y": 636,
+            "width": 255,
+            "height": 124
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "Settings",
+          "name": "ui_settings_label_vibe",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_settings_label_vibe.png",
+          "cropRect": {
+            "x": 590,
+            "y": 629,
+            "width": 231,
+            "height": 141,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 590,
+            "y": 629,
+            "width": 227,
+            "height": 137
+          },
+          "componentRect": {
+            "x": 602,
+            "y": 641,
+            "width": 203,
+            "height": 113
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "Settings",
+          "name": "ui_loading_spinner",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_loading_spinner.png",
+          "cropRect": {
+            "x": 809,
+            "y": 807,
+            "width": 213,
+            "height": 209,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 809,
+            "y": 807,
+            "width": 209,
+            "height": 205
+          },
+          "componentRect": {
+            "x": 821,
+            "y": 819,
+            "width": 185,
+            "height": 181
+          }
+        },
+        {
+          "sheetItemIndex": 13,
+          "category": "Settings",
+          "name": "ui_loading_text",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_loading_text.png",
+          "cropRect": {
+            "x": 318,
+            "y": 840,
+            "width": 502,
+            "height": 167,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 318,
+            "y": 840,
+            "width": 498,
+            "height": 163
+          },
+          "componentRect": {
+            "x": 330,
+            "y": 852,
+            "width": 474,
+            "height": 139
+          }
+        },
+        {
+          "sheetItemIndex": 14,
+          "category": "Buttons",
+          "name": "ui_button_back_small",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_back_small.png",
+          "cropRect": {
+            "x": 37,
+            "y": 849,
+            "width": 263,
+            "height": 150,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 37,
+            "y": 849,
+            "width": 259,
+            "height": 146
+          },
+          "componentRect": {
+            "x": 49,
+            "y": 861,
+            "width": 235,
+            "height": 122
+          }
+        },
+        {
+          "sheetItemIndex": 15,
+          "category": "Settings",
+          "name": "ui_loading_dot_large",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_loading_dot_large.png",
+          "cropRect": {
+            "x": 1026,
+            "y": 866,
+            "width": 173,
+            "height": 105,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1026,
+            "y": 866,
+            "width": 169,
+            "height": 101
+          },
+          "componentRect": {
+            "x": 1038,
+            "y": 878,
+            "width": 145,
+            "height": 77
+          }
+        },
+        {
+          "sheetItemIndex": 16,
+          "category": "Settings",
+          "name": "ui_loading_dot_small",
+          "outputPath": "Assets/Art/UI/Sprites/Settings/ui_loading_dot_small.png",
+          "cropRect": {
+            "x": 1172,
+            "y": 870,
+            "width": 101,
+            "height": 101,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1172,
+            "y": 870,
+            "width": 97,
+            "height": 97
+          },
+          "componentRect": {
+            "x": 1184,
+            "y": 882,
+            "width": 73,
+            "height": 73
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 19,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月28日 01_31_28 (3).png",
+      "sourceFileName": "ChatGPT Image 2026年4月28日 01_31_28 (3).png",
+      "sourceSha1": "808e44efb2c66a8e528f1185a4dad9bb3769b399",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet19_20260428_013128_3.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Badges",
+          "name": "ui_badge_new_burst",
+          "outputPath": "Assets/Art/UI/Sprites/Badges/ui_badge_new_burst.png",
+          "cropRect": {
+            "x": 44,
+            "y": 24,
+            "width": 381,
+            "height": 295,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 44,
+            "y": 24,
+            "width": 377,
+            "height": 291
+          },
+          "componentRect": {
+            "x": 56,
+            "y": 36,
+            "width": 353,
+            "height": 267
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Icons",
+          "name": "ui_icon_lock_open",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icon_lock_open.png",
+          "cropRect": {
+            "x": 875,
+            "y": 38,
+            "width": 202,
+            "height": 278,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 875,
+            "y": 38,
+            "width": 198,
+            "height": 274
+          },
+          "componentRect": {
+            "x": 887,
+            "y": 50,
+            "width": 174,
+            "height": 250
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Icons",
+          "name": "ui_icon_lock_closed",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icon_lock_closed.png",
+          "cropRect": {
+            "x": 1127,
+            "y": 51,
+            "width": 196,
+            "height": 266,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1127,
+            "y": 51,
+            "width": 192,
+            "height": 262
+          },
+          "componentRect": {
+            "x": 1139,
+            "y": 63,
+            "width": 168,
+            "height": 238
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Buttons",
+          "name": "ui_button_unlock_blue",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_unlock_blue.png",
+          "cropRect": {
+            "x": 442,
+            "y": 102,
+            "width": 386,
+            "height": 196,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 442,
+            "y": 102,
+            "width": 382,
+            "height": 192
+          },
+          "componentRect": {
+            "x": 454,
+            "y": 114,
+            "width": 358,
+            "height": 168
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Effects",
+          "name": "ui_effect_unlock_burst",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_unlock_burst.png",
+          "cropRect": {
+            "x": 54,
+            "y": 300,
+            "width": 432,
+            "height": 416,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 54,
+            "y": 300,
+            "width": 428,
+            "height": 412
+          },
+          "componentRect": {
+            "x": 66,
+            "y": 312,
+            "width": 404,
+            "height": 388
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Effects",
+          "name": "ui_effect_unlock_glow_round",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_unlock_glow_round.png",
+          "cropRect": {
+            "x": 1011,
+            "y": 327,
+            "width": 391,
+            "height": 386,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1011,
+            "y": 327,
+            "width": 387,
+            "height": 382
+          },
+          "componentRect": {
+            "x": 1023,
+            "y": 339,
+            "width": 363,
+            "height": 358
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Effects",
+          "name": "ui_effect_light_streak",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_light_streak.png",
+          "cropRect": {
+            "x": 472,
+            "y": 421,
+            "width": 546,
+            "height": 205,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 472,
+            "y": 421,
+            "width": 542,
+            "height": 201
+          },
+          "componentRect": {
+            "x": 484,
+            "y": 433,
+            "width": 518,
+            "height": 177
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Effects",
+          "name": "ui_effect_sparkle_trail",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_sparkle_trail.png",
+          "cropRect": {
+            "x": 30,
+            "y": 688,
+            "width": 796,
+            "height": 116,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 30,
+            "y": 688,
+            "width": 792,
+            "height": 112
+          },
+          "componentRect": {
+            "x": 42,
+            "y": 700,
+            "width": 768,
+            "height": 88
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Effects",
+          "name": "ui_effect_highlight_frame_blue",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_highlight_frame_blue.png",
+          "cropRect": {
+            "x": 905,
+            "y": 719,
+            "width": 509,
+            "height": 343,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 905,
+            "y": 719,
+            "width": 505,
+            "height": 339
+          },
+          "componentRect": {
+            "x": 917,
+            "y": 731,
+            "width": 481,
+            "height": 315
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "Buttons",
+          "name": "ui_button_arrow_left_large",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_arrow_left_large.png",
+          "cropRect": {
+            "x": 56,
+            "y": 793,
+            "width": 256,
+            "height": 246,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 56,
+            "y": 793,
+            "width": 252,
+            "height": 242
+          },
+          "componentRect": {
+            "x": 68,
+            "y": 805,
+            "width": 228,
+            "height": 218
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "Buttons",
+          "name": "ui_button_arrow_right_large",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_arrow_right_large.png",
+          "cropRect": {
+            "x": 302,
+            "y": 793,
+            "width": 254,
+            "height": 246,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 302,
+            "y": 793,
+            "width": 250,
+            "height": 242
+          },
+          "componentRect": {
+            "x": 314,
+            "y": 805,
+            "width": 226,
+            "height": 218
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "Buttons",
+          "name": "ui_button_arrow_left_small",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_arrow_left_small.png",
+          "cropRect": {
+            "x": 592,
+            "y": 833,
+            "width": 161,
+            "height": 159,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 592,
+            "y": 833,
+            "width": 157,
+            "height": 155
+          },
+          "componentRect": {
+            "x": 604,
+            "y": 845,
+            "width": 133,
+            "height": 131
+          }
+        },
+        {
+          "sheetItemIndex": 13,
+          "category": "Buttons",
+          "name": "ui_button_arrow_right_small",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_arrow_right_small.png",
+          "cropRect": {
+            "x": 759,
+            "y": 833,
+            "width": 160,
+            "height": 159,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 759,
+            "y": 833,
+            "width": 156,
+            "height": 155
+          },
+          "componentRect": {
+            "x": 771,
+            "y": 845,
+            "width": 132,
+            "height": 131
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 20,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月28日 01_31_30 (4).png",
+      "sourceFileName": "ChatGPT Image 2026年4月28日 01_31_30 (4).png",
+      "sourceSha1": "f7ed5e38e52a6c90483f4fac8290a4a67d24a8e2",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet20_20260428_013130_4.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Buttons",
+          "name": "ui_button_green_normal",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_green_normal.png",
+          "cropRect": {
+            "x": 43,
+            "y": 13,
+            "width": 440,
+            "height": 269,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 43,
+            "y": 13,
+            "width": 436,
+            "height": 265
+          },
+          "componentRect": {
+            "x": 55,
+            "y": 25,
+            "width": 412,
+            "height": 241
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Buttons",
+          "name": "ui_button_blue_normal",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_blue_normal.png",
+          "cropRect": {
+            "x": 497,
+            "y": 13,
+            "width": 440,
+            "height": 269,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 497,
+            "y": 13,
+            "width": 436,
+            "height": 265
+          },
+          "componentRect": {
+            "x": 509,
+            "y": 25,
+            "width": 412,
+            "height": 241
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Buttons",
+          "name": "ui_button_red_normal",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_red_normal.png",
+          "cropRect": {
+            "x": 948,
+            "y": 13,
+            "width": 425,
+            "height": 269,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 948,
+            "y": 13,
+            "width": 421,
+            "height": 265
+          },
+          "componentRect": {
+            "x": 960,
+            "y": 25,
+            "width": 397,
+            "height": 241
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "Buttons",
+          "name": "ui_button_green_pressed_selected",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_green_pressed_selected.png",
+          "cropRect": {
+            "x": 29,
+            "y": 260,
+            "width": 465,
+            "height": 616,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 29,
+            "y": 260,
+            "width": 461,
+            "height": 612
+          },
+          "componentRect": {
+            "x": 41,
+            "y": 272,
+            "width": 437,
+            "height": 588
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "Buttons",
+          "name": "ui_button_blue_pressed_selected",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_blue_pressed_selected.png",
+          "cropRect": {
+            "x": 482,
+            "y": 260,
+            "width": 467,
+            "height": 620,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 482,
+            "y": 260,
+            "width": 463,
+            "height": 616
+          },
+          "componentRect": {
+            "x": 494,
+            "y": 272,
+            "width": 439,
+            "height": 592
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "Buttons",
+          "name": "ui_button_red_pressed_selected",
+          "outputPath": "Assets/Art/UI/Sprites/Buttons/ui_button_red_pressed_selected.png",
+          "cropRect": {
+            "x": 932,
+            "y": 260,
+            "width": 463,
+            "height": 613,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 932,
+            "y": 260,
+            "width": 459,
+            "height": 609
+          },
+          "componentRect": {
+            "x": 944,
+            "y": 272,
+            "width": 435,
+            "height": 585
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "HUD",
+          "name": "ui_heart_full_01",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_heart_full_01.png",
+          "cropRect": {
+            "x": 225,
+            "y": 850,
+            "width": 233,
+            "height": 221,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 225,
+            "y": 850,
+            "width": 229,
+            "height": 217
+          },
+          "componentRect": {
+            "x": 237,
+            "y": 862,
+            "width": 205,
+            "height": 193
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "HUD",
+          "name": "ui_heart_full_02",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_heart_full_02.png",
+          "cropRect": {
+            "x": 973,
+            "y": 850,
+            "width": 232,
+            "height": 221,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 973,
+            "y": 850,
+            "width": 228,
+            "height": 217
+          },
+          "componentRect": {
+            "x": 985,
+            "y": 862,
+            "width": 204,
+            "height": 193
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "HUD",
+          "name": "ui_heart_full_03",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_heart_full_03.png",
+          "cropRect": {
+            "x": 470,
+            "y": 851,
+            "width": 230,
+            "height": 221,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 470,
+            "y": 851,
+            "width": 226,
+            "height": 217
+          },
+          "componentRect": {
+            "x": 482,
+            "y": 863,
+            "width": 202,
+            "height": 193
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "HUD",
+          "name": "ui_heart_empty",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_heart_empty.png",
+          "cropRect": {
+            "x": 717,
+            "y": 851,
+            "width": 230,
+            "height": 220,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 717,
+            "y": 851,
+            "width": 226,
+            "height": 216
+          },
+          "componentRect": {
+            "x": 729,
+            "y": 863,
+            "width": 202,
+            "height": 192
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 21,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月28日 01_31_31 (5).png",
+      "sourceFileName": "ChatGPT Image 2026年4月28日 01_31_31 (5).png",
+      "sourceSha1": "33585cf706a78ff59a51f0ddfb8bb69fd36f13f5",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet21_20260428_013131_5.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item01",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item01.png",
+          "cropRect": {
+            "x": 30,
+            "y": 108,
+            "width": 301,
+            "height": 315,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 30,
+            "y": 108,
+            "width": 297,
+            "height": 311
+          },
+          "componentRect": {
+            "x": 42,
+            "y": 120,
+            "width": 273,
+            "height": 287
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item02",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item02.png",
+          "cropRect": {
+            "x": 317,
+            "y": 108,
+            "width": 296,
+            "height": 312,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 317,
+            "y": 108,
+            "width": 292,
+            "height": 308
+          },
+          "componentRect": {
+            "x": 329,
+            "y": 120,
+            "width": 268,
+            "height": 284
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item03",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item03.png",
+          "cropRect": {
+            "x": 599,
+            "y": 108,
+            "width": 296,
+            "height": 313,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 599,
+            "y": 108,
+            "width": 292,
+            "height": 309
+          },
+          "componentRect": {
+            "x": 611,
+            "y": 120,
+            "width": 268,
+            "height": 285
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item04",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item04.png",
+          "cropRect": {
+            "x": 886,
+            "y": 108,
+            "width": 292,
+            "height": 312,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 886,
+            "y": 108,
+            "width": 288,
+            "height": 308
+          },
+          "componentRect": {
+            "x": 898,
+            "y": 120,
+            "width": 264,
+            "height": 284
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item05",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item05.png",
+          "cropRect": {
+            "x": 1155,
+            "y": 108,
+            "width": 296,
+            "height": 314,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1155,
+            "y": 108,
+            "width": 292,
+            "height": 310
+          },
+          "componentRect": {
+            "x": 1167,
+            "y": 120,
+            "width": 268,
+            "height": 286
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item06",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item06.png",
+          "cropRect": {
+            "x": 918,
+            "y": 435,
+            "width": 157,
+            "height": 251,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 918,
+            "y": 435,
+            "width": 153,
+            "height": 247
+          },
+          "componentRect": {
+            "x": 930,
+            "y": 447,
+            "width": 129,
+            "height": 223
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item07",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item07.png",
+          "cropRect": {
+            "x": 435,
+            "y": 443,
+            "width": 188,
+            "height": 244,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 435,
+            "y": 443,
+            "width": 184,
+            "height": 240
+          },
+          "componentRect": {
+            "x": 447,
+            "y": 455,
+            "width": 160,
+            "height": 216
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item08",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item08.png",
+          "cropRect": {
+            "x": 685,
+            "y": 448,
+            "width": 180,
+            "height": 235,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 685,
+            "y": 448,
+            "width": 176,
+            "height": 231
+          },
+          "componentRect": {
+            "x": 697,
+            "y": 460,
+            "width": 152,
+            "height": 207
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item09",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item09.png",
+          "cropRect": {
+            "x": 1134,
+            "y": 464,
+            "width": 284,
+            "height": 199,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1134,
+            "y": 464,
+            "width": 280,
+            "height": 195
+          },
+          "componentRect": {
+            "x": 1146,
+            "y": 476,
+            "width": 256,
+            "height": 171
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item10",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item10.png",
+          "cropRect": {
+            "x": 45,
+            "y": 479,
+            "width": 397,
+            "height": 181,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 45,
+            "y": 479,
+            "width": 393,
+            "height": 177
+          },
+          "componentRect": {
+            "x": 57,
+            "y": 491,
+            "width": 369,
+            "height": 153
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item11",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item11.png",
+          "cropRect": {
+            "x": 421,
+            "y": 684,
+            "width": 65,
+            "height": 130,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 421,
+            "y": 684,
+            "width": 61,
+            "height": 126
+          },
+          "componentRect": {
+            "x": 433,
+            "y": 696,
+            "width": 37,
+            "height": 102
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item12",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item12.png",
+          "cropRect": {
+            "x": 465,
+            "y": 690,
+            "width": 171,
+            "height": 170,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 465,
+            "y": 690,
+            "width": 167,
+            "height": 166
+          },
+          "componentRect": {
+            "x": 477,
+            "y": 702,
+            "width": 143,
+            "height": 142
+          }
+        },
+        {
+          "sheetItemIndex": 13,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item13",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item13.png",
+          "cropRect": {
+            "x": 281,
+            "y": 691,
+            "width": 168,
+            "height": 178,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 281,
+            "y": 691,
+            "width": 164,
+            "height": 174
+          },
+          "componentRect": {
+            "x": 293,
+            "y": 703,
+            "width": 140,
+            "height": 150
+          }
+        },
+        {
+          "sheetItemIndex": 14,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item14",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item14.png",
+          "cropRect": {
+            "x": 957,
+            "y": 703,
+            "width": 86,
+            "height": 121,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 957,
+            "y": 703,
+            "width": 82,
+            "height": 117
+          },
+          "componentRect": {
+            "x": 969,
+            "y": 715,
+            "width": 58,
+            "height": 93
+          }
+        },
+        {
+          "sheetItemIndex": 15,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item15",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item15.png",
+          "cropRect": {
+            "x": 814,
+            "y": 721,
+            "width": 111,
+            "height": 114,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 814,
+            "y": 721,
+            "width": 107,
+            "height": 110
+          },
+          "componentRect": {
+            "x": 826,
+            "y": 733,
+            "width": 83,
+            "height": 86
+          }
+        },
+        {
+          "sheetItemIndex": 16,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item16",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item16.png",
+          "cropRect": {
+            "x": 738,
+            "y": 739,
+            "width": 112,
+            "height": 145,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 738,
+            "y": 739,
+            "width": 108,
+            "height": 141
+          },
+          "componentRect": {
+            "x": 750,
+            "y": 751,
+            "width": 84,
+            "height": 117
+          }
+        },
+        {
+          "sheetItemIndex": 17,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item17",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item17.png",
+          "cropRect": {
+            "x": 1013,
+            "y": 739,
+            "width": 105,
+            "height": 105,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1013,
+            "y": 739,
+            "width": 101,
+            "height": 101
+          },
+          "componentRect": {
+            "x": 1025,
+            "y": 751,
+            "width": 77,
+            "height": 77
+          }
+        },
+        {
+          "sheetItemIndex": 18,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item18",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item18.png",
+          "cropRect": {
+            "x": 885,
+            "y": 799,
+            "width": 137,
+            "height": 140,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 885,
+            "y": 799,
+            "width": 133,
+            "height": 136
+          },
+          "componentRect": {
+            "x": 897,
+            "y": 811,
+            "width": 109,
+            "height": 112
+          }
+        },
+        {
+          "sheetItemIndex": 18,
+          "category": "StageSelect",
+          "name": "ui_stage_star_filled",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stage_star_filled.png",
+          "derivedFrom": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item18.png",
+          "derivedRect": {
+            "x": 0,
+            "y": 0,
+            "width": 137,
+            "height": 140
+          }
+        },
+        {
+          "sheetItemIndex": 19,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item19",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item19.png",
+          "cropRect": {
+            "x": 1033,
+            "y": 818,
+            "width": 104,
+            "height": 75,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1033,
+            "y": 818,
+            "width": 100,
+            "height": 71
+          },
+          "componentRect": {
+            "x": 1045,
+            "y": 830,
+            "width": 76,
+            "height": 47
+          }
+        },
+        {
+          "sheetItemIndex": 20,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item20",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item20.png",
+          "cropRect": {
+            "x": 447,
+            "y": 834,
+            "width": 204,
+            "height": 163,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 447,
+            "y": 834,
+            "width": 200,
+            "height": 159
+          },
+          "componentRect": {
+            "x": 459,
+            "y": 846,
+            "width": 176,
+            "height": 135
+          }
+        },
+        {
+          "sheetItemIndex": 21,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item21",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item21.png",
+          "cropRect": {
+            "x": 283,
+            "y": 845,
+            "width": 185,
+            "height": 161,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 283,
+            "y": 845,
+            "width": 181,
+            "height": 157
+          },
+          "componentRect": {
+            "x": 295,
+            "y": 857,
+            "width": 157,
+            "height": 133
+          }
+        },
+        {
+          "sheetItemIndex": 22,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item22",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item22.png",
+          "cropRect": {
+            "x": 795,
+            "y": 859,
+            "width": 99,
+            "height": 100,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 795,
+            "y": 859,
+            "width": 95,
+            "height": 96
+          },
+          "componentRect": {
+            "x": 807,
+            "y": 871,
+            "width": 71,
+            "height": 72
+          }
+        },
+        {
+          "sheetItemIndex": 23,
+          "category": "StageSelect",
+          "name": "ui_stageselect_sheet21_item23",
+          "outputPath": "Assets/Art/UI/Sprites/StageSelect/ui_stageselect_sheet21_item23.png",
+          "cropRect": {
+            "x": 1001,
+            "y": 875,
+            "width": 98,
+            "height": 100,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1001,
+            "y": 875,
+            "width": 94,
+            "height": 96
+          },
+          "componentRect": {
+            "x": 1013,
+            "y": 887,
+            "width": 70,
+            "height": 72
+          }
+        }
+      ]
+    },
+    {
+      "sheetIndex": 22,
+      "sourcePath": "C:\\Users\\einn\\Downloads\\ChatGPT Image 2026年4月28日 01_31_31 (6).png",
+      "sourceFileName": "ChatGPT Image 2026年4月28日 01_31_31 (6).png",
+      "sourceSha1": "d4e23bab8666c46deb2e1f6c941f5ea057e72e72",
+      "copiedSource": "Assets/Art/UI/_SourceSheets/sheet22_20260428_013131_6.png",
+      "sprites": [
+        {
+          "sheetItemIndex": 1,
+          "category": "Effects",
+          "name": "ui_judge_good_burst_bg",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_judge_good_burst_bg.png",
+          "cropRect": {
+            "x": 38,
+            "y": 97,
+            "width": 466,
+            "height": 376,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 38,
+            "y": 97,
+            "width": 462,
+            "height": 372
+          },
+          "componentRect": {
+            "x": 50,
+            "y": 109,
+            "width": 438,
+            "height": 348
+          }
+        },
+        {
+          "sheetItemIndex": 2,
+          "category": "Effects",
+          "name": "ui_judge_ok_burst_bg",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_judge_ok_burst_bg.png",
+          "cropRect": {
+            "x": 506,
+            "y": 104,
+            "width": 436,
+            "height": 365,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 506,
+            "y": 104,
+            "width": 432,
+            "height": 361
+          },
+          "componentRect": {
+            "x": 518,
+            "y": 116,
+            "width": 408,
+            "height": 337
+          }
+        },
+        {
+          "sheetItemIndex": 3,
+          "category": "Effects",
+          "name": "ui_judge_miss_burst_bg",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_judge_miss_burst_bg.png",
+          "cropRect": {
+            "x": 939,
+            "y": 107,
+            "width": 481,
+            "height": 366,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 939,
+            "y": 107,
+            "width": 477,
+            "height": 362
+          },
+          "componentRect": {
+            "x": 951,
+            "y": 119,
+            "width": 453,
+            "height": 338
+          }
+        },
+        {
+          "sheetItemIndex": 4,
+          "category": "HUD",
+          "name": "ui_judge_ok_text",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_judge_ok_text.png",
+          "cropRect": {
+            "x": 553,
+            "y": 522,
+            "width": 377,
+            "height": 236,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 553,
+            "y": 522,
+            "width": 373,
+            "height": 232
+          },
+          "componentRect": {
+            "x": 565,
+            "y": 534,
+            "width": 349,
+            "height": 208
+          }
+        },
+        {
+          "sheetItemIndex": 5,
+          "category": "HUD",
+          "name": "ui_judge_good_text",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_judge_good_text.png",
+          "cropRect": {
+            "x": 27,
+            "y": 525,
+            "width": 494,
+            "height": 231,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 27,
+            "y": 525,
+            "width": 490,
+            "height": 227
+          },
+          "componentRect": {
+            "x": 39,
+            "y": 537,
+            "width": 466,
+            "height": 203
+          }
+        },
+        {
+          "sheetItemIndex": 6,
+          "category": "HUD",
+          "name": "ui_judge_miss_text",
+          "outputPath": "Assets/Art/UI/Sprites/HUD/ui_judge_miss_text.png",
+          "cropRect": {
+            "x": 960,
+            "y": 526,
+            "width": 452,
+            "height": 222,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 960,
+            "y": 526,
+            "width": 448,
+            "height": 218
+          },
+          "componentRect": {
+            "x": 972,
+            "y": 538,
+            "width": 424,
+            "height": 194
+          }
+        },
+        {
+          "sheetItemIndex": 7,
+          "category": "Icons",
+          "name": "ui_icon_warning_triangle",
+          "outputPath": "Assets/Art/UI/Sprites/Icons/ui_icon_warning_triangle.png",
+          "cropRect": {
+            "x": 1061,
+            "y": 766,
+            "width": 206,
+            "height": 198,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 1061,
+            "y": 766,
+            "width": 202,
+            "height": 194
+          },
+          "componentRect": {
+            "x": 1073,
+            "y": 778,
+            "width": 178,
+            "height": 170
+          }
+        },
+        {
+          "sheetItemIndex": 8,
+          "category": "Effects",
+          "name": "ui_effect_good_star_large",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_good_star_large.png",
+          "cropRect": {
+            "x": 76,
+            "y": 776,
+            "width": 151,
+            "height": 150,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 76,
+            "y": 776,
+            "width": 147,
+            "height": 146
+          },
+          "componentRect": {
+            "x": 88,
+            "y": 788,
+            "width": 123,
+            "height": 122
+          }
+        },
+        {
+          "sheetItemIndex": 9,
+          "category": "Effects",
+          "name": "ui_effect_ok_star_large",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_ok_star_large.png",
+          "cropRect": {
+            "x": 572,
+            "y": 776,
+            "width": 150,
+            "height": 150,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 572,
+            "y": 776,
+            "width": 146,
+            "height": 146
+          },
+          "componentRect": {
+            "x": 584,
+            "y": 788,
+            "width": 122,
+            "height": 122
+          }
+        },
+        {
+          "sheetItemIndex": 10,
+          "category": "Effects",
+          "name": "ui_effect_good_accent_slashes",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_good_accent_slashes.png",
+          "cropRect": {
+            "x": 297,
+            "y": 801,
+            "width": 162,
+            "height": 163,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 297,
+            "y": 801,
+            "width": 158,
+            "height": 159
+          },
+          "componentRect": {
+            "x": 309,
+            "y": 813,
+            "width": 134,
+            "height": 135
+          }
+        },
+        {
+          "sheetItemIndex": 11,
+          "category": "Effects",
+          "name": "ui_effect_ok_accent_slashes",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_ok_accent_slashes.png",
+          "cropRect": {
+            "x": 790,
+            "y": 801,
+            "width": 162,
+            "height": 163,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 790,
+            "y": 801,
+            "width": 158,
+            "height": 159
+          },
+          "componentRect": {
+            "x": 802,
+            "y": 813,
+            "width": 134,
+            "height": 135
+          }
+        },
+        {
+          "sheetItemIndex": 12,
+          "category": "Effects",
+          "name": "ui_effect_good_star_small",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_good_star_small.png",
+          "cropRect": {
+            "x": 218,
+            "y": 810,
+            "width": 110,
+            "height": 111,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 218,
+            "y": 810,
+            "width": 106,
+            "height": 107
+          },
+          "componentRect": {
+            "x": 230,
+            "y": 822,
+            "width": 82,
+            "height": 83
+          }
+        },
+        {
+          "sheetItemIndex": 13,
+          "category": "Effects",
+          "name": "ui_effect_ok_star_small",
+          "outputPath": "Assets/Art/UI/Sprites/Effects/ui_effect_ok_star_small.png",
+          "cropRect": {
+            "x": 712,
+            "y": 810,
+            "width": 109,
+            "height": 111,
+            "safeBorder": 2
+          },
+          "sourceRect": {
+            "x": 712,
+            "y": 810,
+            "width": 105,
+            "height": 107
+          },
+          "componentRect": {
+            "x": 724,
+            "y": 822,
+            "width": 81,
+            "height": 83
+          }
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "spriteCount": 207,
+    "opaquePixelCount": 14308318,
+    "cornerAlphaFailures": [],
+    "cornerAlphaPass": true
+  }
+}
