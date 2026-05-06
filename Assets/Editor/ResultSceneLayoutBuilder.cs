@@ -762,6 +762,7 @@ public static class ResultSceneLayoutBuilder
 
     private static TMP_Text CreateText(string name, Transform parent, string text, TMP_FontAsset fontAsset, float fontSize, Color color, TextAlignmentOptions alignment)
     {
+        fontAsset ??= TMP_Settings.defaultFontAsset;
         RectTransform rectTransform = CreateUIObject(name, parent);
         TextMeshProUGUI textComponent = rectTransform.gameObject.AddComponent<TextMeshProUGUI>();
         textComponent.font = fontAsset;
@@ -769,7 +770,7 @@ public static class ResultSceneLayoutBuilder
         textComponent.fontSize = fontSize;
         textComponent.color = color;
         textComponent.alignment = alignment;
-        textComponent.enableWordWrapping = false;
+        textComponent.textWrappingMode = TextWrappingModes.NoWrap;
         textComponent.raycastTarget = false;
         return textComponent;
     }
@@ -902,69 +903,80 @@ public static class ResultSceneLayoutBuilder
         Sprite stageSelectIconSprite)
     {
         SerializedObject serializedObject = new(resultController);
-        serializedObject.FindProperty("_scoreText").objectReferenceValue = scoreText;
-        serializedObject.FindProperty("_bestScoreText").objectReferenceValue = bestScoreText;
-        serializedObject.FindProperty("_stageText").objectReferenceValue = stageText;
-        serializedObject.FindProperty("_resultText").objectReferenceValue = resultText;
-        serializedObject.FindProperty("_subMessageText").objectReferenceValue = subMessageText;
-        serializedObject.FindProperty("_countAText").objectReferenceValue = countAText;
-        serializedObject.FindProperty("_countBText").objectReferenceValue = countBText;
-        serializedObject.FindProperty("_countCText").objectReferenceValue = countCText;
-        serializedObject.FindProperty("_missLabelText").objectReferenceValue = missLabelText;
-        serializedObject.FindProperty("_missCountText").objectReferenceValue = missCountText;
-        serializedObject.FindProperty("_clearPanel").objectReferenceValue = clearPanel;
-        serializedObject.FindProperty("_gameOverPanel").objectReferenceValue = gameOverPanel;
-        serializedObject.FindProperty("_newBestBadge").objectReferenceValue = newBestBadge;
-        serializedObject.FindProperty("_primaryActionButton").objectReferenceValue = primaryActionButton;
-        serializedObject.FindProperty("_secondaryLeftButton").objectReferenceValue = secondaryLeftButton;
-        serializedObject.FindProperty("_secondaryRightButton").objectReferenceValue = secondaryRightButton;
-        serializedObject.FindProperty("_primaryActionLabel").objectReferenceValue = primaryActionLabel;
-        serializedObject.FindProperty("_secondaryLeftLabel").objectReferenceValue = secondaryLeftLabel;
-        serializedObject.FindProperty("_secondaryRightLabel").objectReferenceValue = secondaryRightLabel;
-        serializedObject.FindProperty("_primaryActionIcon").objectReferenceValue = primaryActionIcon;
-        serializedObject.FindProperty("_secondaryLeftActionIcon").objectReferenceValue = secondaryLeftIcon;
-        serializedObject.FindProperty("_secondaryRightActionIcon").objectReferenceValue = secondaryRightIcon;
-        serializedObject.FindProperty("_stateTintImage").objectReferenceValue = stateTintImage;
-        serializedObject.FindProperty("_stageBadgeBackground").objectReferenceValue = stageBadgeBackground;
-        serializedObject.FindProperty("_headerAccentImage").objectReferenceValue = headerAccentImage;
-        serializedObject.FindProperty("_scoreAccentImage").objectReferenceValue = scoreAccentImage;
-        serializedObject.FindProperty("_detailAccentImage").objectReferenceValue = detailAccentImage;
-        serializedObject.FindProperty("_missRowBackground").objectReferenceValue = missRowBackground;
-        serializedObject.FindProperty("_lightTruckIcon").objectReferenceValue = lightTruckIcon;
-        serializedObject.FindProperty("_compactCarIcon").objectReferenceValue = compactCarIcon;
-        serializedObject.FindProperty("_sportsCarIcon").objectReferenceValue = sportsCarIcon;
-        serializedObject.FindProperty("_starRowRoot").objectReferenceValue = starRowRoot;
-        serializedObject.FindProperty("_filledStarSprite").objectReferenceValue = filledStarSprite;
-        serializedObject.FindProperty("_emptyStarSprite").objectReferenceValue = emptyStarSprite;
-        serializedObject.FindProperty("_nextStageButtonSprite").objectReferenceValue = nextStageButtonSprite;
-        serializedObject.FindProperty("_retryButtonSprite").objectReferenceValue = secondaryButtonSprite;
-        serializedObject.FindProperty("_stageSelectButtonSprite").objectReferenceValue = secondaryButtonSprite;
-        serializedObject.FindProperty("_retryIconSprite").objectReferenceValue = retryIconSprite;
-        serializedObject.FindProperty("_stageSelectIconSprite").objectReferenceValue = stageSelectIconSprite;
-        serializedObject.FindProperty("_playerAnimationController").objectReferenceValue = null;
-
-        SerializedProperty starImagesProperty = serializedObject.FindProperty("_starImages");
-        starImagesProperty.arraySize = starImages.Length;
-        for (int i = 0; i < starImages.Length; i += 1)
-        {
-            starImagesProperty.GetArrayElementAtIndex(i).objectReferenceValue = starImages[i];
-        }
-
-        SerializedProperty starGlowImagesProperty = serializedObject.FindProperty("_starGlowImages");
-        starGlowImagesProperty.arraySize = starGlowImages.Length;
-        for (int i = 0; i < starGlowImages.Length; i += 1)
-        {
-            starGlowImagesProperty.GetArrayElementAtIndex(i).objectReferenceValue = starGlowImages[i];
-        }
-
-        SerializedProperty starLabelsProperty = serializedObject.FindProperty("_starLabels");
-        starLabelsProperty.arraySize = starLabels.Length;
-        for (int i = 0; i < starLabels.Length; i += 1)
-        {
-            starLabelsProperty.GetArrayElementAtIndex(i).objectReferenceValue = starLabels[i];
-        }
+        SetObjectReference(serializedObject, "_scoreText", scoreText);
+        SetObjectReference(serializedObject, "_bestScoreText", bestScoreText);
+        SetObjectReference(serializedObject, "_stageText", stageText);
+        SetObjectReference(serializedObject, "_resultText", resultText);
+        SetObjectReference(serializedObject, "_subMessageText", subMessageText);
+        SetObjectReference(serializedObject, "_countAText", countAText);
+        SetObjectReference(serializedObject, "_countBText", countBText);
+        SetObjectReference(serializedObject, "_countCText", countCText);
+        SetObjectReference(serializedObject, "_missLabelText", missLabelText);
+        SetObjectReference(serializedObject, "_missCountText", missCountText);
+        SetObjectReference(serializedObject, "_clearPanel", clearPanel);
+        SetObjectReference(serializedObject, "_gameOverPanel", gameOverPanel);
+        SetObjectReference(serializedObject, "_newBestBadge", newBestBadge);
+        SetObjectReference(serializedObject, "_primaryActionButton", primaryActionButton);
+        SetObjectReference(serializedObject, "_secondaryLeftButton", secondaryLeftButton);
+        SetObjectReference(serializedObject, "_secondaryRightButton", secondaryRightButton);
+        SetObjectReference(serializedObject, "_primaryActionLabel", primaryActionLabel);
+        SetObjectReference(serializedObject, "_secondaryLeftLabel", secondaryLeftLabel);
+        SetObjectReference(serializedObject, "_secondaryRightLabel", secondaryRightLabel);
+        SetObjectReference(serializedObject, "_primaryActionIcon", primaryActionIcon);
+        SetObjectReference(serializedObject, "_secondaryLeftActionIcon", secondaryLeftIcon);
+        SetObjectReference(serializedObject, "_secondaryRightActionIcon", secondaryRightIcon);
+        SetObjectReference(serializedObject, "_stateTintImage", stateTintImage);
+        SetObjectReference(serializedObject, "_stageBadgeBackground", stageBadgeBackground);
+        SetObjectReference(serializedObject, "_headerAccentImage", headerAccentImage);
+        SetObjectReference(serializedObject, "_scoreAccentImage", scoreAccentImage);
+        SetObjectReference(serializedObject, "_detailAccentImage", detailAccentImage);
+        SetObjectReference(serializedObject, "_missRowBackground", missRowBackground);
+        SetObjectReference(serializedObject, "_lightTruckIcon", lightTruckIcon);
+        SetObjectReference(serializedObject, "_compactCarIcon", compactCarIcon);
+        SetObjectReference(serializedObject, "_sportsCarIcon", sportsCarIcon);
+        SetObjectReference(serializedObject, "_starRowRoot", starRowRoot);
+        SetObjectReference(serializedObject, "_filledStarSprite", filledStarSprite);
+        SetObjectReference(serializedObject, "_emptyStarSprite", emptyStarSprite);
+        SetObjectReference(serializedObject, "_nextStageButtonSprite", nextStageButtonSprite);
+        SetObjectReference(serializedObject, "_retryButtonSprite", secondaryButtonSprite);
+        SetObjectReference(serializedObject, "_stageSelectButtonSprite", secondaryButtonSprite);
+        SetObjectReference(serializedObject, "_retryIconSprite", retryIconSprite);
+        SetObjectReference(serializedObject, "_stageSelectIconSprite", stageSelectIconSprite);
+        SetObjectReference(serializedObject, "_playerAnimationController", null);
+        SetObjectArray(serializedObject, "_starImages", starImages);
+        SetObjectArray(serializedObject, "_starGlowImages", starGlowImages);
+        SetObjectArray(serializedObject, "_starLabels", starLabels);
 
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void SetObjectReference(SerializedObject serializedObject, string propertyName, Object value)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"[ResultSceneLayoutBuilder] Missing serialized property: {propertyName}");
+            return;
+        }
+
+        property.objectReferenceValue = value;
+    }
+
+    private static void SetObjectArray(SerializedObject serializedObject, string propertyName, Object[] values)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"[ResultSceneLayoutBuilder] Missing serialized array property: {propertyName}");
+            return;
+        }
+
+        values ??= new Object[0];
+        property.arraySize = values.Length;
+        for (int i = 0; i < values.Length; i += 1)
+        {
+            property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
+        }
     }
 
     private static T GetOrAddComponent<T>(GameObject gameObject) where T : Component

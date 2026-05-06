@@ -79,6 +79,7 @@ public class LaneButtonVisualController : MonoBehaviour
         if (graphic is Image image)
         {
             image.sprite = sprite;
+            image.preserveAspect = true;
             return;
         }
 

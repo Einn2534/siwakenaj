@@ -7,14 +7,30 @@ public static class StageCardPrefabUpgrader
 {
     private const string PrefabPath = "Assets/Prefabs/StageCard.prefab";
     private const string StageSelectSpriteRoot = "Assets/Art/UI/Sprites/StageSelect/";
-    private const string ResultSpriteRoot = "Assets/Art/UI/Sprites/Result/";
 
+    [MenuItem("Tools/UI/Upgrade Stage Card Prefab")]
     public static void UpgradeStageCardPrefab()
     {
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) == null)
+        {
+            Debug.LogError($"[StageCardPrefabUpgrader] Missing prefab: {PrefabPath}");
+            return;
+        }
+
         GameObject prefabRoot = PrefabUtility.LoadPrefabContents(PrefabPath);
+        if (prefabRoot == null)
+        {
+            Debug.LogError($"[StageCardPrefabUpgrader] Failed to load prefab contents: {PrefabPath}");
+            return;
+        }
+
         try
         {
-            Upgrade(prefabRoot);
+            if (!Upgrade(prefabRoot))
+            {
+                return;
+            }
+
             PrefabUtility.SaveAsPrefabAsset(prefabRoot, PrefabPath);
             AssetDatabase.SaveAssets();
             Debug.Log($"[StageCardPrefabUpgrader] Upgraded {PrefabPath}");
@@ -25,10 +41,16 @@ public static class StageCardPrefabUpgrader
         }
     }
 
-    private static void Upgrade(GameObject root)
+    private static bool Upgrade(GameObject root)
     {
         StageCardView cardView = root.GetComponent<StageCardView>() ?? root.AddComponent<StageCardView>();
         RectTransform rootRect = root.GetComponent<RectTransform>();
+        if (rootRect == null)
+        {
+            Debug.LogError($"[StageCardPrefabUpgrader] Prefab root must have a RectTransform: {PrefabPath}");
+            return false;
+        }
+
         rootRect.sizeDelta = new Vector2(760f, 980f);
 
         Image rootImage = root.GetComponent<Image>() ?? root.AddComponent<Image>();
@@ -135,20 +157,21 @@ public static class StageCardPrefabUpgrader
         };
 
         SerializedObject serializedCard = new SerializedObject(cardView);
-        serializedCard.FindProperty("_stageNumberText").objectReferenceValue = stageNumberText;
-        serializedCard.FindProperty("_targetScoreText").objectReferenceValue = targetScoreText;
-        serializedCard.FindProperty("_bestScoreText").objectReferenceValue = bestScoreText;
-        serializedCard.FindProperty("_statusText").objectReferenceValue = statusText;
-        serializedCard.FindProperty("_starBadgeText").objectReferenceValue = starBadgeText;
-        serializedCard.FindProperty("_frameImage").objectReferenceValue = frame;
-        serializedCard.FindProperty("_thumbnailImage").objectReferenceValue = thumbnail;
-        serializedCard.FindProperty("_lockOverlayImage").objectReferenceValue = lockOverlay;
-        serializedCard.FindProperty("_selectionGlowImage").objectReferenceValue = selectionGlow;
-        serializedCard.FindProperty("_filledStarSprite").objectReferenceValue = filledStarSprite;
-        serializedCard.FindProperty("_emptyStarSprite").objectReferenceValue = emptyStarSprite;
+        SetObjectReference(serializedCard, "_stageNumberText", stageNumberText);
+        SetObjectReference(serializedCard, "_targetScoreText", targetScoreText);
+        SetObjectReference(serializedCard, "_bestScoreText", bestScoreText);
+        SetObjectReference(serializedCard, "_statusText", statusText);
+        SetObjectReference(serializedCard, "_starBadgeText", starBadgeText);
+        SetObjectReference(serializedCard, "_frameImage", frame);
+        SetObjectReference(serializedCard, "_thumbnailImage", thumbnail);
+        SetObjectReference(serializedCard, "_lockOverlayImage", lockOverlay);
+        SetObjectReference(serializedCard, "_selectionGlowImage", selectionGlow);
+        SetObjectReference(serializedCard, "_filledStarSprite", filledStarSprite);
+        SetObjectReference(serializedCard, "_emptyStarSprite", emptyStarSprite);
         SetObjectArray(serializedCard.FindProperty("_starImages"), starImages);
         SetObjectArray(serializedCard.FindProperty("_stageThumbnailSprites"), thumbnailSprites);
         serializedCard.ApplyModifiedPropertiesWithoutUndo();
+        return true;
     }
 
     private static Image CreateImage(Transform parent, string name, Sprite sprite, Vector2 anchoredPosition, Vector2 size, bool preserveAspect)
@@ -166,6 +189,7 @@ public static class StageCardPrefabUpgrader
 
         Image image = gameObject.GetComponent<Image>();
         image.sprite = sprite;
+        image.type = Image.Type.Simple;
         image.preserveAspect = preserveAspect;
         image.raycastTarget = false;
         image.color = Color.white;
@@ -196,7 +220,7 @@ public static class StageCardPrefabUpgrader
 
         TextMeshProUGUI textComponent = gameObject.GetComponent<TextMeshProUGUI>();
         textComponent.text = text;
-        textComponent.font = font;
+        textComponent.font = font != null ? font : TMP_Settings.defaultFontAsset;
         textComponent.fontSize = fontSizeMax;
         textComponent.fontSizeMax = fontSizeMax;
         textComponent.fontSizeMin = fontSizeMin;
@@ -219,11 +243,30 @@ public static class StageCardPrefabUpgrader
 
     private static void SetObjectArray(SerializedProperty property, Object[] values)
     {
+        if (property == null)
+        {
+            Debug.LogWarning("[StageCardPrefabUpgrader] Missing serialized array property.");
+            return;
+        }
+
+        values ??= new Object[0];
         property.arraySize = values.Length;
         for (int i = 0; i < values.Length; i += 1)
         {
             property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
         }
+    }
+
+    private static void SetObjectReference(SerializedObject serializedObject, string propertyName, Object value)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"[StageCardPrefabUpgrader] Missing serialized property: {propertyName}");
+            return;
+        }
+
+        property.objectReferenceValue = value;
     }
 
     private static Sprite LoadSprite(string path)

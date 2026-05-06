@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public static class TitleSceneLayoutBuilder
 {
@@ -14,7 +15,9 @@ public static class TitleSceneLayoutBuilder
     private const string TitleFontAssetPath = "Assets/Fonts/Y1BadBoySlab SDF.asset";
     private const string HeadlineFontAssetPath = "Assets/Fonts/Y1BroadBlack SDF.asset";
     private const string UiFontAssetPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
-    private const string TitleLogoPath = "Assets/Art/Sprites/Title_Img.png";
+    private const string JapaneseFallbackFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
+    private const string TitleBackgroundPath = "Assets/Art/UI/Sprites/Title/title_background_factory.png";
+    private const string TitleLogoPath = "Assets/Art/UI/Sprites/Title/siwakennja.png";
     private const string StartButtonPath = "Assets/Art/Sprites/Reslt/button_yellow_result.png";
     private const string SecondaryButtonPath = "Assets/Art/Sprites/Reslt/button_secondary_outline_strong.png";
     private const string BackButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_back_small.png";
@@ -51,36 +54,50 @@ public static class TitleSceneLayoutBuilder
     private static readonly Color DividerColor = new(0.902f, 0.922f, 0.953f, 1f);
     private static readonly Color ModalScrimColor = new(0.04f, 0.07f, 0.11f, 0.58f);
 
+    private static TMP_FontAsset s_JapaneseFontAsset;
+
     private readonly struct SettingsBindings
     {
         public SettingsBindings(
             Toggle bgmToggle,
             Toggle seToggle,
+            Toggle vibrationToggle,
             TMP_Text bgmStateText,
             TMP_Text seStateText,
+            TMP_Text vibrationStateText,
             Image bgmToggleImage,
             Image seToggleImage,
+            Image vibrationToggleImage,
             Image bgmAccentImage,
-            Image seAccentImage)
+            Image seAccentImage,
+            Image vibrationAccentImage)
         {
             BgmToggle = bgmToggle;
             SeToggle = seToggle;
+            VibrationToggle = vibrationToggle;
             BgmStateText = bgmStateText;
             SeStateText = seStateText;
+            VibrationStateText = vibrationStateText;
             BgmToggleImage = bgmToggleImage;
             SeToggleImage = seToggleImage;
+            VibrationToggleImage = vibrationToggleImage;
             BgmAccentImage = bgmAccentImage;
             SeAccentImage = seAccentImage;
+            VibrationAccentImage = vibrationAccentImage;
         }
 
         public Toggle BgmToggle { get; }
         public Toggle SeToggle { get; }
+        public Toggle VibrationToggle { get; }
         public TMP_Text BgmStateText { get; }
         public TMP_Text SeStateText { get; }
+        public TMP_Text VibrationStateText { get; }
         public Image BgmToggleImage { get; }
         public Image SeToggleImage { get; }
+        public Image VibrationToggleImage { get; }
         public Image BgmAccentImage { get; }
         public Image SeAccentImage { get; }
+        public Image VibrationAccentImage { get; }
     }
 
     [MenuItem("Tools/Scenes/Rebuild Title Scene UI")]
@@ -212,11 +229,18 @@ public static class TitleSceneLayoutBuilder
         TMP_FontAsset titleFontAsset = LoadFont(TitleFontAssetPath);
         TMP_FontAsset headlineFontAsset = LoadFont(HeadlineFontAssetPath);
         TMP_FontAsset uiFontAsset = LoadFont(UiFontAssetPath);
+        TMP_FontAsset japaneseFallbackFontAsset = LoadFont(JapaneseFallbackFontAssetPath);
         titleFontAsset ??= TMP_Settings.defaultFontAsset;
         headlineFontAsset ??= titleFontAsset;
         uiFontAsset ??= headlineFontAsset;
+        s_JapaneseFontAsset = japaneseFallbackFontAsset != null ? japaneseFallbackFontAsset : uiFontAsset;
+
+        EnsureFallbackFont(titleFontAsset, japaneseFallbackFontAsset);
+        EnsureFallbackFont(headlineFontAsset, japaneseFallbackFontAsset);
+        EnsureFallbackFont(uiFontAsset, japaneseFallbackFontAsset);
 
         Sprite slicedSprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
+        Sprite backgroundSprite = LoadSprite(TitleBackgroundPath);
         Sprite logoSprite = LoadSprite(TitleLogoPath);
         Sprite startButtonSprite = LoadSprite(StartButtonPath);
         Sprite secondaryButtonSprite = LoadSprite(SecondaryButtonPath);
@@ -236,7 +260,7 @@ public static class TitleSceneLayoutBuilder
         RectTransform background = CreateUIObject("Background", canvas.transform);
         Stretch(background, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-        BuildFactoryBackdrop(background, slicedSprite);
+        BuildFactoryBackdrop(background, slicedSprite, backgroundSprite);
 
         RectTransform safeAreaRoot = CreateUIObject("SafeAreaRoot", canvas.transform);
         Stretch(safeAreaRoot, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -252,8 +276,20 @@ public static class TitleSceneLayoutBuilder
         ApplySettingsBindings(settingsPanelController, settingsBindings, toggleOnSprite, toggleOffSprite);
     }
 
-    private static void BuildFactoryBackdrop(RectTransform parent, Sprite slicedSprite)
+    private static void BuildFactoryBackdrop(RectTransform parent, Sprite slicedSprite, Sprite backgroundSprite)
     {
+        if (backgroundSprite != null)
+        {
+            Image backgroundImage = CreateImage("FactoryBackgroundImage", parent, backgroundSprite, Color.white, false);
+            RectTransform backgroundRect = backgroundImage.rectTransform;
+            Stretch(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            AspectRatioFitter aspectRatioFitter = backgroundImage.gameObject.AddComponent<AspectRatioFitter>();
+            aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            aspectRatioFitter.aspectRatio = backgroundSprite.rect.width / backgroundSprite.rect.height;
+            return;
+        }
+
         RectTransform baseColor = CreatePanel("BaseColor", parent, slicedSprite, CameraColor);
         Stretch(baseColor, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
@@ -350,7 +386,7 @@ public static class TitleSceneLayoutBuilder
 
         RectTransform logoBlock = CreateUIObject("LogoBlock", contentRoot);
         SetAnchored(logoBlock, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -136f), new Vector2(990f, 410f));
-        BuildLogoBlock(logoBlock, titleFontAsset, headlineFontAsset, uiFontAsset, slicedSprite);
+        BuildLogoBlock(logoBlock, logoSprite, titleFontAsset, headlineFontAsset, uiFontAsset, slicedSprite);
 
         RectTransform catchCopyBubble = CreatePanel("CatchCopyBubble", contentRoot, slicedSprite, new Color(1f, 0.98f, 0.90f, 1f));
         SetAnchored(catchCopyBubble, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -570f), new Vector2(820f, 96f));
@@ -391,18 +427,23 @@ public static class TitleSceneLayoutBuilder
         Stretch((RectTransform)hintText.transform, Vector2.zero, Vector2.one, new Vector2(30f, 8f), new Vector2(-30f, -8f));
     }
 
-    private static void BuildLogoBlock(RectTransform parent, TMP_FontAsset titleFontAsset, TMP_FontAsset headlineFontAsset, TMP_FontAsset uiFontAsset, Sprite slicedSprite)
+    private static void BuildLogoBlock(RectTransform parent, Sprite logoSprite, TMP_FontAsset titleFontAsset, TMP_FontAsset headlineFontAsset, TMP_FontAsset uiFontAsset, Sprite slicedSprite)
     {
-        RectTransform shadow = CreatePanel("LogoShadow", parent, slicedSprite, InkColor);
-        SetAnchored(shadow, new Vector2(0.5f, 0.68f), new Vector2(0.5f, 0.68f), new Vector2(0.5f, 0.5f), new Vector2(0f, -24f), new Vector2(980f, 190f));
+        if (logoSprite != null)
+        {
+            Image logo = CreateImage("TitleLogo", parent, logoSprite, Color.white, true);
+            SetAnchored(logo.rectTransform, new Vector2(0.5f, 0.58f), new Vector2(0.5f, 0.58f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 514f));
+        }
 
         TMP_Text logoText = CreateText("LogoText", parent, "SIWAKENJA", titleFontAsset, 112f, 70f, LogoYellowColor, TextAlignmentOptions.Center);
+        logoText.gameObject.SetActive(logoSprite == null);
         SetAnchored((RectTransform)logoText.transform, new Vector2(0.5f, 0.72f), new Vector2(0.5f, 0.72f), new Vector2(0.5f, 0.5f), new Vector2(0f, 4f), new Vector2(960f, 176f));
         logoText.textWrappingMode = TextWrappingModes.NoWrap;
         logoText.outlineColor = InkColor;
         logoText.outlineWidth = 0.33f;
 
         RectTransform ribbon = CreatePanel("SubtitleRibbon", parent, slicedSprite, new Color(0.05f, 0.35f, 0.82f, 1f));
+        ribbon.gameObject.SetActive(logoSprite == null);
         SetAnchored(ribbon, new Vector2(0.5f, 0.34f), new Vector2(0.5f, 0.34f), new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(780f, 86f));
         AddShadow(ribbon.gameObject, new Color(0.02f, 0.05f, 0.12f, 0.5f), new Vector2(0f, -8f));
 
@@ -419,7 +460,7 @@ public static class TitleSceneLayoutBuilder
         redArrow.outlineColor = InkColor;
         redArrow.outlineWidth = 0.2f;
 
-        TMP_Text greenArrow = CreateText("GreenArrow", parent, "↗", headlineFontAsset, 70f, 44f, new Color(0.10f, 0.82f, 0.24f, 1f), TextAlignmentOptions.Center);
+        TMP_Text greenArrow = CreateText("GreenArrow", parent, "\u2197", headlineFontAsset, 70f, 44f, new Color(0.10f, 0.82f, 0.24f, 1f), TextAlignmentOptions.Center);
         SetAnchored((RectTransform)greenArrow.transform, new Vector2(0.72f, 0.78f), new Vector2(0.72f, 0.78f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(124f, 86f));
         greenArrow.outlineColor = InkColor;
         greenArrow.outlineWidth = 0.2f;
@@ -441,7 +482,7 @@ public static class TitleSceneLayoutBuilder
 
         RectTransform monitorLeft = CreatePanel("MonitorLeft", parent, slicedSprite, new Color(0.12f, 0.38f, 0.67f, 0.86f));
         SetAnchored(monitorLeft, new Vector2(0f, 0.58f), new Vector2(0f, 0.58f), new Vector2(0.5f, 0.5f), new Vector2(72f, 0f), new Vector2(120f, 100f));
-        TMP_Text check = CreateText("Check", monitorLeft, "✓", null, 64f, 42f, new Color(0.20f, 0.95f, 0.43f, 1f), TextAlignmentOptions.Center);
+        TMP_Text check = CreateText("Check", monitorLeft, "\u2713", null, 64f, 42f, new Color(0.20f, 0.95f, 0.43f, 1f), TextAlignmentOptions.Center);
         Stretch((RectTransform)check.transform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
         CreateStar(parent, "SparkleLeft", new Vector2(-450f, 20f), null);
@@ -499,7 +540,7 @@ public static class TitleSceneLayoutBuilder
 
     private static void CreateStar(RectTransform parent, string name, Vector2 anchoredPosition, TMP_FontAsset fontAsset)
     {
-        TMP_Text star = CreateText(name, parent, "★", fontAsset, 48f, 32f, AccentColor, TextAlignmentOptions.Center);
+        TMP_Text star = CreateText(name, parent, "\u2605", fontAsset, 48f, 32f, AccentColor, TextAlignmentOptions.Center);
         SetAnchored((RectTransform)star.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), anchoredPosition, new Vector2(70f, 70f));
         star.outlineColor = Color.white;
         star.outlineWidth = 0.14f;
@@ -599,8 +640,8 @@ public static class TitleSceneLayoutBuilder
         SetAnchored((RectTransform)closeButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 34f), new Vector2(560f, 136f));
 
         SerializedObject serializedHowTo = new(howToOverlayController);
-        serializedHowTo.FindProperty("_overlayPanel").objectReferenceValue = overlay.gameObject;
-        serializedHowTo.FindProperty("_closeButton").objectReferenceValue = closeButton;
+        SetObjectReference(serializedHowTo, "_overlayPanel", overlay.gameObject);
+        SetObjectReference(serializedHowTo, "_closeButton", closeButton);
         SetObjectArray(serializedHowTo.FindProperty("_extraCloseButtons"), new Object[] { topCloseButton });
         serializedHowTo.ApplyModifiedPropertiesWithoutUndo();
 
@@ -675,8 +716,9 @@ public static class TitleSceneLayoutBuilder
 
         CreateSettingsRow(body, "BGM", "TITLE / STAGE MUSIC", SuccessColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out Toggle bgmToggle, out TMP_Text bgmState, out Image bgmToggleImage, out Image bgmAccent);
         CreateSettingsRow(body, "SE", "BUTTON / JUDGE SOUNDS", BlueAccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out Toggle seToggle, out TMP_Text seState, out Image seToggleImage, out Image seAccent);
+        CreateSettingsRow(body, "VIBRATION", "JUDGE / RESULT FEEDBACK", AccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out Toggle vibrationToggle, out TMP_Text vibrationState, out Image vibrationToggleImage, out Image vibrationAccent);
 
-        settingsBindings = new SettingsBindings(bgmToggle, seToggle, bgmState, seState, bgmToggleImage, seToggleImage, bgmAccent, seAccent);
+        settingsBindings = new SettingsBindings(bgmToggle, seToggle, vibrationToggle, bgmState, seState, vibrationState, bgmToggleImage, seToggleImage, vibrationToggleImage, bgmAccent, seAccent, vibrationAccent);
         overlay.gameObject.SetActive(false);
         return overlay;
     }
@@ -834,7 +876,7 @@ public static class TitleSceneLayoutBuilder
         RectTransform rectTransform = CreateUIObject(name, parent);
         Image image = rectTransform.gameObject.AddComponent<Image>();
         image.sprite = sprite;
-        image.type = Image.Type.Sliced;
+        image.type = sprite != null ? Image.Type.Sliced : Image.Type.Simple;
         image.color = color;
         image.raycastTarget = true;
         return rectTransform;
@@ -842,7 +884,7 @@ public static class TitleSceneLayoutBuilder
 
     private static TMP_Text CreateText(string name, Transform parent, string text, TMP_FontAsset fontAsset, float fontSizeMax, float fontSizeMin, Color color, TextAlignmentOptions alignment)
     {
-        fontAsset ??= TMP_Settings.defaultFontAsset;
+        fontAsset = ResolveFontForText(text, fontAsset);
         GameObject gameObject = new(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
         gameObject.layer = parent.gameObject.layer;
         gameObject.transform.SetParent(parent, false);
@@ -862,6 +904,58 @@ public static class TitleSceneLayoutBuilder
         return textComponent;
     }
 
+    private static TMP_FontAsset ResolveFontForText(string text, TMP_FontAsset requestedFontAsset)
+    {
+        TMP_FontAsset resolvedFontAsset = requestedFontAsset ?? TMP_Settings.defaultFontAsset;
+        if (ContainsJapanese(text) && s_JapaneseFontAsset != null)
+        {
+            resolvedFontAsset = s_JapaneseFontAsset;
+        }
+
+        return resolvedFontAsset;
+    }
+
+    private static bool ContainsJapanese(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
+        foreach (char character in text)
+        {
+            if ((character >= '\u3040' && character <= '\u30ff') ||
+                (character >= '\u3400' && character <= '\u9fff') ||
+                (character >= '\uf900' && character <= '\ufaff') ||
+                (character >= '\uff00' && character <= '\uffef'))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void EnsureFallbackFont(TMP_FontAsset fontAsset, TMP_FontAsset fallbackFontAsset)
+    {
+        if (fontAsset == null || fallbackFontAsset == null || fontAsset == fallbackFontAsset)
+        {
+            return;
+        }
+
+        if (fontAsset.fallbackFontAssetTable == null)
+        {
+            Debug.LogWarning($"[TitleSceneLayoutBuilder] Missing fallback table on font: {fontAsset.name}");
+            return;
+        }
+
+        if (!fontAsset.fallbackFontAssetTable.Contains(fallbackFontAsset))
+        {
+            fontAsset.fallbackFontAssetTable.Add(fallbackFontAsset);
+            EditorUtility.SetDirty(fontAsset);
+        }
+    }
+
     private static RectTransform CreateUIObject(string name, Transform parent)
     {
         GameObject gameObject = new(name, typeof(RectTransform), typeof(CanvasRenderer));
@@ -873,32 +967,36 @@ public static class TitleSceneLayoutBuilder
     private static void ApplyTitleControllerBindings(TitleController titleController, GameObject howToPanel, GameObject settingsPanel, HowToOverlayController howToOverlayController)
     {
         SerializedObject serializedTitle = new(titleController);
-        serializedTitle.FindProperty("_howToPanel").objectReferenceValue = howToPanel;
-        serializedTitle.FindProperty("_settingsPanel").objectReferenceValue = settingsPanel;
-        serializedTitle.FindProperty("_howToOverlayController").objectReferenceValue = howToOverlayController;
+        SetObjectReference(serializedTitle, "_howToPanel", howToPanel);
+        SetObjectReference(serializedTitle, "_settingsPanel", settingsPanel);
+        SetObjectReference(serializedTitle, "_howToOverlayController", howToOverlayController);
         serializedTitle.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static void ApplyHowToBindings(HowToOverlayController howToOverlayController, GameObject howToPanel)
     {
         SerializedObject serializedHowTo = new(howToOverlayController);
-        serializedHowTo.FindProperty("_overlayPanel").objectReferenceValue = howToPanel;
+        SetObjectReference(serializedHowTo, "_overlayPanel", howToPanel);
         serializedHowTo.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static void ApplySettingsBindings(SettingsPanelController settingsPanelController, SettingsBindings bindings, Sprite toggleOnSprite, Sprite toggleOffSprite)
     {
         SerializedObject serializedSettings = new(settingsPanelController);
-        serializedSettings.FindProperty("_bgmToggle").objectReferenceValue = bindings.BgmToggle;
-        serializedSettings.FindProperty("_seToggle").objectReferenceValue = bindings.SeToggle;
-        serializedSettings.FindProperty("_bgmStateText").objectReferenceValue = bindings.BgmStateText;
-        serializedSettings.FindProperty("_seStateText").objectReferenceValue = bindings.SeStateText;
-        serializedSettings.FindProperty("_bgmToggleImage").objectReferenceValue = bindings.BgmToggleImage;
-        serializedSettings.FindProperty("_seToggleImage").objectReferenceValue = bindings.SeToggleImage;
-        serializedSettings.FindProperty("_bgmAccentImage").objectReferenceValue = bindings.BgmAccentImage;
-        serializedSettings.FindProperty("_seAccentImage").objectReferenceValue = bindings.SeAccentImage;
-        serializedSettings.FindProperty("_toggleOnSprite").objectReferenceValue = toggleOnSprite;
-        serializedSettings.FindProperty("_toggleOffSprite").objectReferenceValue = toggleOffSprite;
+        SetRequiredObjectReference(serializedSettings, "_bgmToggle", bindings.BgmToggle);
+        SetRequiredObjectReference(serializedSettings, "_seToggle", bindings.SeToggle);
+        SetRequiredObjectReference(serializedSettings, "_vibrationToggle", bindings.VibrationToggle);
+        SetRequiredObjectReference(serializedSettings, "_bgmStateText", bindings.BgmStateText);
+        SetRequiredObjectReference(serializedSettings, "_seStateText", bindings.SeStateText);
+        SetRequiredObjectReference(serializedSettings, "_vibrationStateText", bindings.VibrationStateText);
+        SetRequiredObjectReference(serializedSettings, "_bgmToggleImage", bindings.BgmToggleImage);
+        SetRequiredObjectReference(serializedSettings, "_seToggleImage", bindings.SeToggleImage);
+        SetRequiredObjectReference(serializedSettings, "_vibrationToggleImage", bindings.VibrationToggleImage);
+        SetRequiredObjectReference(serializedSettings, "_bgmAccentImage", bindings.BgmAccentImage);
+        SetRequiredObjectReference(serializedSettings, "_seAccentImage", bindings.SeAccentImage);
+        SetRequiredObjectReference(serializedSettings, "_vibrationAccentImage", bindings.VibrationAccentImage);
+        SetObjectReference(serializedSettings, "_toggleOnSprite", toggleOnSprite);
+        SetObjectReference(serializedSettings, "_toggleOffSprite", toggleOffSprite);
         serializedSettings.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(settingsPanelController);
     }
@@ -935,11 +1033,46 @@ public static class TitleSceneLayoutBuilder
 
     private static void SetObjectArray(SerializedProperty property, Object[] values)
     {
+        if (property == null)
+        {
+            Debug.LogWarning("[TitleSceneLayoutBuilder] Missing serialized array property.");
+            return;
+        }
+
+        values ??= new Object[0];
         property.arraySize = values.Length;
         for (int i = 0; i < values.Length; i += 1)
         {
             property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
         }
+    }
+
+    private static void SetObjectReference(SerializedObject serializedObject, string propertyName, Object value)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"[TitleSceneLayoutBuilder] Missing serialized property: {propertyName}");
+            return;
+        }
+
+        property.objectReferenceValue = value;
+    }
+
+    private static void SetRequiredObjectReference(SerializedObject serializedObject, string propertyName, Object value)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            throw new System.InvalidOperationException($"[TitleSceneLayoutBuilder] Missing required serialized property: {propertyName}");
+        }
+
+        if (value == null)
+        {
+            throw new System.InvalidOperationException($"[TitleSceneLayoutBuilder] Missing required binding value: {propertyName}");
+        }
+
+        property.objectReferenceValue = value;
     }
 
     private static void SetAnchored(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition, Vector2 sizeDelta)
@@ -979,6 +1112,19 @@ public static class TitleSceneLayoutBuilder
     private static Sprite LoadSprite(string path)
     {
         Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        if (sprite == null)
+        {
+            Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+            foreach (Object asset in assets)
+            {
+                if (asset is Sprite childSprite)
+                {
+                    sprite = childSprite;
+                    break;
+                }
+            }
+        }
+
         if (sprite == null)
         {
             Debug.LogWarning($"[TitleSceneLayoutBuilder] Missing sprite: {path}");
