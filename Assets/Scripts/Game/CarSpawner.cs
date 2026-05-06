@@ -11,9 +11,13 @@ public class CarSpawner : MonoBehaviour
     private const float SpawnMarginRatio = 0.6f;
     private const float MinSpawnGapRatio = 0.25f;
     private const float DefaultCarWidth = 1f;
+    private const int CarSortingOrder = 20;
 
     [SerializeField]
     private CarVisualDatabase _visualDatabase;
+
+    [SerializeField]
+    private GameObject _carPrefab;
 
     [SerializeField, FormerlySerializedAs("playZone")]
     private RectTransform _playZone;
@@ -176,11 +180,31 @@ public class CarSpawner : MonoBehaviour
 
     private GameObject CreateCarObject(Vector3 position)
     {
-        GameObject carObject = new("Car");
+        GameObject carObject = _carPrefab != null
+            ? Instantiate(_carPrefab, position, Quaternion.identity)
+            : new GameObject("Car");
+
+        carObject.name = "Car";
         carObject.transform.SetPositionAndRotation(position, Quaternion.identity);
-        carObject.AddComponent<SpriteRenderer>();
-        carObject.AddComponent<CarVisualController>();
-        carObject.AddComponent<CarController>();
+
+        SpriteRenderer spriteRenderer = carObject.GetComponentInChildren<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = carObject.AddComponent<SpriteRenderer>();
+        }
+
+        spriteRenderer.sortingOrder = CarSortingOrder;
+
+        if (!carObject.TryGetComponent(out CarVisualController _))
+        {
+            carObject.AddComponent<CarVisualController>();
+        }
+
+        if (!carObject.TryGetComponent(out CarController _))
+        {
+            carObject.AddComponent<CarController>();
+        }
+
         return carObject;
     }
 
