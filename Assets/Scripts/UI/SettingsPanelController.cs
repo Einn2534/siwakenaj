@@ -16,6 +16,9 @@ public class SettingsPanelController : MonoBehaviour
     [SerializeField, FormerlySerializedAs("seToggle")]
     private Toggle _seToggle;
 
+    [SerializeField, FormerlySerializedAs("vibrationToggle")]
+    private Toggle _vibrationToggle;
+
     [Header("Visuals")]
     [SerializeField]
     private TMP_Text _bgmStateText;
@@ -24,10 +27,16 @@ public class SettingsPanelController : MonoBehaviour
     private TMP_Text _seStateText;
 
     [SerializeField]
+    private TMP_Text _vibrationStateText;
+
+    [SerializeField]
     private Image _bgmToggleImage;
 
     [SerializeField]
     private Image _seToggleImage;
+
+    [SerializeField]
+    private Image _vibrationToggleImage;
 
     [SerializeField]
     private Image _bgmAccentImage;
@@ -36,12 +45,20 @@ public class SettingsPanelController : MonoBehaviour
     private Image _seAccentImage;
 
     [SerializeField]
+    private Image _vibrationAccentImage;
+
+    [SerializeField]
     private Sprite _toggleOnSprite;
 
     [SerializeField]
     private Sprite _toggleOffSprite;
 
     private bool _isInitialized;
+
+    private void Awake()
+    {
+        EnsureVibrationRowBindings();
+    }
 
     private void Start()
     {
@@ -53,6 +70,11 @@ public class SettingsPanelController : MonoBehaviour
         if (_seToggle != null)
         {
             _seToggle.onValueChanged.AddListener(OnSeChanged);
+        }
+
+        if (_vibrationToggle != null)
+        {
+            _vibrationToggle.onValueChanged.AddListener(OnVibrationChanged);
         }
 
         _isInitialized = true;
@@ -78,6 +100,11 @@ public class SettingsPanelController : MonoBehaviour
         {
             _seToggle.onValueChanged.RemoveListener(OnSeChanged);
         }
+
+        if (_vibrationToggle != null)
+        {
+            _vibrationToggle.onValueChanged.RemoveListener(OnVibrationChanged);
+        }
     }
 
     private void OnBgmChanged(bool isOn)
@@ -96,10 +123,23 @@ public class SettingsPanelController : MonoBehaviour
         RefreshVisualState(_seStateText, _seToggleImage, _seAccentImage, isOn);
     }
 
+    private void OnVibrationChanged(bool isOn)
+    {
+        SaveService.SetVibrationOn(isOn);
+        SaveService.Save();
+        if (!isOn)
+        {
+            VibrationService.Stop();
+        }
+
+        RefreshVisualState(_vibrationStateText, _vibrationToggleImage, _vibrationAccentImage, isOn);
+    }
+
     private void RefreshFromSave()
     {
         bool isBgmOn = SaveService.GetBgmOn();
         bool isSeOn = SaveService.GetSeOn();
+        bool isVibrationOn = SaveService.GetVibrationOn();
 
         if (_bgmToggle != null)
         {
@@ -111,8 +151,116 @@ public class SettingsPanelController : MonoBehaviour
             _seToggle.SetIsOnWithoutNotify(isSeOn);
         }
 
+        if (_vibrationToggle != null)
+        {
+            _vibrationToggle.SetIsOnWithoutNotify(isVibrationOn);
+        }
+
         RefreshVisualState(_bgmStateText, _bgmToggleImage, _bgmAccentImage, isBgmOn);
         RefreshVisualState(_seStateText, _seToggleImage, _seAccentImage, isSeOn);
+        RefreshVisualState(_vibrationStateText, _vibrationToggleImage, _vibrationAccentImage, isVibrationOn);
+    }
+
+    private void EnsureVibrationRowBindings()
+    {
+        if (_vibrationToggle != null
+            && _vibrationStateText != null
+            && _vibrationToggleImage != null
+            && _vibrationAccentImage != null)
+        {
+            return;
+        }
+
+        bool createdVibrationRow = false;
+        Transform vibrationRow = transform.Find("Body/VIBRATIONRow");
+        if (vibrationRow == null)
+        {
+            Transform sourceRow = transform.Find("Body/SERow");
+            if (sourceRow != null)
+            {
+                GameObject rowObject = Instantiate(sourceRow.gameObject, sourceRow.parent);
+                rowObject.name = "VIBRATIONRow";
+                rowObject.transform.SetSiblingIndex(sourceRow.GetSiblingIndex() + 1);
+                vibrationRow = rowObject.transform;
+                createdVibrationRow = true;
+            }
+        }
+
+        if (vibrationRow == null)
+        {
+            return;
+        }
+
+        SetRowText(vibrationRow, "Label", "VIBRATION");
+        SetRowText(vibrationRow, "Detail", "JUDGE / RESULT FEEDBACK");
+        SetRowText(vibrationRow, "StateText", "ON");
+
+        if (_vibrationToggle == null)
+        {
+            _vibrationToggle = vibrationRow.GetComponentInChildren<Toggle>(true);
+        }
+
+        if (_vibrationToggle != null)
+        {
+            _vibrationToggle.name = "VIBRATIONToggle";
+            if (createdVibrationRow)
+            {
+                _vibrationToggle.onValueChanged = new Toggle.ToggleEvent();
+            }
+
+            _vibrationToggle.onValueChanged.RemoveListener(OnVibrationChanged);
+            if (_vibrationToggleImage == null)
+            {
+                _vibrationToggleImage = ResolveToggleImage(_vibrationToggle);
+            }
+        }
+
+        if (_vibrationStateText == null)
+        {
+            _vibrationStateText = FindRowText(vibrationRow, "StateText");
+        }
+
+        if (_vibrationAccentImage == null)
+        {
+            _vibrationAccentImage = FindRowImage(vibrationRow, "AccentBar");
+        }
+    }
+
+    private static void SetRowText(Transform row, string childName, string value)
+    {
+        TMP_Text text = FindRowText(row, childName);
+        if (text != null)
+        {
+            text.text = value;
+        }
+    }
+
+    private static TMP_Text FindRowText(Transform row, string childName)
+    {
+        Transform child = row.Find(childName);
+        return child != null ? child.GetComponent<TMP_Text>() : null;
+    }
+
+    private static Image FindRowImage(Transform row, string childName)
+    {
+        Transform child = row.Find(childName);
+        return child != null ? child.GetComponent<Image>() : null;
+    }
+
+    private static Image ResolveToggleImage(Toggle toggle)
+    {
+        if (toggle == null)
+        {
+            return null;
+        }
+
+        Image toggleImage = toggle.GetComponent<Image>();
+        if (toggleImage != null)
+        {
+            return toggleImage;
+        }
+
+        return toggle.targetGraphic as Image;
     }
 
     private void RefreshVisualState(TMP_Text stateText, Image toggleImage, Image accentImage, bool isOn)

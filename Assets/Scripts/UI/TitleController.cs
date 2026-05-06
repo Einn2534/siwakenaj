@@ -15,6 +15,11 @@ public class TitleController : MonoBehaviour
     [SerializeField]
     private HowToOverlayController _howToOverlayController;
 
+    private void Start()
+    {
+        SoundManager.EnsureInstance().PlayTitleBgm();
+    }
+
     public void OnStartPressed()
     {
         SceneManager.LoadScene(StageSelectScene);

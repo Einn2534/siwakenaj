@@ -4,6 +4,7 @@ public static class SaveService
 {
     private const string BgmOnKey = "BGM_On";
     private const string SeOnKey = "SE_On";
+    private const string VibrationOnKey = "Vibration_On";
     private const string HowToShownKey = "HowTo_Shown";
     private const string SelectedStageKey = "SelectedStage";
     private const string LastStageKey = "LastStage";
@@ -34,6 +35,16 @@ public static class SaveService
     public static void SetSeOn(bool isOn)
     {
         SetBool(SeOnKey, isOn);
+    }
+
+    public static bool GetVibrationOn()
+    {
+        return GetBool(VibrationOnKey, true);
+    }
+
+    public static void SetVibrationOn(bool isOn)
+    {
+        SetBool(VibrationOnKey, isOn);
     }
 
     public static bool GetHowToShown()

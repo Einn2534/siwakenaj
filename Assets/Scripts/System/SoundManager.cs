@@ -4,6 +4,14 @@ using UnityEngine.Serialization;
 public class SoundManager : MonoBehaviour
 {
     private static SoundManager _currentInstance;
+    private const string SoundManagerObjectName = "SoundManager";
+    private const string BgmResourcePath = "Audio/Bgm";
+    private const string TitleBgmResourcePath = "Audio/TitleBgm";
+    private const string StageSelectBgmResourcePath = "Audio/StageSelectBgm";
+    private const string CorrectResourcePath = "Audio/Correct";
+    private const string MissResourcePath = "Audio/Miss";
+    private const string ClearResourcePath = "Audio/Clear";
+    private const string GameOverResourcePath = "Audio/GameOver";
 
     [SerializeField, FormerlySerializedAs("bgmSource")]
     private AudioSource _bgmSource;
@@ -13,6 +21,12 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField, FormerlySerializedAs("bgmClip")]
     private AudioClip _bgmClip;
+
+    [SerializeField]
+    private AudioClip _titleBgmClip;
+
+    [SerializeField]
+    private AudioClip _stageSelectBgmClip;
 
     [SerializeField, FormerlySerializedAs("correctClip")]
     private AudioClip _correctClip;
@@ -31,6 +45,29 @@ public class SoundManager : MonoBehaviour
 
     public static SoundManager Instance => _currentInstance;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticState()
+    {
+        _currentInstance = null;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Initialize()
+    {
+        EnsureInstance();
+    }
+
+    public static SoundManager EnsureInstance()
+    {
+        if (_currentInstance != null)
+        {
+            return _currentInstance;
+        }
+
+        GameObject soundManagerObject = new GameObject(SoundManagerObjectName);
+        return soundManagerObject.AddComponent<SoundManager>();
+    }
+
     private void Awake()
     {
         if (_currentInstance != null && _currentInstance != this)
@@ -41,8 +78,64 @@ public class SoundManager : MonoBehaviour
 
         _currentInstance = this;
         DontDestroyOnLoad(gameObject);
+        EnsureAudioSources();
+        LoadResourceFallbackClips();
         _isBgmOn = SaveService.GetBgmOn();
         _isSeOn = SaveService.GetSeOn();
+        SetBgmEnabled(_isBgmOn);
+    }
+
+    private void EnsureAudioSources()
+    {
+        if (_bgmSource == null)
+        {
+            _bgmSource = gameObject.AddComponent<AudioSource>();
+            _bgmSource.playOnAwake = false;
+        }
+
+        if (_seSource == null)
+        {
+            _seSource = gameObject.AddComponent<AudioSource>();
+            _seSource.playOnAwake = false;
+        }
+    }
+
+    private void LoadResourceFallbackClips()
+    {
+        if (_bgmClip == null)
+        {
+            _bgmClip = Resources.Load<AudioClip>(BgmResourcePath);
+        }
+
+        if (_titleBgmClip == null)
+        {
+            _titleBgmClip = Resources.Load<AudioClip>(TitleBgmResourcePath);
+        }
+
+        if (_stageSelectBgmClip == null)
+        {
+            _stageSelectBgmClip = Resources.Load<AudioClip>(StageSelectBgmResourcePath);
+        }
+
+        if (_correctClip == null)
+        {
+            _correctClip = Resources.Load<AudioClip>(CorrectResourcePath);
+        }
+
+        if (_missClip == null)
+        {
+            _missClip = Resources.Load<AudioClip>(MissResourcePath);
+        }
+
+        if (_clearClip == null)
+        {
+            _clearClip = Resources.Load<AudioClip>(ClearResourcePath);
+        }
+
+        if (_gameOverClip == null)
+        {
+            _gameOverClip = Resources.Load<AudioClip>(GameOverResourcePath);
+        }
     }
 
     private void OnDestroy()
@@ -69,12 +162,32 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBgm()
     {
-        if (_bgmSource == null || _bgmClip == null)
+        PlayBgmClip(_bgmClip);
+    }
+
+    public void PlayTitleBgm()
+    {
+        PlayBgmClip(_titleBgmClip);
+    }
+
+    public void PlayStageSelectBgm()
+    {
+        PlayBgmClip(_stageSelectBgmClip);
+    }
+
+    private void PlayBgmClip(AudioClip clip)
+    {
+        if (_bgmSource == null || clip == null)
         {
             return;
         }
 
-        _bgmSource.clip = _bgmClip;
+        if (_bgmSource.clip == clip && _bgmSource.isPlaying)
+        {
+            return;
+        }
+
+        _bgmSource.clip = clip;
         _bgmSource.loop = true;
         _bgmSource.mute = !_isBgmOn;
         _bgmSource.Play();

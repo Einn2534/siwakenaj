@@ -40,6 +40,8 @@ public class StageSelectController : MonoBehaviour
 
     private IEnumerator Start()
     {
+        SoundManager.EnsureInstance().PlayStageSelectBgm();
+
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
         EnsureStageCardViews();
 

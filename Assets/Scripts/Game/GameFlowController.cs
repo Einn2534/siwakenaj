@@ -22,12 +22,16 @@ public class GameFlowController : MonoBehaviour
     private GameState _currentState = GameState.Ready;
 
     private JudgeController _judgeController;
+    private MainHudEffectsController _hudEffectsController;
     private StageDatabase _stageDatabase;
     private StageDefinition _currentStageDefinition;
+    private Coroutine _startGameRoutine;
+    private Coroutine _resultLoadRoutine;
 
     private void Awake()
     {
         _judgeController = FindAnyObjectByType<JudgeController>();
+        _hudEffectsController = FindAnyObjectByType<MainHudEffectsController>();
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
     }
 
@@ -44,6 +48,12 @@ public class GameFlowController : MonoBehaviour
         if (_carSpawner != null)
         {
             _carSpawner.CarMissed -= OnCarMissed;
+        }
+
+        if (_startGameRoutine != null)
+        {
+            StopCoroutine(_startGameRoutine);
+            _startGameRoutine = null;
         }
     }
 
@@ -64,9 +74,20 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
-        if (_scoreManager == null || _carSpawner == null || _stageDatabase == null)
+        if (_startGameRoutine != null)
         {
             return;
+        }
+
+        _startGameRoutine = StartCoroutine(StartGameRoutine());
+    }
+
+    private IEnumerator StartGameRoutine()
+    {
+        if (_scoreManager == null || _carSpawner == null || _stageDatabase == null)
+        {
+            _startGameRoutine = null;
+            yield break;
         }
 
         int selectedStageNumber = Mathf.Max(1, SessionState.SelectedStageNumber);
@@ -75,9 +96,22 @@ public class GameFlowController : MonoBehaviour
 
         _scoreManager.Initialize(_currentStageDefinition);
         _carSpawner.Initialize(_currentStageDefinition);
+        SoundManager.EnsureInstance().PlayBgm();
+
+        if (_hudEffectsController != null)
+        {
+            yield return _hudEffectsController.PlayReadyCountdown();
+        }
+
+        if (_currentState != GameState.Ready)
+        {
+            _startGameRoutine = null;
+            yield break;
+        }
+
         _carSpawner.StartSpawning();
-        SoundManager.Instance?.PlayBgm();
         _currentState = GameState.Playing;
+        _startGameRoutine = null;
     }
 
     public void HandleLaneInput(CarType laneType)
@@ -95,16 +129,26 @@ public class GameFlowController : MonoBehaviour
         switch (result)
         {
             case JudgeResult.Correct:
+                _hudEffectsController?.ShowCorrectJudge();
                 _scoreManager.ApplySuccess(laneType);
                 _playerAnimationController?.PlayHappy();
                 SoundManager.Instance?.PlayCorrect();
                 _carSpawner?.DespawnCar(activeCar);
+                if (!HasReachedTerminalCondition())
+                {
+                    VibrationService.PlayCorrect();
+                }
                 break;
             case JudgeResult.WrongLane:
             case JudgeResult.NoCar:
+                _hudEffectsController?.ShowMissJudge();
                 _scoreManager.ApplyMiss();
                 _playerAnimationController?.PlayCry();
                 SoundManager.Instance?.PlayMiss();
+                if (!HasReachedTerminalCondition())
+                {
+                    VibrationService.PlayMiss();
+                }
                 break;
         }
 
@@ -119,7 +163,20 @@ public class GameFlowController : MonoBehaviour
         }
 
         _scoreManager.ApplyMiss();
+        _hudEffectsController?.ShowMissJudge();
+        _playerAnimationController?.PlayCry();
+        SoundManager.Instance?.PlayMiss();
+        if (!HasReachedTerminalCondition())
+        {
+            VibrationService.PlayMiss();
+        }
         EvaluateCompletion();
+    }
+
+    private bool HasReachedTerminalCondition()
+    {
+        return _scoreManager != null &&
+            (_scoreManager.HasReachedMissLimit || _scoreManager.HasReachedTargetScore);
     }
 
     private void EvaluateCompletion()
@@ -151,9 +208,10 @@ public class GameFlowController : MonoBehaviour
         _currentState = GameState.GameOver;
         StopGameplay();
         SoundManager.Instance?.PlayGameOver();
+        VibrationService.PlayGameOver();
         _playerAnimationController?.PlayCry();
         StoreResult(false);
-        StartCoroutine(LoadResultAfterDelay());
+        StartResultSceneLoad();
     }
 
     private void FinishStage()
@@ -166,13 +224,20 @@ public class GameFlowController : MonoBehaviour
         _currentState = GameState.Result;
         StopGameplay();
         SoundManager.Instance?.PlayClear();
+        VibrationService.PlayClear();
         _playerAnimationController?.PlayWin();
         StoreResult(true);
-        StartCoroutine(LoadResultAfterDelay());
+        StartResultSceneLoad();
     }
 
     private void StopGameplay()
     {
+        if (_startGameRoutine != null)
+        {
+            StopCoroutine(_startGameRoutine);
+            _startGameRoutine = null;
+        }
+
         _carSpawner?.StopSpawning();
         _carSpawner?.StopAllCars();
     }
@@ -183,9 +248,20 @@ public class GameFlowController : MonoBehaviour
         SessionState.StoreResult(GameResultData.FromScoreState(stageNumber, isClear, _scoreManager?.State));
     }
 
+    private void StartResultSceneLoad()
+    {
+        if (_resultLoadRoutine != null)
+        {
+            return;
+        }
+
+        _resultLoadRoutine = StartCoroutine(LoadResultAfterDelay());
+    }
+
     private IEnumerator LoadResultAfterDelay()
     {
         yield return new WaitForSeconds(ResultSceneDelaySeconds);
+        _resultLoadRoutine = null;
         SceneManager.LoadScene(ResultSceneName);
     }
 }
