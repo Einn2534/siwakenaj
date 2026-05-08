@@ -54,7 +54,7 @@ public class StageSelectController : MonoBehaviour
         yield return null;
 
         int lastStageNumber = SaveService.GetLastStage();
-        int startIndex = _stageDatabase != null ? _stageDatabase.GetStageIndex(lastStageNumber) : 0;
+        int startIndex = GetInitialStageIndex(lastStageNumber);
         _swipeSnapController?.JumpToIndex(startIndex);
         ApplySelectionIndex(startIndex);
     }
@@ -105,10 +105,14 @@ public class StageSelectController : MonoBehaviour
 
         int clampedIndex = Mathf.Clamp(index, 0, _stageDatabase.Stages.Count - 1);
         StageDefinition stageDefinition = _stageDatabase.Stages[clampedIndex];
-        _selectedStageNumber = stageDefinition.StageNumber;
-        SaveService.SetLastStage(_selectedStageNumber);
-        SaveService.Save();
+        _selectedStageNumber = GetDisplayStageNumber(stageDefinition, clampedIndex);
         UpdateCards();
+
+        if (CanPlaySelectedStage())
+        {
+            SaveService.SetLastStage(_selectedStageNumber);
+            SaveService.Save();
+        }
 
         if (_playButton != null)
         {
@@ -127,18 +131,19 @@ public class StageSelectController : MonoBehaviour
         for (int i = 0; i < count; i += 1)
         {
             StageDefinition stageDefinition = _stageDatabase.Stages[i];
-            int bestScore = SaveService.GetBestScore(stageDefinition.StageNumber);
-            int starRating = SaveService.GetStarRating(stageDefinition.StageNumber);
+            int stageNumber = GetDisplayStageNumber(stageDefinition, i);
             bool isUnlocked = _stageDatabase.IsStageUnlocked(i, SaveService.GetBestScore);
             StageCardStatus cardStatus = GetCardStatus(stageDefinition, isUnlocked);
+            int bestScore = cardStatus == StageCardStatus.Unlocked ? SaveService.GetBestScore(stageNumber) : 0;
+            int starRating = cardStatus == StageCardStatus.Unlocked ? SaveService.GetStarRating(stageNumber) : 0;
             _stageCardViews[i].SetData(
-                stageDefinition.StageNumber,
-                stageDefinition.TargetScore,
+                stageNumber,
+                stageDefinition != null ? stageDefinition.TargetScore : 0,
                 bestScore,
                 cardStatus,
                 starRating,
                 cardStatus == StageCardStatus.Locked ? GetRequiredStageNumber(i) : 0);
-            _stageCardViews[i].SetSelected(stageDefinition.StageNumber == _selectedStageNumber);
+            _stageCardViews[i].SetSelected(stageNumber == _selectedStageNumber);
         }
     }
 
@@ -277,16 +282,48 @@ public class StageSelectController : MonoBehaviour
             return false;
         }
 
-        int index = _stageDatabase.GetStageIndex(_selectedStageNumber);
-        if (index < 0 || index >= _stageDatabase.Stages.Count)
+        if (!_stageDatabase.TryGetStageIndex(_selectedStageNumber, out int index))
         {
             return false;
         }
 
-        StageDefinition stageDefinition = _stageDatabase.Stages[index];
+        return IsPlayableStage(index);
+    }
+
+    private int GetInitialStageIndex(int preferredStageNumber)
+    {
+        if (_stageDatabase == null || _stageDatabase.Stages.Count == 0)
+        {
+            return 0;
+        }
+
+        if (_stageDatabase.TryGetStageIndex(preferredStageNumber, out int preferredIndex) && IsPlayableStage(preferredIndex))
+        {
+            return preferredIndex;
+        }
+
+        for (int i = 0; i < _stageDatabase.Stages.Count; i += 1)
+        {
+            if (IsPlayableStage(i))
+            {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private bool IsPlayableStage(int stageIndex)
+    {
+        if (_stageDatabase == null || stageIndex < 0 || stageIndex >= _stageDatabase.Stages.Count)
+        {
+            return false;
+        }
+
+        StageDefinition stageDefinition = _stageDatabase.Stages[stageIndex];
         return stageDefinition != null
             && stageDefinition.IsImplemented
-            && _stageDatabase.IsStageUnlocked(index, SaveService.GetBestScore);
+            && _stageDatabase.IsStageUnlocked(stageIndex, SaveService.GetBestScore);
     }
 
     private static StageCardStatus GetCardStatus(StageDefinition stageDefinition, bool isUnlocked)
@@ -302,5 +339,15 @@ public class StageSelectController : MonoBehaviour
     private int GetRequiredStageNumber(int stageIndex)
     {
         return _stageDatabase != null ? _stageDatabase.GetRequiredClearStageNumber(stageIndex) : 0;
+    }
+
+    private static int GetDisplayStageNumber(StageDefinition stageDefinition, int stageIndex)
+    {
+        if (stageDefinition != null)
+        {
+            return Mathf.Max(1, stageDefinition.StageNumber);
+        }
+
+        return Mathf.Max(1, stageIndex + 1);
     }
 }

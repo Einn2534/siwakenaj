@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +8,22 @@ public static class StageCardPrefabUpgrader
 {
     private const string PrefabPath = "Assets/Prefabs/StageCard.prefab";
     private const string StageSelectSpriteRoot = "Assets/Art/UI/Sprites/StageSelect/";
+    private static readonly string[] VisualChildOrder =
+    {
+        "SelectionGlow",
+        "Frame",
+        "StageThumbnail",
+        "LockOverlay",
+        "InfoPanel",
+        "StageNumberText",
+        "TargetScoreText",
+        "BestScoreText",
+        "StatusText",
+        "StarBadgeText",
+        "Star01",
+        "Star02",
+        "Star03"
+    };
 
     [MenuItem("Tools/UI/Upgrade Stage Card Prefab")]
     public static void UpgradeStageCardPrefab()
@@ -63,7 +80,7 @@ public static class StageCardPrefabUpgrader
         layoutElement.preferredHeight = 928f;
         layoutElement.layoutPriority = 1;
 
-        ClearChildren(root.transform);
+        PruneChildren(root.transform, VisualChildOrder);
 
         Sprite frameSprite = LoadSprite(StageSelectSpriteRoot + "ui_stageselect_sheet15_item01.png");
         Sprite selectionGlowSprite = LoadSprite(StageSelectSpriteRoot + "ui_stageselect_sheet15_item08.png");
@@ -77,22 +94,22 @@ public static class StageCardPrefabUpgrader
             LoadSprite(StageSelectSpriteRoot + "ui_stage_thumb_crane.png")
         };
 
-        Image selectionGlow = CreateImage(root.transform, "SelectionGlow", selectionGlowSprite, Vector2.zero, new Vector2(650f, 820f), false);
+        Image selectionGlow = UpsertImage(root.transform, "SelectionGlow", selectionGlowSprite, Vector2.zero, new Vector2(650f, 820f), false);
         selectionGlow.gameObject.SetActive(false);
 
-        Image frame = CreateImage(root.transform, "Frame", frameSprite, Vector2.zero, new Vector2(640f, 920f), false);
-        Image thumbnail = CreateImage(root.transform, "StageThumbnail", thumbnailSprites[0], new Vector2(0f, 145f), new Vector2(500f, 500f), true);
-        Image lockOverlay = CreateImage(root.transform, "LockOverlay", lockOverlaySprite, new Vector2(0f, 80f), new Vector2(500f, 610f), true);
+        Image frame = UpsertImage(root.transform, "Frame", frameSprite, Vector2.zero, new Vector2(640f, 920f), false);
+        Image thumbnail = UpsertImage(root.transform, "StageThumbnail", thumbnailSprites[0], new Vector2(0f, 145f), new Vector2(500f, 500f), true);
+        Image lockOverlay = UpsertImage(root.transform, "LockOverlay", lockOverlaySprite, new Vector2(0f, 80f), new Vector2(500f, 610f), true);
         lockOverlay.gameObject.SetActive(false);
 
-        Image infoPanel = CreateImage(root.transform, "InfoPanel", GetBuiltInUiSprite(), new Vector2(0f, -260f), new Vector2(560f, 260f), false);
+        Image infoPanel = UpsertImage(root.transform, "InfoPanel", GetBuiltInUiSprite(), new Vector2(0f, -260f), new Vector2(560f, 260f), false);
         infoPanel.type = Image.Type.Sliced;
         infoPanel.color = new Color(0.015f, 0.09f, 0.15f, 0.88f);
 
         TMP_FontAsset headlineFont = LoadFont("Assets/Fonts/Y1BroadBlack SDF.asset");
         TMP_FontAsset bodyFont = LoadFont("Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset");
 
-        TMP_Text stageNumberText = CreateText(
+        TMP_Text stageNumberText = UpsertText(
             root.transform,
             "StageNumberText",
             "STAGE <color=#35D7FF>01</color>",
@@ -103,7 +120,7 @@ public static class StageCardPrefabUpgrader
             36f,
             Color.white);
 
-        TMP_Text targetScoreText = CreateText(
+        TMP_Text targetScoreText = UpsertText(
             root.transform,
             "TargetScoreText",
             "<color=#FFD84D>TARGET</color>  0",
@@ -114,7 +131,7 @@ public static class StageCardPrefabUpgrader
             22f,
             Color.white);
 
-        TMP_Text bestScoreText = CreateText(
+        TMP_Text bestScoreText = UpsertText(
             root.transform,
             "BestScoreText",
             "<color=#FFE05D>BEST</color>  -",
@@ -125,19 +142,19 @@ public static class StageCardPrefabUpgrader
             22f,
             Color.white);
 
-        TMP_Text statusText = CreateText(
+        TMP_Text statusText = UpsertText(
             root.transform,
             "StatusText",
             "LOCKED",
-            new Vector2(0f, -250f),
-            new Vector2(500f, 90f),
+            new Vector2(0f, 105f),
+            new Vector2(500f, 110f),
             headlineFont,
-            46f,
-            28f,
+            54f,
+            30f,
             new Color(1f, 0.93f, 0.62f, 1f));
         statusText.gameObject.SetActive(false);
 
-        TMP_Text starBadgeText = CreateText(
+        TMP_Text starBadgeText = UpsertText(
             root.transform,
             "StarBadgeText",
             string.Empty,
@@ -151,10 +168,11 @@ public static class StageCardPrefabUpgrader
 
         Image[] starImages =
         {
-            CreateImage(root.transform, "Star01", emptyStarSprite, new Vector2(-120f, -404f), new Vector2(88f, 88f), true),
-            CreateImage(root.transform, "Star02", emptyStarSprite, new Vector2(0f, -404f), new Vector2(88f, 88f), true),
-            CreateImage(root.transform, "Star03", emptyStarSprite, new Vector2(120f, -404f), new Vector2(88f, 88f), true)
+            UpsertImage(root.transform, "Star01", emptyStarSprite, new Vector2(-120f, -404f), new Vector2(88f, 88f), true),
+            UpsertImage(root.transform, "Star02", emptyStarSprite, new Vector2(0f, -404f), new Vector2(88f, 88f), true),
+            UpsertImage(root.transform, "Star03", emptyStarSprite, new Vector2(120f, -404f), new Vector2(88f, 88f), true)
         };
+        SetSiblingOrder(root.transform, VisualChildOrder);
 
         SerializedObject serializedCard = new SerializedObject(cardView);
         SetObjectReference(serializedCard, "_stageNumberText", stageNumberText);
@@ -174,20 +192,21 @@ public static class StageCardPrefabUpgrader
         return true;
     }
 
-    private static Image CreateImage(Transform parent, string name, Sprite sprite, Vector2 anchoredPosition, Vector2 size, bool preserveAspect)
+    private static Image UpsertImage(Transform parent, string name, Sprite sprite, Vector2 anchoredPosition, Vector2 size, bool preserveAspect)
     {
-        GameObject gameObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        GameObject gameObject = GetOrCreateChild(parent, name);
+        EnsureComponent<CanvasRenderer>(gameObject);
+        Image image = EnsureComponent<Image>(gameObject);
+        gameObject.SetActive(true);
         gameObject.layer = parent.gameObject.layer;
-        gameObject.transform.SetParent(parent, false);
 
-        RectTransform rectTransform = (RectTransform)gameObject.transform;
+        RectTransform rectTransform = EnsureRectTransform(gameObject);
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.anchoredPosition = anchoredPosition;
         rectTransform.sizeDelta = size;
 
-        Image image = gameObject.GetComponent<Image>();
         image.sprite = sprite;
         image.type = Image.Type.Simple;
         image.preserveAspect = preserveAspect;
@@ -196,7 +215,7 @@ public static class StageCardPrefabUpgrader
         return image;
     }
 
-    private static TMP_Text CreateText(
+    private static TMP_Text UpsertText(
         Transform parent,
         string name,
         string text,
@@ -207,18 +226,19 @@ public static class StageCardPrefabUpgrader
         float fontSizeMin,
         Color color)
     {
-        GameObject gameObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+        GameObject gameObject = GetOrCreateChild(parent, name);
+        EnsureComponent<CanvasRenderer>(gameObject);
+        TextMeshProUGUI textComponent = EnsureComponent<TextMeshProUGUI>(gameObject);
+        gameObject.SetActive(true);
         gameObject.layer = parent.gameObject.layer;
-        gameObject.transform.SetParent(parent, false);
 
-        RectTransform rectTransform = (RectTransform)gameObject.transform;
+        RectTransform rectTransform = EnsureRectTransform(gameObject);
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.anchoredPosition = anchoredPosition;
         rectTransform.sizeDelta = size;
 
-        TextMeshProUGUI textComponent = gameObject.GetComponent<TextMeshProUGUI>();
         textComponent.text = text;
         textComponent.font = font != null ? font : TMP_Settings.defaultFontAsset;
         textComponent.fontSize = fontSizeMax;
@@ -233,11 +253,65 @@ public static class StageCardPrefabUpgrader
         return textComponent;
     }
 
-    private static void ClearChildren(Transform parent)
+    private static GameObject GetOrCreateChild(Transform parent, string name)
     {
-        for (int i = parent.childCount - 1; i >= 0; i -= 1)
+        Transform child = parent.Find(name);
+        if (child != null)
         {
-            Object.DestroyImmediate(parent.GetChild(i).gameObject);
+            return child.gameObject;
+        }
+
+        GameObject gameObject = new GameObject(name, typeof(RectTransform));
+        gameObject.transform.SetParent(parent, false);
+        return gameObject;
+    }
+
+    private static RectTransform EnsureRectTransform(GameObject gameObject)
+    {
+        RectTransform rectTransform = gameObject.transform as RectTransform;
+        if (rectTransform != null)
+        {
+            return rectTransform;
+        }
+
+        Debug.LogError($"[StageCardPrefabUpgrader] Child must use RectTransform: {gameObject.name}");
+        return gameObject.AddComponent<RectTransform>();
+    }
+
+    private static T EnsureComponent<T>(GameObject gameObject) where T : Component
+    {
+        return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
+    }
+
+    private static void PruneChildren(Transform parent, IReadOnlyCollection<string> expectedNames)
+    {
+        HashSet<string> expectedNameSet = new HashSet<string>(expectedNames);
+        HashSet<string> seenNames = new HashSet<string>();
+        List<GameObject> childrenToRemove = new List<GameObject>();
+        for (int i = 0; i < parent.childCount; i += 1)
+        {
+            Transform child = parent.GetChild(i);
+            if (!expectedNameSet.Contains(child.name) || !seenNames.Add(child.name))
+            {
+                childrenToRemove.Add(child.gameObject);
+            }
+        }
+
+        foreach (GameObject child in childrenToRemove)
+        {
+            Object.DestroyImmediate(child);
+        }
+    }
+
+    private static void SetSiblingOrder(Transform parent, IReadOnlyList<string> orderedNames)
+    {
+        for (int i = 0; i < orderedNames.Count; i += 1)
+        {
+            Transform child = parent.Find(orderedNames[i]);
+            if (child != null)
+            {
+                child.SetSiblingIndex(i);
+            }
         }
     }
 

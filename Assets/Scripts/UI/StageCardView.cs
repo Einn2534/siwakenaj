@@ -28,7 +28,6 @@ public class StageCardView : MonoBehaviour
     private static readonly Color UnlockedThumbnailColor = Color.white;
     private static readonly Color LockedThumbnailColor = new(0.42f, 0.48f, 0.56f, 0.72f);
     private static readonly Color ComingSoonThumbnailColor = new(0.30f, 0.42f, 0.58f, 0.58f);
-    private static readonly Color LockedStarColor = new(0.48f, 0.56f, 0.66f, 0.72f);
 
     [SerializeField, FormerlySerializedAs("stageNumberText")]
     private TMP_Text _stageNumberText;
@@ -261,7 +260,7 @@ public class StageCardView : MonoBehaviour
 
         if (_lockOverlayImage != null)
         {
-            _lockOverlayImage.gameObject.SetActive(status != StageCardStatus.Unlocked);
+            _lockOverlayImage.gameObject.SetActive(status == StageCardStatus.Locked);
         }
     }
 
@@ -276,7 +275,7 @@ public class StageCardView : MonoBehaviour
                 continue;
             }
 
-            bool isVisibleSlot = i < MaxStarCount;
+            bool isVisibleSlot = canShowStars && i < MaxStarCount;
             starImage.gameObject.SetActive(isVisibleSlot);
             if (!isVisibleSlot)
             {
@@ -290,7 +289,7 @@ public class StageCardView : MonoBehaviour
                 starImage.sprite = sprite;
             }
 
-            starImage.color = canShowStars ? Color.white : LockedStarColor;
+            starImage.color = Color.white;
             starImage.preserveAspect = true;
         }
     }
@@ -299,7 +298,7 @@ public class StageCardView : MonoBehaviour
     {
         if (_selectionGlowImage != null)
         {
-            _selectionGlowImage.gameObject.SetActive(_isSelected);
+            _selectionGlowImage.gameObject.SetActive(_isSelected && _currentStatus == StageCardStatus.Unlocked);
         }
     }
 
