@@ -2,10 +2,6 @@ using UnityEngine;
 
 public static class VibrationService
 {
-    private const float TerminalEventCooldownSeconds = 1.25f;
-
-    private static float _lastTerminalEventTime = -TerminalEventCooldownSeconds;
-
     public static bool IsEnabled => SaveService.GetVibrationOn();
 
     public static void PlayCorrect()
@@ -52,19 +48,12 @@ public static class VibrationService
 
     private static void VibrateTerminalEvent()
     {
-        float now = Time.unscaledTime;
-        if (now - _lastTerminalEventTime < TerminalEventCooldownSeconds)
-        {
-            return;
-        }
-
-        _lastTerminalEventTime = now;
         Vibrate();
     }
 
     private static void Vibrate()
     {
-        if (!SaveService.GetVibrationOn())
+        if (!IsEnabled)
         {
             Stop();
             return;

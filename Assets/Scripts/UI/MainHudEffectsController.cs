@@ -49,6 +49,7 @@ public class MainHudEffectsController : MonoBehaviour
     [SerializeField]
     private Vector2 _judgeSize = new(420f, 170f);
 
+    private Coroutine _countdownRoutine;
     private Coroutine _judgeRoutine;
 
     private void Awake()
@@ -58,10 +59,33 @@ public class MainHudEffectsController : MonoBehaviour
         HideImage(_judgeImage);
     }
 
+    private void OnDisable()
+    {
+        StopEffects();
+    }
+
     public IEnumerator PlayReadyCountdown()
     {
         EnsureImages();
+        StopCountdown();
         HideImage(_judgeImage);
+
+        _countdownRoutine = StartCoroutine(PlayReadyCountdownRoutine());
+        yield return _countdownRoutine;
+        _countdownRoutine = null;
+    }
+
+    public void StopEffects()
+    {
+        StopCountdown();
+        StopJudge();
+        HideImage(_countdownImage);
+        HideImage(_judgeImage);
+    }
+
+    private IEnumerator PlayReadyCountdownRoutine()
+    {
+        EnsureImages();
 
         yield return PlayCountdownStep(_countdown3Sprite, _countdownStepSeconds);
         yield return PlayCountdownStep(_countdown2Sprite, _countdownStepSeconds);
@@ -79,6 +103,30 @@ public class MainHudEffectsController : MonoBehaviour
     public void ShowMissJudge()
     {
         ShowJudge(_missJudgeSprite);
+    }
+
+    private void StopCountdown()
+    {
+        if (_countdownRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(_countdownRoutine);
+        _countdownRoutine = null;
+        HideImage(_countdownImage);
+    }
+
+    private void StopJudge()
+    {
+        if (_judgeRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(_judgeRoutine);
+        _judgeRoutine = null;
+        HideImage(_judgeImage);
     }
 
     private IEnumerator PlayCountdownStep(Sprite sprite, float seconds)
@@ -105,7 +153,7 @@ public class MainHudEffectsController : MonoBehaviour
 
         if (_judgeRoutine != null)
         {
-            StopCoroutine(_judgeRoutine);
+            StopJudge();
         }
 
         _judgeRoutine = StartCoroutine(ShowJudgeRoutine(sprite));

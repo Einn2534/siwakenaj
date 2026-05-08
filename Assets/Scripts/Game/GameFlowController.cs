@@ -18,11 +18,13 @@ public class GameFlowController : MonoBehaviour
     [SerializeField, FormerlySerializedAs("playerAnimationController")]
     private PlayerAnimationController _playerAnimationController;
 
+    [SerializeField]
+    private MainHudEffectsController _hudEffectsController;
+
     [SerializeField, FormerlySerializedAs("currentState")]
     private GameState _currentState = GameState.Ready;
 
     private JudgeController _judgeController;
-    private MainHudEffectsController _hudEffectsController;
     private StageDatabase _stageDatabase;
     private StageDefinition _currentStageDefinition;
     private Coroutine _startGameRoutine;
@@ -31,7 +33,7 @@ public class GameFlowController : MonoBehaviour
     private void Awake()
     {
         _judgeController = FindAnyObjectByType<JudgeController>();
-        _hudEffectsController = FindAnyObjectByType<MainHudEffectsController>();
+        _hudEffectsController ??= FindAnyObjectByType<MainHudEffectsController>();
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
     }
 
@@ -55,6 +57,8 @@ public class GameFlowController : MonoBehaviour
             StopCoroutine(_startGameRoutine);
             _startGameRoutine = null;
         }
+
+        _hudEffectsController?.StopEffects();
     }
 
     private void Start()
