@@ -84,3 +84,8 @@ diff_unstaged_utf8.txt
 status.txt
 status_utf8.txt
 Assets/_Recovery.meta
+
+# Local Unity/Android generated output
+.utmp/
+*_BurstDebugInformation_DoNotShip/
+*.log
