@@ -136,7 +136,7 @@ public class GameFlowController : MonoBehaviour
                 _hudEffectsController?.ShowCorrectJudge();
                 _scoreManager.ApplySuccess(laneType);
                 _playerAnimationController?.PlayHappy();
-                SoundManager.Instance?.PlayCorrect();
+                SoundManager.EnsureInstance().PlayCorrect();
                 _carSpawner?.DespawnCar(activeCar);
                 if (!HasReachedTerminalCondition())
                 {
@@ -148,7 +148,7 @@ public class GameFlowController : MonoBehaviour
                 _hudEffectsController?.ShowMissJudge();
                 _scoreManager.ApplyMiss();
                 _playerAnimationController?.PlayCry();
-                SoundManager.Instance?.PlayMiss();
+                SoundManager.EnsureInstance().PlayMiss();
                 if (!HasReachedTerminalCondition())
                 {
                     VibrationService.PlayMiss();
@@ -169,7 +169,7 @@ public class GameFlowController : MonoBehaviour
         _scoreManager.ApplyMiss();
         _hudEffectsController?.ShowMissJudge();
         _playerAnimationController?.PlayCry();
-        SoundManager.Instance?.PlayMiss();
+        SoundManager.EnsureInstance().PlayMiss();
         if (!HasReachedTerminalCondition())
         {
             VibrationService.PlayMiss();
@@ -211,7 +211,7 @@ public class GameFlowController : MonoBehaviour
 
         _currentState = GameState.GameOver;
         StopGameplay();
-        SoundManager.Instance?.PlayGameOver();
+        SoundManager.EnsureInstance().PlayGameOver();
         VibrationService.PlayGameOver();
         _playerAnimationController?.PlayCry();
         StoreResult(false);
@@ -227,7 +227,7 @@ public class GameFlowController : MonoBehaviour
 
         _currentState = GameState.Result;
         StopGameplay();
-        SoundManager.Instance?.PlayClear();
+        SoundManager.EnsureInstance().PlayClear();
         VibrationService.PlayClear();
         _playerAnimationController?.PlayWin();
         StoreResult(true);
@@ -266,6 +266,11 @@ public class GameFlowController : MonoBehaviour
     {
         yield return new WaitForSeconds(ResultSceneDelaySeconds);
         _resultLoadRoutine = null;
+        UnityAdsManager.Instance.ShowInterstitialThenContinue(LoadResultScene);
+    }
+
+    private static void LoadResultScene()
+    {
         SceneManager.LoadScene(ResultSceneName);
     }
 }
