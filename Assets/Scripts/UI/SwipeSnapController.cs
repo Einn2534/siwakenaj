@@ -70,6 +70,7 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         float delta = _scrollRect.horizontalNormalizedPosition - _dragStartNormalizedX;
         float threshold = SwipeThresholdRatio / Mathf.Max(1, pageCount - 1);
         int newIndex = _currentIndex;
+        int nearestIndex = GetNearestPageIndex();
 
         if (delta > threshold && _currentIndex < pageCount - 1)
         {
@@ -78,6 +79,10 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         else if (delta < -threshold && _currentIndex > 0)
         {
             newIndex = _currentIndex - 1;
+        }
+        else
+        {
+            newIndex = nearestIndex;
         }
 
         SetIndex(newIndex);
@@ -156,6 +161,42 @@ public class SwipeSnapController : MonoBehaviour, IBeginDragHandler, IEndDragHan
         Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_content, child);
         float targetOffset = childBounds.center.x - (_viewportRect.rect.width * 0.5f);
         return Mathf.Clamp01(targetOffset / scrollableWidth);
+    }
+
+    private int GetNearestPageIndex()
+    {
+        ResolveReferences();
+        int pageCount = GetPageCount();
+
+        if (pageCount <= 1 || _content == null || _viewportRect == null)
+        {
+            return 0;
+        }
+
+        float viewportCenterX = _viewportRect.rect.width * 0.5f;
+        int nearestIndex = Mathf.Clamp(_currentIndex, 0, pageCount - 1);
+        float nearestDistance = float.PositiveInfinity;
+
+        for (int i = 0; i < pageCount; i += 1)
+        {
+            RectTransform child = GetPageRect(i);
+            if (child == null)
+            {
+                continue;
+            }
+
+            Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_viewportRect, child);
+            float distance = Mathf.Abs(childBounds.center.x - viewportCenterX);
+            if (distance >= nearestDistance)
+            {
+                continue;
+            }
+
+            nearestDistance = distance;
+            nearestIndex = i;
+        }
+
+        return nearestIndex;
     }
 
     private void ResolveReferences()

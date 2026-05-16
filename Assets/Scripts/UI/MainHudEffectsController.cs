@@ -87,10 +87,10 @@ public class MainHudEffectsController : MonoBehaviour
     {
         EnsureImages();
 
-        yield return PlayCountdownStep(_countdown3Sprite, _countdownStepSeconds);
-        yield return PlayCountdownStep(_countdown2Sprite, _countdownStepSeconds);
-        yield return PlayCountdownStep(_countdown1Sprite, _countdownStepSeconds);
         yield return PlayCountdownStep(_countdownReadySprite, _readyStepSeconds);
+        yield return PlayCountdownStep(_countdown2Sprite, _countdownStepSeconds);
+        yield return PlayCountdownStep(_countdown3Sprite, _countdownStepSeconds);
+        yield return PlayCountdownStep(_countdown1Sprite, _countdownStepSeconds);
 
         HideImage(_countdownImage);
     }

@@ -352,7 +352,7 @@ public class StageSelectResponsiveLayout : MonoBehaviour
             return;
         }
 
-        _swipeSnapController.JumpToIndex(_swipeSnapController.GetCurrentIndex());
+        _swipeSnapController.Refresh();
     }
 
     private bool HasEnvironmentChanged()

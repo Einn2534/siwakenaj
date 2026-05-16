@@ -1,33 +1,39 @@
-// Created: 2025-02-14
-// Updated: 2026-02-26
-// Author: Einn
-
 using UnityEngine;
 
-/// <summary>カメラのアスペクト比をレターボックスで調整する。</summary>
 [RequireComponent(typeof(Camera))]
 public class CameraAspectLetterbox : MonoBehaviour
 {
     [SerializeField]
     private float targetAspect = 9f / 16f;
 
-    private Camera cam;
+    [SerializeField]
+    private Color letterboxColor = new Color(0.19215687f, 0.3019608f, 0.4745098f, 1f);
 
-    /// <summary>初期化時にカメラ参照を取得しレターボックスを適用する。</summary>
+    private Camera cam;
+    private Camera clearCamera;
+
     private void Awake()
     {
         cam = GetComponent<Camera>();
-        apply();
+        letterboxColor = cam.backgroundColor;
+        CreateClearCamera();
+        Apply();
     }
 
-    /// <summary>レンダリング前にレターボックスを再適用する。</summary>
+    private void OnDestroy()
+    {
+        if (clearCamera != null)
+        {
+            Destroy(clearCamera.gameObject);
+        }
+    }
+
     private void OnPreCull()
     {
-        apply();
+        Apply();
     }
 
-    /// <summary>画面サイズに応じてレターボックスまたはピラーボックスを適用する。</summary>
-    private void apply()
+    private void Apply()
     {
         float windowAspect = (float)Screen.width / Screen.height;
         float scaleHeight = windowAspect / targetAspect;
@@ -43,5 +49,32 @@ public class CameraAspectLetterbox : MonoBehaviour
             float x = (1f - scaleWidth) * 0.5f;
             cam.rect = new Rect(x, 0f, scaleWidth, 1f);
         }
+
+        if (clearCamera != null)
+        {
+            clearCamera.backgroundColor = letterboxColor;
+            clearCamera.depth = cam.depth - 1f;
+        }
+    }
+
+    private void CreateClearCamera()
+    {
+        GameObject clearObject = new($"{name} Letterbox Clear Camera");
+        clearObject.transform.SetParent(transform, false);
+        clearObject.hideFlags = HideFlags.HideAndDontSave;
+
+        clearCamera = clearObject.AddComponent<Camera>();
+        clearCamera.clearFlags = CameraClearFlags.SolidColor;
+        clearCamera.backgroundColor = letterboxColor;
+        clearCamera.cullingMask = 0;
+        clearCamera.depth = cam.depth - 1f;
+        clearCamera.rect = new Rect(0f, 0f, 1f, 1f);
+        clearCamera.orthographic = cam.orthographic;
+        clearCamera.nearClipPlane = cam.nearClipPlane;
+        clearCamera.farClipPlane = cam.farClipPlane;
+        clearCamera.allowHDR = cam.allowHDR;
+        clearCamera.allowMSAA = cam.allowMSAA;
+        clearCamera.targetDisplay = cam.targetDisplay;
+        clearCamera.targetTexture = cam.targetTexture;
     }
 }

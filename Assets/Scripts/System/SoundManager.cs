@@ -93,11 +93,15 @@ public class SoundManager : MonoBehaviour
             _bgmSource.playOnAwake = false;
         }
 
+        _bgmSource.spatialBlend = 0f;
+
         if (_seSource == null)
         {
             _seSource = gameObject.AddComponent<AudioSource>();
             _seSource.playOnAwake = false;
         }
+
+        _seSource.spatialBlend = 0f;
     }
 
     private void LoadResourceFallbackClips()
@@ -135,6 +139,24 @@ public class SoundManager : MonoBehaviour
         if (_gameOverClip == null)
         {
             _gameOverClip = Resources.Load<AudioClip>(GameOverResourcePath);
+        }
+
+        LoadSeAudioData();
+    }
+
+    private void LoadSeAudioData()
+    {
+        LoadAudioDataIfNeeded(_correctClip);
+        LoadAudioDataIfNeeded(_missClip);
+        LoadAudioDataIfNeeded(_clearClip);
+        LoadAudioDataIfNeeded(_gameOverClip);
+    }
+
+    private static void LoadAudioDataIfNeeded(AudioClip clip)
+    {
+        if (clip != null && clip.loadState == AudioDataLoadState.Unloaded)
+        {
+            clip.LoadAudioData();
         }
     }
 
@@ -228,6 +250,7 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
+        LoadAudioDataIfNeeded(clip);
         _seSource.PlayOneShot(clip);
     }
 }
