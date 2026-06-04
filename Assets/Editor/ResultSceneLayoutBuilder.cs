@@ -16,17 +16,16 @@ public static class ResultSceneLayoutBuilder
     private const string TitleFontAssetPath = "Assets/Fonts/Y1BadBoySlab SDF.asset";
     private const string UiFontSourcePath = "Assets/Fonts/Y1YomiyasuWide-Bold.otf";
     private const string UiFontAssetPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
-    private const string YellowResultButtonPath = "Assets/Art/UI/Sprites/Result/Legacy/button_yellow_result.png";
-    private const string SecondaryOutlineButtonPath = "Assets/Art/UI/Sprites/Result/Legacy/button_secondary_outline_strong.png";
+    private const string RetryResultButtonPath = "Assets/Art/UI/Sprites/Result/Buttons/button_retry_normal.png";
+    private const string TitleResultButtonPath = "Assets/Art/UI/Sprites/Result/Buttons/button_title_normal.png";
+    private const string StageSelectResultButtonPath = "Assets/Art/UI/Sprites/Result/Buttons/button_stage_select_normal.png";
     private const string StageChipBackgroundPath = "Assets/Art/UI/Sprites/Result/Legacy/stage_chip_bg.png";
     private const string CardBackgroundPath = "Assets/Art/UI/Sprites/Result/Legacy/card_bg_soft.png";
     private const string CardAccentLinePath = "Assets/Art/UI/Sprites/Result/Legacy/card_accent_line.png";
-    private const string FilledStarPath = "Assets/Art/UI/Sprites/Result/Legacy/star_filled.png";
-    private const string EmptyStarPath = "Assets/Art/UI/Sprites/Result/Legacy/star_empty.png";
+    private const string FilledStarPath = "Assets/Art/UI/Sprites/Result/Stars/star_filled_1.png";
+    private const string EmptyStarPath = "Assets/Art/UI/Sprites/Result/Stars/star_empty_1.png";
     private const string StarGlowPath = "Assets/Art/UI/Sprites/Result/Legacy/star_glow_soft.png";
     private const string HeroClearGlowPath = "Assets/Art/UI/Sprites/Result/Legacy/hero_clear_glow.png";
-    private const string RetryIconPath = "Assets/Art/UI/Sprites/Result/Legacy/icon_retry_rotate.png";
-    private const string StageSelectIconPath = "Assets/Art/UI/Sprites/Result/Legacy/Stage_Select_Button_Icon.png";
     private const string MissHeartIconPath = "Assets/Art/UI/Sprites/Result/Legacy/icon_miss_heart.png";
     private const string NewBestBadgePath = "Assets/Art/UI/Sprites/Result/Legacy/badge_new_best_stamp.png";
 
@@ -39,9 +38,6 @@ public static class ResultSceneLayoutBuilder
     private static readonly Color MutedTextColor = new(0.44f, 0.49f, 0.58f, 1f);
     private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
     private static readonly Color FailureColor = new(0.914f, 0.408f, 0.416f, 1f);
-    private static readonly Color AccentColor = new(0.949f, 0.772f, 0.259f, 1f);
-    private static readonly Color NeutralButtonColor = new(1f, 1f, 1f, 1f);
-    private static readonly Color OutlineColor = new(0.824f, 0.855f, 0.902f, 1f);
     private static readonly Color DividerColor = new(0.902f, 0.922f, 0.953f, 1f);
     private static readonly Color RowColor = new(0.975f, 0.982f, 0.992f, 1f);
 
@@ -160,14 +156,13 @@ public static class ResultSceneLayoutBuilder
         Sprite cardBackgroundSprite = AssetDatabase.LoadAssetAtPath<Sprite>(CardBackgroundPath);
         Sprite accentLineSprite = AssetDatabase.LoadAssetAtPath<Sprite>(CardAccentLinePath);
         Sprite stageChipSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StageChipBackgroundPath);
-        Sprite secondaryOutlineButtonSprite = AssetDatabase.LoadAssetAtPath<Sprite>(SecondaryOutlineButtonPath);
-        Sprite yellowButtonSprite = AssetDatabase.LoadAssetAtPath<Sprite>(YellowResultButtonPath);
+        Sprite retryButtonSprite = AssetDatabase.LoadAssetAtPath<Sprite>(RetryResultButtonPath);
+        Sprite titleButtonSprite = AssetDatabase.LoadAssetAtPath<Sprite>(TitleResultButtonPath);
+        Sprite stageSelectButtonSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StageSelectResultButtonPath);
         Sprite filledStarSprite = AssetDatabase.LoadAssetAtPath<Sprite>(FilledStarPath);
         Sprite emptyStarSprite = AssetDatabase.LoadAssetAtPath<Sprite>(EmptyStarPath);
         Sprite starGlowSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StarGlowPath);
         Sprite heroClearGlowSprite = AssetDatabase.LoadAssetAtPath<Sprite>(HeroClearGlowPath);
-        Sprite retryIconSprite = AssetDatabase.LoadAssetAtPath<Sprite>(RetryIconPath);
-        Sprite stageSelectIconSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StageSelectIconPath);
         Sprite missHeartIconSprite = AssetDatabase.LoadAssetAtPath<Sprite>(MissHeartIconPath);
         Sprite newBestBadgeSprite = AssetDatabase.LoadAssetAtPath<Sprite>(NewBestBadgePath);
 
@@ -237,31 +232,26 @@ public static class ResultSceneLayoutBuilder
         actionDock.anchorMax = new Vector2(1f, 0f);
         actionDock.pivot = new Vector2(0.5f, 0f);
         actionDock.offsetMin = Vector2.zero;
-        actionDock.offsetMax = new Vector2(0f, 300f);
+        actionDock.offsetMax = new Vector2(0f, 220f);
 
-        VerticalLayoutGroup actionLayout = actionDock.gameObject.AddComponent<VerticalLayoutGroup>();
-        actionLayout.padding = new RectOffset(48, 48, 0, 48);
-        actionLayout.spacing = 16;
-        actionLayout.childAlignment = TextAnchor.UpperCenter;
-        actionLayout.childControlWidth = true;
-        actionLayout.childControlHeight = true;
-        actionLayout.childForceExpandWidth = true;
+        HorizontalLayoutGroup actionLayout = actionDock.gameObject.AddComponent<HorizontalLayoutGroup>();
+        actionLayout.padding = new RectOffset(56, 56, 0, 48);
+        actionLayout.spacing = 18;
+        actionLayout.childAlignment = TextAnchor.LowerCenter;
+        actionLayout.childControlWidth = false;
+        actionLayout.childControlHeight = false;
+        actionLayout.childForceExpandWidth = false;
         actionLayout.childForceExpandHeight = false;
 
-        Button primaryActionButton = CreateActionButton(actionDock, "PrimaryButton", "Next Stage", yellowButtonSprite != null ? yellowButtonSprite : slicedSprite, Image.Type.Sliced, Color.white, new Color(0.45f, 0.24f, 0f, 1f), uiFontAsset, 124f, 42f, out TMP_Text primaryActionLabel, out Image primaryActionIcon);
-
-        RectTransform secondaryRow = CreateUIObject("SecondaryRow", actionDock);
-        secondaryRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 96f;
-        HorizontalLayoutGroup secondaryLayout = secondaryRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        secondaryLayout.spacing = 16;
-        secondaryLayout.childAlignment = TextAnchor.MiddleCenter;
-        secondaryLayout.childControlWidth = true;
-        secondaryLayout.childControlHeight = true;
-        secondaryLayout.childForceExpandWidth = true;
-        secondaryLayout.childForceExpandHeight = true;
-
-        Button secondaryLeftButton = CreateActionButton(secondaryRow, "RetryButton", "Retry", secondaryOutlineButtonSprite != null ? secondaryOutlineButtonSprite : slicedSprite, Image.Type.Sliced, Color.white, TextColor, uiFontAsset, 96f, 38f, out TMP_Text secondaryLeftLabel, out Image secondaryLeftIcon);
-        Button secondaryRightButton = CreateActionButton(secondaryRow, "StageSelectButton", "Stage Select", secondaryOutlineButtonSprite != null ? secondaryOutlineButtonSprite : slicedSprite, Image.Type.Sliced, Color.white, TextColor, uiFontAsset, 96f, 36f, out TMP_Text secondaryRightLabel, out Image secondaryRightIcon);
+        Button primaryActionButton = CreateImageActionButton(actionDock, "RetryButton", retryButtonSprite, new Vector2(278f, 120f));
+        Button secondaryLeftButton = CreateImageActionButton(actionDock, "TitleButton", titleButtonSprite, new Vector2(278f, 120f));
+        Button secondaryRightButton = CreateImageActionButton(actionDock, "StageSelectButton", stageSelectButtonSprite, new Vector2(278f, 113f));
+        TMP_Text primaryActionLabel = null;
+        TMP_Text secondaryLeftLabel = null;
+        TMP_Text secondaryRightLabel = null;
+        Image primaryActionIcon = null;
+        Image secondaryLeftIcon = null;
+        Image secondaryRightIcon = null;
 
         RectTransform fxFront = CreateUIObject("FX_Front", canvas.transform);
         Stretch(fxFront, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -305,10 +295,9 @@ public static class ResultSceneLayoutBuilder
             starRowRoot,
             filledStarSprite,
             emptyStarSprite,
-            yellowButtonSprite,
-            secondaryOutlineButtonSprite,
-            retryIconSprite,
-            stageSelectIconSprite);
+            retryButtonSprite,
+            titleButtonSprite,
+            stageSelectButtonSprite);
     }
 
     private static GameObject BuildClearFx(Transform parent, Sprite slicedSprite, Sprite heroClearGlowSprite)
@@ -482,7 +471,7 @@ public static class ResultSceneLayoutBuilder
         newBestBadge = badge.gameObject;
 
         RectTransform starRow = CreateUIObject("StarRow", body);
-        starRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 78f;
+        starRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 100f;
         starRowRoot = starRow.gameObject;
         HorizontalLayoutGroup starLayout = starRow.gameObject.AddComponent<HorizontalLayoutGroup>();
         starLayout.spacing = 18;
@@ -652,8 +641,8 @@ public static class ResultSceneLayoutBuilder
     {
         RectTransform starRoot = CreateUIObject("Star", parent);
         LayoutElement layout = starRoot.gameObject.AddComponent<LayoutElement>();
-        layout.preferredWidth = 80f;
-        layout.preferredHeight = 80f;
+        layout.preferredWidth = 92f;
+        layout.preferredHeight = 92f;
 
         RectTransform glowRoot = CreateUIObject("Glow", starRoot);
         Stretch(glowRoot, Vector2.zero, Vector2.one, new Vector2(-8f, -8f), new Vector2(8f, 8f));
@@ -675,64 +664,42 @@ public static class ResultSceneLayoutBuilder
         Stretch(label.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
     }
 
-    private static Button CreateActionButton(
+    private static Button CreateImageActionButton(
         Transform parent,
         string name,
-        string label,
         Sprite buttonSprite,
-        Image.Type imageType,
-        Color buttonColor,
-        Color textColor,
-        TMP_FontAsset fontAsset,
-        float preferredHeight,
-        float fontSize,
-        out TMP_Text labelText,
-        out Image iconImage)
+        Vector2 fallbackSize)
     {
         RectTransform buttonRect = CreateUIObject(name, parent);
+        Vector2 size = GetSpriteSize(buttonSprite, fallbackSize);
+        buttonRect.sizeDelta = size;
+
         LayoutElement layout = buttonRect.gameObject.AddComponent<LayoutElement>();
-        layout.preferredHeight = preferredHeight;
-        layout.flexibleWidth = 1f;
+        layout.preferredWidth = size.x;
+        layout.preferredHeight = size.y;
+        layout.minWidth = size.x;
+        layout.minHeight = size.y;
 
         Image image = buttonRect.gameObject.AddComponent<Image>();
         image.sprite = buttonSprite;
-        image.type = imageType;
-        image.color = buttonColor;
-        image.preserveAspect = imageType == Image.Type.Simple;
+        image.type = Image.Type.Simple;
+        image.color = Color.white;
+        image.preserveAspect = true;
 
         Button button = buttonRect.gameObject.AddComponent<Button>();
         button.transition = Selectable.Transition.ColorTint;
         button.targetGraphic = image;
-
-        RectTransform content = CreateUIObject("Content", buttonRect);
-        Stretch(content, Vector2.zero, Vector2.one, new Vector2(20f, 10f), new Vector2(-20f, -10f));
-        HorizontalLayoutGroup contentLayout = content.gameObject.AddComponent<HorizontalLayoutGroup>();
-        contentLayout.spacing = 10;
-        contentLayout.childAlignment = TextAnchor.MiddleCenter;
-        contentLayout.childControlWidth = false;
-        contentLayout.childControlHeight = true;
-        contentLayout.childForceExpandWidth = false;
-        contentLayout.childForceExpandHeight = false;
-        contentLayout.padding = new RectOffset(12, 12, 0, 0);
-
-        RectTransform iconRoot = CreateUIObject("Icon", content);
-        LayoutElement iconLayout = iconRoot.gameObject.AddComponent<LayoutElement>();
-        iconLayout.preferredWidth = preferredHeight >= 108f ? 40f : 34f;
-        iconLayout.preferredHeight = preferredHeight >= 108f ? 40f : 34f;
-        iconImage = iconRoot.gameObject.AddComponent<Image>();
-        iconImage.raycastTarget = false;
-        iconImage.preserveAspect = true;
-        iconImage.color = Color.white;
-        iconImage.enabled = false;
-
-        labelText = CreateText("Label", content, label, fontAsset, fontSize, textColor, TextAlignmentOptions.Center);
-        LayoutElement labelLayout = labelText.gameObject.AddComponent<LayoutElement>();
-        labelLayout.flexibleWidth = 1f;
-        labelText.enableAutoSizing = true;
-        labelText.fontSizeMin = fontSize - 2f;
-        labelText.fontSizeMax = fontSize + 4f;
-        labelText.fontStyle = FontStyles.Bold;
         return button;
+    }
+
+    private static Vector2 GetSpriteSize(Sprite sprite, Vector2 fallbackSize)
+    {
+        if (sprite == null || sprite.rect.width <= 0f || sprite.rect.height <= 0f)
+        {
+            return fallbackSize;
+        }
+
+        return new Vector2(sprite.rect.width, sprite.rect.height);
     }
 
     private static RectTransform CreateCardShell(string name, Transform parent, Sprite cardSprite, float preferredHeight)
@@ -897,10 +864,9 @@ public static class ResultSceneLayoutBuilder
         GameObject starRowRoot,
         Sprite filledStarSprite,
         Sprite emptyStarSprite,
-        Sprite nextStageButtonSprite,
-        Sprite secondaryButtonSprite,
-        Sprite retryIconSprite,
-        Sprite stageSelectIconSprite)
+        Sprite retryButtonSprite,
+        Sprite titleButtonSprite,
+        Sprite stageSelectButtonSprite)
     {
         SerializedObject serializedObject = new(resultController);
         SetObjectReference(serializedObject, "_scoreText", scoreText);
@@ -937,11 +903,12 @@ public static class ResultSceneLayoutBuilder
         SetObjectReference(serializedObject, "_starRowRoot", starRowRoot);
         SetObjectReference(serializedObject, "_filledStarSprite", filledStarSprite);
         SetObjectReference(serializedObject, "_emptyStarSprite", emptyStarSprite);
-        SetObjectReference(serializedObject, "_nextStageButtonSprite", nextStageButtonSprite);
-        SetObjectReference(serializedObject, "_retryButtonSprite", secondaryButtonSprite);
-        SetObjectReference(serializedObject, "_stageSelectButtonSprite", secondaryButtonSprite);
-        SetObjectReference(serializedObject, "_retryIconSprite", retryIconSprite);
-        SetObjectReference(serializedObject, "_stageSelectIconSprite", stageSelectIconSprite);
+        SetObjectReference(serializedObject, "_retryButtonSprite", retryButtonSprite);
+        SetObjectReference(serializedObject, "_titleButtonSprite", titleButtonSprite);
+        SetObjectReference(serializedObject, "_nextStageButtonSprite", null);
+        SetObjectReference(serializedObject, "_stageSelectButtonSprite", stageSelectButtonSprite);
+        SetObjectReference(serializedObject, "_retryIconSprite", null);
+        SetObjectReference(serializedObject, "_stageSelectIconSprite", null);
         SetObjectReference(serializedObject, "_playerAnimationController", null);
         SetObjectArray(serializedObject, "_starImages", starImages);
         SetObjectArray(serializedObject, "_starGlowImages", starGlowImages);

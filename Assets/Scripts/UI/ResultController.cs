@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class ResultController : MonoBehaviour
 {
     private const string MainSceneName = "Main";
+    private const string TitleSceneName = "Title";
     private const string StageSelectSceneName = "StageSelect";
     private const string StageDatabaseResourcePath = "StageDatabase";
     private const string StageFormat = "STAGE {0:00}";
@@ -20,7 +21,6 @@ public class ResultController : MonoBehaviour
 
     private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
     private static readonly Color FailureColor = new(0.914f, 0.408f, 0.416f, 1f);
-    private static readonly Color AccentColor = new(0.949f, 0.772f, 0.259f, 1f);
     private static readonly Color NeutralButtonColor = new(1f, 1f, 1f, 1f);
     private static readonly Color NeutralTextColor = new(0.137f, 0.184f, 0.275f, 1f);
     private static readonly Color MutedTextColor = new(0.44f, 0.49f, 0.58f, 1f);
@@ -37,6 +37,7 @@ public class ResultController : MonoBehaviour
     {
         None,
         Retry,
+        Title,
         StageSelect,
         NextStage
     }
@@ -187,6 +188,9 @@ public class ResultController : MonoBehaviour
     private Sprite _retryButtonSprite;
 
     [SerializeField]
+    private Sprite _titleButtonSprite;
+
+    [SerializeField]
     private Sprite _nextStageButtonSprite;
 
     [SerializeField]
@@ -230,6 +234,11 @@ public class ResultController : MonoBehaviour
         SceneManager.LoadScene(MainSceneName);
     }
 
+    public void OnTitlePressed()
+    {
+        SceneManager.LoadScene(TitleSceneName);
+    }
+
     public void OnStageSelectPressed()
     {
         LoadStageSelectFocused(_resultStageNumber);
@@ -271,15 +280,15 @@ public class ResultController : MonoBehaviour
         _missLabelText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_Misses/Label");
         _missCountText ??= FindComponent<TMP_Text>("SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_Misses/Value");
         _newBestBadge ??= FindChild("SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/NewBestBadge")?.gameObject;
-        _primaryActionButton ??= FindComponent<Button>("SafeAreaRoot/ActionDock/PrimaryButton");
-        _secondaryLeftButton ??= FindComponent<Button>("SafeAreaRoot/ActionDock/SecondaryRow/RetryButton");
-        _secondaryRightButton ??= FindComponent<Button>("SafeAreaRoot/ActionDock/SecondaryRow/StageSelectButton");
-        _primaryActionLabel ??= FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/PrimaryButton/Content/Label");
-        _secondaryLeftLabel ??= FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/SecondaryRow/RetryButton/Content/Label");
-        _secondaryRightLabel ??= FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/SecondaryRow/StageSelectButton/Content/Label");
-        _primaryActionIcon ??= FindComponent<Image>("SafeAreaRoot/ActionDock/PrimaryButton/Content/Icon");
-        _secondaryLeftActionIcon ??= FindComponent<Image>("SafeAreaRoot/ActionDock/SecondaryRow/RetryButton/Content/Icon");
-        _secondaryRightActionIcon ??= FindComponent<Image>("SafeAreaRoot/ActionDock/SecondaryRow/StageSelectButton/Content/Icon");
+        _primaryActionButton ??= FindComponent<Button>("SafeAreaRoot/ActionDock/RetryButton") ?? FindComponent<Button>("SafeAreaRoot/ActionDock/PrimaryButton");
+        _secondaryLeftButton ??= FindComponent<Button>("SafeAreaRoot/ActionDock/TitleButton") ?? FindComponent<Button>("SafeAreaRoot/ActionDock/SecondaryRow/RetryButton");
+        _secondaryRightButton ??= FindComponent<Button>("SafeAreaRoot/ActionDock/StageSelectButton") ?? FindComponent<Button>("SafeAreaRoot/ActionDock/SecondaryRow/StageSelectButton");
+        _primaryActionLabel ??= FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/RetryButton/Content/Label") ?? FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/PrimaryButton/Content/Label");
+        _secondaryLeftLabel ??= FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/TitleButton/Content/Label") ?? FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/SecondaryRow/RetryButton/Content/Label");
+        _secondaryRightLabel ??= FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/StageSelectButton/Content/Label") ?? FindComponent<TMP_Text>("SafeAreaRoot/ActionDock/SecondaryRow/StageSelectButton/Content/Label");
+        _primaryActionIcon ??= FindComponent<Image>("SafeAreaRoot/ActionDock/RetryButton/Content/Icon") ?? FindComponent<Image>("SafeAreaRoot/ActionDock/PrimaryButton/Content/Icon");
+        _secondaryLeftActionIcon ??= FindComponent<Image>("SafeAreaRoot/ActionDock/TitleButton/Content/Icon") ?? FindComponent<Image>("SafeAreaRoot/ActionDock/SecondaryRow/RetryButton/Content/Icon");
+        _secondaryRightActionIcon ??= FindComponent<Image>("SafeAreaRoot/ActionDock/StageSelectButton/Content/Icon") ?? FindComponent<Image>("SafeAreaRoot/ActionDock/SecondaryRow/StageSelectButton/Content/Icon");
         _stateTintImage ??= FindComponent<Image>("Background/StateTint");
         _stageBadgeBackground ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/HeroCard/Card/Body/StageBadge/BadgeBackground");
         _headerAccentImage ??= FindComponent<Image>("SafeAreaRoot/ContentRoot/HeroCard/Card/AccentBar");
@@ -374,7 +383,7 @@ public class ResultController : MonoBehaviour
         }
 
         ApplyVisualState(result.IsClear);
-        ConfigureButtons(result.IsClear, stageNumber);
+        ConfigureButtons();
         ResetStarDisplay();
         StartAnimations(result.Score, starRating, result.IsClear);
 
@@ -434,33 +443,14 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private void ConfigureButtons(bool isClear, int stageNumber)
+    private void ConfigureButtons()
     {
-        NextStageNavigation nextStageNavigation = GetNextStageNavigation(stageNumber);
-        bool hasNextStage = nextStageNavigation.HasDestination;
-
-        if (isClear && hasNextStage)
-        {
-            ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Next Stage", ResultButtonAction.NextStage, true, true, new Color(0.43f, 0.24f, 0f, 1f));
-            ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Retry", ResultButtonAction.Retry, true, false, NeutralTextColor);
-            ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, false, NeutralTextColor);
-            return;
-        }
-
-        if (isClear)
-        {
-            ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, true, new Color(0.43f, 0.24f, 0f, 1f));
-            ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Retry", ResultButtonAction.Retry, true, false, NeutralTextColor);
-            HideButton(_secondaryRightButton);
-            return;
-        }
-
-        ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Retry", ResultButtonAction.Retry, true, true, new Color(0.43f, 0.24f, 0f, 1f));
-        ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, false, NeutralTextColor);
-        HideButton(_secondaryRightButton);
+        ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Retry", ResultButtonAction.Retry, true, NeutralTextColor);
+        ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Title", ResultButtonAction.Title, true, NeutralTextColor);
+        ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, NeutralTextColor);
     }
 
-    private void ConfigureButton(Button button, TMP_Text label, Image icon, string text, ResultButtonAction action, bool interactable, bool usePrimaryStyle, Color textColor)
+    private void ConfigureButton(Button button, TMP_Text label, Image icon, string text, ResultButtonAction action, bool interactable, Color textColor)
     {
         if (button == null)
         {
@@ -469,23 +459,25 @@ public class ResultController : MonoBehaviour
 
         button.gameObject.SetActive(true);
         Image buttonImage = button.targetGraphic as Image ?? button.GetComponent<Image>();
-        Color resolvedBackground = usePrimaryStyle ? AccentColor : NeutralButtonColor;
+        Color resolvedBackground = NeutralButtonColor;
         Color resolvedText = interactable ? textColor : DisabledTextColor;
-        Sprite resolvedSprite = ResolveButtonSprite(usePrimaryStyle);
+        Sprite resolvedSprite = ResolveButtonSprite(action);
+        bool usesCompositeSprite = resolvedSprite != null;
 
         if (label != null)
         {
+            label.gameObject.SetActive(!usesCompositeSprite);
             label.text = text;
             label.color = resolvedText;
         }
 
-        ApplyButtonIcon(icon, action, interactable);
+        ApplyButtonIcon(icon, action, interactable, usesCompositeSprite);
 
         if (buttonImage != null)
         {
             buttonImage.sprite = resolvedSprite != null ? resolvedSprite : buttonImage.sprite;
-            buttonImage.type = Image.Type.Sliced;
-            buttonImage.preserveAspect = false;
+            buttonImage.type = resolvedSprite != null ? Image.Type.Simple : Image.Type.Sliced;
+            buttonImage.preserveAspect = resolvedSprite != null;
             buttonImage.color = resolvedSprite != null
                 ? new Color(1f, 1f, 1f, interactable ? 1f : 0.5f)
                 : resolvedBackground;
@@ -508,21 +500,16 @@ public class ResultController : MonoBehaviour
         button.colors = colors;
     }
 
-    private static void HideButton(Button button)
+    private Sprite ResolveButtonSprite(ResultButtonAction action)
     {
-        if (button == null)
+        return action switch
         {
-            return;
-        }
-
-        ClearButtonListeners(button);
-        button.interactable = false;
-        button.gameObject.SetActive(false);
-    }
-
-    private Sprite ResolveButtonSprite(bool usePrimaryStyle)
-    {
-        return usePrimaryStyle ? _nextStageButtonSprite : _retryButtonSprite;
+            ResultButtonAction.Retry => _retryButtonSprite,
+            ResultButtonAction.Title => _titleButtonSprite,
+            ResultButtonAction.StageSelect => _stageSelectButtonSprite,
+            ResultButtonAction.NextStage => _nextStageButtonSprite,
+            _ => null
+        };
     }
 
     private Sprite ResolveButtonIconSprite(ResultButtonAction action)
@@ -535,13 +522,21 @@ public class ResultController : MonoBehaviour
         };
     }
 
-    private void ApplyButtonIcon(Image icon, ResultButtonAction action, bool interactable)
+    private void ApplyButtonIcon(Image icon, ResultButtonAction action, bool interactable, bool hideForCompositeSprite)
     {
         if (icon == null)
         {
             return;
         }
 
+        if (hideForCompositeSprite)
+        {
+            icon.enabled = false;
+            icon.gameObject.SetActive(false);
+            return;
+        }
+
+        icon.gameObject.SetActive(true);
         Sprite iconSprite = ResolveButtonIconSprite(action);
         icon.sprite = iconSprite;
         icon.enabled = iconSprite != null;
@@ -555,6 +550,9 @@ public class ResultController : MonoBehaviour
         {
             case ResultButtonAction.Retry:
                 OnRetryPressed();
+                break;
+            case ResultButtonAction.Title:
+                OnTitlePressed();
                 break;
             case ResultButtonAction.StageSelect:
                 OnStageSelectPressed();
