@@ -20,9 +20,6 @@ public static class TitleSceneLayoutBuilder
     private const string TitleLogoPath = "Assets/Art/UI/Sprites/Title/siwakennja.png";
     private const string SecondaryButtonPath = "Assets/Art/UI/Sprites/Result/Legacy/button_secondary_outline_strong.png";
     private const string BackButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_back_small.png";
-    private const string BlueButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_blue_normal.png";
-    private const string GreenButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_green_normal.png";
-    private const string YellowButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_start_yellow.png";
     private const string SettingsIconPath = "Assets/Art/UI/Sprites/Settings/Legacy/settingIcon.png";
     private const string ToggleOnPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_on.png";
     private const string ToggleOffPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_off.png";
@@ -30,7 +27,6 @@ public static class TitleSceneLayoutBuilder
     private const string TruckSpritePath = "Assets/Art/Sprites/Vehicles/track.png";
     private const string CarSpritePath = "Assets/Art/Sprites/Vehicles/car.png";
     private const string SportsCarSpritePath = "Assets/Art/Sprites/Vehicles/sportscar.png";
-    private const string StageSelectIconPath = "Assets/Art/UI/Sprites/Result/Legacy/Stage_Select_Button_Icon.png";
     private const string CompactCarIconPath = "Assets/Art/Sprites/Vehicles/car.png";
     private const string LightTruckIconPath = "Assets/Art/Sprites/Vehicles/track.png";
     private const string SportsCarIconPath = "Assets/Art/Sprites/Vehicles/sportscar.png";
@@ -239,9 +235,6 @@ public static class TitleSceneLayoutBuilder
         Sprite logoSprite = LoadSprite(TitleLogoPath);
         Sprite secondaryButtonSprite = LoadSprite(SecondaryButtonPath);
         Sprite backButtonSprite = LoadSprite(BackButtonPath);
-        Sprite blueButtonSprite = LoadSprite(BlueButtonPath);
-        Sprite greenButtonSprite = LoadSprite(GreenButtonPath);
-        Sprite yellowButtonSprite = LoadSprite(YellowButtonPath);
         Sprite settingsIconSprite = LoadSprite(SettingsIconPath);
         Sprite toggleOnSprite = LoadSprite(ToggleOnPath);
         Sprite toggleOffSprite = LoadSprite(ToggleOffPath);
@@ -249,7 +242,6 @@ public static class TitleSceneLayoutBuilder
         Sprite truckSprite = LoadSprite(TruckSpritePath);
         Sprite carSprite = LoadSprite(CarSpritePath);
         Sprite sportsCarSprite = LoadSprite(SportsCarSpritePath);
-        Sprite stageSelectIconSprite = LoadSprite(StageSelectIconPath);
 
         RectTransform background = CreateUIObject("Background", canvas.transform);
         Stretch(background, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -260,7 +252,7 @@ public static class TitleSceneLayoutBuilder
         Stretch(safeAreaRoot, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         GetOrAddComponent<SafeAreaFitter>(safeAreaRoot.gameObject);
 
-        BuildTitleContent(safeAreaRoot, titleController, titleFontAsset, headlineFontAsset, uiFontAsset, logoSprite, secondaryButtonSprite, blueButtonSprite, greenButtonSprite, yellowButtonSprite, settingsIconSprite, powaSprite, truckSprite, carSprite, sportsCarSprite, stageSelectIconSprite, slicedSprite);
+        BuildTitleContent(safeAreaRoot, titleController, titleFontAsset, headlineFontAsset, uiFontAsset, logoSprite, settingsIconSprite, powaSprite, truckSprite, carSprite, sportsCarSprite, slicedSprite);
 
         RectTransform howToOverlay = BuildHowToOverlay(canvas.transform, howToOverlayController, titleFontAsset, headlineFontAsset, uiFontAsset, secondaryButtonSprite, backButtonSprite, slicedSprite);
         RectTransform settingsOverlay = BuildSettingsOverlay(canvas.transform, titleController, headlineFontAsset, uiFontAsset, slicedSprite, secondaryButtonSprite, backButtonSprite, toggleOnSprite, toggleOffSprite, slicedSprite, out SettingsPanelController settingsPanelController, out SettingsBindings settingsBindings);
@@ -295,16 +287,11 @@ public static class TitleSceneLayoutBuilder
         TMP_FontAsset headlineFontAsset,
         TMP_FontAsset uiFontAsset,
         Sprite logoSprite,
-        Sprite secondaryButtonSprite,
-        Sprite blueButtonSprite,
-        Sprite greenButtonSprite,
-        Sprite yellowButtonSprite,
         Sprite settingsIconSprite,
         Sprite powaSprite,
         Sprite truckSprite,
         Sprite carSprite,
         Sprite sportsCarSprite,
-        Sprite stageSelectIconSprite,
         Sprite slicedSprite)
     {
         RectTransform contentRoot = CreateUIObject("ContentRoot", parent);
@@ -312,9 +299,9 @@ public static class TitleSceneLayoutBuilder
         Button settingsButton = CreateRoundMenuButton("SettingsButtonTop", contentRoot, settingsIconSprite, "設定", uiFontAsset, slicedSprite);
         SetAnchored((RectTransform)settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(108f, -90f), new Vector2(142f, 142f));
         AddButtonListener(settingsButton, titleController.OnSettingsOpen);
-        Button rankingButton = CreateRoundMenuButton("RankingButtonTop", contentRoot, null, "ステージ", uiFontAsset, slicedSprite);
-        SetAnchored((RectTransform)rankingButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-116f, -90f), new Vector2(164f, 142f));
-        AddButtonListener(rankingButton, titleController.OnStartPressed);
+        Button howToButton = CreateRoundMenuButton("HowToButton", contentRoot, null, "あそびかた", uiFontAsset, slicedSprite);
+        SetAnchored((RectTransform)howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-116f, -90f), new Vector2(164f, 142f));
+        AddButtonListener(howToButton, titleController.OnHowToOpen);
 
         RectTransform logoBlock = CreateUIObject("LogoBlock", contentRoot);
         SetAnchored(logoBlock, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -136f), new Vector2(990f, 410f));
@@ -332,7 +319,7 @@ public static class TitleSceneLayoutBuilder
         BuildHeroStage(hero, powaSprite, truckSprite, carSprite, sportsCarSprite, slicedSprite);
 
         RectTransform bottomRoot = CreateUIObject("BottomUtilityRoot", contentRoot);
-        SetAnchored(bottomRoot, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 170f), new Vector2(940f, 118f));
+        SetAnchored(bottomRoot, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 170f), new Vector2(1080f, 1152f));
 
         HorizontalLayoutGroup bottomGroup = bottomRoot.gameObject.AddComponent<HorizontalLayoutGroup>();
         bottomGroup.padding = new RectOffset(0, 0, 0, 0);
@@ -342,10 +329,8 @@ public static class TitleSceneLayoutBuilder
         bottomGroup.childControlHeight = true;
         bottomGroup.childForceExpandWidth = true;
         bottomGroup.childForceExpandHeight = true;
-        Button stageButton = CreateWideIconButton("StageSelectButton", bottomRoot, blueButtonSprite != null ? blueButtonSprite : slicedSprite, stageSelectIconSprite, "ステージ選択", headlineFontAsset);
-        Button howToButton = CreateWideIconButton("HowToButton", bottomRoot, blueButtonSprite != null ? blueButtonSprite : slicedSprite, null, "あそびかた", headlineFontAsset);
+        Button stageButton = CreateWideIconButton("StageSelectButton", bottomRoot, null, null, "<color=#FFFFFF>TAP TO START</color>", headlineFontAsset);
         AddButtonListener(stageButton, titleController.OnStartPressed);
-        AddButtonListener(howToButton, titleController.OnHowToOpen);
 
     }
 
@@ -397,10 +382,16 @@ public static class TitleSceneLayoutBuilder
 
     private static Button CreateWideIconButton(string name, Transform parent, Sprite buttonSprite, Sprite iconSprite, string label, TMP_FontAsset fontAsset)
     {
-        Button button = CreateButton(name, parent, buttonSprite, new Vector2(452f, 112f), string.Empty, fontAsset, 1f, InkColor);
+        Button button = CreateButton(name, parent, buttonSprite, new Vector2(1080f, 1152f), string.Empty, fontAsset, 1f, InkColor);
+        if (buttonSprite == null)
+        {
+            button.GetComponent<Image>().color = Color.clear;
+            button.targetGraphic = null;
+        }
+
         LayoutElement layoutElement = button.GetComponent<LayoutElement>();
         layoutElement.flexibleWidth = 1f;
-        layoutElement.preferredHeight = 112f;
+        layoutElement.preferredHeight = 1152f;
 
         RectTransform rect = (RectTransform)button.transform;
         if (iconSprite != null)
@@ -408,16 +399,17 @@ public static class TitleSceneLayoutBuilder
             Image icon = CreateImage("Icon", rect, iconSprite, Color.white, true);
             SetAnchored(icon.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(70f, 0f), new Vector2(74f, 74f));
         }
-        else
-        {
-            TMP_Text icon = CreateText("BookIcon", rect, "?", fontAsset, 50f, 34f, AccentColor, TextAlignmentOptions.Center);
-            SetAnchored((RectTransform)icon.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(70f, 0f), new Vector2(74f, 74f));
-            icon.outlineColor = InkColor;
-            icon.outlineWidth = 0.14f;
-        }
 
         TMP_Text text = CreateText("Label", rect, label, fontAsset, 40f, 28f, Color.white, TextAlignmentOptions.Center);
-        Stretch((RectTransform)text.transform, Vector2.zero, Vector2.one, new Vector2(122f, 12f), new Vector2(-28f, -12f));
+        if (iconSprite != null)
+        {
+            Stretch((RectTransform)text.transform, Vector2.zero, Vector2.one, new Vector2(122f, 12f), new Vector2(-28f, -12f));
+        }
+        else
+        {
+            SetAnchored((RectTransform)text.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -400f), new Vector2(1024f, 112f));
+        }
+        text.fontStyle = FontStyles.Bold;
         text.outlineColor = InkColor;
         text.outlineWidth = 0.18f;
         return button;
