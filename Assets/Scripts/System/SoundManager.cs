@@ -106,40 +106,13 @@ public class SoundManager : MonoBehaviour
 
     private void LoadResourceFallbackClips()
     {
-        if (_bgmClip == null)
-        {
-            _bgmClip = Resources.Load<AudioClip>(BgmResourcePath);
-        }
-
-        if (_titleBgmClip == null)
-        {
-            _titleBgmClip = Resources.Load<AudioClip>(TitleBgmResourcePath);
-        }
-
-        if (_stageSelectBgmClip == null)
-        {
-            _stageSelectBgmClip = Resources.Load<AudioClip>(StageSelectBgmResourcePath);
-        }
-
-        if (_correctClip == null)
-        {
-            _correctClip = Resources.Load<AudioClip>(CorrectResourcePath);
-        }
-
-        if (_missClip == null)
-        {
-            _missClip = Resources.Load<AudioClip>(MissResourcePath);
-        }
-
-        if (_clearClip == null)
-        {
-            _clearClip = Resources.Load<AudioClip>(ClearResourcePath);
-        }
-
-        if (_gameOverClip == null)
-        {
-            _gameOverClip = Resources.Load<AudioClip>(GameOverResourcePath);
-        }
+        _bgmClip ??= Resources.Load<AudioClip>(BgmResourcePath);
+        _titleBgmClip ??= Resources.Load<AudioClip>(TitleBgmResourcePath);
+        _stageSelectBgmClip ??= Resources.Load<AudioClip>(StageSelectBgmResourcePath);
+        _correctClip ??= Resources.Load<AudioClip>(CorrectResourcePath);
+        _missClip ??= Resources.Load<AudioClip>(MissResourcePath);
+        _clearClip ??= Resources.Load<AudioClip>(ClearResourcePath);
+        _gameOverClip ??= Resources.Load<AudioClip>(GameOverResourcePath);
 
         LoadSeAudioData();
     }

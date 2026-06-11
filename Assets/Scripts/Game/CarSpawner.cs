@@ -144,10 +144,11 @@ public class CarSpawner : MonoBehaviour
             return;
         }
 
+        float spawnZ = GetSpawnZ();
         Vector3 position = new(
             playZoneWorldRect.xMax,
             playZoneWorldRect.center.y,
-            _spawnPoint ? _spawnPoint.position.z : transform.position.z);
+            spawnZ);
         GameObject carObject = CreateCarObject(position);
         CarController car = carObject.GetComponent<CarController>();
         if (car == null)
@@ -174,7 +175,7 @@ public class CarSpawner : MonoBehaviour
         carObject.transform.position = new Vector3(
             spawnX,
             spawnY,
-            _spawnPoint ? _spawnPoint.position.z : transform.position.z);
+            spawnZ);
         RegisterCar(car);
     }
 
@@ -304,6 +305,11 @@ public class CarSpawner : MonoBehaviour
         }
 
         return DefaultCarWidth;
+    }
+
+    private float GetSpawnZ()
+    {
+        return _spawnPoint != null ? _spawnPoint.position.z : transform.position.z;
     }
 
     private bool ShouldSkipSpawnForGap(float spawnX, float minSpawnGapX)
