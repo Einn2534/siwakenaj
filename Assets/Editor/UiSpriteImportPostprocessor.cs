@@ -28,12 +28,23 @@ public sealed class UiSpriteImportPostprocessor : AssetPostprocessor
 
         if (ShouldUseNineSlice(normalizedPath))
         {
+            float border = GetNineSliceBorder(normalizedPath);
             importer.spriteBorder = new Vector4(
-                DefaultNineSliceBorder,
-                DefaultNineSliceBorder,
-                DefaultNineSliceBorder,
-                DefaultNineSliceBorder);
+                border,
+                border,
+                border,
+                border);
         }
+    }
+
+    private static float GetNineSliceBorder(string normalizedPath)
+    {
+        if (normalizedPath.EndsWith("Result/Legacy/card_bg_soft.png", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return 42f;
+        }
+
+        return DefaultNineSliceBorder;
     }
 
     private static bool ShouldUseNineSlice(string normalizedPath)

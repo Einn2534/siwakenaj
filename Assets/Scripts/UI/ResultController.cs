@@ -17,21 +17,50 @@ public class ResultController : MonoBehaviour
     private const string GameOverLabel = "GAME OVER";
     private const float ScoreCountDuration = 0.65f;
     private const float StarRevealInterval = 0.18f;
-    private const int MaxStarCount = 3;
+    private const float ResultStarSize = 128f;
+    private const float ResultStarRowHeight = 138f;
 
     private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
-    private static readonly Color FailureColor = new(0.914f, 0.408f, 0.416f, 1f);
+    private static readonly Color FailureColor = new(1f, 0.56f, 0.58f, 1f);
     private static readonly Color NeutralButtonColor = new(1f, 1f, 1f, 1f);
     private static readonly Color NeutralTextColor = new(0.137f, 0.184f, 0.275f, 1f);
-    private static readonly Color MutedTextColor = new(0.44f, 0.49f, 0.58f, 1f);
+    private static readonly Color PanelTextColor = new(1f, 1f, 1f, 1f);
+    private static readonly Color MutedTextColor = new(0.84f, 0.93f, 1f, 1f);
     private static readonly Color DisabledButtonColor = new(1f, 1f, 1f, 0.78f);
     private static readonly Color DisabledTextColor = new(0.56f, 0.61f, 0.69f, 1f);
     private static readonly Color ClearTintColor = new(0.70f, 0.90f, 0.78f, 0.22f);
     private static readonly Color GameOverTintColor = new(0.98f, 0.74f, 0.74f, 0.22f);
-    private static readonly Color ClearMissRowColor = new(0.975f, 0.982f, 0.992f, 1f);
-    private static readonly Color GameOverMissRowColor = new(1f, 0.958f, 0.958f, 1f);
+    private static readonly Color RowBackgroundColor = new(0.057f, 0.165f, 0.22f, 0.66f);
+    private static readonly Color ClearMissRowColor = new(0.18f, 0.42f, 0.34f, 0.58f);
+    private static readonly Color GameOverMissRowColor = new(0.42f, 0.17f, 0.20f, 0.62f);
     private static readonly Color StarBaseColor = new(0.933f, 0.949f, 0.98f, 1f);
     private static readonly Color StarFilledBackground = new(1f, 0.949f, 0.8f, 1f);
+
+    private static readonly string[] StrongPanelTextPaths =
+    {
+        "SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/TotalScoreValue",
+        "SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/BestScoreRow/BestScoreValue",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_LightTruck/Value",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_CompactCar/Value",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_SportsCar/Value"
+    };
+
+    private static readonly string[] MutedPanelTextPaths =
+    {
+        "SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/HeaderRow/ScoreLabel",
+        "SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/BestScoreRow/BestScoreLabel",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/DetailsTitle",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_LightTruck/Label",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_CompactCar/Label",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_SportsCar/Label"
+    };
+
+    private static readonly string[] StatRowPaths =
+    {
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_LightTruck",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_CompactCar",
+        "SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_SportsCar"
+    };
 
     private enum ResultButtonAction
     {
@@ -212,6 +241,7 @@ public class ResultController : MonoBehaviour
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
         _visualDatabase ??= CarVisualDatabase.LoadDefault();
         BindDynamicReferences();
+        ApplyStarSizing();
         ApplyCarIcons();
     }
 
@@ -253,7 +283,7 @@ public class ResultController : MonoBehaviour
             return;
         }
 
-        int nextStageNumber = Mathf.Max(1, navigation.StageDefinition.StageNumber);
+        int nextStageNumber = StageNumberUtility.Normalize(navigation.StageDefinition.StageNumber);
         if (!navigation.LoadsMainScene)
         {
             LoadStageSelectFocused(nextStageNumber);
@@ -304,7 +334,7 @@ public class ResultController : MonoBehaviour
             Transform starRow = FindChild("SafeAreaRoot/ContentRoot/ScoreCard/Card/Body/StarRow");
             if (starRow != null)
             {
-                _starImages = new Image[Mathf.Min(starRow.childCount, MaxStarCount)];
+                _starImages = new Image[Mathf.Min(starRow.childCount, StarRatingUtility.MaxStars)];
                 _starGlowImages = new Image[_starImages.Length];
                 _starLabels = new TMP_Text[_starImages.Length];
                 for (int i = 0; i < _starImages.Length; i += 1)
@@ -359,9 +389,9 @@ public class ResultController : MonoBehaviour
     private void ApplyResult()
     {
         GameResultData result = SessionState.LastResult ?? GameResultData.Empty(SessionState.SelectedStageNumber);
-        int stageNumber = Mathf.Max(1, result.StageNumber);
+        int stageNumber = StageNumberUtility.Normalize(result.StageNumber);
         _resultStageNumber = stageNumber;
-        int starRating = CalculateStarRating(result);
+        int starRating = StarRatingUtility.CalculateForResult(result);
         BestUpdateInfo bestUpdate = UpdateBestResults(stageNumber, result.Score, starRating);
         StageDefinition stageDefinition = _stageDatabase != null ? _stageDatabase.GetStageDefinition(stageNumber) : null;
 
@@ -404,14 +434,13 @@ public class ResultController : MonoBehaviour
     {
         Color stateColor = isClear ? SuccessColor : FailureColor;
         Color missLabelColor = isClear ? MutedTextColor : FailureColor;
-        Color missValueColor = isClear ? NeutralTextColor : FailureColor;
+        Color missValueColor = isClear ? PanelTextColor : FailureColor;
 
+        ApplyPanelPalette();
+        SetAccentBarsVisible(false);
         SetPanelActive(_clearPanel, isClear);
         SetPanelActive(_gameOverPanel, !isClear);
         SetImageColor(_stateTintImage, isClear ? ClearTintColor : GameOverTintColor);
-        SetImageColor(_headerAccentImage, stateColor);
-        SetImageColor(_scoreAccentImage, stateColor);
-        SetImageColor(_detailAccentImage, stateColor);
         SetImageColor(_missRowBackground, isClear ? ClearMissRowColor : GameOverMissRowColor);
         SetPanelActive(_starRowRoot, true);
 
@@ -440,6 +469,77 @@ public class ResultController : MonoBehaviour
         if (_missCountText != null)
         {
             _missCountText.color = missValueColor;
+        }
+    }
+
+    private void SetAccentBarsVisible(bool isVisible)
+    {
+        SetImageObjectActive(_headerAccentImage, isVisible);
+        SetImageObjectActive(_scoreAccentImage, isVisible);
+        SetImageObjectActive(_detailAccentImage, isVisible);
+    }
+
+    private void ApplyPanelPalette()
+    {
+        if (_stageText != null)
+        {
+            _stageText.color = NeutralTextColor;
+        }
+
+        foreach (string path in StrongPanelTextPaths)
+        {
+            SetTextColor(path, PanelTextColor);
+        }
+
+        foreach (string path in MutedPanelTextPaths)
+        {
+            SetTextColor(path, MutedTextColor);
+        }
+
+        foreach (string path in StatRowPaths)
+        {
+            SetImageColor(FindComponent<Image>(path), RowBackgroundColor);
+        }
+    }
+
+    private void ApplyStarSizing()
+    {
+        if (_starRowRoot != null)
+        {
+            LayoutElement rowLayout = _starRowRoot.GetComponent<LayoutElement>();
+            if (rowLayout != null)
+            {
+                rowLayout.preferredHeight = ResultStarRowHeight;
+            }
+
+            RectTransform rowRect = _starRowRoot.GetComponent<RectTransform>();
+            if (rowRect != null)
+            {
+                rowRect.sizeDelta = new Vector2(rowRect.sizeDelta.x, ResultStarRowHeight);
+            }
+        }
+
+        if (_starImages == null)
+        {
+            return;
+        }
+
+        foreach (Image starImage in _starImages)
+        {
+            if (starImage == null)
+            {
+                continue;
+            }
+
+            RectTransform starRect = starImage.rectTransform;
+            starRect.sizeDelta = new Vector2(ResultStarSize, ResultStarSize);
+
+            LayoutElement starLayout = starImage.GetComponent<LayoutElement>();
+            if (starLayout != null)
+            {
+                starLayout.preferredWidth = ResultStarSize;
+                starLayout.preferredHeight = ResultStarSize;
+            }
         }
     }
 
@@ -615,7 +715,7 @@ public class ResultController : MonoBehaviour
 
     private IEnumerator RevealStars(int starRating)
     {
-        int clampedStars = Mathf.Clamp(starRating, 0, MaxStarCount);
+        int clampedStars = StarRatingUtility.Clamp(starRating);
         for (int i = 0; i < clampedStars; i += 1)
         {
             SetStarFilled(i);
@@ -737,35 +837,13 @@ public class ResultController : MonoBehaviour
 
     private static void SelectPlayableStage(int stageNumber)
     {
-        int safeStageNumber = Mathf.Max(1, stageNumber);
-        SessionState.SelectStage(safeStageNumber);
-        SaveService.SetSelectedStage(safeStageNumber);
-        SaveService.SetLastStage(safeStageNumber);
-        SaveService.Save();
+        StageSelectionService.SelectStage(stageNumber);
     }
 
     private static void LoadStageSelectFocused(int stageNumber)
     {
-        SaveService.SetLastStage(Mathf.Max(1, stageNumber));
-        SaveService.Save();
+        StageSelectionService.RememberLastStage(stageNumber);
         SceneManager.LoadScene(StageSelectSceneName);
-    }
-
-    private static int CalculateStarRating(GameResultData result)
-    {
-        if (result == null || !result.IsClear)
-        {
-            return 0;
-        }
-
-        int rating = result.MissCount switch
-        {
-            <= 0 => 3,
-            1 => 2,
-            _ => 1
-        };
-
-        return Mathf.Clamp(rating, 1, MaxStarCount);
     }
 
     private static string GetSubMessage(GameResultData result, StageDefinition stageDefinition)
@@ -811,6 +889,15 @@ public class ResultController : MonoBehaviour
         }
     }
 
+    private void SetTextColor(string path, Color color)
+    {
+        TMP_Text text = FindComponent<TMP_Text>(path);
+        if (text != null)
+        {
+            text.color = color;
+        }
+    }
+
     private static void SetText(TMP_Text textElement, string value)
     {
         if (textElement != null)
@@ -832,6 +919,14 @@ public class ResultController : MonoBehaviour
         if (image != null)
         {
             image.color = color;
+        }
+    }
+
+    private static void SetImageObjectActive(Image image, bool isActive)
+    {
+        if (image != null)
+        {
+            image.gameObject.SetActive(isActive);
         }
     }
 }
