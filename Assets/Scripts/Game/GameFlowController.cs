@@ -94,7 +94,7 @@ public class GameFlowController : MonoBehaviour
             yield break;
         }
 
-        int selectedStageNumber = Mathf.Max(1, SessionState.SelectedStageNumber);
+        int selectedStageNumber = StageNumberUtility.Normalize(SessionState.SelectedStageNumber);
         _currentStageDefinition = _stageDatabase.GetStageDefinition(selectedStageNumber);
         SessionState.SelectStage(_currentStageDefinition.StageNumber);
 

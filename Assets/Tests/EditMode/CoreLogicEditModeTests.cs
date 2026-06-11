@@ -4,6 +4,36 @@ using NUnit.Framework;
 public sealed class CoreLogicEditModeTests
 {
     [Test]
+    public void StageNumberUtility_NormalizesRawNumbersAndIndexes()
+    {
+        Type utility = CoreReflection.RequiredType("StageNumberUtility");
+
+        Assert.That(CoreReflection.CallStatic(utility, "Normalize", -10), Is.EqualTo(1));
+        Assert.That(CoreReflection.CallStatic(utility, "Normalize", 4), Is.EqualTo(4));
+        Assert.That(CoreReflection.CallStatic(utility, "FromIndex", -5), Is.EqualTo(1));
+        Assert.That(CoreReflection.CallStatic(utility, "FromIndex", 2), Is.EqualTo(3));
+    }
+
+    [Test]
+    public void StarRatingUtility_ClampsAndScoresClearResultsByMisses()
+    {
+        Type utility = CoreReflection.RequiredType("StarRatingUtility");
+        Type resultType = CoreReflection.RequiredType("GameResultData");
+        object perfectClear = CoreReflection.New(resultType, 1, true, 100, 0, 0, 0, 0);
+        object oneMissClear = CoreReflection.New(resultType, 1, true, 90, 1, 0, 0, 0);
+        object manyMissClear = CoreReflection.New(resultType, 1, true, 80, 4, 0, 0, 0);
+        object failedResult = CoreReflection.New(resultType, 1, false, 50, 3, 0, 0, 0);
+
+        Assert.That(CoreReflection.CallStatic(utility, "Clamp", -2), Is.Zero);
+        Assert.That(CoreReflection.CallStatic(utility, "Clamp", 99), Is.EqualTo(3));
+        Assert.That(CoreReflection.CallStatic(utility, "CalculateForResult", perfectClear), Is.EqualTo(3));
+        Assert.That(CoreReflection.CallStatic(utility, "CalculateForResult", oneMissClear), Is.EqualTo(2));
+        Assert.That(CoreReflection.CallStatic(utility, "CalculateForResult", manyMissClear), Is.EqualTo(1));
+        Assert.That(CoreReflection.CallStatic(utility, "CalculateForResult", failedResult), Is.Zero);
+        Assert.That(CoreReflection.CallStatic(utility, "CalculateForResult", new object[] { null }), Is.Zero);
+    }
+
+    [Test]
     public void JudgeEvaluator_MapsNullMatchAndMismatchToExpectedResults()
     {
         Type carType = CoreReflection.RequiredType("CarType");

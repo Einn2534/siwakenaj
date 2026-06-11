@@ -12,10 +12,8 @@ public static class SaveService
     private const string StarRatingKeyFormat = "StarRating_Stage{0}";
     private const int BoolTrue = 1;
     private const int BoolFalse = 0;
-    private const int DefaultStageNumber = 1;
     private const int DefaultBestScore = 0;
     private const int DefaultStarRating = 0;
-    private const int MaxStarRating = 3;
 
     public static bool GetBgmOn()
     {
@@ -59,22 +57,22 @@ public static class SaveService
 
     public static int GetLastStage()
     {
-        return Mathf.Max(DefaultStageNumber, PlayerPrefs.GetInt(LastStageKey, DefaultStageNumber));
+        return GetStageNumber(LastStageKey);
     }
 
     public static void SetLastStage(int stageNumber)
     {
-        PlayerPrefs.SetInt(LastStageKey, Mathf.Max(DefaultStageNumber, stageNumber));
+        SetStageNumber(LastStageKey, stageNumber);
     }
 
     public static int GetSelectedStage()
     {
-        return Mathf.Max(DefaultStageNumber, PlayerPrefs.GetInt(SelectedStageKey, DefaultStageNumber));
+        return GetStageNumber(SelectedStageKey);
     }
 
     public static void SetSelectedStage(int stageNumber)
     {
-        PlayerPrefs.SetInt(SelectedStageKey, Mathf.Max(DefaultStageNumber, stageNumber));
+        SetStageNumber(SelectedStageKey, stageNumber);
     }
 
     public static int GetBestScore(int stageNumber)
@@ -89,12 +87,12 @@ public static class SaveService
 
     public static int GetStarRating(int stageNumber)
     {
-        return Mathf.Clamp(PlayerPrefs.GetInt(GetStarRatingKey(stageNumber), DefaultStarRating), DefaultStarRating, MaxStarRating);
+        return StarRatingUtility.Clamp(PlayerPrefs.GetInt(GetStarRatingKey(stageNumber), DefaultStarRating));
     }
 
     public static void SetStarRating(int stageNumber, int stars)
     {
-        PlayerPrefs.SetInt(GetStarRatingKey(stageNumber), Mathf.Clamp(stars, DefaultStarRating, MaxStarRating));
+        PlayerPrefs.SetInt(GetStarRatingKey(stageNumber), StarRatingUtility.Clamp(stars));
     }
 
     public static void Save()
@@ -104,12 +102,27 @@ public static class SaveService
 
     private static string GetBestScoreKey(int stageNumber)
     {
-        return string.Format(BestScoreKeyFormat, Mathf.Max(DefaultStageNumber, stageNumber));
+        return GetStageKey(BestScoreKeyFormat, stageNumber);
     }
 
     private static string GetStarRatingKey(int stageNumber)
     {
-        return string.Format(StarRatingKeyFormat, Mathf.Max(DefaultStageNumber, stageNumber));
+        return GetStageKey(StarRatingKeyFormat, stageNumber);
+    }
+
+    private static int GetStageNumber(string key)
+    {
+        return StageNumberUtility.Normalize(PlayerPrefs.GetInt(key, StageNumberUtility.MinimumStageNumber));
+    }
+
+    private static void SetStageNumber(string key, int stageNumber)
+    {
+        PlayerPrefs.SetInt(key, StageNumberUtility.Normalize(stageNumber));
+    }
+
+    private static string GetStageKey(string keyFormat, int stageNumber)
+    {
+        return string.Format(keyFormat, StageNumberUtility.Normalize(stageNumber));
     }
 
     private static bool GetBool(string key, bool defaultValue)

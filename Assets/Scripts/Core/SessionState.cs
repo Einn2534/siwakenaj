@@ -2,10 +2,8 @@ using UnityEngine;
 
 public static class SessionState
 {
-    private const int DefaultStageNumber = 1;
-
-    public static int SelectedStageNumber { get; private set; } = DefaultStageNumber;
-    public static GameResultData LastResult { get; private set; } = GameResultData.Empty(DefaultStageNumber);
+    public static int SelectedStageNumber { get; private set; } = StageNumberUtility.MinimumStageNumber;
+    public static GameResultData LastResult { get; private set; } = GameResultData.Empty(StageNumberUtility.MinimumStageNumber);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeFromSave()
@@ -16,7 +14,7 @@ public static class SessionState
 
     public static void SelectStage(int stageNumber)
     {
-        SelectedStageNumber = stageNumber < DefaultStageNumber ? DefaultStageNumber : stageNumber;
+        SelectedStageNumber = StageNumberUtility.Normalize(stageNumber);
     }
 
     public static void StoreResult(GameResultData result)

@@ -79,10 +79,7 @@ public class StageSelectController : MonoBehaviour
             return;
         }
 
-        SessionState.SelectStage(_selectedStageNumber);
-        SaveService.SetSelectedStage(_selectedStageNumber);
-        SaveService.SetLastStage(_selectedStageNumber);
-        SaveService.Save();
+        StageSelectionService.SelectStage(_selectedStageNumber);
         SceneManager.LoadScene(MainSceneName);
     }
 
@@ -108,15 +105,15 @@ public class StageSelectController : MonoBehaviour
         _selectedStageNumber = GetDisplayStageNumber(stageDefinition, clampedIndex);
         UpdateCards();
 
-        if (CanPlaySelectedStage())
+        bool canPlay = CanPlaySelectedStage();
+        if (canPlay)
         {
-            SaveService.SetLastStage(_selectedStageNumber);
-            SaveService.Save();
+            StageSelectionService.RememberLastStage(_selectedStageNumber);
         }
 
         if (_playButton != null)
         {
-            _playButton.interactable = CanPlaySelectedStage();
+            _playButton.interactable = canPlay;
         }
     }
 
@@ -345,9 +342,9 @@ public class StageSelectController : MonoBehaviour
     {
         if (stageDefinition != null)
         {
-            return Mathf.Max(1, stageDefinition.StageNumber);
+            return StageNumberUtility.Normalize(stageDefinition.StageNumber);
         }
 
-        return Mathf.Max(1, stageIndex + 1);
+        return StageNumberUtility.FromIndex(stageIndex);
     }
 }

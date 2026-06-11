@@ -12,13 +12,11 @@ public class StageDatabase : ScriptableObject
 
     public StageDefinition GetStageDefinition(int stageNumber)
     {
-        int safeStageNumber = Mathf.Max(1, stageNumber);
-        foreach (StageDefinition stage in Stages)
+        int stageIndex = FindStageIndex(stageNumber);
+
+        if (stageIndex >= 0)
         {
-            if (stage != null && stage.StageNumber == safeStageNumber)
-            {
-                return stage;
-            }
+            return Stages[stageIndex];
         }
 
         if (Stages.Count > 0 && Stages[0] != null)
@@ -26,37 +24,18 @@ public class StageDatabase : ScriptableObject
             return Stages[0];
         }
 
-        return StageDefinition.CreateFallback(safeStageNumber);
+        return StageDefinition.CreateFallback(stageNumber);
     }
 
     public int GetStageIndex(int stageNumber)
     {
-        int safeStageNumber = Mathf.Max(1, stageNumber);
-        for (int i = 0; i < Stages.Count; i += 1)
-        {
-            if (Stages[i] != null && Stages[i].StageNumber == safeStageNumber)
-            {
-                return i;
-            }
-        }
-
-        return 0;
+        return TryGetStageIndex(stageNumber, out int stageIndex) ? stageIndex : 0;
     }
 
     public bool TryGetStageIndex(int stageNumber, out int stageIndex)
     {
-        int safeStageNumber = Mathf.Max(1, stageNumber);
-        for (int i = 0; i < Stages.Count; i += 1)
-        {
-            if (Stages[i] != null && Stages[i].StageNumber == safeStageNumber)
-            {
-                stageIndex = i;
-                return true;
-            }
-        }
-
-        stageIndex = -1;
-        return false;
+        stageIndex = FindStageIndex(stageNumber);
+        return stageIndex >= 0;
     }
 
     public StageDefinition GetNextStageDefinition(int stageNumber)
@@ -107,7 +86,7 @@ public class StageDatabase : ScriptableObject
     public int GetRequiredClearStageNumber(int stageIndex)
     {
         StageDefinition requiredStage = GetRequiredClearStage(stageIndex);
-        return requiredStage != null ? Mathf.Max(1, requiredStage.StageNumber) : 0;
+        return requiredStage != null ? StageNumberUtility.Normalize(requiredStage.StageNumber) : 0;
     }
 
     public void SetStages(StageDefinition[] stages)
@@ -132,5 +111,20 @@ public class StageDatabase : ScriptableObject
         }
 
         return null;
+    }
+
+    private int FindStageIndex(int stageNumber)
+    {
+        int safeStageNumber = StageNumberUtility.Normalize(stageNumber);
+        for (int i = 0; i < Stages.Count; i += 1)
+        {
+            StageDefinition stage = Stages[i];
+            if (stage != null && stage.StageNumber == safeStageNumber)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

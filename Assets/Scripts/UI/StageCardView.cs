@@ -14,7 +14,6 @@ public enum StageCardStatus
 public class StageCardView : MonoBehaviour
 {
     private const string StarBadgeTextName = "StarBadgeText";
-    private const int MaxStarCount = 3;
     private const string FilledStarTag = "<color=#FFD45C>\u2605</color>";
     private const string EmptyStarTag = "<color=#FFD45C55>\u2605</color>";
 
@@ -84,7 +83,7 @@ public class StageCardView : MonoBehaviour
     public void SetData(int stageNumber, int targetScore, int bestScore, StageCardStatus status, int starRating, int requiredStageNumber)
     {
         CacheDefaultsIfNeeded();
-        _currentStageNumber = Mathf.Max(1, stageNumber);
+        _currentStageNumber = StageNumberUtility.Normalize(stageNumber);
         _currentStatus = status;
 
         SetText(_stageNumberText, $"STAGE <color=#35D7FF>{_currentStageNumber:00}</color>");
@@ -146,7 +145,7 @@ public class StageCardView : MonoBehaviour
             return;
         }
 
-        int clampedStars = Mathf.Clamp(starRating, 0, MaxStarCount);
+        int clampedStars = StarRatingUtility.Clamp(starRating);
         bool shouldShow = canShowStars && clampedStars > 0;
         _starBadgeText.gameObject.SetActive(shouldShow);
         _starBadgeText.text = shouldShow ? BuildStarBadge(clampedStars) : string.Empty;
@@ -190,7 +189,7 @@ public class StageCardView : MonoBehaviour
     {
         int resolvedRequiredStageNumber = requiredStageNumber > 0
             ? requiredStageNumber
-            : Mathf.Max(1, stageNumber - 1);
+            : StageNumberUtility.Normalize(stageNumber - 1);
 
         SetText(_targetScoreText, $"CLEAR STAGE {resolvedRequiredStageNumber:00}");
         SetText(_bestScoreText, "TO UNLOCK");
@@ -266,7 +265,7 @@ public class StageCardView : MonoBehaviour
 
     private void RefreshStarImages(int starRating, bool canShowStars)
     {
-        int clampedStars = Mathf.Clamp(starRating, 0, MaxStarCount);
+        int clampedStars = StarRatingUtility.Clamp(starRating);
         for (int i = 0; i < _starImages.Length; i += 1)
         {
             Image starImage = _starImages[i];
@@ -275,7 +274,7 @@ public class StageCardView : MonoBehaviour
                 continue;
             }
 
-            bool isVisibleSlot = canShowStars && i < MaxStarCount;
+            bool isVisibleSlot = canShowStars && i < StarRatingUtility.MaxStars;
             starImage.gameObject.SetActive(isVisibleSlot);
             if (!isVisibleSlot)
             {
@@ -312,8 +311,8 @@ public class StageCardView : MonoBehaviour
 
     private static string BuildStarBadge(int starRating)
     {
-        StringBuilder builder = new StringBuilder(MaxStarCount * FilledStarTag.Length);
-        for (int i = 0; i < MaxStarCount; i += 1)
+        StringBuilder builder = new StringBuilder(StarRatingUtility.MaxStars * FilledStarTag.Length);
+        for (int i = 0; i < StarRatingUtility.MaxStars; i += 1)
         {
             builder.Append(i < starRating ? FilledStarTag : EmptyStarTag);
         }

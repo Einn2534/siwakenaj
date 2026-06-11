@@ -40,11 +40,7 @@ public class ScoreState
 
     private void IncrementLane(CarType laneType)
     {
-        if (!_laneCounts.ContainsKey(laneType))
-        {
-            _laneCounts[laneType] = 0;
-        }
-
-        _laneCounts[laneType] += 1;
+        _laneCounts.TryGetValue(laneType, out int count);
+        _laneCounts[laneType] = count + 1;
     }
 }

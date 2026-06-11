@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 [Serializable]
 public class StageDefinition
@@ -18,7 +17,7 @@ public class StageDefinition
     {
         return new StageDefinition
         {
-            StageNumber = Mathf.Max(1, stageNumber)
+            StageNumber = StageNumberUtility.Normalize(stageNumber)
         };
     }
 }
