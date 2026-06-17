@@ -5,27 +5,6 @@ TextureImporter:
   - first:
       213: 1223640595971329524
     second: sportscar_0
-  - first:
-      213: -4996905481821653732
-    second: sportscar_1
-  - first:
-      213: 2225819830104026060
-    second: sportscar_2
-  - first:
-      213: -5017950287352959362
-    second: sportscar_3
-  - first:
-      213: 3137190463966038513
-    second: sportscar_4
-  - first:
-      213: 7087339245672603820
-    second: sportscar_5
-  - first:
-      213: -1802798711866617879
-    second: sportscar_6
-  - first:
-      213: 7776819736955763565
-    second: sportscar_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -163,12 +142,12 @@ TextureImporter:
       name: sportscar_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 393
-        width: 2314
-        height: 1575
+        x: 3
+        y: 322
+        width: 994
+        height: 356
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -177,160 +156,6 @@ TextureImporter:
       bones: []
       spriteID: 4fd4e9f83ae3bf010800000000000000
       internalID: 1223640595971329524
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_1
-      rect:
-        serializedVersion: 2
-        x: 127
-        y: 935
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c1571d360fc67aab0800000000000000
-      internalID: -4996905481821653732
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_2
-      rect:
-        serializedVersion: 2
-        x: 635
-        y: 826
-        width: 12
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ccbee53b753b3ee10800000000000000
-      internalID: 2225819830104026060
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_3
-      rect:
-        serializedVersion: 2
-        x: 677
-        y: 824
-        width: 9
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e7ee1c5ccc8ac5ab0800000000000000
-      internalID: -5017950287352959362
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_4
-      rect:
-        serializedVersion: 2
-        x: 684
-        y: 825
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1f9407dfa1a898b20800000000000000
-      internalID: 3137190463966038513
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_5
-      rect:
-        serializedVersion: 2
-        x: 1666
-        y: 826
-        width: 15
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ca0200d5e794b5260800000000000000
-      internalID: 7087339245672603820
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_6
-      rect:
-        serializedVersion: 2
-        x: 127
-        y: 775
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9ef88a98f1c2bf6e0800000000000000
-      internalID: -1802798711866617879
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sportscar_7
-      rect:
-        serializedVersion: 2
-        x: 1675
-        y: 423
-        width: 7
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d6bbe7fe850dceb60800000000000000
-      internalID: 7776819736955763565
       vertices: []
       indices: 
       edges: []
@@ -350,13 +175,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       sportscar_0: 1223640595971329524
-      sportscar_1: -4996905481821653732
-      sportscar_2: 2225819830104026060
-      sportscar_3: -5017950287352959362
-      sportscar_4: 3137190463966038513
-      sportscar_5: 7087339245672603820
-      sportscar_6: -1802798711866617879
-      sportscar_7: 7776819736955763565
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

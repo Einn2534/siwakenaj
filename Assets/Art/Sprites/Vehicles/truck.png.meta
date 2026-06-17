@@ -4,7 +4,7 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 2894126367625617641
-    second: track_0
+    second: truck_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,15 +139,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: track_0
+      name: truck_0
       rect:
         serializedVersion: 2
-        x: 287
-        y: 652
-        width: 1797
-        height: 1041
+        x: 4
+        y: 214
+        width: 992
+        height: 573
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      track_0: 2894126367625617641
+      truck_0: 2894126367625617641
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
