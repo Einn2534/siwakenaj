@@ -988,10 +988,20 @@ public static class TitleSceneLayoutBuilder
 
     private static Sprite LoadSprite(string path)
     {
+        Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+        string expectedName = $"{System.IO.Path.GetFileNameWithoutExtension(path)}_0";
+
+        foreach (Object asset in assets)
+        {
+            if (asset is Sprite childSprite && childSprite.name == expectedName)
+            {
+                return childSprite;
+            }
+        }
+
         Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
         if (sprite == null)
         {
-            Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
             foreach (Object asset in assets)
             {
                 if (asset is Sprite childSprite)

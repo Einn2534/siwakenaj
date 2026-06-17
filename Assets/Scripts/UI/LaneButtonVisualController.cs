@@ -4,6 +4,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(LaneInputController))]
 public class LaneButtonVisualController : MonoBehaviour
 {
+    private const float RawImageInsetRatio = 0.9f;
+
     [SerializeField]
     private CarVisualDatabase _visualDatabase;
 
@@ -25,6 +27,11 @@ public class LaneButtonVisualController : MonoBehaviour
     }
 
     private void OnEnable()
+    {
+        ApplyVisuals();
+    }
+
+    private void Start()
     {
         ApplyVisuals();
     }
@@ -93,6 +100,40 @@ public class LaneButtonVisualController : MonoBehaviour
                 rect.y / texture.height,
                 rect.width / texture.width,
                 rect.height / texture.height);
+            FitRawImageToSprite(rawImage, rect);
         }
+    }
+
+    private static void FitRawImageToSprite(RawImage rawImage, Rect spriteRect)
+    {
+        RectTransform rectTransform = rawImage.rectTransform;
+        RectTransform parent = rectTransform.parent as RectTransform;
+        if (parent == null || spriteRect.width <= 0f || spriteRect.height <= 0f)
+        {
+            return;
+        }
+
+        Rect parentRect = parent.rect;
+        float maxWidth = parentRect.width * RawImageInsetRatio;
+        float maxHeight = parentRect.height * RawImageInsetRatio;
+        if (maxWidth <= 0f || maxHeight <= 0f)
+        {
+            return;
+        }
+
+        float aspect = spriteRect.width / spriteRect.height;
+        float width = maxWidth;
+        float height = width / aspect;
+        if (height > maxHeight)
+        {
+            height = maxHeight;
+            width = height * aspect;
+        }
+
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.sizeDelta = new Vector2(width, height);
     }
 }
