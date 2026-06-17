@@ -12,23 +12,23 @@ using Object = UnityEngine.Object;
 public static class TitleSceneLayoutBuilder
 {
     private const string ScenePath = "Assets/Scenes/Title.unity";
-    private const string TitleFontAssetPath = "Assets/Fonts/Y1BadBoySlab SDF.asset";
-    private const string HeadlineFontAssetPath = "Assets/Fonts/Y1BroadBlack SDF.asset";
-    private const string UiFontAssetPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
+    private const string TitleFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
+    private const string HeadlineFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
+    private const string UiFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string JapaneseFallbackFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string TitleBackgroundPath = "Assets/Art/UI/Sprites/Title/title_background_factory.png";
     private const string TitleLogoPath = "Assets/Art/UI/Sprites/Title/siwakennja.png";
-    private const string SecondaryButtonPath = "Assets/Art/UI/Sprites/Result/Legacy/button_secondary_outline_strong.png";
+    private const string SecondaryButtonPath = "Assets/Art/UI/Sprites/Result/Common/button_secondary_outline_strong.png";
     private const string BackButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_back_small.png";
-    private const string SettingsIconPath = "Assets/Art/UI/Sprites/Settings/Legacy/settingIcon.png";
+    private const string SettingsIconPath = "Assets/Art/UI/Sprites/Settings/ui_settings_icon.png";
     private const string ToggleOnPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_on.png";
     private const string ToggleOffPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_off.png";
-    private const string PowaIdlePath = "Assets/Art/Sprites/Characters/Powa/Powa_Idol.png";
-    private const string TruckSpritePath = "Assets/Art/Sprites/Vehicles/track.png";
+    private const string PowaIdlePath = "Assets/Art/Sprites/Characters/Powa/Powa_Idle.png";
+    private const string TruckSpritePath = "Assets/Art/Sprites/Vehicles/truck.png";
     private const string CarSpritePath = "Assets/Art/Sprites/Vehicles/car.png";
     private const string SportsCarSpritePath = "Assets/Art/Sprites/Vehicles/sportscar.png";
     private const string CompactCarIconPath = "Assets/Art/Sprites/Vehicles/car.png";
-    private const string LightTruckIconPath = "Assets/Art/Sprites/Vehicles/track.png";
+    private const string LightTruckIconPath = "Assets/Art/Sprites/Vehicles/truck.png";
     private const string SportsCarIconPath = "Assets/Art/Sprites/Vehicles/sportscar.png";
 
     private static readonly Color CameraColor = new(0.63f, 0.84f, 1f, 1f);
@@ -332,6 +332,8 @@ public static class TitleSceneLayoutBuilder
         Button stageButton = CreateWideIconButton("StageSelectButton", bottomRoot, null, null, "<color=#FFFFFF>TAP TO START</color>", headlineFontAsset);
         AddButtonListener(stageButton, titleController.OnStartPressed);
 
+        settingsButton.transform.SetAsLastSibling();
+        howToButton.transform.SetAsLastSibling();
     }
 
     private static void BuildLogoBlock(RectTransform parent, Sprite logoSprite, TMP_FontAsset titleFontAsset, TMP_FontAsset headlineFontAsset, TMP_FontAsset uiFontAsset, Sprite slicedSprite)

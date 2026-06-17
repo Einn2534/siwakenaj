@@ -14,23 +14,21 @@ public static class ResultSceneLayoutBuilder
     private const float ResultStarSize = 128f;
     private const float ResultStarRowHeight = 138f;
     private const string ScenePath = "Assets/Scenes/Result.unity";
-    private const string TitleFontSourcePath = "Assets/Fonts/Y1BadBoySlab.otf";
-    private const string TitleFontAssetPath = "Assets/Fonts/Y1BadBoySlab SDF.asset";
-    private const string UiFontSourcePath = "Assets/Fonts/Y1YomiyasuWide-Bold.otf";
-    private const string UiFontAssetPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
+    private const string FontSourcePath = "Assets/Fonts/DotGothic16-Regular.ttf";
+    private const string FontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string RetryResultButtonPath = "Assets/Art/UI/Sprites/Result/Buttons/button_retry_normal.png";
     private const string TitleResultButtonPath = "Assets/Art/UI/Sprites/Result/Buttons/button_title_normal.png";
     private const string StageSelectResultButtonPath = "Assets/Art/UI/Sprites/Result/Buttons/button_stage_select_normal.png";
-    private const string StageChipBackgroundPath = "Assets/Art/UI/Sprites/Result/Legacy/stage_chip_bg.png";
-    private const string CardBackgroundPath = "Assets/Art/UI/Sprites/Result/Legacy/card_bg_soft.png";
-    private const string CardAccentLinePath = "Assets/Art/UI/Sprites/Result/Legacy/card_accent_line.png";
+    private const string StageChipBackgroundPath = "Assets/Art/UI/Sprites/Result/Common/stage_chip_bg.png";
+    private const string CardBackgroundPath = "Assets/Art/UI/Sprites/Result/Common/card_bg_soft.png";
+    private const string CardAccentLinePath = "Assets/Art/UI/Sprites/Result/Common/card_accent_line.png";
     private const string FilledStarPath = "Assets/Art/UI/Sprites/Result/Stars/star_filled_1.png";
     private const string EmptyStarPath = "Assets/Art/UI/Sprites/Result/Stars/star_empty_1.png";
-    private const string StarGlowPath = "Assets/Art/UI/Sprites/Result/Legacy/star_glow_soft.png";
-    private const string HeroClearGlowPath = "Assets/Art/UI/Sprites/Result/Legacy/hero_clear_glow.png";
-    private const string MissHeartIconPath = "Assets/Art/UI/Sprites/Result/Legacy/icon_miss_heart.png";
-    private const string NewBestBadgePath = "Assets/Art/UI/Sprites/Result/Legacy/badge_new_best_stamp.png";
-    private const string GameBackgroundPath = "Assets/Art/Sprites/Generated/Gemini_Generated_Image_9vwbvv9vwbvv9vwb.png";
+    private const string StarGlowPath = "Assets/Art/UI/Sprites/Result/Common/star_glow_soft.png";
+    private const string HeroClearGlowPath = "Assets/Art/UI/Sprites/Result/Common/hero_clear_glow.png";
+    private const string MissHeartIconPath = "Assets/Art/UI/Sprites/Result/Common/icon_miss_heart.png";
+    private const string NewBestBadgePath = "Assets/Art/UI/Sprites/Result/Common/badge_new_best_stamp.png";
+    private const string GameBackgroundPath = "Assets/Art/Sprites/Backgrounds/magic_shop_background.png";
 
     private static readonly Color CameraColor = new(0.945f, 0.962f, 0.99f, 1f);
     private static readonly Color ClearTintColor = new(0.70f, 0.90f, 0.78f, 0.22f);
@@ -150,8 +148,8 @@ public static class ResultSceneLayoutBuilder
 
     private static void BuildLayout(Canvas canvas, ResultController resultController)
     {
-        TMP_FontAsset titleFontAsset = EnsureFontAsset(TitleFontAssetPath, TitleFontSourcePath, 108, 8, 1024, 1024);
-        TMP_FontAsset uiFontAsset = EnsureFontAsset(UiFontAssetPath, UiFontSourcePath, 86, 6, 1024, 1024);
+        TMP_FontAsset titleFontAsset = EnsureFontAsset(FontAssetPath, FontSourcePath, 108, 8, 1024, 1024);
+        TMP_FontAsset uiFontAsset = titleFontAsset;
         titleFontAsset ??= TMP_Settings.defaultFontAsset;
         uiFontAsset ??= titleFontAsset;
 

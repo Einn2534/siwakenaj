@@ -106,8 +106,8 @@ public static class StageCardPrefabUpgrader
         infoPanel.type = Image.Type.Sliced;
         infoPanel.color = new Color(0.015f, 0.09f, 0.15f, 0.88f);
 
-        TMP_FontAsset headlineFont = LoadFont("Assets/Fonts/Y1BroadBlack SDF.asset");
-        TMP_FontAsset bodyFont = LoadFont("Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset");
+        TMP_FontAsset headlineFont = LoadFont("Assets/Fonts/DotGothic16-Regular SDF.asset");
+        TMP_FontAsset bodyFont = headlineFont;
 
         TMP_Text stageNumberText = UpsertText(
             root.transform,
