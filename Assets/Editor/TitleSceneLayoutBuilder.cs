@@ -21,6 +21,7 @@ public static class TitleSceneLayoutBuilder
     private const string SecondaryButtonPath = "Assets/Art/UI/Sprites/Result/Common/button_secondary_outline_strong.png";
     private const string BackButtonPath = "Assets/Art/UI/Sprites/Buttons/ui_button_back_small.png";
     private const string SettingsIconPath = "Assets/Art/UI/Sprites/Settings/ui_settings_icon.png";
+    private const string HowToIconPath = "Assets/Art/UI/Sprites/Settings/ui_howto_icon.png";
     private const string ToggleOnPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_on.png";
     private const string ToggleOffPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_off.png";
     private const string PowaIdlePath = "Assets/Art/Sprites/Characters/Powa/Powa_Idle.png";
@@ -53,9 +54,13 @@ public static class TitleSceneLayoutBuilder
             Toggle bgmToggle,
             Toggle seToggle,
             Toggle vibrationToggle,
+            Slider bgmVolumeSlider,
+            Slider seVolumeSlider,
             TMP_Text bgmStateText,
             TMP_Text seStateText,
             TMP_Text vibrationStateText,
+            TMP_Text bgmVolumeValueText,
+            TMP_Text seVolumeValueText,
             Image bgmToggleImage,
             Image seToggleImage,
             Image vibrationToggleImage,
@@ -66,9 +71,13 @@ public static class TitleSceneLayoutBuilder
             BgmToggle = bgmToggle;
             SeToggle = seToggle;
             VibrationToggle = vibrationToggle;
+            BgmVolumeSlider = bgmVolumeSlider;
+            SeVolumeSlider = seVolumeSlider;
             BgmStateText = bgmStateText;
             SeStateText = seStateText;
             VibrationStateText = vibrationStateText;
+            BgmVolumeValueText = bgmVolumeValueText;
+            SeVolumeValueText = seVolumeValueText;
             BgmToggleImage = bgmToggleImage;
             SeToggleImage = seToggleImage;
             VibrationToggleImage = vibrationToggleImage;
@@ -80,9 +89,13 @@ public static class TitleSceneLayoutBuilder
         public Toggle BgmToggle { get; }
         public Toggle SeToggle { get; }
         public Toggle VibrationToggle { get; }
+        public Slider BgmVolumeSlider { get; }
+        public Slider SeVolumeSlider { get; }
         public TMP_Text BgmStateText { get; }
         public TMP_Text SeStateText { get; }
         public TMP_Text VibrationStateText { get; }
+        public TMP_Text BgmVolumeValueText { get; }
+        public TMP_Text SeVolumeValueText { get; }
         public Image BgmToggleImage { get; }
         public Image SeToggleImage { get; }
         public Image VibrationToggleImage { get; }
@@ -236,6 +249,7 @@ public static class TitleSceneLayoutBuilder
         Sprite secondaryButtonSprite = LoadSprite(SecondaryButtonPath);
         Sprite backButtonSprite = LoadSprite(BackButtonPath);
         Sprite settingsIconSprite = LoadSprite(SettingsIconPath);
+        Sprite howToIconSprite = LoadSprite(HowToIconPath);
         Sprite toggleOnSprite = LoadSprite(ToggleOnPath);
         Sprite toggleOffSprite = LoadSprite(ToggleOffPath);
         Sprite powaSprite = LoadSprite(PowaIdlePath);
@@ -252,7 +266,7 @@ public static class TitleSceneLayoutBuilder
         Stretch(safeAreaRoot, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         GetOrAddComponent<SafeAreaFitter>(safeAreaRoot.gameObject);
 
-        BuildTitleContent(safeAreaRoot, titleController, titleFontAsset, headlineFontAsset, uiFontAsset, logoSprite, settingsIconSprite, powaSprite, truckSprite, carSprite, sportsCarSprite, slicedSprite);
+        BuildTitleContent(safeAreaRoot, titleController, titleFontAsset, headlineFontAsset, uiFontAsset, logoSprite, settingsIconSprite, howToIconSprite, powaSprite, truckSprite, carSprite, sportsCarSprite, slicedSprite);
 
         RectTransform howToOverlay = BuildHowToOverlay(canvas.transform, howToOverlayController, titleFontAsset, headlineFontAsset, uiFontAsset, secondaryButtonSprite, backButtonSprite, slicedSprite);
         RectTransform settingsOverlay = BuildSettingsOverlay(canvas.transform, titleController, headlineFontAsset, uiFontAsset, slicedSprite, secondaryButtonSprite, backButtonSprite, toggleOnSprite, toggleOffSprite, slicedSprite, out SettingsPanelController settingsPanelController, out SettingsBindings settingsBindings);
@@ -288,6 +302,7 @@ public static class TitleSceneLayoutBuilder
         TMP_FontAsset uiFontAsset,
         Sprite logoSprite,
         Sprite settingsIconSprite,
+        Sprite howToIconSprite,
         Sprite powaSprite,
         Sprite truckSprite,
         Sprite carSprite,
@@ -299,7 +314,7 @@ public static class TitleSceneLayoutBuilder
         Button settingsButton = CreateRoundMenuButton("SettingsButtonTop", contentRoot, settingsIconSprite, "設定", uiFontAsset, slicedSprite);
         SetAnchored((RectTransform)settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(108f, -90f), new Vector2(142f, 142f));
         AddButtonListener(settingsButton, titleController.OnSettingsOpen);
-        Button howToButton = CreateRoundMenuButton("HowToButton", contentRoot, null, "あそびかた", uiFontAsset, slicedSprite);
+        Button howToButton = CreateRoundMenuButton("HowToButton", contentRoot, howToIconSprite, "あそびかた", uiFontAsset, slicedSprite, "?");
         SetAnchored((RectTransform)howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-116f, -90f), new Vector2(164f, 142f));
         AddButtonListener(howToButton, titleController.OnHowToOpen);
 
@@ -361,7 +376,7 @@ public static class TitleSceneLayoutBuilder
 
     }
 
-    private static Button CreateRoundMenuButton(string name, Transform parent, Sprite iconSprite, string label, TMP_FontAsset fontAsset, Sprite slicedSprite)
+    private static Button CreateRoundMenuButton(string name, Transform parent, Sprite iconSprite, string label, TMP_FontAsset fontAsset, Sprite slicedSprite, string fallbackIconText = null)
     {
         Button button = CreateButton(name, parent, slicedSprite, new Vector2(148f, 148f), string.Empty, fontAsset, 1f, InkColor);
         RectTransform rect = (RectTransform)button.transform;
@@ -373,6 +388,15 @@ public static class TitleSceneLayoutBuilder
         {
             Image icon = CreateImage("Icon", rect, iconSprite, Color.white, true);
             SetAnchored(icon.rectTransform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(62f, 62f));
+        }
+        else if (!string.IsNullOrEmpty(fallbackIconText))
+        {
+            TMP_Text iconText = CreateText("IconText", rect, fallbackIconText, fontAsset, 62f, 42f, Color.white, TextAlignmentOptions.Center);
+            SetAnchored((RectTransform)iconText.transform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(62f, 62f));
+            iconText.fontStyle = FontStyles.Bold;
+            iconText.outlineColor = InkColor;
+            iconText.outlineWidth = 0.18f;
+            iconText.textWrappingMode = TextWrappingModes.NoWrap;
         }
 
         TMP_Text text = CreateText("Label", rect, label, fontAsset, 28f, 20f, Color.white, TextAlignmentOptions.Center);
@@ -511,9 +535,9 @@ public static class TitleSceneLayoutBuilder
         bodyLayout.childForceExpandWidth = true;
         bodyLayout.childForceExpandHeight = false;
 
-        CreateHowToStep(body, "01", "COMING CAR", "霆翫ｒ隕九※縲∝酔縺倥Ξ繝ｼ繝ｳ繧偵ち繝・・", BlueAccentColor, LoadSprite(LightTruckIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
-        CreateHowToStep(body, "02", "OK / GOOD", "豁｣縺励￥莉募・縺代ｋ縺ｻ縺ｩ繧ｹ繧ｳ繧｢繧｢繝・・", SuccessColor, LoadSprite(CompactCarIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
-        CreateHowToStep(body, "03", "MISS LIMIT", "MISS 縺御ｸ企剞縺ｫ螻翫￥縺ｨ GAME OVER", new Color(0.914f, 0.408f, 0.416f, 1f), LoadSprite(SportsCarIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
+        CreateHowToStep(body, "01", "COMING CAR", "車を見て、同じレーンのボタンをタップ", BlueAccentColor, LoadSprite(LightTruckIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
+        CreateHowToStep(body, "02", "OK / GOOD", "正しく仕分けるとスコアアップ", SuccessColor, LoadSprite(CompactCarIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
+        CreateHowToStep(body, "03", "MISS LIMIT", "MISS が上限に届くと GAME OVER", new Color(0.914f, 0.408f, 0.416f, 1f), LoadSprite(SportsCarIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
 
         Button closeButton = CreateButton("CloseButton", dialog, secondaryButtonSprite != null ? secondaryButtonSprite : slicedSprite, new Vector2(560f, 136f), "OK", headlineFontAsset, 48f, TextColor);
         SetAnchored((RectTransform)closeButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 34f), new Vector2(560f, 136f));
@@ -593,11 +617,13 @@ public static class TitleSceneLayoutBuilder
         bodyLayout.childForceExpandWidth = true;
         bodyLayout.childForceExpandHeight = false;
 
-        CreateSettingsRow(body, "BGM", "TITLE / STAGE MUSIC", SuccessColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out Toggle bgmToggle, out TMP_Text bgmState, out Image bgmToggleImage, out Image bgmAccent);
-        CreateSettingsRow(body, "SE", "BUTTON / JUDGE SOUNDS", BlueAccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out Toggle seToggle, out TMP_Text seState, out Image seToggleImage, out Image seAccent);
-        CreateSettingsRow(body, "VIBRATION", "JUDGE / RESULT FEEDBACK", AccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out Toggle vibrationToggle, out TMP_Text vibrationState, out Image vibrationToggleImage, out Image vibrationAccent);
+        CreateSettingsRow(body, "BGM", "TITLE / STAGE MUSIC", SuccessColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out RectTransform bgmRow, out Toggle bgmToggle, out TMP_Text bgmState, out Image bgmToggleImage, out Image bgmAccent);
+        CreateSettingsVolumeControl(bgmRow, "BGM", SuccessColor, headlineFontAsset, slicedSprite, out Slider bgmVolumeSlider, out TMP_Text bgmVolumeValueText);
+        CreateSettingsRow(body, "SE", "BUTTON / JUDGE SOUNDS", BlueAccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out RectTransform seRow, out Toggle seToggle, out TMP_Text seState, out Image seToggleImage, out Image seAccent);
+        CreateSettingsVolumeControl(seRow, "SE", BlueAccentColor, headlineFontAsset, slicedSprite, out Slider seVolumeSlider, out TMP_Text seVolumeValueText);
+        CreateSettingsRow(body, "VIBRATION", "JUDGE / RESULT FEEDBACK", AccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out _, out Toggle vibrationToggle, out TMP_Text vibrationState, out Image vibrationToggleImage, out Image vibrationAccent);
 
-        settingsBindings = new SettingsBindings(bgmToggle, seToggle, vibrationToggle, bgmState, seState, vibrationState, bgmToggleImage, seToggleImage, vibrationToggleImage, bgmAccent, seAccent, vibrationAccent);
+        settingsBindings = new SettingsBindings(bgmToggle, seToggle, vibrationToggle, bgmVolumeSlider, seVolumeSlider, bgmState, seState, vibrationState, bgmVolumeValueText, seVolumeValueText, bgmToggleImage, seToggleImage, vibrationToggleImage, bgmAccent, seAccent, vibrationAccent);
         overlay.gameObject.SetActive(false);
         return overlay;
     }
@@ -611,12 +637,13 @@ public static class TitleSceneLayoutBuilder
         TMP_FontAsset headlineFontAsset,
         TMP_FontAsset uiFontAsset,
         Sprite slicedSprite,
+        out RectTransform row,
         out Toggle toggle,
         out TMP_Text stateText,
         out Image toggleImage,
         out Image accentImage)
     {
-        RectTransform row = CreatePanel($"{label}Row", parent, slicedSprite, RowColor);
+        row = CreatePanel($"{label}Row", parent, slicedSprite, RowColor);
         row.gameObject.AddComponent<LayoutElement>().preferredHeight = 204f;
 
         accentImage = CreatePanel("AccentBar", row, slicedSprite, accentColor).GetComponent<Image>();
@@ -645,6 +672,48 @@ public static class TitleSceneLayoutBuilder
         toggle.targetGraphic = toggleImage;
         toggle.graphic = null;
         SetAnchored((RectTransform)toggleObject.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-48f, 0f), new Vector2(172f, 102f));
+    }
+
+    private static void CreateSettingsVolumeControl(
+        RectTransform row,
+        string label,
+        Color accentColor,
+        TMP_FontAsset headlineFontAsset,
+        Sprite slicedSprite,
+        out Slider slider,
+        out TMP_Text valueText)
+    {
+        RectTransform sliderRect = CreateUIObject($"{label}VolumeSlider", row);
+        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-58f, 24f), new Vector2(-282f, 38f));
+
+        RectTransform background = CreatePanel("Background", sliderRect, slicedSprite, DividerColor);
+        Stretch(background, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+
+        RectTransform fillArea = CreateUIObject("Fill Area", sliderRect);
+        Stretch(fillArea, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+
+        RectTransform fill = CreatePanel("Fill", fillArea, slicedSprite, accentColor);
+        Stretch(fill, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        fill.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform handleArea = CreateUIObject("Handle Slide Area", sliderRect);
+        Stretch(handleArea, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        RectTransform handle = CreatePanel("Handle", handleArea, slicedSprite, Color.white);
+        SetAnchored(handle, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(34f, 2f));
+
+        slider = sliderRect.gameObject.AddComponent<Slider>();
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+        slider.wholeNumbers = false;
+        slider.direction = Slider.Direction.LeftToRight;
+        slider.fillRect = fill;
+        slider.handleRect = handle;
+        slider.targetGraphic = handle.GetComponent<Image>();
+
+        valueText = CreateText($"{label}VolumeValueText", row, "100%", headlineFontAsset, 26f, 18f, TextColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-58f, 24f), new Vector2(112f, 44f));
+        valueText.textWrappingMode = TextWrappingModes.NoWrap;
     }
 
     private static RectTransform CreateModalDialog(string name, RectTransform overlay, Sprite sprite, Vector2 size)
@@ -865,9 +934,13 @@ public static class TitleSceneLayoutBuilder
         SetRequiredObjectReference(serializedSettings, "_bgmToggle", bindings.BgmToggle);
         SetRequiredObjectReference(serializedSettings, "_seToggle", bindings.SeToggle);
         SetRequiredObjectReference(serializedSettings, "_vibrationToggle", bindings.VibrationToggle);
+        SetRequiredObjectReference(serializedSettings, "_bgmVolumeSlider", bindings.BgmVolumeSlider);
+        SetRequiredObjectReference(serializedSettings, "_seVolumeSlider", bindings.SeVolumeSlider);
         SetRequiredObjectReference(serializedSettings, "_bgmStateText", bindings.BgmStateText);
         SetRequiredObjectReference(serializedSettings, "_seStateText", bindings.SeStateText);
         SetRequiredObjectReference(serializedSettings, "_vibrationStateText", bindings.VibrationStateText);
+        SetRequiredObjectReference(serializedSettings, "_bgmVolumeValueText", bindings.BgmVolumeValueText);
+        SetRequiredObjectReference(serializedSettings, "_seVolumeValueText", bindings.SeVolumeValueText);
         SetRequiredObjectReference(serializedSettings, "_bgmToggleImage", bindings.BgmToggleImage);
         SetRequiredObjectReference(serializedSettings, "_seToggleImage", bindings.SeToggleImage);
         SetRequiredObjectReference(serializedSettings, "_vibrationToggleImage", bindings.VibrationToggleImage);

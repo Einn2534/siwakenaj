@@ -42,6 +42,8 @@ public class SoundManager : MonoBehaviour
 
     private bool _isBgmOn = true;
     private bool _isSeOn = true;
+    private float _bgmVolume = 1f;
+    private float _seVolume = 1f;
 
     public static SoundManager Instance => _currentInstance;
 
@@ -82,7 +84,10 @@ public class SoundManager : MonoBehaviour
         LoadResourceFallbackClips();
         _isBgmOn = SaveService.GetBgmOn();
         _isSeOn = SaveService.GetSeOn();
-        SetBgmEnabled(_isBgmOn);
+        _bgmVolume = SaveService.GetBgmVolume();
+        _seVolume = SaveService.GetSeVolume();
+        ApplyBgmSettings();
+        ApplySeSettings();
     }
 
     private void EnsureAudioSources()
@@ -144,15 +149,43 @@ public class SoundManager : MonoBehaviour
     public void SetBgmEnabled(bool isOn)
     {
         _isBgmOn = isOn;
+        ApplyBgmSettings();
+    }
+
+    public void SetBgmVolume(float volume)
+    {
+        _bgmVolume = Mathf.Clamp01(volume);
+        ApplyBgmSettings();
+    }
+
+    private void ApplyBgmSettings()
+    {
         if (_bgmSource != null)
         {
             _bgmSource.mute = !_isBgmOn;
+            _bgmSource.volume = _bgmVolume;
         }
     }
 
     public void SetSeEnabled(bool isOn)
     {
         _isSeOn = isOn;
+        ApplySeSettings();
+    }
+
+    public void SetSeVolume(float volume)
+    {
+        _seVolume = Mathf.Clamp01(volume);
+        ApplySeSettings();
+    }
+
+    private void ApplySeSettings()
+    {
+        if (_seSource != null)
+        {
+            _seSource.mute = !_isSeOn;
+            _seSource.volume = _seVolume;
+        }
     }
 
     public void PlayBgm()
@@ -184,7 +217,7 @@ public class SoundManager : MonoBehaviour
 
         _bgmSource.clip = clip;
         _bgmSource.loop = true;
-        _bgmSource.mute = !_isBgmOn;
+        ApplyBgmSettings();
         _bgmSource.Play();
     }
 

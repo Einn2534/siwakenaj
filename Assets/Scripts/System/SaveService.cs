@@ -4,6 +4,8 @@ public static class SaveService
 {
     private const string BgmOnKey = "BGM_On";
     private const string SeOnKey = "SE_On";
+    private const string BgmVolumeKey = "BGM_Volume";
+    private const string SeVolumeKey = "SE_Volume";
     private const string VibrationOnKey = "Vibration_On";
     private const string HowToShownKey = "HowTo_Shown";
     private const string SelectedStageKey = "SelectedStage";
@@ -14,6 +16,7 @@ public static class SaveService
     private const int BoolFalse = 0;
     private const int DefaultBestScore = 0;
     private const int DefaultStarRating = 0;
+    private const float DefaultVolume = 1f;
 
     public static bool GetBgmOn()
     {
@@ -33,6 +36,26 @@ public static class SaveService
     public static void SetSeOn(bool isOn)
     {
         SetBool(SeOnKey, isOn);
+    }
+
+    public static float GetBgmVolume()
+    {
+        return GetVolume(BgmVolumeKey);
+    }
+
+    public static void SetBgmVolume(float volume)
+    {
+        SetVolume(BgmVolumeKey, volume);
+    }
+
+    public static float GetSeVolume()
+    {
+        return GetVolume(SeVolumeKey);
+    }
+
+    public static void SetSeVolume(float volume)
+    {
+        SetVolume(SeVolumeKey, volume);
     }
 
     public static bool GetVibrationOn()
@@ -134,5 +157,15 @@ public static class SaveService
     private static void SetBool(string key, bool value)
     {
         PlayerPrefs.SetInt(key, value ? BoolTrue : BoolFalse);
+    }
+
+    private static float GetVolume(string key)
+    {
+        return Mathf.Clamp01(PlayerPrefs.GetFloat(key, DefaultVolume));
+    }
+
+    private static void SetVolume(string key, float volume)
+    {
+        PlayerPrefs.SetFloat(key, Mathf.Clamp01(volume));
     }
 }

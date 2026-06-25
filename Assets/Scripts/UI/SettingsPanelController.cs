@@ -5,10 +5,18 @@ using UnityEngine.UI;
 
 public class SettingsPanelController : MonoBehaviour
 {
+    private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
+    private const string ToggleOffResourcePath = "UI/ui_settings_toggle_off";
+
     private static readonly Color EnabledTextColor = new(0.137f, 0.184f, 0.275f, 1f);
     private static readonly Color DisabledTextColor = new(0.56f, 0.61f, 0.69f, 1f);
-    private static readonly Color EnabledAccentColor = new(0.345f, 0.784f, 0.541f, 1f);
+    private static readonly Color BgmAccentColor = new(0.345f, 0.784f, 0.541f, 1f);
     private static readonly Color DisabledAccentColor = new(0.824f, 0.855f, 0.902f, 1f);
+    private static readonly Color SeAccentColor = new(0.219f, 0.643f, 0.94f, 1f);
+    private static readonly Color VibrationAccentColor = new(0.949f, 0.772f, 0.259f, 1f);
+    private static readonly Color SliderTrackColor = new(0.824f, 0.855f, 0.902f, 1f);
+    private static readonly Color SliderHandleColor = new(1f, 1f, 1f, 1f);
+    private static readonly Vector2 SliderHandleSize = new(34f, 2f);
 
     [SerializeField, FormerlySerializedAs("bgmToggle")]
     private Toggle _bgmToggle;
@@ -28,6 +36,19 @@ public class SettingsPanelController : MonoBehaviour
 
     [SerializeField]
     private TMP_Text _vibrationStateText;
+
+    [Header("Volume")]
+    [SerializeField]
+    private Slider _bgmVolumeSlider;
+
+    [SerializeField]
+    private Slider _seVolumeSlider;
+
+    [SerializeField]
+    private TMP_Text _bgmVolumeValueText;
+
+    [SerializeField]
+    private TMP_Text _seVolumeValueText;
 
     [SerializeField]
     private Image _bgmToggleImage;
@@ -57,7 +78,10 @@ public class SettingsPanelController : MonoBehaviour
 
     private void Awake()
     {
+        ResolveSprites();
+        EnsureSettingsRowBindings();
         EnsureVibrationRowBindings();
+        EnsureVolumeBindings();
     }
 
     private void Start()
@@ -75,6 +99,16 @@ public class SettingsPanelController : MonoBehaviour
         if (_vibrationToggle != null)
         {
             _vibrationToggle.onValueChanged.AddListener(OnVibrationChanged);
+        }
+
+        if (_bgmVolumeSlider != null)
+        {
+            _bgmVolumeSlider.onValueChanged.AddListener(OnBgmVolumeChanged);
+        }
+
+        if (_seVolumeSlider != null)
+        {
+            _seVolumeSlider.onValueChanged.AddListener(OnSeVolumeChanged);
         }
 
         _isInitialized = true;
@@ -105,6 +139,16 @@ public class SettingsPanelController : MonoBehaviour
         {
             _vibrationToggle.onValueChanged.RemoveListener(OnVibrationChanged);
         }
+
+        if (_bgmVolumeSlider != null)
+        {
+            _bgmVolumeSlider.onValueChanged.RemoveListener(OnBgmVolumeChanged);
+        }
+
+        if (_seVolumeSlider != null)
+        {
+            _seVolumeSlider.onValueChanged.RemoveListener(OnSeVolumeChanged);
+        }
     }
 
     private void OnBgmChanged(bool isOn)
@@ -112,7 +156,7 @@ public class SettingsPanelController : MonoBehaviour
         SaveService.SetBgmOn(isOn);
         SaveService.Save();
         SoundManager.Instance?.SetBgmEnabled(isOn);
-        RefreshVisualState(_bgmStateText, _bgmToggleImage, _bgmAccentImage, isOn);
+        RefreshVisualState(_bgmStateText, _bgmToggleImage, _bgmAccentImage, isOn, BgmAccentColor);
     }
 
     private void OnSeChanged(bool isOn)
@@ -120,7 +164,25 @@ public class SettingsPanelController : MonoBehaviour
         SaveService.SetSeOn(isOn);
         SaveService.Save();
         SoundManager.Instance?.SetSeEnabled(isOn);
-        RefreshVisualState(_seStateText, _seToggleImage, _seAccentImage, isOn);
+        RefreshVisualState(_seStateText, _seToggleImage, _seAccentImage, isOn, SeAccentColor);
+    }
+
+    private void OnBgmVolumeChanged(float volume)
+    {
+        volume = Mathf.Clamp01(volume);
+        SaveService.SetBgmVolume(volume);
+        SaveService.Save();
+        SoundManager.Instance?.SetBgmVolume(volume);
+        RefreshVolumeText(_bgmVolumeValueText, volume);
+    }
+
+    private void OnSeVolumeChanged(float volume)
+    {
+        volume = Mathf.Clamp01(volume);
+        SaveService.SetSeVolume(volume);
+        SaveService.Save();
+        SoundManager.Instance?.SetSeVolume(volume);
+        RefreshVolumeText(_seVolumeValueText, volume);
     }
 
     private void OnVibrationChanged(bool isOn)
@@ -132,7 +194,7 @@ public class SettingsPanelController : MonoBehaviour
             VibrationService.Stop();
         }
 
-        RefreshVisualState(_vibrationStateText, _vibrationToggleImage, _vibrationAccentImage, isOn);
+        RefreshVisualState(_vibrationStateText, _vibrationToggleImage, _vibrationAccentImage, isOn, VibrationAccentColor);
     }
 
     private void RefreshFromSave()
@@ -140,6 +202,8 @@ public class SettingsPanelController : MonoBehaviour
         bool isBgmOn = SaveService.GetBgmOn();
         bool isSeOn = SaveService.GetSeOn();
         bool isVibrationOn = SaveService.GetVibrationOn();
+        float bgmVolume = SaveService.GetBgmVolume();
+        float seVolume = SaveService.GetSeVolume();
 
         if (_bgmToggle != null)
         {
@@ -156,9 +220,75 @@ public class SettingsPanelController : MonoBehaviour
             _vibrationToggle.SetIsOnWithoutNotify(isVibrationOn);
         }
 
-        RefreshVisualState(_bgmStateText, _bgmToggleImage, _bgmAccentImage, isBgmOn);
-        RefreshVisualState(_seStateText, _seToggleImage, _seAccentImage, isSeOn);
-        RefreshVisualState(_vibrationStateText, _vibrationToggleImage, _vibrationAccentImage, isVibrationOn);
+        if (_bgmVolumeSlider != null)
+        {
+            _bgmVolumeSlider.SetValueWithoutNotify(bgmVolume);
+        }
+
+        if (_seVolumeSlider != null)
+        {
+            _seVolumeSlider.SetValueWithoutNotify(seVolume);
+        }
+
+        SoundManager.Instance?.SetBgmEnabled(isBgmOn);
+        SoundManager.Instance?.SetSeEnabled(isSeOn);
+        SoundManager.Instance?.SetBgmVolume(bgmVolume);
+        SoundManager.Instance?.SetSeVolume(seVolume);
+        RefreshVisualState(_bgmStateText, _bgmToggleImage, _bgmAccentImage, isBgmOn, BgmAccentColor);
+        RefreshVisualState(_seStateText, _seToggleImage, _seAccentImage, isSeOn, SeAccentColor);
+        RefreshVisualState(_vibrationStateText, _vibrationToggleImage, _vibrationAccentImage, isVibrationOn, VibrationAccentColor);
+        RefreshVolumeText(_bgmVolumeValueText, bgmVolume);
+        RefreshVolumeText(_seVolumeValueText, seVolume);
+    }
+
+    private void ResolveSprites()
+    {
+        _toggleOnSprite ??= Resources.Load<Sprite>(ToggleOnResourcePath);
+        _toggleOffSprite ??= Resources.Load<Sprite>(ToggleOffResourcePath);
+    }
+
+    private void EnsureSettingsRowBindings()
+    {
+        EnsureToggleRowBindings("BGM", ref _bgmToggle, ref _bgmStateText, ref _bgmToggleImage, ref _bgmAccentImage);
+        EnsureToggleRowBindings("SE", ref _seToggle, ref _seStateText, ref _seToggleImage, ref _seAccentImage);
+        EnsureToggleRowBindings("VIBRATION", ref _vibrationToggle, ref _vibrationStateText, ref _vibrationToggleImage, ref _vibrationAccentImage);
+    }
+
+    private void EnsureToggleRowBindings(
+        string label,
+        ref Toggle toggle,
+        ref TMP_Text stateText,
+        ref Image toggleImage,
+        ref Image accentImage)
+    {
+        Transform row = transform.Find($"Body/{label}Row");
+        if (row == null)
+        {
+            return;
+        }
+
+        if (toggle == null)
+        {
+            Transform toggleTransform = row.Find($"{label}Toggle");
+            toggle = toggleTransform != null
+                ? toggleTransform.GetComponent<Toggle>()
+                : row.GetComponentInChildren<Toggle>(true);
+        }
+
+        if (stateText == null)
+        {
+            stateText = FindRowText(row, "StateText");
+        }
+
+        if (toggleImage == null && toggle != null)
+        {
+            toggleImage = ResolveToggleImage(toggle);
+        }
+
+        if (accentImage == null)
+        {
+            accentImage = FindRowImage(row, "AccentBar");
+        }
     }
 
     private void EnsureVibrationRowBindings()
@@ -226,6 +356,104 @@ public class SettingsPanelController : MonoBehaviour
         }
     }
 
+    private void EnsureVolumeBindings()
+    {
+        Transform bgmRow = transform.Find("Body/BGMRow");
+        EnsureVolumeBinding(bgmRow, "BGM", BgmAccentColor, ref _bgmVolumeSlider, ref _bgmVolumeValueText);
+
+        Transform seRow = transform.Find("Body/SERow");
+        EnsureVolumeBinding(seRow, "SE", SeAccentColor, ref _seVolumeSlider, ref _seVolumeValueText);
+    }
+
+    private static void EnsureVolumeBinding(
+        Transform row,
+        string label,
+        Color accentColor,
+        ref Slider slider,
+        ref TMP_Text valueText)
+    {
+        if (row == null)
+        {
+            return;
+        }
+
+        if (slider == null)
+        {
+            Transform sliderTransform = row.Find($"{label}VolumeSlider");
+            slider = sliderTransform != null ? sliderTransform.GetComponent<Slider>() : null;
+        }
+
+        if (valueText == null)
+        {
+            valueText = FindRowText(row, $"{label}VolumeValueText");
+        }
+
+        if (slider == null)
+        {
+            CreateVolumeSlider(row, label, accentColor, out slider, out valueText);
+            return;
+        }
+
+        ConfigureVolumeSlider(slider);
+        if (valueText == null)
+        {
+            valueText = CreateVolumeValueText(row, label);
+        }
+    }
+
+    private static void CreateVolumeSlider(
+        Transform row,
+        string label,
+        Color accentColor,
+        out Slider slider,
+        out TMP_Text valueText)
+    {
+        RectTransform sliderRect = CreateRuntimeObject($"{label}VolumeSlider", row, typeof(Slider));
+        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-58f, 24f), new Vector2(-282f, 38f));
+
+        RectTransform background = CreateRuntimePanel("Background", sliderRect, SliderTrackColor, true);
+        Stretch(background, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+
+        RectTransform fillArea = CreateRuntimeObject("Fill Area", sliderRect);
+        Stretch(fillArea, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+
+        RectTransform fill = CreateRuntimePanel("Fill", fillArea, accentColor, false);
+        Stretch(fill, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        RectTransform handleArea = CreateRuntimeObject("Handle Slide Area", sliderRect);
+        Stretch(handleArea, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        RectTransform handle = CreateRuntimePanel("Handle", handleArea, SliderHandleColor, true);
+        SetAnchored(handle, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, SliderHandleSize);
+
+        slider = sliderRect.GetComponent<Slider>();
+        ConfigureVolumeSlider(slider);
+        slider.fillRect = fill;
+        slider.handleRect = handle;
+        slider.targetGraphic = handle.GetComponent<Image>();
+
+        valueText = CreateVolumeValueText(row, label);
+    }
+
+    private static void ConfigureVolumeSlider(Slider slider)
+    {
+        if (slider == null)
+        {
+            return;
+        }
+
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+        slider.wholeNumbers = false;
+        slider.direction = Slider.Direction.LeftToRight;
+
+        if (slider.handleRect != null)
+        {
+            slider.handleRect.sizeDelta = SliderHandleSize;
+            slider.handleRect.anchoredPosition = Vector2.zero;
+        }
+    }
+
     private static void SetRowText(Transform row, string childName, string value)
     {
         TMP_Text text = FindRowText(row, childName);
@@ -263,7 +491,55 @@ public class SettingsPanelController : MonoBehaviour
         return toggle.targetGraphic as Image;
     }
 
-    private void RefreshVisualState(TMP_Text stateText, Image toggleImage, Image accentImage, bool isOn)
+    private static RectTransform CreateRuntimeObject(string name, Transform parent, params System.Type[] components)
+    {
+        System.Type[] allComponents = new System.Type[components.Length + 2];
+        allComponents[0] = typeof(RectTransform);
+        allComponents[1] = typeof(CanvasRenderer);
+        for (int i = 0; i < components.Length; i += 1)
+        {
+            allComponents[i + 2] = components[i];
+        }
+
+        GameObject gameObject = new(name, allComponents);
+        gameObject.layer = parent.gameObject.layer;
+        gameObject.transform.SetParent(parent, false);
+        return (RectTransform)gameObject.transform;
+    }
+
+    private static RectTransform CreateRuntimePanel(string name, Transform parent, Color color, bool raycastTarget)
+    {
+        RectTransform rectTransform = CreateRuntimeObject(name, parent, typeof(Image));
+        Image image = rectTransform.GetComponent<Image>();
+        image.color = color;
+        image.raycastTarget = raycastTarget;
+        return rectTransform;
+    }
+
+    private static TMP_Text CreateRuntimeText(string name, Transform parent, string text, TextAlignmentOptions alignment)
+    {
+        RectTransform rectTransform = CreateRuntimeObject(name, parent, typeof(TextMeshProUGUI));
+        TextMeshProUGUI textComponent = rectTransform.GetComponent<TextMeshProUGUI>();
+        textComponent.text = text;
+        textComponent.fontSize = 26f;
+        textComponent.fontSizeMax = 26f;
+        textComponent.fontSizeMin = 18f;
+        textComponent.enableAutoSizing = true;
+        textComponent.alignment = alignment;
+        textComponent.color = EnabledTextColor;
+        textComponent.raycastTarget = false;
+        textComponent.textWrappingMode = TextWrappingModes.NoWrap;
+        return textComponent;
+    }
+
+    private static TMP_Text CreateVolumeValueText(Transform row, string label)
+    {
+        TMP_Text valueText = CreateRuntimeText($"{label}VolumeValueText", row, "100%", TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-58f, 24f), new Vector2(112f, 44f));
+        return valueText;
+    }
+
+    private void RefreshVisualState(TMP_Text stateText, Image toggleImage, Image accentImage, bool isOn, Color enabledAccentColor)
     {
         if (stateText != null)
         {
@@ -285,7 +561,35 @@ public class SettingsPanelController : MonoBehaviour
 
         if (accentImage != null)
         {
-            accentImage.color = isOn ? EnabledAccentColor : DisabledAccentColor;
+            accentImage.color = isOn ? enabledAccentColor : DisabledAccentColor;
         }
+    }
+
+    private static void RefreshVolumeText(TMP_Text valueText, float volume)
+    {
+        if (valueText != null)
+        {
+            valueText.text = $"{Mathf.RoundToInt(Mathf.Clamp01(volume) * 100f)}%";
+        }
+    }
+
+    private static void SetAnchored(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition, Vector2 sizeDelta)
+    {
+        rectTransform.anchorMin = anchorMin;
+        rectTransform.anchorMax = anchorMax;
+        rectTransform.pivot = pivot;
+        rectTransform.anchoredPosition = anchoredPosition;
+        rectTransform.sizeDelta = sizeDelta;
+        rectTransform.localScale = Vector3.one;
+    }
+
+    private static void Stretch(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
+    {
+        rectTransform.anchorMin = anchorMin;
+        rectTransform.anchorMax = anchorMax;
+        rectTransform.offsetMin = offsetMin;
+        rectTransform.offsetMax = offsetMax;
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.localScale = Vector3.one;
     }
 }
