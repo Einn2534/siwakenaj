@@ -4,6 +4,9 @@ using UnityEngine;
 public class UnityAdsSettings : ScriptableObject
 {
     [SerializeField]
+    private bool _adsEnabled = true;
+
+    [SerializeField]
     private string _androidGameId = string.Empty;
 
     [SerializeField]
@@ -18,6 +21,7 @@ public class UnityAdsSettings : ScriptableObject
     [SerializeField]
     private bool _testMode = true;
 
+    public bool AdsEnabled => _adsEnabled;
     public string AndroidGameId => _androidGameId;
     public string IosGameId => _iosGameId;
     public string AndroidInterstitialAdUnitId => _androidInterstitialAdUnitId;

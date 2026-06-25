@@ -52,7 +52,7 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     public void ShowInterstitialThenContinue(Action onComplete)
     {
-        if (!_isInitialized || !_isInterstitialLoaded || string.IsNullOrWhiteSpace(_interstitialAdUnitId))
+        if (!CanShowInterstitial())
         {
             LoadInterstitial();
             onComplete?.Invoke();
@@ -72,6 +72,9 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
     {
+        _isInitialized = false;
+        _isLoading = false;
+        _isInterstitialLoaded = false;
         Debug.LogWarning($"Unity Ads initialization failed: {error} - {message}");
     }
 
@@ -97,6 +100,11 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
     {
+        if (adUnitId != _interstitialAdUnitId)
+        {
+            return;
+        }
+
         Debug.LogWarning($"Unity Ads show failed: {adUnitId} - {error} - {message}");
         CompleteShow();
         LoadInterstitial();
@@ -112,6 +120,11 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
+        if (adUnitId != _interstitialAdUnitId)
+        {
+            return;
+        }
+
         CompleteShow();
         LoadInterstitial();
     }
@@ -125,11 +138,30 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
             return;
         }
 
-        string gameId = GetGameId();
-        _interstitialAdUnitId = GetInterstitialAdUnitId();
+        if (!_settings.AdsEnabled)
+        {
+            LogConfigurationWarning("Unity Ads is disabled in UnityAdsSettings.");
+            return;
+        }
+
+        if (!Advertisement.isSupported)
+        {
+            LogConfigurationWarning("Unity Ads is not supported on this platform.");
+            return;
+        }
+
+        string gameId = GetGameId()?.Trim();
+        _interstitialAdUnitId = GetInterstitialAdUnitId()?.Trim();
         if (string.IsNullOrWhiteSpace(gameId) || string.IsNullOrWhiteSpace(_interstitialAdUnitId))
         {
             LogConfigurationWarning("Unity Ads Game ID or interstitial Ad Unit ID is empty.");
+            return;
+        }
+
+        if (Advertisement.isInitialized)
+        {
+            _isInitialized = true;
+            LoadInterstitial();
             return;
         }
 
@@ -145,6 +177,15 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
         _isLoading = true;
         Advertisement.Load(_interstitialAdUnitId, this);
+    }
+
+    private bool CanShowInterstitial()
+    {
+        return _isInitialized &&
+            _isInterstitialLoaded &&
+            !Advertisement.isShowing &&
+            _showCompletedCallback == null &&
+            !string.IsNullOrWhiteSpace(_interstitialAdUnitId);
     }
 
     private string GetGameId()
