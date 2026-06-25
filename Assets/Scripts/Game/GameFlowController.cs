@@ -29,6 +29,8 @@ public class GameFlowController : MonoBehaviour
     private StageDefinition _currentStageDefinition;
     private Coroutine _startGameRoutine;
     private Coroutine _resultLoadRoutine;
+    private GameState _stateBeforePause = GameState.Ready;
+    private float _timeScaleBeforePause = 1f;
 
     private void Awake()
     {
@@ -58,6 +60,12 @@ public class GameFlowController : MonoBehaviour
             _startGameRoutine = null;
         }
 
+        if (_currentState == GameState.Paused)
+        {
+            _currentState = _stateBeforePause;
+            RestoreTimeScale();
+        }
+
         _hudEffectsController?.StopEffects();
     }
 
@@ -69,6 +77,41 @@ public class GameFlowController : MonoBehaviour
     public bool IsPlaying()
     {
         return _currentState == GameState.Playing;
+    }
+
+    public bool IsPaused()
+    {
+        return _currentState == GameState.Paused;
+    }
+
+    public bool CanPauseGame()
+    {
+        return _currentState == GameState.Ready || _currentState == GameState.Playing;
+    }
+
+    public bool PauseGame()
+    {
+        if (!CanPauseGame())
+        {
+            return false;
+        }
+
+        _stateBeforePause = _currentState;
+        _timeScaleBeforePause = Time.timeScale > 0f ? Time.timeScale : 1f;
+        _currentState = GameState.Paused;
+        Time.timeScale = 0f;
+        return true;
+    }
+
+    public void ResumeGame()
+    {
+        if (_currentState != GameState.Paused)
+        {
+            return;
+        }
+
+        _currentState = _stateBeforePause;
+        RestoreTimeScale();
     }
 
     public void StartGame()
@@ -272,5 +315,12 @@ public class GameFlowController : MonoBehaviour
     private static void LoadResultScene()
     {
         SceneManager.LoadScene(ResultSceneName);
+    }
+
+    private void RestoreTimeScale()
+    {
+        Time.timeScale = Mathf.Approximately(_timeScaleBeforePause, 0f)
+            ? 1f
+            : _timeScaleBeforePause;
     }
 }
