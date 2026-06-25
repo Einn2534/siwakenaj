@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -10,6 +12,29 @@ public class StageSelectController : MonoBehaviour
     private const string MainSceneName = "Main";
     private const string TitleSceneName = "Title";
     private const string StageDatabaseResourcePath = "StageDatabase";
+    private const string SettingsIconResourcePath = "UI/ui_settings_icon";
+    private const string HowToIconResourcePath = "UI/ui_howto_icon";
+    private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
+    private const float SettingsPanelWidth = 900f;
+    private const float SettingsPanelHeight = 1080f;
+    private const float SettingsRowHeight = 204f;
+    private const float SettingsSliderHandleWidth = 34f;
+    private const float SettingsSliderHandleHeight = 2f;
+    private const float HowToPanelWidth = 900f;
+    private const float HowToPanelHeight = 1260f;
+
+    private static readonly Color ModalScrimColor = new(0.04f, 0.07f, 0.11f, 0.58f);
+    private static readonly Color CardColor = new(1f, 1f, 1f, 0.96f);
+    private static readonly Color CardShadowColor = new(0.08f, 0.15f, 0.24f, 0.12f);
+    private static readonly Color TextColor = new(0.137f, 0.184f, 0.275f, 1f);
+    private static readonly Color MutedTextColor = new(0.44f, 0.49f, 0.58f, 1f);
+    private static readonly Color RowColor = new(0.975f, 0.982f, 0.992f, 1f);
+    private static readonly Color DividerColor = new(0.902f, 0.922f, 0.953f, 1f);
+    private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
+    private static readonly Color BlueAccentColor = new(0.219f, 0.643f, 0.94f, 1f);
+    private static readonly Color WarningAccentColor = new(0.949f, 0.772f, 0.259f, 1f);
+    private static readonly Color DangerAccentColor = new(0.914f, 0.408f, 0.416f, 1f);
+    private static readonly Color InkColor = new(0.025f, 0.075f, 0.145f, 1f);
 
     [SerializeField, FormerlySerializedAs("swipeSnapController")]
     private SwipeSnapController _swipeSnapController;
@@ -28,7 +53,16 @@ public class StageSelectController : MonoBehaviour
 
     private StageDatabase _stageDatabase;
     private StageCardView _stageCardTemplate;
+    private GameObject _settingsOverlay;
+    private GameObject _howToOverlay;
+    private Button _settingsButton;
+    private Button _howToButton;
+    private Button _settingsCloseButton;
+    private Button _howToCloseButton;
+    private Button _howToTopCloseButton;
+    private Sprite _toggleOnSprite;
     private int _selectedStageNumber = 1;
+    private bool _utilityUiBuilt;
 
     private void OnEnable()
     {
@@ -41,6 +75,7 @@ public class StageSelectController : MonoBehaviour
     private IEnumerator Start()
     {
         SoundManager.EnsureInstance().PlayStageSelectBgm();
+        BuildUtilityUi();
 
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
         EnsureStageCardViews();
@@ -65,6 +100,8 @@ public class StageSelectController : MonoBehaviour
         {
             _swipeSnapController.OnPageChanged -= OnSelectionChanged;
         }
+
+        RemoveUtilityListeners();
     }
 
     public void OnSelectionChanged(int index)
@@ -88,9 +125,187 @@ public class StageSelectController : MonoBehaviour
         SceneManager.LoadScene(TitleSceneName);
     }
 
+    public void OnSettingsOpen()
+    {
+        SetPanelActive(_howToOverlay, false);
+        SetPanelActive(_settingsOverlay, true);
+    }
+
+    public void OnSettingsClose()
+    {
+        SetPanelActive(_settingsOverlay, false);
+    }
+
+    public void OnHowToOpen()
+    {
+        SetPanelActive(_settingsOverlay, false);
+        SetPanelActive(_howToOverlay, true);
+    }
+
+    public void OnHowToClose()
+    {
+        SetPanelActive(_howToOverlay, false);
+        SaveService.SetHowToShown(true);
+        SaveService.Save();
+    }
+
     public int GetSelectedStageNumber()
     {
         return _selectedStageNumber;
+    }
+
+    private void BuildUtilityUi()
+    {
+        if (_utilityUiBuilt)
+        {
+            return;
+        }
+
+        Canvas canvas = FindFirstObjectByType<Canvas>();
+        RectTransform canvasTransform = canvas != null ? canvas.transform as RectTransform : null;
+        RectTransform safeArea = ResolveSafeArea(canvasTransform);
+        if (canvasTransform == null || safeArea == null)
+        {
+            return;
+        }
+
+        _utilityUiBuilt = true;
+        Sprite slicedSprite = GetBuiltinUiSprite();
+        _toggleOnSprite = Resources.Load<Sprite>(ToggleOnResourcePath);
+
+        _settingsButton = CreateRoundMenuButton("SettingsButtonTop", safeArea, Resources.Load<Sprite>(SettingsIconResourcePath), "\u8a2d\u5b9a", slicedSprite, "SET");
+        SetAnchored((RectTransform)_settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(108f, -90f), new Vector2(148f, 148f));
+        _settingsButton.onClick.AddListener(OnSettingsOpen);
+
+        _howToButton = CreateRoundMenuButton("HowToButtonTop", safeArea, Resources.Load<Sprite>(HowToIconResourcePath), "\u3042\u305d\u3073\u304b\u305f", slicedSprite, "?");
+        SetAnchored((RectTransform)_howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-108f, -90f), new Vector2(148f, 148f));
+        _howToButton.onClick.AddListener(OnHowToOpen);
+
+        _settingsOverlay = BuildSettingsOverlay(canvasTransform, slicedSprite).gameObject;
+        _howToOverlay = BuildHowToOverlay(canvasTransform, slicedSprite).gameObject;
+
+        SetPanelActive(_settingsOverlay, false);
+        SetPanelActive(_howToOverlay, false);
+
+        if (!SaveService.GetHowToShown())
+        {
+            OnHowToOpen();
+        }
+    }
+
+    private void RemoveUtilityListeners()
+    {
+        if (_settingsButton != null)
+        {
+            _settingsButton.onClick.RemoveListener(OnSettingsOpen);
+        }
+
+        if (_howToButton != null)
+        {
+            _howToButton.onClick.RemoveListener(OnHowToOpen);
+        }
+
+        if (_settingsCloseButton != null)
+        {
+            _settingsCloseButton.onClick.RemoveListener(OnSettingsClose);
+        }
+
+        if (_howToCloseButton != null)
+        {
+            _howToCloseButton.onClick.RemoveListener(OnHowToClose);
+        }
+
+        if (_howToTopCloseButton != null)
+        {
+            _howToTopCloseButton.onClick.RemoveListener(OnHowToClose);
+        }
+    }
+
+    private RectTransform BuildSettingsOverlay(RectTransform canvasTransform, Sprite slicedSprite)
+    {
+        RectTransform overlay = CreatePanel("SettingsOverlay", canvasTransform, slicedSprite, ModalScrimColor);
+        Stretch(overlay, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        RectTransform dialog = CreateModalDialog("SettingsPanel", overlay, slicedSprite, new Vector2(SettingsPanelWidth, SettingsPanelHeight));
+        BuildModalHeader(dialog, "SETTINGS", slicedSprite, out _settingsCloseButton);
+        _settingsCloseButton.onClick.AddListener(OnSettingsClose);
+
+        RectTransform body = CreateUiObject("Body", dialog);
+        Stretch(body, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(60f, 150f), new Vector2(-60f, -128f));
+
+        VerticalLayoutGroup bodyLayout = body.gameObject.AddComponent<VerticalLayoutGroup>();
+        bodyLayout.spacing = 24f;
+        bodyLayout.childAlignment = TextAnchor.UpperCenter;
+        bodyLayout.childControlWidth = true;
+        bodyLayout.childControlHeight = true;
+        bodyLayout.childForceExpandWidth = true;
+        bodyLayout.childForceExpandHeight = false;
+
+        CreateSettingsRow(body, "BGM", "TITLE / STAGE MUSIC", SuccessColor, _toggleOnSprite, out RectTransform bgmRow);
+        CreateSettingsVolumeControl(bgmRow, "BGM", SuccessColor, slicedSprite);
+        CreateSettingsRow(body, "SE", "BUTTON / JUDGE SOUNDS", BlueAccentColor, _toggleOnSprite, out RectTransform seRow);
+        CreateSettingsVolumeControl(seRow, "SE", BlueAccentColor, slicedSprite);
+        CreateSettingsRow(body, "VIBRATION", "JUDGE / RESULT FEEDBACK", WarningAccentColor, _toggleOnSprite, out _);
+
+        dialog.gameObject.AddComponent<SettingsPanelController>();
+        overlay.gameObject.SetActive(false);
+        return overlay;
+    }
+
+    private RectTransform BuildHowToOverlay(RectTransform canvasTransform, Sprite slicedSprite)
+    {
+        RectTransform overlay = CreatePanel("HowToOverlay", canvasTransform, slicedSprite, ModalScrimColor);
+        Stretch(overlay, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        RectTransform dialog = CreateModalDialog("HowToPanel", overlay, slicedSprite, new Vector2(HowToPanelWidth, HowToPanelHeight));
+        BuildModalHeader(dialog, "HOW TO", slicedSprite, out _howToTopCloseButton);
+        _howToTopCloseButton.onClick.AddListener(OnHowToClose);
+
+        RectTransform body = CreateUiObject("Body", dialog);
+        Stretch(body, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(58f, 138f), new Vector2(-58f, -164f));
+
+        VerticalLayoutGroup bodyLayout = body.gameObject.AddComponent<VerticalLayoutGroup>();
+        bodyLayout.spacing = 18f;
+        bodyLayout.childAlignment = TextAnchor.UpperCenter;
+        bodyLayout.childControlWidth = true;
+        bodyLayout.childControlHeight = true;
+        bodyLayout.childForceExpandWidth = true;
+        bodyLayout.childForceExpandHeight = false;
+
+        CarVisualDatabase visualDatabase = CarVisualDatabase.LoadDefault();
+        CreateHowToStep(body, "01", "COMING CAR", "\u8eca\u3092\u898b\u3066\u3001\u540c\u3058\u30ec\u30fc\u30f3\u306e\u30dc\u30bf\u30f3\u3092\u30bf\u30c3\u30d7", BlueAccentColor, GetCarIcon(visualDatabase, CarType.LightTruck), slicedSprite);
+        CreateHowToStep(body, "02", "OK / GOOD", "\u6b63\u3057\u304f\u4ed5\u5206\u3051\u308b\u3068\u30b9\u30b3\u30a2\u30a2\u30c3\u30d7", SuccessColor, GetCarIcon(visualDatabase, CarType.CompactCar), slicedSprite);
+        CreateHowToStep(body, "03", "MISS LIMIT", "MISS \u304c\u4e0a\u9650\u306b\u5c4a\u304f\u3068 GAME OVER", DangerAccentColor, GetCarIcon(visualDatabase, CarType.SportsCar), slicedSprite);
+
+        _howToCloseButton = CreateModalCloseButton(dialog, "CloseButton", "OK", slicedSprite, new Vector2(0f, 34f), new Vector2(560f, 136f));
+        _howToCloseButton.onClick.AddListener(OnHowToClose);
+
+        overlay.gameObject.SetActive(false);
+        return overlay;
+    }
+
+    private static RectTransform ResolveSafeArea(RectTransform canvasTransform)
+    {
+        if (canvasTransform == null)
+        {
+            return null;
+        }
+
+        Transform safeArea = canvasTransform.Find("SafeArea");
+        return safeArea != null ? safeArea as RectTransform : canvasTransform;
+    }
+
+    private static Sprite GetCarIcon(CarVisualDatabase visualDatabase, CarType carType)
+    {
+        return visualDatabase != null ? visualDatabase.GetIconSprite(carType) : null;
+    }
+
+    private static void SetPanelActive(GameObject panel, bool isActive)
+    {
+        if (panel != null)
+        {
+            panel.SetActive(isActive);
+        }
     }
 
     private void ApplySelectionIndex(int index)
@@ -346,5 +561,314 @@ public class StageSelectController : MonoBehaviour
         }
 
         return StageNumberUtility.FromIndex(stageIndex);
+    }
+
+    private static Button CreateRoundMenuButton(string name, Transform parent, Sprite iconSprite, string label, Sprite slicedSprite, string fallbackIconText)
+    {
+        Button button = CreateButton(name, parent, slicedSprite, new Vector2(148f, 148f), string.Empty, 1f, 1f, FontStyles.Normal, TextColor);
+        RectTransform rect = (RectTransform)button.transform;
+        Image background = button.GetComponent<Image>();
+        background.color = new Color(1f, 0.97f, 0.84f, 1f);
+        AddShadow(button.gameObject, new Color(0.02f, 0.06f, 0.11f, 0.48f), new Vector2(0f, -8f));
+
+        if (iconSprite != null)
+        {
+            Image icon = CreateImage("Icon", rect, iconSprite, Color.white, true);
+            SetAnchored(icon.rectTransform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(62f, 62f));
+        }
+        else if (!string.IsNullOrEmpty(fallbackIconText))
+        {
+            TMP_Text iconText = CreateText("IconText", rect, fallbackIconText, 62f, 42f, FontStyles.Bold, Color.white, TextAlignmentOptions.Center);
+            SetAnchored((RectTransform)iconText.transform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(88f, 62f));
+            iconText.outlineColor = InkColor;
+            iconText.outlineWidth = 0.18f;
+            iconText.textWrappingMode = TextWrappingModes.NoWrap;
+        }
+
+        TMP_Text labelText = CreateText("Label", rect, label, 28f, 20f, FontStyles.Normal, Color.white, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)labelText.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 12f), new Vector2(150f, 44f));
+        labelText.outlineColor = InkColor;
+        labelText.outlineWidth = 0.18f;
+        labelText.textWrappingMode = TextWrappingModes.NoWrap;
+        return button;
+    }
+
+    private static RectTransform CreateModalDialog(string name, RectTransform overlay, Sprite slicedSprite, Vector2 size)
+    {
+        RectTransform shadow = CreatePanel($"{name}Shadow", overlay, slicedSprite, CardShadowColor);
+        SetAnchored(shadow, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -18f), size);
+        shadow.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform dialog = CreatePanel(name, overlay, slicedSprite, CardColor);
+        SetAnchored(dialog, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, size);
+        return dialog;
+    }
+
+    private static void BuildModalHeader(RectTransform dialog, string title, Sprite slicedSprite, out Button closeButton)
+    {
+        TMP_Text titleText = CreateText("Title", dialog, title, 58f, 36f, FontStyles.Normal, TextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)titleText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(58f, -42f), new Vector2(-230f, 92f));
+        titleText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        RectTransform divider = CreatePanel("Divider", dialog, slicedSprite, DividerColor);
+        SetAnchored(divider, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -128f), new Vector2(-116f, 4f));
+        divider.GetComponent<Image>().raycastTarget = false;
+
+        closeButton = CreateTopCloseButton(dialog, slicedSprite);
+    }
+
+    private static void CreateSettingsRow(RectTransform parent, string label, string detail, Color accentColor, Sprite toggleSprite, out RectTransform row)
+    {
+        row = CreatePanel($"{label}Row", parent, GetBuiltinUiSprite(), RowColor);
+        LayoutElement layoutElement = row.gameObject.AddComponent<LayoutElement>();
+        layoutElement.preferredHeight = SettingsRowHeight;
+        layoutElement.flexibleWidth = 1f;
+
+        RectTransform accent = CreatePanel("AccentBar", row, GetBuiltinUiSprite(), accentColor);
+        Stretch(accent, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(12f, 0f));
+        accent.GetComponent<Image>().raycastTarget = false;
+
+        TMP_Text labelText = CreateText("Label", row, label, 52f, 34f, FontStyles.Normal, TextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)labelText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(58f, 34f), new Vector2(360f, 70f));
+        labelText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text detailText = CreateText("Detail", row, detail, 27f, 20f, FontStyles.Normal, MutedTextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)detailText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(60f, -36f), new Vector2(500f, 58f));
+        detailText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text stateText = CreateText("StateText", row, "ON", 38f, 28f, FontStyles.Normal, TextColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)stateText.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-248f, 0f), new Vector2(96f, 60f));
+
+        RectTransform toggleRect = CreateUiObject($"{label}Toggle", row, typeof(Image), typeof(Toggle));
+        Image toggleImage = toggleRect.GetComponent<Image>();
+        toggleImage.sprite = toggleSprite;
+        toggleImage.color = Color.white;
+        toggleImage.preserveAspect = true;
+        toggleImage.raycastTarget = true;
+
+        Toggle toggle = toggleRect.GetComponent<Toggle>();
+        toggle.targetGraphic = toggleImage;
+        toggle.graphic = null;
+        SetAnchored(toggleRect, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-48f, 0f), new Vector2(172f, 102f));
+    }
+
+    private static void CreateSettingsVolumeControl(RectTransform row, string label, Color accentColor, Sprite slicedSprite)
+    {
+        RectTransform sliderRect = CreateUiObject($"{label}VolumeSlider", row, typeof(Slider));
+        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-58f, 24f), new Vector2(-282f, 38f));
+
+        RectTransform background = CreatePanel("Background", sliderRect, slicedSprite, DividerColor);
+        Stretch(background, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+        background.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform fillArea = CreateUiObject("Fill Area", sliderRect);
+        Stretch(fillArea, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+
+        RectTransform fill = CreatePanel("Fill", fillArea, slicedSprite, accentColor);
+        Stretch(fill, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        fill.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform handleArea = CreateUiObject("Handle Slide Area", sliderRect);
+        Stretch(handleArea, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        RectTransform handle = CreatePanel("Handle", handleArea, slicedSprite, Color.white);
+        SetAnchored(handle, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(SettingsSliderHandleWidth, SettingsSliderHandleHeight));
+
+        Slider slider = sliderRect.GetComponent<Slider>();
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+        slider.wholeNumbers = false;
+        slider.direction = Slider.Direction.LeftToRight;
+        slider.fillRect = fill;
+        slider.handleRect = handle;
+        slider.targetGraphic = handle.GetComponent<Image>();
+
+        TMP_Text valueText = CreateText($"{label}VolumeValueText", row, "100%", 26f, 18f, FontStyles.Normal, TextColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-58f, 24f), new Vector2(112f, 44f));
+        valueText.textWrappingMode = TextWrappingModes.NoWrap;
+    }
+
+    private static void CreateHowToStep(RectTransform parent, string number, string title, string detail, Color accentColor, Sprite iconSprite, Sprite slicedSprite)
+    {
+        RectTransform row = CreatePanel($"Step_{number}", parent, slicedSprite, RowColor);
+        LayoutElement layoutElement = row.gameObject.AddComponent<LayoutElement>();
+        layoutElement.preferredHeight = 230f;
+        layoutElement.flexibleWidth = 1f;
+
+        RectTransform accent = CreatePanel("AccentBar", row, slicedSprite, accentColor);
+        Stretch(accent, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(12f, 0f));
+        accent.GetComponent<Image>().raycastTarget = false;
+
+        TMP_Text numberText = CreateText("Number", row, number, 48f, 32f, FontStyles.Bold, accentColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)numberText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(84f, 0f), new Vector2(118f, 92f));
+
+        Image iconImage = CreateImage("Icon", row, iconSprite, Color.white, true);
+        SetAnchored(iconImage.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(218f, 0f), new Vector2(126f, 126f));
+
+        TMP_Text titleText = CreateText("Title", row, title, 38f, 24f, FontStyles.Bold, TextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)titleText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, 42f), new Vector2(-330f, 58f));
+        titleText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text detailText = CreateText("Detail", row, detail, 30f, 22f, FontStyles.Normal, MutedTextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)detailText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, -36f), new Vector2(-330f, 74f));
+        detailText.textWrappingMode = TextWrappingModes.Normal;
+    }
+
+    private static Button CreateTopCloseButton(Transform parent, Sprite slicedSprite)
+    {
+        Button button = CreateButton("CloseButtonTop", parent, slicedSprite, new Vector2(180f, 82f), "X", 34f, 24f, FontStyles.Bold, Color.white);
+        SetAnchored((RectTransform)button.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-42f, -34f), new Vector2(180f, 82f));
+        button.GetComponent<Image>().color = BlueAccentColor;
+        return button;
+    }
+
+    private static Button CreateModalCloseButton(Transform parent, string name, string label, Sprite slicedSprite, Vector2 position, Vector2 size)
+    {
+        Button button = CreateButton(name, parent, slicedSprite, size, label, 48f, 28f, FontStyles.Normal, TextColor);
+        SetAnchored((RectTransform)button.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), position, size);
+        button.GetComponent<Image>().color = new Color(0.96f, 0.98f, 1f, 1f);
+        AddShadow(button.gameObject, new Color(0.08f, 0.15f, 0.24f, 0.18f), new Vector2(0f, -4f));
+        return button;
+    }
+
+    private static Button CreateButton(string name, Transform parent, Sprite sprite, Vector2 size, string label, float fontSize, float fontSizeMin, FontStyles fontStyle, Color textColor)
+    {
+        RectTransform rect = CreatePanel(name, parent, sprite, Color.white, typeof(Button), typeof(LayoutElement));
+        rect.sizeDelta = size;
+
+        LayoutElement layoutElement = rect.GetComponent<LayoutElement>();
+        layoutElement.preferredWidth = size.x;
+        layoutElement.preferredHeight = size.y;
+
+        Button button = rect.GetComponent<Button>();
+        button.targetGraphic = rect.GetComponent<Image>();
+        ApplyButtonColors(button);
+
+        if (!string.IsNullOrEmpty(label))
+        {
+            TMP_Text labelText = CreateText("Label", rect, label, fontSize, fontSizeMin, fontStyle, textColor, TextAlignmentOptions.Center);
+            Stretch((RectTransform)labelText.transform, Vector2.zero, Vector2.one, new Vector2(42f, 18f), new Vector2(-42f, -18f));
+            labelText.textWrappingMode = TextWrappingModes.NoWrap;
+        }
+
+        return button;
+    }
+
+    private static Image CreateImage(string name, Transform parent, Sprite sprite, Color color, bool preserveAspect)
+    {
+        RectTransform rect = CreateUiObject(name, parent, typeof(Image));
+        Image image = rect.GetComponent<Image>();
+        image.sprite = sprite;
+        image.color = sprite != null ? color : Color.clear;
+        image.raycastTarget = false;
+        image.preserveAspect = preserveAspect;
+        return image;
+    }
+
+    private static RectTransform CreatePanel(string name, Transform parent, Sprite sprite, Color color, params Type[] extraComponents)
+    {
+        Type[] components = new Type[extraComponents.Length + 1];
+        components[0] = typeof(Image);
+        for (int i = 0; i < extraComponents.Length; i += 1)
+        {
+            components[i + 1] = extraComponents[i];
+        }
+
+        RectTransform rect = CreateUiObject(name, parent, components);
+        Image image = rect.GetComponent<Image>();
+        image.sprite = sprite;
+        image.type = sprite != null ? Image.Type.Sliced : Image.Type.Simple;
+        image.color = color;
+        image.raycastTarget = true;
+        return rect;
+    }
+
+    private static TMP_Text CreateText(string name, Transform parent, string value, float fontSizeMax, float fontSizeMin, FontStyles fontStyle, Color color, TextAlignmentOptions alignment)
+    {
+        RectTransform rect = CreateUiObject(name, parent, typeof(TextMeshProUGUI));
+        TextMeshProUGUI text = rect.GetComponent<TextMeshProUGUI>();
+        text.text = value;
+        text.font = TMP_Settings.defaultFontAsset;
+        text.fontSize = fontSizeMax;
+        text.fontSizeMax = fontSizeMax;
+        text.fontSizeMin = fontSizeMin;
+        text.enableAutoSizing = true;
+        text.fontStyle = fontStyle;
+        text.alignment = alignment;
+        text.color = color;
+        text.raycastTarget = false;
+        text.richText = true;
+        text.textWrappingMode = TextWrappingModes.Normal;
+        return text;
+    }
+
+    private static RectTransform CreateUiObject(string name, Transform parent, params Type[] components)
+    {
+        Type[] allComponents = new Type[components.Length + 2];
+        allComponents[0] = typeof(RectTransform);
+        allComponents[1] = typeof(CanvasRenderer);
+        for (int i = 0; i < components.Length; i += 1)
+        {
+            allComponents[i + 2] = components[i];
+        }
+
+        GameObject gameObject = new(name, allComponents);
+        gameObject.layer = parent != null ? parent.gameObject.layer : LayerMask.NameToLayer("UI");
+        if (parent != null)
+        {
+            gameObject.transform.SetParent(parent, false);
+        }
+
+        return (RectTransform)gameObject.transform;
+    }
+
+    private static Sprite GetBuiltinUiSprite()
+    {
+        return Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+    }
+
+    private static void ApplyButtonColors(Button button)
+    {
+        ColorBlock colors = button.colors;
+        colors.normalColor = Color.white;
+        colors.selectedColor = Color.white;
+        colors.highlightedColor = new Color(1f, 1f, 1f, 0.92f);
+        colors.pressedColor = new Color(1f, 1f, 1f, 0.82f);
+        colors.disabledColor = new Color(1f, 1f, 1f, 0.42f);
+        colors.colorMultiplier = 1f;
+        button.colors = colors;
+    }
+
+    private static void AddShadow(GameObject gameObject, Color color, Vector2 distance)
+    {
+        Shadow shadow = gameObject.GetComponent<Shadow>();
+        if (shadow == null)
+        {
+            shadow = gameObject.AddComponent<Shadow>();
+        }
+
+        shadow.effectColor = color;
+        shadow.effectDistance = distance;
+        shadow.useGraphicAlpha = true;
+    }
+
+    private static void SetAnchored(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition, Vector2 sizeDelta)
+    {
+        rectTransform.anchorMin = anchorMin;
+        rectTransform.anchorMax = anchorMax;
+        rectTransform.pivot = pivot;
+        rectTransform.anchoredPosition = anchoredPosition;
+        rectTransform.sizeDelta = sizeDelta;
+        rectTransform.localScale = Vector3.one;
+    }
+
+    private static void Stretch(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
+    {
+        rectTransform.anchorMin = anchorMin;
+        rectTransform.anchorMax = anchorMax;
+        rectTransform.offsetMin = offsetMin;
+        rectTransform.offsetMax = offsetMax;
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.localScale = Vector3.one;
     }
 }
