@@ -17,4 +17,6 @@ MonoBehaviour:
   _iosGameId: 6139686
   _androidInterstitialAdUnitId: Interstitial_Android
   _iosInterstitialAdUnitId: Interstitial_iOS
+  _androidRewardedAdUnitId: Rewarded_Android
+  _iosRewardedAdUnitId: Rewarded_iOS
   _testMode: 1

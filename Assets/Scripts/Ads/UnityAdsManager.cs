@@ -10,10 +10,14 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     private UnityAdsSettings _settings;
     private string _interstitialAdUnitId;
+    private string _rewardedAdUnitId;
     private bool _isInitialized;
-    private bool _isLoading;
+    private bool _isInterstitialLoading;
+    private bool _isRewardedLoading;
     private bool _isInterstitialLoaded;
+    private bool _isRewardedLoaded;
     private Action _showCompletedCallback;
+    private Action<bool> _rewardedCompletedCallback;
 
     public static UnityAdsManager Instance
     {
@@ -64,17 +68,39 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
         Advertisement.Show(_interstitialAdUnitId, this);
     }
 
+    public void ShowRewardedThenContinue(Action<bool> onComplete)
+    {
+        if (!CanShowRewarded())
+        {
+            LoadRewarded();
+            onComplete?.Invoke(false);
+            return;
+        }
+
+        _rewardedCompletedCallback = onComplete;
+        _isRewardedLoaded = false;
+        Advertisement.Show(_rewardedAdUnitId, this);
+    }
+
+    public bool IsRewardedReady()
+    {
+        return CanShowRewarded();
+    }
+
     public void OnInitializationComplete()
     {
         _isInitialized = true;
         LoadInterstitial();
+        LoadRewarded();
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
     {
         _isInitialized = false;
-        _isLoading = false;
+        _isInterstitialLoading = false;
+        _isRewardedLoading = false;
         _isInterstitialLoaded = false;
+        _isRewardedLoaded = false;
         Debug.LogWarning($"Unity Ads initialization failed: {error} - {message}");
     }
 
@@ -82,8 +108,13 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
     {
         if (adUnitId == _interstitialAdUnitId)
         {
-            _isLoading = false;
+            _isInterstitialLoading = false;
             _isInterstitialLoaded = true;
+        }
+        else if (adUnitId == _rewardedAdUnitId)
+        {
+            _isRewardedLoading = false;
+            _isRewardedLoaded = true;
         }
     }
 
@@ -91,8 +122,13 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
     {
         if (adUnitId == _interstitialAdUnitId)
         {
-            _isLoading = false;
+            _isInterstitialLoading = false;
             _isInterstitialLoaded = false;
+        }
+        else if (adUnitId == _rewardedAdUnitId)
+        {
+            _isRewardedLoading = false;
+            _isRewardedLoaded = false;
         }
 
         Debug.LogWarning($"Unity Ads load failed: {adUnitId} - {error} - {message}");
@@ -100,14 +136,21 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
     {
-        if (adUnitId != _interstitialAdUnitId)
+        if (adUnitId == _interstitialAdUnitId)
         {
+            Debug.LogWarning($"Unity Ads show failed: {adUnitId} - {error} - {message}");
+            CompleteShow();
+            LoadInterstitial();
             return;
         }
 
-        Debug.LogWarning($"Unity Ads show failed: {adUnitId} - {error} - {message}");
-        CompleteShow();
-        LoadInterstitial();
+        if (adUnitId == _rewardedAdUnitId)
+        {
+            Debug.LogWarning($"Unity Ads rewarded show failed: {adUnitId} - {error} - {message}");
+            CompleteRewarded(false);
+            LoadRewarded();
+            return;
+        }
     }
 
     public void OnUnityAdsShowStart(string adUnitId)
@@ -120,13 +163,18 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
-        if (adUnitId != _interstitialAdUnitId)
+        if (adUnitId == _interstitialAdUnitId)
         {
+            CompleteShow();
+            LoadInterstitial();
             return;
         }
 
-        CompleteShow();
-        LoadInterstitial();
+        if (adUnitId == _rewardedAdUnitId)
+        {
+            CompleteRewarded(showCompletionState == UnityAdsShowCompletionState.COMPLETED);
+            LoadRewarded();
+        }
     }
 
     private void Initialize()
@@ -152,9 +200,12 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
         string gameId = GetGameId()?.Trim();
         _interstitialAdUnitId = GetInterstitialAdUnitId()?.Trim();
-        if (string.IsNullOrWhiteSpace(gameId) || string.IsNullOrWhiteSpace(_interstitialAdUnitId))
+        _rewardedAdUnitId = GetRewardedAdUnitId()?.Trim();
+        if (string.IsNullOrWhiteSpace(gameId) ||
+            string.IsNullOrWhiteSpace(_interstitialAdUnitId) ||
+            string.IsNullOrWhiteSpace(_rewardedAdUnitId))
         {
-            LogConfigurationWarning("Unity Ads Game ID or interstitial Ad Unit ID is empty.");
+            LogConfigurationWarning("Unity Ads Game ID, interstitial Ad Unit ID, or rewarded Ad Unit ID is empty.");
             return;
         }
 
@@ -162,6 +213,7 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
         {
             _isInitialized = true;
             LoadInterstitial();
+            LoadRewarded();
             return;
         }
 
@@ -170,13 +222,24 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     private void LoadInterstitial()
     {
-        if (!_isInitialized || _isLoading || _isInterstitialLoaded || string.IsNullOrWhiteSpace(_interstitialAdUnitId))
+        if (!_isInitialized || _isInterstitialLoading || _isInterstitialLoaded || string.IsNullOrWhiteSpace(_interstitialAdUnitId))
         {
             return;
         }
 
-        _isLoading = true;
+        _isInterstitialLoading = true;
         Advertisement.Load(_interstitialAdUnitId, this);
+    }
+
+    private void LoadRewarded()
+    {
+        if (!_isInitialized || _isRewardedLoading || _isRewardedLoaded || string.IsNullOrWhiteSpace(_rewardedAdUnitId))
+        {
+            return;
+        }
+
+        _isRewardedLoading = true;
+        Advertisement.Load(_rewardedAdUnitId, this);
     }
 
     private bool CanShowInterstitial()
@@ -185,7 +248,18 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
             _isInterstitialLoaded &&
             !Advertisement.isShowing &&
             _showCompletedCallback == null &&
+            _rewardedCompletedCallback == null &&
             !string.IsNullOrWhiteSpace(_interstitialAdUnitId);
+    }
+
+    private bool CanShowRewarded()
+    {
+        return _isInitialized &&
+            _isRewardedLoaded &&
+            !Advertisement.isShowing &&
+            _showCompletedCallback == null &&
+            _rewardedCompletedCallback == null &&
+            !string.IsNullOrWhiteSpace(_rewardedAdUnitId);
     }
 
     private string GetGameId()
@@ -206,11 +280,27 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 #endif
     }
 
+    private string GetRewardedAdUnitId()
+    {
+#if UNITY_IOS
+        return _settings.IosRewardedAdUnitId;
+#else
+        return _settings.AndroidRewardedAdUnitId;
+#endif
+    }
+
     private void CompleteShow()
     {
         Action callback = _showCompletedCallback;
         _showCompletedCallback = null;
         callback?.Invoke();
+    }
+
+    private void CompleteRewarded(bool wasCompleted)
+    {
+        Action<bool> callback = _rewardedCompletedCallback;
+        _rewardedCompletedCallback = null;
+        callback?.Invoke(wasCompleted);
     }
 
     private static void LogConfigurationWarning(string message)

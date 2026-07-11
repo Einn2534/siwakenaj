@@ -19,6 +19,12 @@ public class UnityAdsSettings : ScriptableObject
     private string _iosInterstitialAdUnitId = "Interstitial_iOS";
 
     [SerializeField]
+    private string _androidRewardedAdUnitId = "Rewarded_Android";
+
+    [SerializeField]
+    private string _iosRewardedAdUnitId = "Rewarded_iOS";
+
+    [SerializeField]
     private bool _testMode = true;
 
     public bool AdsEnabled => _adsEnabled;
@@ -26,5 +32,7 @@ public class UnityAdsSettings : ScriptableObject
     public string IosGameId => _iosGameId;
     public string AndroidInterstitialAdUnitId => _androidInterstitialAdUnitId;
     public string IosInterstitialAdUnitId => _iosInterstitialAdUnitId;
+    public string AndroidRewardedAdUnitId => _androidRewardedAdUnitId;
+    public string IosRewardedAdUnitId => _iosRewardedAdUnitId;
     public bool TestMode => _testMode;
 }
