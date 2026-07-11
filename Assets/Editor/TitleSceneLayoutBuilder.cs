@@ -311,40 +311,40 @@ public static class TitleSceneLayoutBuilder
     {
         RectTransform contentRoot = CreateUIObject("ContentRoot", parent);
         Stretch(contentRoot, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-        Button settingsButton = CreateRoundMenuButton("SettingsButtonTop", contentRoot, settingsIconSprite, "設定", uiFontAsset, slicedSprite);
-        SetAnchored((RectTransform)settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(108f, -90f), new Vector2(142f, 142f));
+        Button settingsButton = CreateRoundMenuButton("SettingsButtonTop", contentRoot, settingsIconSprite, string.Empty, uiFontAsset, slicedSprite);
+        SetAnchored((RectTransform)settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(82f, -76f), new Vector2(112f, 112f));
         AddButtonListener(settingsButton, titleController.OnSettingsOpen);
-        Button howToButton = CreateRoundMenuButton("HowToButton", contentRoot, howToIconSprite, "あそびかた", uiFontAsset, slicedSprite, "?");
-        SetAnchored((RectTransform)howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-116f, -90f), new Vector2(164f, 142f));
+        Button howToButton = CreateRoundMenuButton("HowToButton", contentRoot, howToIconSprite, string.Empty, uiFontAsset, slicedSprite, "?");
+        SetAnchored((RectTransform)howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-82f, -76f), new Vector2(112f, 112f));
         AddButtonListener(howToButton, titleController.OnHowToOpen);
 
         RectTransform logoBlock = CreateUIObject("LogoBlock", contentRoot);
-        SetAnchored(logoBlock, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -136f), new Vector2(990f, 410f));
+        SetAnchored(logoBlock, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -130f), new Vector2(990f, 390f));
         BuildLogoBlock(logoBlock, logoSprite, titleFontAsset, headlineFontAsset, uiFontAsset, slicedSprite);
 
         RectTransform catchCopyBubble = CreatePanel("CatchCopyBubble", contentRoot, slicedSprite, new Color(1f, 0.98f, 0.90f, 1f));
-        SetAnchored(catchCopyBubble, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -570f), new Vector2(820f, 96f));
-        AddShadow(catchCopyBubble.gameObject, new Color(0.04f, 0.08f, 0.13f, 0.44f), new Vector2(0f, -8f));
+        SetAnchored(catchCopyBubble, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -548f), new Vector2(760f, 86f));
+        AddShadow(catchCopyBubble.gameObject, new Color(0.04f, 0.08f, 0.13f, 0.28f), new Vector2(0f, -5f));
         TMP_Text catchCopy = CreateText("CatchCopy", catchCopyBubble, "<color=#246FEA>見分けろ</color>、<color=#F44336>押せ</color>、<color=#1A9A3A>仕分けろ！</color>", headlineFontAsset, 42f, 30f, InkColor, TextAlignmentOptions.Center);
         Stretch((RectTransform)catchCopy.transform, Vector2.zero, Vector2.one, new Vector2(34f, 16f), new Vector2(-34f, -14f));
         catchCopy.textWrappingMode = TextWrappingModes.NoWrap;
 
         RectTransform hero = CreateUIObject("HeroStage", contentRoot);
-        SetAnchored(hero, new Vector2(0.5f, 0.43f), new Vector2(0.5f, 0.43f), new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(1010f, 570f));
+        SetAnchored(hero, new Vector2(0.5f, 0.44f), new Vector2(0.5f, 0.44f), new Vector2(0.5f, 0.5f), new Vector2(0f, 28f), new Vector2(1010f, 570f));
         BuildHeroStage(hero, powaSprite, truckSprite, carSprite, sportsCarSprite, slicedSprite);
 
         RectTransform bottomRoot = CreateUIObject("BottomUtilityRoot", contentRoot);
-        SetAnchored(bottomRoot, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 170f), new Vector2(1080f, 1152f));
+        SetAnchored(bottomRoot, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 112f), new Vector2(1080f, 260f));
 
         HorizontalLayoutGroup bottomGroup = bottomRoot.gameObject.AddComponent<HorizontalLayoutGroup>();
-        bottomGroup.padding = new RectOffset(0, 0, 0, 0);
+        bottomGroup.padding = new RectOffset(132, 132, 20, 44);
         bottomGroup.spacing = 36;
-        bottomGroup.childAlignment = TextAnchor.MiddleCenter;
+        bottomGroup.childAlignment = TextAnchor.LowerCenter;
         bottomGroup.childControlWidth = true;
         bottomGroup.childControlHeight = true;
-        bottomGroup.childForceExpandWidth = true;
-        bottomGroup.childForceExpandHeight = true;
-        Button stageButton = CreateWideIconButton("StageSelectButton", bottomRoot, null, null, "<color=#FFFFFF>TAP TO START</color>", headlineFontAsset);
+        bottomGroup.childForceExpandWidth = false;
+        bottomGroup.childForceExpandHeight = false;
+        Button stageButton = CreateStartButton("StageSelectButton", bottomRoot, headlineFontAsset, uiFontAsset, slicedSprite);
         AddButtonListener(stageButton, titleController.OnStartPressed);
 
         settingsButton.transform.SetAsLastSibling();
@@ -378,31 +378,68 @@ public static class TitleSceneLayoutBuilder
 
     private static Button CreateRoundMenuButton(string name, Transform parent, Sprite iconSprite, string label, TMP_FontAsset fontAsset, Sprite slicedSprite, string fallbackIconText = null)
     {
-        Button button = CreateButton(name, parent, slicedSprite, new Vector2(148f, 148f), string.Empty, fontAsset, 1f, InkColor);
+        Button button = CreateButton(name, parent, slicedSprite, new Vector2(112f, 112f), string.Empty, fontAsset, 1f, InkColor);
         RectTransform rect = (RectTransform)button.transform;
         Image bg = button.GetComponent<Image>();
-        bg.color = new Color(1f, 0.97f, 0.84f, 1f);
-        AddShadow(button.gameObject, new Color(0.02f, 0.06f, 0.11f, 0.48f), new Vector2(0f, -8f));
+        bg.color = new Color(1f, 0.97f, 0.84f, 0.94f);
+        AddShadow(button.gameObject, new Color(0.02f, 0.06f, 0.11f, 0.34f), new Vector2(0f, -5f));
 
         if (iconSprite != null)
         {
             Image icon = CreateImage("Icon", rect, iconSprite, Color.white, true);
-            SetAnchored(icon.rectTransform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(62f, 62f));
+            SetAnchored(icon.rectTransform, new Vector2(0.5f, 0.55f), new Vector2(0.5f, 0.55f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(64f, 64f));
         }
         else if (!string.IsNullOrEmpty(fallbackIconText))
         {
             TMP_Text iconText = CreateText("IconText", rect, fallbackIconText, fontAsset, 62f, 42f, Color.white, TextAlignmentOptions.Center);
-            SetAnchored((RectTransform)iconText.transform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(62f, 62f));
+            SetAnchored((RectTransform)iconText.transform, new Vector2(0.5f, 0.55f), new Vector2(0.5f, 0.55f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(62f, 62f));
             iconText.fontStyle = FontStyles.Bold;
             iconText.outlineColor = InkColor;
             iconText.outlineWidth = 0.18f;
             iconText.textWrappingMode = TextWrappingModes.NoWrap;
         }
 
-        TMP_Text text = CreateText("Label", rect, label, fontAsset, 28f, 20f, Color.white, TextAlignmentOptions.Center);
-        SetAnchored((RectTransform)text.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 12f), new Vector2(150f, 44f));
-        text.outlineColor = InkColor;
-        text.outlineWidth = 0.18f;
+        if (!string.IsNullOrEmpty(label))
+        {
+            TMP_Text text = CreateText("Label", rect, label, fontAsset, 22f, 18f, Color.white, TextAlignmentOptions.Center);
+            SetAnchored((RectTransform)text.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 8f), new Vector2(128f, 34f));
+            text.outlineColor = InkColor;
+            text.outlineWidth = 0.18f;
+        }
+        return button;
+    }
+
+    private static Button CreateStartButton(string name, Transform parent, TMP_FontAsset headlineFontAsset, TMP_FontAsset uiFontAsset, Sprite slicedSprite)
+    {
+        Button button = CreateButton(name, parent, slicedSprite, new Vector2(760f, 154f), string.Empty, headlineFontAsset, 1f, InkColor);
+        LayoutElement layoutElement = button.GetComponent<LayoutElement>();
+        layoutElement.preferredWidth = 760f;
+        layoutElement.preferredHeight = 154f;
+        layoutElement.minHeight = 154f;
+
+        RectTransform rect = (RectTransform)button.transform;
+        Image border = button.GetComponent<Image>();
+        border.type = Image.Type.Sliced;
+        border.color = InkColor;
+        AddShadow(button.gameObject, new Color(0.02f, 0.05f, 0.08f, 0.34f), new Vector2(0f, -6f));
+
+        RectTransform face = CreatePanel("Face", rect, slicedSprite, new Color(1f, 0.82f, 0.13f, 0.98f));
+        Stretch(face, Vector2.zero, Vector2.one, new Vector2(12f, 12f), new Vector2(-12f, -12f));
+        face.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform shine = CreatePanel("TopShine", face, slicedSprite, new Color(1f, 1f, 1f, 0.22f));
+        Stretch(shine, new Vector2(0.08f, 0.63f), new Vector2(0.92f, 0.88f), Vector2.zero, Vector2.zero);
+        shine.GetComponent<Image>().raycastTarget = false;
+
+        TMP_Text label = CreateText("Label", rect, "\u30b9\u30bf\u30fc\u30c8", headlineFontAsset, 66f, 44f, InkColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)label.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(-72f, 78f));
+        label.fontStyle = FontStyles.Bold;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text sub = CreateText("SubLabel", rect, "TAP TO PLAY", uiFontAsset, 25f, 19f, new Color(0.13f, 0.18f, 0.26f, 0.76f), TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)sub.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -44f), new Vector2(-110f, 34f));
+        sub.textWrappingMode = TextWrappingModes.NoWrap;
+
         return button;
     }
 

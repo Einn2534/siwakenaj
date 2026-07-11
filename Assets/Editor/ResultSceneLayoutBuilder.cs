@@ -191,18 +191,18 @@ public static class ResultSceneLayoutBuilder
         GetOrAddComponent<SafeAreaFitter>(safeAreaRoot.gameObject);
 
         RectTransform contentRoot = CreateUIObject("ContentRoot", safeAreaRoot);
-        Stretch(contentRoot, Vector2.zero, Vector2.one, new Vector2(0f, 320f), Vector2.zero);
+        Stretch(contentRoot, Vector2.zero, Vector2.one, new Vector2(0f, 300f), Vector2.zero);
 
         VerticalLayoutGroup contentLayout = contentRoot.gameObject.AddComponent<VerticalLayoutGroup>();
-        contentLayout.padding = new RectOffset(48, 48, 72, 0);
-        contentLayout.spacing = 24;
+        contentLayout.padding = new RectOffset(48, 48, 62, 0);
+        contentLayout.spacing = 20;
         contentLayout.childAlignment = TextAnchor.UpperCenter;
         contentLayout.childControlWidth = true;
         contentLayout.childControlHeight = true;
         contentLayout.childForceExpandWidth = true;
         contentLayout.childForceExpandHeight = false;
 
-        RectTransform heroCard = CreateCardShell("HeroCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 360f);
+        RectTransform heroCard = CreateCardShell("HeroCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 336f);
         BuildHeaderCard(heroCard, titleFontAsset, uiFontAsset, stageChipSprite != null ? stageChipSprite : slicedSprite, accentLineSprite != null ? accentLineSprite : slicedSprite,
             out Image stageBadgeBackground,
             out TMP_Text stageText,
@@ -210,7 +210,7 @@ public static class ResultSceneLayoutBuilder
             out TMP_Text subMessageText,
             out Image headerAccent);
 
-        RectTransform scoreCard = CreateCardShell("ScoreCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 440f);
+        RectTransform scoreCard = CreateCardShell("ScoreCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 462f);
         BuildScoreCard(scoreCard, titleFontAsset, uiFontAsset, accentLineSprite != null ? accentLineSprite : slicedSprite, emptyStarSprite, starGlowSprite,
             out Image scoreAccent,
             out TMP_Text scoreText,
@@ -222,7 +222,7 @@ public static class ResultSceneLayoutBuilder
             out GameObject newBestBadge,
             newBestBadgeSprite);
 
-        RectTransform detailCard = CreateCardShell("BreakdownCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 500f);
+        RectTransform detailCard = CreateCardShell("BreakdownCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 548f);
         BuildDetailCard(detailCard, uiFontAsset, accentLineSprite != null ? accentLineSprite : slicedSprite, missHeartIconSprite,
             out Image detailAccent,
             out TMP_Text countAText,
@@ -240,20 +240,20 @@ public static class ResultSceneLayoutBuilder
         actionDock.anchorMax = new Vector2(1f, 0f);
         actionDock.pivot = new Vector2(0.5f, 0f);
         actionDock.offsetMin = Vector2.zero;
-        actionDock.offsetMax = new Vector2(0f, 220f);
+        actionDock.offsetMax = new Vector2(0f, 214f);
 
         HorizontalLayoutGroup actionLayout = actionDock.gameObject.AddComponent<HorizontalLayoutGroup>();
-        actionLayout.padding = new RectOffset(56, 56, 0, 48);
-        actionLayout.spacing = 18;
+        actionLayout.padding = new RectOffset(48, 48, 0, 44);
+        actionLayout.spacing = 20;
         actionLayout.childAlignment = TextAnchor.LowerCenter;
         actionLayout.childControlWidth = false;
         actionLayout.childControlHeight = false;
         actionLayout.childForceExpandWidth = false;
         actionLayout.childForceExpandHeight = false;
 
-        Button primaryActionButton = CreateImageActionButton(actionDock, "RetryButton", retryButtonSprite, new Vector2(278f, 120f));
-        Button secondaryLeftButton = CreateImageActionButton(actionDock, "TitleButton", titleButtonSprite, new Vector2(278f, 120f));
-        Button secondaryRightButton = CreateImageActionButton(actionDock, "StageSelectButton", stageSelectButtonSprite, new Vector2(278f, 113f));
+        Button primaryActionButton = CreateImageActionButton(actionDock, "RetryButton", retryButtonSprite, new Vector2(290f, 126f));
+        Button secondaryLeftButton = CreateImageActionButton(actionDock, "TitleButton", titleButtonSprite, new Vector2(290f, 126f));
+        Button secondaryRightButton = CreateImageActionButton(actionDock, "StageSelectButton", stageSelectButtonSprite, new Vector2(290f, 118f));
         TMP_Text primaryActionLabel = null;
         TMP_Text secondaryLeftLabel = null;
         TMP_Text secondaryRightLabel = null;
@@ -379,8 +379,8 @@ public static class ResultSceneLayoutBuilder
         RectTransform body = CreateUIObject("Body", parent);
         Stretch(body, Vector2.zero, Vector2.one, new Vector2(40f, 30f), new Vector2(-40f, -30f));
         VerticalLayoutGroup layout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        layout.padding = new RectOffset(0, 0, 20, 0);
-        layout.spacing = 16;
+        layout.padding = new RectOffset(0, 0, 16, 0);
+        layout.spacing = 12;
         layout.childAlignment = TextAnchor.MiddleCenter;
         layout.childControlWidth = true;
         layout.childControlHeight = false;
@@ -404,16 +404,16 @@ public static class ResultSceneLayoutBuilder
         stageText.fontSizeMin = 34f;
         stageText.fontSizeMax = 42f;
 
-        resultText = CreateText("ResultTitle", body, "GAME CLEAR!", titleFontAsset, 92f, SuccessColor, TextAlignmentOptions.Center);
-        resultText.gameObject.AddComponent<LayoutElement>().preferredHeight = 128f;
+        resultText = CreateText("ResultTitle", body, "GAME CLEAR!", titleFontAsset, 86f, SuccessColor, TextAlignmentOptions.Center);
+        resultText.gameObject.AddComponent<LayoutElement>().preferredHeight = 118f;
         resultText.enableAutoSizing = true;
-        resultText.fontSizeMin = 76f;
-        resultText.fontSizeMax = 100f;
+        resultText.fontSizeMin = 68f;
+        resultText.fontSizeMax = 92f;
         resultText.fontStyle = FontStyles.Normal;
         resultText.characterSpacing = 0.5f;
 
         subText = CreateText("SubMessage", body, "MISSION COMPLETE", uiFontAsset, 40f, MutedTextColor, TextAlignmentOptions.Center);
-        subText.gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
+        subText.gameObject.AddComponent<LayoutElement>().preferredHeight = 44f;
         subText.enableAutoSizing = true;
         subText.fontSizeMin = 34f;
         subText.fontSizeMax = 42f;
@@ -448,7 +448,7 @@ public static class ResultSceneLayoutBuilder
         Stretch(body, Vector2.zero, Vector2.one, new Vector2(40f, 34f), new Vector2(-40f, -34f));
 
         VerticalLayoutGroup layout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        layout.spacing = 14;
+        layout.spacing = 10;
         layout.childAlignment = TextAnchor.UpperCenter;
         layout.childControlWidth = true;
         layout.childControlHeight = false;
@@ -499,28 +499,34 @@ public static class ResultSceneLayoutBuilder
             CreateStarToken(starRow, emptyStarSprite != null ? emptyStarSprite : accentLineSprite, starGlowSprite, uiFontAsset, out starImages[i], out starGlowImages[i], out starLabels[i]);
         }
 
-        scoreText = CreateText("TotalScoreValue", body, "12,450", displayFontAsset, 80f, TextColor, TextAlignmentOptions.Center);
-        scoreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 112f;
+        scoreText = CreateText("TotalScoreValue", body, "12,450", displayFontAsset, 78f, TextColor, TextAlignmentOptions.Center);
+        scoreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 100f;
         scoreText.enableAutoSizing = true;
-        scoreText.fontSizeMin = 78f;
-        scoreText.fontSizeMax = 104f;
+        scoreText.fontSizeMin = 68f;
+        scoreText.fontSizeMax = 92f;
         scoreText.fontStyle = FontStyles.Normal;
 
         RectTransform bestRow = CreateUIObject("BestScoreRow", body);
-        bestRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
+        bestRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 64f;
         HorizontalLayoutGroup bestLayout = bestRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        bestLayout.spacing = 8;
+        bestLayout.spacing = 14;
         bestLayout.childAlignment = TextAnchor.MiddleCenter;
         bestLayout.childControlWidth = false;
         bestLayout.childControlHeight = true;
         bestLayout.childForceExpandWidth = false;
         bestLayout.childForceExpandHeight = true;
 
-        TMP_Text bestLabel = CreateText("BestScoreLabel", bestRow, "BEST", uiFontAsset, 36f, MutedTextColor, TextAlignmentOptions.MidlineLeft);
-        bestLabel.gameObject.AddComponent<LayoutElement>().preferredWidth = 110f;
-        bestScoreText = CreateText("BestScoreValue", bestRow, "11,920", uiFontAsset, 42f, TextColor, TextAlignmentOptions.MidlineRight);
-        bestScoreText.gameObject.AddComponent<LayoutElement>().preferredWidth = 190f;
-        bestScoreText.fontStyle = FontStyles.Bold;
+        TMP_Text bestLabel = CreateText("BestScoreLabel", bestRow, "BEST", uiFontAsset, 34f, MutedTextColor, TextAlignmentOptions.MidlineLeft);
+        bestLabel.gameObject.AddComponent<LayoutElement>().preferredWidth = 118f;
+        bestLabel.enableAutoSizing = true;
+        bestLabel.fontSizeMin = 28f;
+        bestLabel.fontSizeMax = 36f;
+        bestScoreText = CreateText("BestScoreValue", bestRow, "11,920", uiFontAsset, 34f, TextColor, TextAlignmentOptions.MidlineRight);
+        bestScoreText.gameObject.AddComponent<LayoutElement>().preferredWidth = 290f;
+        bestScoreText.enableAutoSizing = true;
+        bestScoreText.fontSizeMin = 26f;
+        bestScoreText.fontSizeMax = 36f;
+        bestScoreText.fontStyle = FontStyles.Normal;
     }
 
     private static void BuildDetailCard(
