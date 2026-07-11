@@ -6,6 +6,7 @@ public enum GameState
 {
     Ready,
     Playing,
+    ContinuePrompt,
     Paused,
     Result,
     GameOver

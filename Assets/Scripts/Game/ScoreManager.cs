@@ -9,6 +9,7 @@ public class ScoreManager : MonoBehaviour
     public ScoreState State { get; private set; }
     public int CurrentScore => State != null ? State.CurrentScore : 0;
     public int MissCount => State != null ? State.MissCount : 0;
+    public int RemainingSuccessCount => State != null ? State.RemainingSuccessCount : 0;
     public bool HasReachedTargetScore => State != null && State.HasReachedTargetScore;
     public bool HasReachedMissLimit => State != null && State.HasReachedMissLimit;
 
@@ -33,6 +34,11 @@ public class ScoreManager : MonoBehaviour
     public void ApplyMiss()
     {
         State?.ApplyMiss();
+    }
+
+    public void ReviveFromContinue()
+    {
+        State?.ReviveFromContinue();
     }
 
     public int GetCorrectCount(CarType laneType)

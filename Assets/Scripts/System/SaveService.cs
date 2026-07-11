@@ -8,8 +8,12 @@ public static class SaveService
     private const string SeVolumeKey = "SE_Volume";
     private const string VibrationOnKey = "Vibration_On";
     private const string HowToShownKey = "HowTo_Shown";
+    private const string TutorialCompletedKey = "Tutorial_Completed";
+    private const string TutorialSkippedKey = "Tutorial_Skipped";
     private const string SelectedStageKey = "SelectedStage";
     private const string LastStageKey = "LastStage";
+    private const string LastGameModeKey = "LastGameMode";
+    private const string EndlessBestScoreKey = "BestScore_Endless";
     private const string BestScoreKeyFormat = "BestScore_Stage{0}";
     private const string StarRatingKeyFormat = "StarRating_Stage{0}";
     private const int BoolTrue = 1;
@@ -78,6 +82,26 @@ public static class SaveService
         SetBool(HowToShownKey, isShown);
     }
 
+    public static bool GetTutorialCompleted()
+    {
+        return GetBool(TutorialCompletedKey, false);
+    }
+
+    public static void SetTutorialCompleted(bool isCompleted)
+    {
+        SetBool(TutorialCompletedKey, isCompleted);
+    }
+
+    public static bool GetTutorialSkipped()
+    {
+        return GetBool(TutorialSkippedKey, false);
+    }
+
+    public static void SetTutorialSkipped(bool isSkipped)
+    {
+        SetBool(TutorialSkippedKey, isSkipped);
+    }
+
     public static int GetLastStage()
     {
         return GetStageNumber(LastStageKey);
@@ -86,6 +110,18 @@ public static class SaveService
     public static void SetLastStage(int stageNumber)
     {
         SetStageNumber(LastStageKey, stageNumber);
+    }
+
+    public static GameMode GetLastGameMode()
+    {
+        return PlayerPrefs.GetInt(LastGameModeKey, 0) == (int)GameMode.Endless
+            ? GameMode.Endless
+            : GameMode.Stage;
+    }
+
+    public static void SetLastGameMode(GameMode mode)
+    {
+        PlayerPrefs.SetInt(LastGameModeKey, mode == GameMode.Endless ? (int)GameMode.Endless : (int)GameMode.Stage);
     }
 
     public static int GetSelectedStage()
@@ -106,6 +142,16 @@ public static class SaveService
     public static void SetBestScore(int stageNumber, int score)
     {
         PlayerPrefs.SetInt(GetBestScoreKey(stageNumber), Mathf.Max(DefaultBestScore, score));
+    }
+
+    public static int GetBestEndlessScore()
+    {
+        return PlayerPrefs.GetInt(EndlessBestScoreKey, DefaultBestScore);
+    }
+
+    public static void SetBestEndlessScore(int score)
+    {
+        PlayerPrefs.SetInt(EndlessBestScoreKey, Mathf.Max(DefaultBestScore, score));
     }
 
     public static int GetStarRating(int stageNumber)

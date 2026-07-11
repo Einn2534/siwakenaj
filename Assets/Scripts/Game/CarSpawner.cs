@@ -76,6 +76,23 @@ public class CarSpawner : MonoBehaviour
         }
     }
 
+    public void DespawnAllCars()
+    {
+        CleanupNullCars();
+        List<CarController> cars = new(_activeCars);
+        foreach (CarController car in cars)
+        {
+            DespawnCar(car);
+        }
+    }
+
+    public CarController SpawnFixedCar(CarType carType, float carSpeed)
+    {
+        return TrySpawnCar(carType, carSpeed, false, out CarController spawnedCar)
+            ? spawnedCar
+            : null;
+    }
+
     public CarController GetActiveCar()
     {
         CleanupNullCars();
@@ -144,6 +161,28 @@ public class CarSpawner : MonoBehaviour
             return;
         }
 
+        TrySpawnCar(selectedType.Value, _stageDefinition.CarSpeed, true, out _);
+    }
+
+    private bool TrySpawnCar(CarType carType, float carSpeed, bool enforceSpawnGap, out CarController spawnedCar)
+    {
+        spawnedCar = null;
+        if (_stageDefinition == null)
+        {
+            return false;
+        }
+
+        if (!TryGetPlayZoneWorldRect(out Rect playZoneWorldRect))
+        {
+            return false;
+        }
+
+        CleanupNullCars();
+        if (_activeCars.Count >= MaxCarsOnScreen)
+        {
+            return false;
+        }
+
         float spawnZ = GetSpawnZ();
         Vector3 position = new(
             playZoneWorldRect.xMax,
@@ -154,11 +193,11 @@ public class CarSpawner : MonoBehaviour
         if (car == null)
         {
             Destroy(carObject);
-            return;
+            return false;
         }
 
-        float speedWorld = playZoneWorldRect.width * Mathf.Max(_stageDefinition.CarSpeed, 0f);
-        car.Initialize(selectedType.Value, speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
+        float speedWorld = playZoneWorldRect.width * Mathf.Max(carSpeed, 0f);
+        car.Initialize(carType, speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
 
         float carWidth = GetCarWidth(carObject);
         float spawnMarginX = carWidth * SpawnMarginRatio;
@@ -166,10 +205,10 @@ public class CarSpawner : MonoBehaviour
         float spawnX = playZoneWorldRect.xMax + spawnMarginX;
         float spawnY = playZoneWorldRect.center.y;
 
-        if (ShouldSkipSpawnForGap(spawnX, minSpawnGapX))
+        if (enforceSpawnGap && ShouldSkipSpawnForGap(spawnX, minSpawnGapX))
         {
             Destroy(carObject);
-            return;
+            return false;
         }
 
         carObject.transform.position = new Vector3(
@@ -177,6 +216,8 @@ public class CarSpawner : MonoBehaviour
             spawnY,
             spawnZ);
         RegisterCar(car);
+        spawnedCar = car;
+        return true;
     }
 
     private GameObject CreateCarObject(Vector3 position)

@@ -62,8 +62,56 @@ public sealed class CoreLogicEditModeTests
 
         Assert.That(CoreReflection.GetProperty<int>(state, "TargetScore"), Is.Zero);
         Assert.That(CoreReflection.GetProperty<int>(state, "MissLimit"), Is.Zero);
-        Assert.That(CoreReflection.GetProperty<bool>(state, "HasReachedTargetScore"), Is.True);
+        Assert.That(CoreReflection.GetProperty<bool>(state, "IsEndless"), Is.True);
+        Assert.That(CoreReflection.GetProperty<bool>(state, "HasReachedTargetScore"), Is.False);
+        Assert.That(CoreReflection.GetProperty<bool>(state, "HasReachedMissLimit"), Is.False);
+    }
+
+    [Test]
+    public void ScoreState_EndlessModeHasNoTargetAndCanEndOnOneMiss()
+    {
+        Type carType = CoreReflection.RequiredType("CarType");
+        Type scoreStateType = CoreReflection.RequiredType("ScoreState");
+        object state = CoreReflection.New(scoreStateType, 0, 1);
+        object lightTruck = CoreReflection.EnumValue(carType, "LightTruck");
+
+        CoreReflection.Call(state, "ApplySuccess", lightTruck);
+        CoreReflection.Call(state, "ApplySuccess", lightTruck);
+
+        Assert.That(CoreReflection.GetProperty<int>(state, "CurrentScore"), Is.EqualTo(20));
+        Assert.That(CoreReflection.GetProperty<int>(state, "RemainingSuccessCount"), Is.Zero);
+        Assert.That(CoreReflection.GetProperty<bool>(state, "HasReachedTargetScore"), Is.False);
+        Assert.That(CoreReflection.GetProperty<bool>(state, "HasReachedMissLimit"), Is.False);
+
+        CoreReflection.Call(state, "ApplyMiss");
+
         Assert.That(CoreReflection.GetProperty<bool>(state, "HasReachedMissLimit"), Is.True);
+    }
+
+    [Test]
+    public void ScoreState_ReviveFromContinueBacksMissesBelowLimitWithoutRestoringScore()
+    {
+        Type carType = CoreReflection.RequiredType("CarType");
+        Type scoreStateType = CoreReflection.RequiredType("ScoreState");
+        object endlessState = CoreReflection.New(scoreStateType, 0, 1);
+        object regularState = CoreReflection.New(scoreStateType, 20, 3);
+        object lightTruck = CoreReflection.EnumValue(carType, "LightTruck");
+
+        CoreReflection.Call(endlessState, "ApplySuccess", lightTruck);
+        CoreReflection.Call(endlessState, "ApplyMiss");
+        CoreReflection.Call(endlessState, "ReviveFromContinue");
+
+        Assert.That(CoreReflection.GetProperty<int>(endlessState, "CurrentScore"), Is.EqualTo(5));
+        Assert.That(CoreReflection.GetProperty<int>(endlessState, "MissCount"), Is.Zero);
+        Assert.That(CoreReflection.GetProperty<bool>(endlessState, "HasReachedMissLimit"), Is.False);
+
+        CoreReflection.Call(regularState, "ApplyMiss");
+        CoreReflection.Call(regularState, "ApplyMiss");
+        CoreReflection.Call(regularState, "ApplyMiss");
+        CoreReflection.Call(regularState, "ReviveFromContinue");
+
+        Assert.That(CoreReflection.GetProperty<int>(regularState, "MissCount"), Is.EqualTo(2));
+        Assert.That(CoreReflection.GetProperty<bool>(regularState, "HasReachedMissLimit"), Is.False);
     }
 
     [Test]
@@ -114,6 +162,22 @@ public sealed class CoreLogicEditModeTests
         Assert.That(CoreReflection.GetProperty<int>(result, "MissCount"), Is.EqualTo(1));
         Assert.That(CoreReflection.Call(result, "GetCorrectCount", lightTruck), Is.EqualTo(1));
         Assert.That(CoreReflection.Call(result, "GetCorrectCount", sportsCar), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void GameResultData_FromScoreStateCopiesGameMode()
+    {
+        Type gameModeType = CoreReflection.RequiredType("GameMode");
+        Type scoreStateType = CoreReflection.RequiredType("ScoreState");
+        Type resultType = CoreReflection.RequiredType("GameResultData");
+        object endlessMode = CoreReflection.EnumValue(gameModeType, "Endless");
+        object state = CoreReflection.New(scoreStateType, 0, 1);
+
+        object result = CoreReflection.CallStatic(resultType, "FromScoreState", endlessMode, 5, false, state);
+
+        Assert.That(CoreReflection.GetProperty<object>(result, "Mode"), Is.EqualTo(endlessMode));
+        Assert.That(CoreReflection.GetProperty<bool>(result, "IsEndless"), Is.True);
+        Assert.That(CoreReflection.GetProperty<int>(result, "StageNumber"), Is.EqualTo(5));
     }
 
     [Test]

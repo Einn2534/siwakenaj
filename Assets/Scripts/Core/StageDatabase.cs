@@ -56,6 +56,18 @@ public class StageDatabase : ScriptableObject
         return null;
     }
 
+    public StageDefinition GetEndlessStageDefinition(int sourceStageNumber)
+    {
+        StageDefinition sourceStage = null;
+        if (TryGetStageIndex(sourceStageNumber, out int stageIndex))
+        {
+            sourceStage = Stages[stageIndex];
+        }
+
+        sourceStage ??= GetLastImplementedStage();
+        return StageDefinition.CreateEndless(sourceStage);
+    }
+
     public bool IsStageUnlocked(int stageIndex, Func<int, int> getBestScore)
     {
         if (stageIndex < 0 || stageIndex >= Stages.Count)
@@ -111,6 +123,20 @@ public class StageDatabase : ScriptableObject
         }
 
         return null;
+    }
+
+    private StageDefinition GetLastImplementedStage()
+    {
+        for (int i = Stages.Count - 1; i >= 0; i -= 1)
+        {
+            StageDefinition stage = Stages[i];
+            if (stage != null && stage.IsImplemented)
+            {
+                return stage;
+            }
+        }
+
+        return Stages.Count > 0 ? Stages[0] : null;
     }
 
     private int FindStageIndex(int stageNumber)

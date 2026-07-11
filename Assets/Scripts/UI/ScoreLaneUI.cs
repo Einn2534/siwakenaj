@@ -261,17 +261,22 @@ public class ScoreLaneUI : MonoBehaviour
         }
 
         Sprite sprite = GetSpriteForLane(laneType);
-        if (sprite == null)
-        {
-            return;
-        }
-
         Image[] images = icon.GetComponentsInChildren<Image>(true);
         for (int i = 0; i < images.Length; i += 1)
         {
             if (images[i] != null)
             {
+                if (sprite == null)
+                {
+                    images[i].sprite = null;
+                    images[i].enabled = false;
+                    images[i].color = Color.clear;
+                    continue;
+                }
+
                 images[i].sprite = sprite;
+                images[i].enabled = true;
+                images[i].color = Color.white;
             }
         }
     }

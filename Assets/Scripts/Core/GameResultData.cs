@@ -1,5 +1,6 @@
 public class GameResultData
 {
+    public GameMode Mode { get; }
     public int StageNumber { get; }
     public bool IsClear { get; }
     public int Score { get; }
@@ -7,6 +8,7 @@ public class GameResultData
     public int LightTruckCount { get; }
     public int CompactCarCount { get; }
     public int SportsCarCount { get; }
+    public bool IsEndless => Mode == GameMode.Endless;
 
     public GameResultData(
         int stageNumber,
@@ -16,7 +18,21 @@ public class GameResultData
         int lightTruckCount,
         int compactCarCount,
         int sportsCarCount)
+        : this(GameMode.Stage, stageNumber, isClear, score, missCount, lightTruckCount, compactCarCount, sportsCarCount)
     {
+    }
+
+    public GameResultData(
+        GameMode mode,
+        int stageNumber,
+        bool isClear,
+        int score,
+        int missCount,
+        int lightTruckCount,
+        int compactCarCount,
+        int sportsCarCount)
+    {
+        Mode = mode;
         StageNumber = stageNumber;
         IsClear = isClear;
         Score = score;
@@ -39,17 +55,28 @@ public class GameResultData
 
     public static GameResultData Empty(int stageNumber)
     {
-        return new GameResultData(stageNumber, false, 0, 0, 0, 0, 0);
+        return Empty(GameMode.Stage, stageNumber);
+    }
+
+    public static GameResultData Empty(GameMode mode, int stageNumber)
+    {
+        return new GameResultData(mode, stageNumber, false, 0, 0, 0, 0, 0);
     }
 
     public static GameResultData FromScoreState(int stageNumber, bool isClear, ScoreState scoreState)
     {
+        return FromScoreState(GameMode.Stage, stageNumber, isClear, scoreState);
+    }
+
+    public static GameResultData FromScoreState(GameMode mode, int stageNumber, bool isClear, ScoreState scoreState)
+    {
         if (scoreState == null)
         {
-            return Empty(stageNumber);
+            return Empty(mode, stageNumber);
         }
 
         return new GameResultData(
+            mode,
             stageNumber,
             isClear,
             scoreState.CurrentScore,

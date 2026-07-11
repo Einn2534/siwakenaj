@@ -17,6 +17,24 @@ public sealed class StageDatabaseEditModeTests
     }
 
     [Test]
+    public void StageDefinition_CreateEndlessUsesOneMissAndNoTarget()
+    {
+        Type definitionType = CoreReflection.RequiredType("StageDefinition");
+        object source = Stage(definitionType, 4, 310, true);
+        definitionType.GetField("MissLimit").SetValue(source, 3);
+        definitionType.GetField("CarSpeed").SetValue(source, 0.98f);
+        definitionType.GetField("SpawnInterval").SetValue(source, 0.68f);
+
+        object endless = CoreReflection.CallStatic(definitionType, "CreateEndless", source);
+
+        Assert.That(CoreReflection.GetField<int>(endless, "StageNumber"), Is.EqualTo(4));
+        Assert.That(CoreReflection.GetField<int>(endless, "TargetScore"), Is.Zero);
+        Assert.That(CoreReflection.GetField<int>(endless, "MissLimit"), Is.EqualTo(1));
+        Assert.That(CoreReflection.GetField<float>(endless, "CarSpeed"), Is.EqualTo(0.98f));
+        Assert.That(CoreReflection.GetField<float>(endless, "SpawnInterval"), Is.EqualTo(0.68f));
+    }
+
+    [Test]
     public void StageDatabase_GetStageDefinitionMatchesSafeNumberOrFallsBack()
     {
         Type definitionType = CoreReflection.RequiredType("StageDefinition");

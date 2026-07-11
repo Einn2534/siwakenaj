@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -12,17 +13,20 @@ public class ResultController : MonoBehaviour
     private const string StageSelectSceneName = "StageSelect";
     private const string StageDatabaseResourcePath = "StageDatabase";
     private const string StageFormat = "STAGE {0:00}";
+    private const string EndlessLabel = "ENDLESS";
     private const string ScoreFormat = "{0:N0}";
     private const string GameClearLabel = "GAME CLEAR";
     private const string GameOverLabel = "GAME OVER";
+    private const string EndlessGameOverMessage = "ONE MISS GAME OVER";
     private const float ScoreCountDuration = 0.65f;
     private const float StarRevealInterval = 0.18f;
     private const float ResultStarSize = 128f;
     private const float ResultStarRowHeight = 138f;
+    private const string GeneratedButtonLabelName = "GeneratedLabel";
 
     private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
     private static readonly Color FailureColor = new(1f, 0.56f, 0.58f, 1f);
-    private static readonly Color NeutralButtonColor = new(1f, 1f, 1f, 1f);
+    private static readonly Color NeutralButtonColor = new(0.976f, 0.898f, 0.612f, 1f);
     private static readonly Color NeutralTextColor = new(0.137f, 0.184f, 0.275f, 1f);
     private static readonly Color PanelTextColor = new(1f, 1f, 1f, 1f);
     private static readonly Color MutedTextColor = new(0.84f, 0.93f, 1f, 1f);
@@ -35,6 +39,8 @@ public class ResultController : MonoBehaviour
     private static readonly Color GameOverMissRowColor = new(0.42f, 0.17f, 0.20f, 0.62f);
     private static readonly Color StarBaseColor = new(0.933f, 0.949f, 0.98f, 1f);
     private static readonly Color StarFilledBackground = new(1f, 0.949f, 0.8f, 1f);
+    private static Sprite s_RuntimeButtonSprite;
+    private static Texture2D s_RuntimeButtonTexture;
 
     private static readonly string[] StrongPanelTextPaths =
     {
@@ -234,7 +240,9 @@ public class ResultController : MonoBehaviour
     private StageDatabase _stageDatabase;
     private Coroutine _scoreCountCoroutine;
     private Coroutine _starRevealCoroutine;
+    private GameMode _resultGameMode = GameMode.Stage;
     private int _resultStageNumber = 1;
+    private bool _isNavigating;
 
     private void Awake()
     {
@@ -260,18 +268,21 @@ public class ResultController : MonoBehaviour
 
     public void OnRetryPressed()
     {
-        SelectPlayableStage(_resultStageNumber);
-        SceneManager.LoadScene(MainSceneName);
+        NavigateWithInterstitial(() =>
+        {
+            SelectPlayableStage(_resultGameMode, _resultStageNumber);
+            SceneManager.LoadScene(MainSceneName);
+        });
     }
 
     public void OnTitlePressed()
     {
-        SceneManager.LoadScene(TitleSceneName);
+        NavigateWithInterstitial(() => SceneManager.LoadScene(TitleSceneName));
     }
 
     public void OnStageSelectPressed()
     {
-        LoadStageSelectFocused(_resultStageNumber);
+        NavigateToStageSelect(_resultGameMode, _resultStageNumber);
     }
 
     public void OnNextStagePressed()
@@ -279,19 +290,22 @@ public class ResultController : MonoBehaviour
         NextStageNavigation navigation = GetNextStageNavigation(_resultStageNumber);
         if (!navigation.HasDestination)
         {
-            OnStageSelectPressed();
+            NavigateToStageSelect(_resultGameMode, _resultStageNumber);
             return;
         }
 
         int nextStageNumber = StageNumberUtility.Normalize(navigation.StageDefinition.StageNumber);
         if (!navigation.LoadsMainScene)
         {
-            LoadStageSelectFocused(nextStageNumber);
+            NavigateToStageSelect(GameMode.Stage, nextStageNumber);
             return;
         }
 
-        SelectPlayableStage(nextStageNumber);
-        SceneManager.LoadScene(MainSceneName);
+        NavigateWithInterstitial(() =>
+        {
+            SelectPlayableStage(GameMode.Stage, nextStageNumber);
+            SceneManager.LoadScene(MainSceneName);
+        });
     }
 
     private void BindDynamicReferences()
@@ -377,26 +391,31 @@ public class ResultController : MonoBehaviour
         Sprite sprite = _visualDatabase != null ? _visualDatabase.GetIconSprite(carType) : null;
         if (sprite == null)
         {
+            targetImage.sprite = null;
             targetImage.enabled = false;
             return;
         }
 
         targetImage.sprite = sprite;
         targetImage.enabled = true;
+        targetImage.color = Color.white;
         targetImage.preserveAspect = true;
     }
 
     private void ApplyResult()
     {
-        GameResultData result = SessionState.LastResult ?? GameResultData.Empty(SessionState.SelectedStageNumber);
+        GameResultData result = SessionState.LastResult ?? GameResultData.Empty(SessionState.SelectedGameMode, SessionState.SelectedStageNumber);
         int stageNumber = StageNumberUtility.Normalize(result.StageNumber);
+        _resultGameMode = result.Mode;
         _resultStageNumber = stageNumber;
         int starRating = StarRatingUtility.CalculateForResult(result);
-        BestUpdateInfo bestUpdate = UpdateBestResults(stageNumber, result.Score, starRating);
-        StageDefinition stageDefinition = _stageDatabase != null ? _stageDatabase.GetStageDefinition(stageNumber) : null;
+        BestUpdateInfo bestUpdate = UpdateBestResults(result.Mode, stageNumber, result.Score, starRating);
+        StageDefinition stageDefinition = _stageDatabase != null
+            ? (result.IsEndless ? _stageDatabase.GetEndlessStageDefinition(stageNumber) : _stageDatabase.GetStageDefinition(stageNumber))
+            : null;
 
         ApplyCarIcons();
-        SetText(_stageText, string.Format(StageFormat, stageNumber));
+        SetText(_stageText, result.IsEndless ? EndlessLabel : string.Format(StageFormat, stageNumber));
         SetText(_scoreText, string.Format(ScoreFormat, 0));
         SetText(_bestScoreText, string.Format(ScoreFormat, bestUpdate.BestScore));
         SetText(_countAText, string.Format(ScoreFormat, result.LightTruckCount));
@@ -412,8 +431,8 @@ public class ResultController : MonoBehaviour
             _newBestBadge.SetActive(bestUpdate.IsNewBest);
         }
 
-        ApplyVisualState(result.IsClear);
-        ConfigureButtons();
+        ApplyVisualState(result.IsClear, !result.IsEndless);
+        ConfigureButtons(result);
         ResetStarDisplay();
         StartAnimations(result.Score, starRating, result.IsClear);
 
@@ -430,7 +449,7 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private void ApplyVisualState(bool isClear)
+    private void ApplyVisualState(bool isClear, bool showStars)
     {
         Color stateColor = isClear ? SuccessColor : FailureColor;
         Color missLabelColor = isClear ? MutedTextColor : FailureColor;
@@ -442,7 +461,7 @@ public class ResultController : MonoBehaviour
         SetPanelActive(_gameOverPanel, !isClear);
         SetImageColor(_stateTintImage, isClear ? ClearTintColor : GameOverTintColor);
         SetImageColor(_missRowBackground, isClear ? ClearMissRowColor : GameOverMissRowColor);
-        SetPanelActive(_starRowRoot, true);
+        SetPanelActive(_starRowRoot, showStars);
 
         if (_stageBadgeBackground != null)
         {
@@ -543,8 +562,25 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private void ConfigureButtons()
+    private void ConfigureButtons(GameResultData result)
     {
+        if (result != null && result.IsClear && !result.IsEndless)
+        {
+            NextStageNavigation navigation = GetNextStageNavigation(_resultStageNumber);
+            if (navigation.HasDestination)
+            {
+                ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Next Stage", ResultButtonAction.NextStage, true, NeutralTextColor);
+                ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Retry", ResultButtonAction.Retry, true, NeutralTextColor);
+                ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, NeutralTextColor);
+                return;
+            }
+
+            ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, NeutralTextColor);
+            ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Retry", ResultButtonAction.Retry, true, NeutralTextColor);
+            ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Title", ResultButtonAction.Title, true, NeutralTextColor);
+            return;
+        }
+
         ConfigureButton(_primaryActionButton, _primaryActionLabel, _primaryActionIcon, "Retry", ResultButtonAction.Retry, true, NeutralTextColor);
         ConfigureButton(_secondaryLeftButton, _secondaryLeftLabel, _secondaryLeftActionIcon, "Title", ResultButtonAction.Title, true, NeutralTextColor);
         ConfigureButton(_secondaryRightButton, _secondaryRightLabel, _secondaryRightActionIcon, "Stage Select", ResultButtonAction.StageSelect, true, NeutralTextColor);
@@ -564,18 +600,13 @@ public class ResultController : MonoBehaviour
         Sprite resolvedSprite = ResolveButtonSprite(action);
         bool usesCompositeSprite = resolvedSprite != null;
 
-        if (label != null)
-        {
-            label.gameObject.SetActive(!usesCompositeSprite);
-            label.text = text;
-            label.color = resolvedText;
-        }
+        ApplyButtonLabel(button, label, !usesCompositeSprite, text, resolvedText);
 
         ApplyButtonIcon(icon, action, interactable, usesCompositeSprite);
 
         if (buttonImage != null)
         {
-            buttonImage.sprite = resolvedSprite != null ? resolvedSprite : buttonImage.sprite;
+            buttonImage.sprite = resolvedSprite != null ? resolvedSprite : GetRuntimeButtonSprite();
             buttonImage.type = resolvedSprite != null ? Image.Type.Simple : Image.Type.Sliced;
             buttonImage.preserveAspect = resolvedSprite != null;
             buttonImage.color = resolvedSprite != null
@@ -638,10 +669,137 @@ public class ResultController : MonoBehaviour
 
         icon.gameObject.SetActive(true);
         Sprite iconSprite = ResolveButtonIconSprite(action);
+        if (iconSprite == null)
+        {
+            icon.sprite = null;
+            icon.enabled = false;
+            icon.gameObject.SetActive(false);
+            return;
+        }
+
         icon.sprite = iconSprite;
-        icon.enabled = iconSprite != null;
+        icon.enabled = true;
         icon.color = new Color(1f, 1f, 1f, interactable ? 1f : 0.5f);
         icon.preserveAspect = true;
+    }
+
+    private static void ApplyButtonLabel(Button button, TMP_Text serializedLabel, bool isVisible, string text, Color color)
+    {
+        SetButtonLabel(serializedLabel, false, text, color);
+
+        TMP_Text generatedLabel = FindGeneratedButtonLabel(button);
+        if (!isVisible)
+        {
+            SetButtonLabel(generatedLabel, false, text, color);
+            return;
+        }
+
+        TMP_Text targetLabel = serializedLabel != null ? serializedLabel : generatedLabel ?? CreateGeneratedButtonLabel(button);
+        if (serializedLabel != null)
+        {
+            SetButtonLabel(generatedLabel, false, text, color);
+        }
+
+        SetButtonLabel(targetLabel, true, text, color);
+    }
+
+    private static void SetButtonLabel(TMP_Text label, bool isVisible, string text, Color color)
+    {
+        if (label == null)
+        {
+            return;
+        }
+
+        label.gameObject.SetActive(isVisible);
+        if (!isVisible)
+        {
+            return;
+        }
+
+        label.text = text;
+        label.color = color;
+        label.alignment = TextAlignmentOptions.Center;
+        label.enableAutoSizing = true;
+        label.fontSizeMax = 42f;
+        label.fontSizeMin = 22f;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        label.raycastTarget = false;
+
+        RectTransform rectTransform = label.rectTransform;
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.offsetMin = new Vector2(18f, 10f);
+        rectTransform.offsetMax = new Vector2(-18f, -10f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+    }
+
+    private static TMP_Text FindGeneratedButtonLabel(Button button)
+    {
+        if (button == null)
+        {
+            return null;
+        }
+
+        Transform labelTransform = button.transform.Find(GeneratedButtonLabelName);
+        return labelTransform != null ? labelTransform.GetComponent<TMP_Text>() : null;
+    }
+
+    private static TMP_Text CreateGeneratedButtonLabel(Button button)
+    {
+        if (button == null)
+        {
+            return null;
+        }
+
+        GameObject labelObject = new(GeneratedButtonLabelName, typeof(RectTransform));
+        RectTransform rectTransform = labelObject.GetComponent<RectTransform>();
+        rectTransform.SetParent(button.transform, false);
+        rectTransform.SetAsLastSibling();
+
+        TextMeshProUGUI label = labelObject.AddComponent<TextMeshProUGUI>();
+        TMP_FontAsset defaultFont = TMP_Settings.defaultFontAsset;
+        if (defaultFont != null)
+        {
+            label.font = defaultFont;
+        }
+
+        return label;
+    }
+
+    private static Sprite GetRuntimeButtonSprite()
+    {
+        if (s_RuntimeButtonSprite != null)
+        {
+            return s_RuntimeButtonSprite;
+        }
+
+        s_RuntimeButtonTexture = new Texture2D(8, 8, TextureFormat.RGBA32, false)
+        {
+            name = "ResultRuntimeButtonTexture",
+            hideFlags = HideFlags.HideAndDontSave
+        };
+
+        Color32[] pixels = new Color32[8 * 8];
+        for (int i = 0; i < pixels.Length; i += 1)
+        {
+            pixels[i] = new Color32(255, 255, 255, 255);
+        }
+
+        s_RuntimeButtonTexture.SetPixels32(pixels);
+        s_RuntimeButtonTexture.Apply(false, true);
+
+        s_RuntimeButtonSprite = Sprite.Create(
+            s_RuntimeButtonTexture,
+            new Rect(0f, 0f, 8f, 8f),
+            new Vector2(0.5f, 0.5f),
+            100f,
+            0,
+            SpriteMeshType.FullRect,
+            new Vector4(3f, 3f, 3f, 3f));
+
+        s_RuntimeButtonSprite.name = "ResultRuntimeButtonSprite";
+        s_RuntimeButtonSprite.hideFlags = HideFlags.HideAndDontSave;
+        return s_RuntimeButtonSprite;
     }
 
     private void ExecuteAction(ResultButtonAction action)
@@ -660,6 +818,41 @@ public class ResultController : MonoBehaviour
             case ResultButtonAction.NextStage:
                 OnNextStagePressed();
                 break;
+        }
+    }
+
+    private void NavigateToStageSelect(GameMode mode, int stageNumber)
+    {
+        NavigateWithInterstitial(() => LoadStageSelectFocused(mode, stageNumber));
+    }
+
+    private void NavigateWithInterstitial(Action loadSceneAction)
+    {
+        if (_isNavigating || loadSceneAction == null)
+        {
+            return;
+        }
+
+        _isNavigating = true;
+        SetActionButtonsInteractable(false);
+        UnityAdsManager.Instance.ShowInterstitialThenContinue(loadSceneAction);
+    }
+
+    private void SetActionButtonsInteractable(bool isInteractable)
+    {
+        if (_primaryActionButton != null)
+        {
+            _primaryActionButton.interactable = isInteractable;
+        }
+
+        if (_secondaryLeftButton != null)
+        {
+            _secondaryLeftButton.interactable = isInteractable;
+        }
+
+        if (_secondaryRightButton != null)
+        {
+            _secondaryRightButton.interactable = isInteractable;
         }
     }
 
@@ -793,8 +986,22 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private BestUpdateInfo UpdateBestResults(int stageNumber, int score, int starRating)
+    private BestUpdateInfo UpdateBestResults(GameMode mode, int stageNumber, int score, int starRating)
     {
+        if (mode == GameMode.Endless)
+        {
+            int endlessBestScore = SaveService.GetBestEndlessScore();
+            bool isEndlessScoreUpdated = score > endlessBestScore;
+            if (isEndlessScoreUpdated)
+            {
+                SaveService.SetBestEndlessScore(score);
+                SaveService.Save();
+                endlessBestScore = score;
+            }
+
+            return new BestUpdateInfo(endlessBestScore, isEndlessScoreUpdated);
+        }
+
         int currentBestScore = SaveService.GetBestScore(stageNumber);
         int currentBestStars = SaveService.GetStarRating(stageNumber);
         bool isScoreUpdated = score > currentBestScore;
@@ -835,14 +1042,28 @@ public class ResultController : MonoBehaviour
         return new NextStageNavigation(nextStage, nextStage.IsImplemented);
     }
 
-    private static void SelectPlayableStage(int stageNumber)
+    private static void SelectPlayableStage(GameMode mode, int stageNumber)
     {
+        if (mode == GameMode.Endless)
+        {
+            StageSelectionService.SelectEndless(stageNumber);
+            return;
+        }
+
         StageSelectionService.SelectStage(stageNumber);
     }
 
-    private static void LoadStageSelectFocused(int stageNumber)
+    private static void LoadStageSelectFocused(GameMode mode, int stageNumber)
     {
-        StageSelectionService.RememberLastStage(stageNumber);
+        if (mode == GameMode.Endless)
+        {
+            StageSelectionService.RememberLastEndless(stageNumber);
+        }
+        else
+        {
+            StageSelectionService.RememberLastStage(stageNumber);
+        }
+
         SceneManager.LoadScene(StageSelectSceneName);
     }
 
@@ -851,6 +1072,11 @@ public class ResultController : MonoBehaviour
         if (result == null)
         {
             return "Try again";
+        }
+
+        if (result.IsEndless)
+        {
+            return EndlessGameOverMessage;
         }
 
         if (result.IsClear)

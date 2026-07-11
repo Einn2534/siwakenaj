@@ -9,6 +9,13 @@ public class LaneInputController : MonoBehaviour
     private const float InputCooldownSeconds = 0.08f;
     private const float InitialLastInputTime = -1f;
     private const int InitialFrame = -1;
+    private const float WrongLaneFeedbackSeconds = 0.32f;
+    private const float CorrectLaneFeedbackSeconds = 0.28f;
+    private const float WrongLaneShakePixels = 16f;
+    private const float CorrectLanePulseScale = 1.12f;
+
+    private static readonly Color WrongLaneColor = new(1f, 0.42f, 0.42f, 1f);
+    private static readonly Color CorrectLaneColor = new(1f, 0.88f, 0.28f, 1f);
 
     [SerializeField, FormerlySerializedAs("laneAType")]
     private CarType _laneAType = CarType.LightTruck;
@@ -50,6 +57,52 @@ public class LaneInputController : MonoBehaviour
     public CarType LaneAType => _laneAType;
     public CarType LaneBType => _laneBType;
     public CarType LaneCType => _laneCType;
+
+    public bool TryGetButtonForLane(CarType laneType, out Button button)
+    {
+        if (_laneAType == laneType && _laneAButton != null)
+        {
+            button = _laneAButton;
+            return true;
+        }
+
+        if (_laneBType == laneType && _laneBButton != null)
+        {
+            button = _laneBButton;
+            return true;
+        }
+
+        if (_laneCType == laneType && _laneCButton != null)
+        {
+            button = _laneCButton;
+            return true;
+        }
+
+        button = null;
+        return false;
+    }
+
+    public bool TryGetButtonForLane(CarType laneType, out RectTransform rectTransform)
+    {
+        rectTransform = TryGetButtonForLane(laneType, out Button button)
+            ? button.transform as RectTransform
+            : null;
+        return rectTransform != null;
+    }
+
+    public void PlayWrongLaneFeedback(CarType pressedLaneType, CarType correctLaneType)
+    {
+        PlayPressedLaneFeedback(pressedLaneType);
+        if (pressedLaneType != correctLaneType && TryGetButtonForLane(correctLaneType, out Button correctButton))
+        {
+            StartCoroutine(PulseCorrectButton(correctButton));
+        }
+    }
+
+    public void PlayNoCarFeedback(CarType pressedLaneType)
+    {
+        PlayPressedLaneFeedback(pressedLaneType);
+    }
 
     private void Awake()
     {
@@ -175,6 +228,90 @@ public class LaneInputController : MonoBehaviour
         if (configuredButtonCount == 0)
         {
             ConfigureDirectChildFallback(buttons);
+        }
+    }
+
+    private void PlayPressedLaneFeedback(CarType laneType)
+    {
+        if (TryGetButtonForLane(laneType, out Button button))
+        {
+            StartCoroutine(ShakeWrongButton(button));
+        }
+    }
+
+    private static IEnumerator ShakeWrongButton(Button button)
+    {
+        if (button == null || !(button.transform is RectTransform rectTransform))
+        {
+            yield break;
+        }
+
+        Graphic graphic = button.targetGraphic ?? button.GetComponent<Graphic>();
+        Vector3 basePosition = rectTransform.localPosition;
+        Color baseColor = graphic != null ? graphic.color : Color.white;
+        float elapsed = 0f;
+
+        while (elapsed < WrongLaneFeedbackSeconds && rectTransform != null)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsed / WrongLaneFeedbackSeconds);
+            float wave = Mathf.Sin(progress * Mathf.PI * 8f) * (1f - progress);
+            rectTransform.localPosition = basePosition + Vector3.right * (wave * WrongLaneShakePixels);
+
+            if (graphic != null)
+            {
+                graphic.color = Color.Lerp(WrongLaneColor, baseColor, progress);
+            }
+
+            yield return null;
+        }
+
+        if (rectTransform != null)
+        {
+            rectTransform.localPosition = basePosition;
+        }
+
+        if (graphic != null)
+        {
+            graphic.color = baseColor;
+        }
+    }
+
+    private static IEnumerator PulseCorrectButton(Button button)
+    {
+        if (button == null || !(button.transform is RectTransform rectTransform))
+        {
+            yield break;
+        }
+
+        Graphic graphic = button.targetGraphic ?? button.GetComponent<Graphic>();
+        Vector3 baseScale = rectTransform.localScale;
+        Color baseColor = graphic != null ? graphic.color : Color.white;
+        float elapsed = 0f;
+
+        while (elapsed < CorrectLaneFeedbackSeconds && rectTransform != null)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsed / CorrectLaneFeedbackSeconds);
+            float wave = Mathf.Sin(progress * Mathf.PI);
+            rectTransform.localScale = Vector3.Lerp(baseScale, baseScale * CorrectLanePulseScale, wave);
+
+            if (graphic != null)
+            {
+                graphic.color = Color.Lerp(baseColor, CorrectLaneColor, wave);
+            }
+
+            yield return null;
+        }
+
+        if (rectTransform != null)
+        {
+            rectTransform.localScale = baseScale;
+        }
+
+        if (graphic != null)
+        {
+            graphic.color = baseColor;
         }
     }
 

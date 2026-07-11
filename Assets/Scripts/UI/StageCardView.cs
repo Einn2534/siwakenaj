@@ -24,6 +24,7 @@ public class StageCardView : MonoBehaviour
     private static readonly Color ComingSoonPrimaryTextColor = new(1f, 0.93f, 0.62f, 1f);
     private static readonly Color ComingSoonSecondaryTextColor = new(0.92f, 0.96f, 1f, 0.96f);
     private static readonly Color ClearedBestScoreColor = new(1f, 0.89f, 0.42f, 1f);
+    private static readonly Color EndlessAccentColor = new(1f, 0.42f, 0.46f, 1f);
     private static readonly Color UnlockedThumbnailColor = Color.white;
     private static readonly Color LockedThumbnailColor = new(0.42f, 0.48f, 0.56f, 0.72f);
     private static readonly Color ComingSoonThumbnailColor = new(0.30f, 0.42f, 0.58f, 0.58f);
@@ -110,6 +111,34 @@ public class StageCardView : MonoBehaviour
     public void RefreshStarBadge(int stageNumber)
     {
         RefreshStarBadge(SaveService.GetStarRating(stageNumber), _currentStatus == StageCardStatus.Unlocked);
+    }
+
+    public void SetEndlessData(int bestScore)
+    {
+        CacheDefaultsIfNeeded();
+        _currentStageNumber = StageNumberUtility.MinimumStageNumber;
+        _currentStatus = StageCardStatus.Unlocked;
+
+        SetText(_stageNumberText, "<color=#35D7FF>ENDLESS</color>");
+        SetText(_targetScoreText, $"<color=#{ColorUtility.ToHtmlStringRGB(EndlessAccentColor)}>ONE MISS</color>  GAME OVER");
+        SetText(_bestScoreText, bestScore > 0 ? $"<color=#FFE05D>BEST</color>  {bestScore:N0}" : "<color=#FFE05D>BEST</color>  -");
+        SetText(_statusText, string.Empty);
+
+        SetColor(_stageNumberText, _defaultStageNumberColor);
+        SetColor(_targetScoreText, _defaultTargetScoreColor);
+        SetColor(_bestScoreText, bestScore > 0 ? ClearedBestScoreColor : _defaultBestScoreColor);
+        SetColor(_statusText, _defaultStatusColor);
+        SetBackgroundColor(_defaultBackgroundColor);
+
+        if (_statusText != null)
+        {
+            _statusText.gameObject.SetActive(false);
+        }
+
+        ApplyStageThumbnail(StageNumberUtility.MinimumStageNumber, StageCardStatus.Unlocked);
+        ApplyArtState(StageCardStatus.Unlocked);
+        RefreshStarBadge(0, false);
+        ApplySelectionState();
     }
 
     public void SetSelected(bool isSelected)

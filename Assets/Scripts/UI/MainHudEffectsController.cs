@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -51,12 +52,14 @@ public class MainHudEffectsController : MonoBehaviour
 
     private Coroutine _countdownRoutine;
     private Coroutine _judgeRoutine;
+    private TMP_Text _judgeText;
 
     private void Awake()
     {
         EnsureImages();
         HideImage(_countdownImage);
         HideImage(_judgeImage);
+        HideText(_judgeText);
     }
 
     private void OnDisable()
@@ -69,6 +72,7 @@ public class MainHudEffectsController : MonoBehaviour
         EnsureImages();
         StopCountdown();
         HideImage(_judgeImage);
+        HideText(_judgeText);
 
         _countdownRoutine = StartCoroutine(PlayReadyCountdownRoutine());
         yield return _countdownRoutine;
@@ -81,6 +85,7 @@ public class MainHudEffectsController : MonoBehaviour
         StopJudge();
         HideImage(_countdownImage);
         HideImage(_judgeImage);
+        HideText(_judgeText);
     }
 
     private IEnumerator PlayReadyCountdownRoutine()
@@ -102,7 +107,12 @@ public class MainHudEffectsController : MonoBehaviour
 
     public void ShowMissJudge()
     {
-        ShowJudge(_missJudgeSprite);
+        ShowMissJudge("MISS");
+    }
+
+    public void ShowMissJudge(string label)
+    {
+        ShowJudge(_missJudgeSprite, label);
     }
 
     private void StopCountdown()
@@ -127,6 +137,7 @@ public class MainHudEffectsController : MonoBehaviour
         StopCoroutine(_judgeRoutine);
         _judgeRoutine = null;
         HideImage(_judgeImage);
+        HideText(_judgeText);
     }
 
     private IEnumerator PlayCountdownStep(Sprite sprite, float seconds)
@@ -146,7 +157,12 @@ public class MainHudEffectsController : MonoBehaviour
 
     private void ShowJudge(Sprite sprite)
     {
-        if (_judgeImage == null || sprite == null)
+        ShowJudge(sprite, null);
+    }
+
+    private void ShowJudge(Sprite sprite, string label)
+    {
+        if (_judgeImage == null || (sprite == null && string.IsNullOrEmpty(label)))
         {
             return;
         }
@@ -156,19 +172,30 @@ public class MainHudEffectsController : MonoBehaviour
             StopJudge();
         }
 
-        _judgeRoutine = StartCoroutine(ShowJudgeRoutine(sprite));
+        _judgeRoutine = StartCoroutine(ShowJudgeRoutine(sprite, label));
     }
 
-    private IEnumerator ShowJudgeRoutine(Sprite sprite)
+    private IEnumerator ShowJudgeRoutine(Sprite sprite, string label)
     {
-        _judgeImage.sprite = sprite;
-        _judgeImage.SetNativeSize();
-        FitToSize(_judgeImage.rectTransform, _judgeSize);
-        _judgeImage.gameObject.SetActive(true);
+        bool hasSprite = sprite != null;
+        if (hasSprite)
+        {
+            _judgeImage.sprite = sprite;
+            _judgeImage.SetNativeSize();
+            FitToSize(_judgeImage.rectTransform, _judgeSize);
+            _judgeImage.gameObject.SetActive(true);
+        }
 
-        yield return AnimateImage(_judgeImage, _judgeSeconds, 0.9f, 1.05f);
+        if (_judgeText != null)
+        {
+            _judgeText.text = label ?? string.Empty;
+            _judgeText.gameObject.SetActive(!string.IsNullOrEmpty(label));
+        }
+
+        yield return AnimateJudge(_judgeImage, _judgeText, _judgeSeconds, 0.9f, 1.05f, hasSprite);
 
         HideImage(_judgeImage);
+        HideText(_judgeText);
         _judgeRoutine = null;
     }
 
@@ -192,6 +219,44 @@ public class MainHudEffectsController : MonoBehaviour
         SetAlpha(image, 0f);
     }
 
+    private static IEnumerator AnimateJudge(Image image, TMP_Text text, float seconds, float startScale, float peakScale, bool animateImage)
+    {
+        float elapsed = 0f;
+        seconds = Mathf.Max(0.05f, seconds);
+
+        while (elapsed < seconds)
+        {
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / seconds);
+            float alpha = progress < 0.72f ? 1f : Mathf.InverseLerp(1f, 0.72f, progress);
+            float scale = Mathf.Lerp(startScale, peakScale, EaseOutBack(Mathf.Min(progress / 0.72f, 1f)));
+
+            if (animateImage && image != null)
+            {
+                SetAlpha(image, alpha);
+                image.rectTransform.localScale = Vector3.one * scale;
+            }
+
+            if (text != null && text.gameObject.activeSelf)
+            {
+                SetTextAlpha(text, alpha);
+                text.rectTransform.localScale = Vector3.one * scale;
+            }
+
+            yield return null;
+        }
+
+        if (animateImage && image != null)
+        {
+            SetAlpha(image, 0f);
+        }
+
+        if (text != null)
+        {
+            SetTextAlpha(text, 0f);
+        }
+    }
+
     private void EnsureImages()
     {
         if (_countdownImage == null)
@@ -204,6 +269,11 @@ public class MainHudEffectsController : MonoBehaviour
             _judgeImage = CreateEffectImage(JudgeObjectName, _judgeSize);
         }
 
+        if (_judgeText == null && _judgeImage != null)
+        {
+            _judgeText = CreateEffectText("JudgeReasonText", _judgeImage.rectTransform);
+        }
+
         if (_countdownImage != null)
         {
             _countdownImage.transform.SetAsLastSibling();
@@ -212,6 +282,11 @@ public class MainHudEffectsController : MonoBehaviour
         if (_judgeImage != null)
         {
             _judgeImage.transform.SetAsLastSibling();
+        }
+
+        if (_judgeText != null)
+        {
+            _judgeText.transform.SetAsLastSibling();
         }
     }
 
@@ -232,6 +307,35 @@ public class MainHudEffectsController : MonoBehaviour
         image.raycastTarget = false;
         image.preserveAspect = true;
         return image;
+    }
+
+    private TMP_Text CreateEffectText(string objectName, RectTransform parent)
+    {
+        GameObject textObject = new(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+        textObject.layer = gameObject.layer;
+        textObject.transform.SetParent(parent, false);
+
+        RectTransform rectTransform = textObject.GetComponent<RectTransform>();
+        rectTransform.anchorMin = new Vector2(0.5f, 0f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0f);
+        rectTransform.pivot = new Vector2(0.5f, 0f);
+        rectTransform.anchoredPosition = new Vector2(0f, -56f);
+        rectTransform.sizeDelta = new Vector2(520f, 72f);
+
+        TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
+        text.font = TMP_Settings.defaultFontAsset;
+        text.fontSize = 44f;
+        text.fontSizeMax = 44f;
+        text.fontSizeMin = 24f;
+        text.enableAutoSizing = true;
+        text.fontStyle = FontStyles.Bold;
+        text.alignment = TextAlignmentOptions.Center;
+        text.color = Color.white;
+        text.outlineColor = new Color(0.02f, 0.04f, 0.08f, 1f);
+        text.outlineWidth = 0.18f;
+        text.raycastTarget = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
+        return text;
     }
 
     private static void FitToSize(RectTransform rectTransform, Vector2 maxSize)
@@ -264,11 +368,30 @@ public class MainHudEffectsController : MonoBehaviour
         image.gameObject.SetActive(false);
     }
 
+    private static void HideText(TMP_Text text)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        SetTextAlpha(text, 0f);
+        text.rectTransform.localScale = Vector3.one;
+        text.gameObject.SetActive(false);
+    }
+
     private static void SetAlpha(Image image, float alpha)
     {
         Color color = image.color;
         color.a = Mathf.Clamp01(alpha);
         image.color = color;
+    }
+
+    private static void SetTextAlpha(TMP_Text text, float alpha)
+    {
+        Color color = text.color;
+        color.a = Mathf.Clamp01(alpha);
+        text.color = color;
     }
 
     private static float EaseOutBack(float value)

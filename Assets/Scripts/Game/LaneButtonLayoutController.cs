@@ -4,23 +4,27 @@ using UnityEngine.UI;
 
 public class LaneButtonLayoutController : MonoBehaviour
 {
-    private const float ButtonWidthRatio = 0.24f;
+    private const float ButtonWidthRatio = 0.285f;
     private const float MinButtonWidth = 120f;
-    private const float MaxButtonWidth = 300f;
+    private const float MaxButtonWidth = 330f;
     private const float HorizontalPaddingRatio = 0.03f;
     private const float MinHorizontalPadding = 12f;
     private const float MaxHorizontalPadding = 36f;
     private const float SpacingRatio = 0.02f;
     private const float MinSpacing = 8f;
     private const float MaxSpacing = 24f;
-    private const float VerticalPaddingRatio = 0.06f;
+    private const float VerticalPaddingRatio = 0.045f;
     private const float MinVerticalPadding = 12f;
-    private const float MaxVerticalPadding = 32f;
+    private const float MaxVerticalPadding = 30f;
     private const float MinButtonAspect = 0.1f;
     private const float Epsilon = 0.5f;
 
+    private static readonly Color BackdropColor = new(0.02f, 0.035f, 0.055f, 0.56f);
+    private static readonly Color BackdropShadowColor = new(0f, 0f, 0f, 0.26f);
+
     private RectTransform _cachedRectTransform;
     private HorizontalLayoutGroup _cachedLayoutGroup;
+    private Image _cachedBackdropImage;
 
     private void OnEnable()
     {
@@ -75,12 +79,36 @@ public class LaneButtonLayoutController : MonoBehaviour
 
         ApplyLayoutGroup(horizontalPadding, spacing);
         SetHeightIfNeeded(_cachedRectTransform, zoneHeight);
+        ApplyBackdrop();
 
         foreach (RectTransform buttonRect in buttonRects)
         {
             SetWidthIfNeeded(buttonRect, buttonWidth);
             SetHeightIfNeeded(buttonRect, buttonHeight);
         }
+    }
+
+    private void ApplyBackdrop()
+    {
+        _cachedBackdropImage ??= GetComponent<Image>();
+        if (_cachedBackdropImage == null)
+        {
+            _cachedBackdropImage = gameObject.AddComponent<Image>();
+        }
+
+        _cachedBackdropImage.enabled = true;
+        _cachedBackdropImage.color = BackdropColor;
+        _cachedBackdropImage.raycastTarget = false;
+
+        Shadow shadow = GetComponent<Shadow>();
+        if (shadow == null)
+        {
+            shadow = gameObject.AddComponent<Shadow>();
+        }
+
+        shadow.effectColor = BackdropShadowColor;
+        shadow.effectDistance = new Vector2(0f, 8f);
+        shadow.useGraphicAlpha = true;
     }
 
     private List<RectTransform> GetDirectButtonRects()

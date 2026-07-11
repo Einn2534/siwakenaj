@@ -17,6 +17,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
     private const string ToggleOffResourcePath = "UI/ui_settings_toggle_off";
     private const string StageFormat = "STAGE {0:00}";
+    private const string EndlessModeLabel = "ENDLESS MODE";
     private const float ReferenceWidth = 1080f;
     private const float ReferenceHeight = 1920f;
     private const float PauseActionButtonWidth = 360f;
@@ -65,6 +66,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private Button _stageSelectButton;
     private Button _howToButton;
     private Button _howToCloseButton;
+    private Button _howToTutorialButton;
     private Button _bgmToggleButton;
     private Button _seToggleButton;
     private Button _vibrationToggleButton;
@@ -134,7 +136,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
 
         _activeController = this;
         ResolveGameFlowController();
-        EnsureEventSystem();
+        EventSystemInputModuleUtility.EnsureCompatibleEventSystem();
         BuildInterface();
         SetMenuVisible(false);
         RefreshSoundControls();
@@ -280,15 +282,39 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private void RetryStage()
     {
         ResumeBeforeNavigation();
-        StageSelectionService.SelectStage(SessionState.SelectedStageNumber);
+        if (SessionState.IsEndlessMode)
+        {
+            StageSelectionService.SelectEndless(SessionState.SelectedStageNumber);
+        }
+        else
+        {
+            StageSelectionService.SelectStage(SessionState.SelectedStageNumber);
+        }
+
         SceneManager.LoadScene(MainSceneName);
     }
 
     private void ReturnToStageSelect()
     {
         ResumeBeforeNavigation();
-        StageSelectionService.RememberLastStage(SessionState.SelectedStageNumber);
+        if (SessionState.IsEndlessMode)
+        {
+            StageSelectionService.RememberLastEndless(SessionState.SelectedStageNumber);
+        }
+        else
+        {
+            StageSelectionService.RememberLastStage(SessionState.SelectedStageNumber);
+        }
+
         SceneManager.LoadScene(StageSelectSceneName);
+    }
+
+    private void ReplayTutorial()
+    {
+        ResumeBeforeNavigation();
+        StageSelectionService.SelectStage(TutorialLaunchService.TutorialStageNumber);
+        TutorialLaunchService.RequestReplay();
+        SceneManager.LoadScene(MainSceneName);
     }
 
     private void ToggleBgm()
@@ -392,7 +418,9 @@ public sealed class MainPauseMenuController : MonoBehaviour
     {
         if (_stageText != null)
         {
-            _stageText.text = string.Format(StageFormat, StageNumberUtility.Normalize(SessionState.SelectedStageNumber));
+            _stageText.text = SessionState.IsEndlessMode
+                ? EndlessModeLabel
+                : string.Format(StageFormat, StageNumberUtility.Normalize(SessionState.SelectedStageNumber));
         }
     }
 
@@ -582,12 +610,14 @@ public sealed class MainPauseMenuController : MonoBehaviour
         bodyLayout.childForceExpandHeight = false;
 
         CarVisualDatabase visualDatabase = CarVisualDatabase.LoadDefault();
-        CreateHowToStep(body, "01", "COMING CAR", "\u8eca\u3092\u898b\u3066\u3001\u540c\u3058\u30ec\u30fc\u30f3\u306e\u30dc\u30bf\u30f3\u3092\u30bf\u30c3\u30d7", HowToBlueAccentColor, GetHowToIcon(visualDatabase, CarType.LightTruck));
+        CreateHowToStep(body, "01", "COMING CAR", "\u6765\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046", HowToBlueAccentColor, GetHowToIcon(visualDatabase, CarType.LightTruck));
         CreateHowToStep(body, "02", "OK / GOOD", "\u6b63\u3057\u304f\u4ed5\u5206\u3051\u308b\u3068\u30b9\u30b3\u30a2\u30a2\u30c3\u30d7", ToggleOnColor, GetHowToIcon(visualDatabase, CarType.CompactCar));
         CreateHowToStep(body, "03", "MISS LIMIT", "MISS \u304c\u4e0a\u9650\u306b\u5c4a\u304f\u3068 GAME OVER", DangerButtonColor, GetHowToIcon(visualDatabase, CarType.SportsCar));
 
-        _howToCloseButton = CreateModalCloseButton(panel, "CloseButton", "OK", new Vector2(0f, 34f), new Vector2(560f, 136f));
+        _howToCloseButton = CreateModalCloseButton(panel, "CloseButton", "OK", new Vector2(-210f, 34f), new Vector2(360f, 136f));
         _howToCloseButton.onClick.AddListener(CloseHowTo);
+        _howToTutorialButton = CreateModalCloseButton(panel, "TutorialButton", "TUTORIAL", new Vector2(210f, 34f), new Vector2(360f, 136f));
+        _howToTutorialButton.onClick.AddListener(ReplayTutorial);
         _howToPanelRoot.SetActive(false);
     }
 
@@ -997,24 +1027,6 @@ public sealed class MainPauseMenuController : MonoBehaviour
         {
             text.text = $"{Mathf.RoundToInt(Mathf.Clamp01(volume) * 100f)}%";
         }
-    }
-
-    private static void EnsureEventSystem()
-    {
-        if (FindAnyObjectByType<EventSystem>() != null)
-        {
-            return;
-        }
-
-        GameObject eventSystemObject;
-#if ENABLE_INPUT_SYSTEM
-        eventSystemObject = new("EventSystem", typeof(EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        eventSystemObject = new("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
-#else
-        eventSystemObject = new("EventSystem", typeof(EventSystem));
-#endif
-        eventSystemObject.layer = LayerMask.NameToLayer("UI");
     }
 
     private static void SetAnchored(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition, Vector2 sizeDelta)

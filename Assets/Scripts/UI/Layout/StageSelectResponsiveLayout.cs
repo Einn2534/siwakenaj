@@ -5,23 +5,24 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class StageSelectResponsiveLayout : MonoBehaviour
 {
-    private const int CompactMaxScreenWidth = 375;
-    private const int CompactMaxScreenHeight = 700;
+    private const int CompactMaxScreenWidth = 720;
+    private const int CompactMaxScreenHeight = 1280;
+    private const float CompactTallAspect = 1.66f;
 
-    private const float CompactHeaderTopInset = 32f;
-    private const float CompactHeaderHeight = 72f;
-    private const float CompactHeaderFontSize = 56f;
-    private const float CompactHeaderFontSizeMin = 36f;
-    private const float CompactHeaderFontSizeMax = 56f;
-    private const float CompactScrollTopInset = 120f;
-    private const float CompactScrollBottomInset = 120f;
-    private const float CompactButtonInset = 20f;
-    private const float CompactButtonSize = 88f;
+    private const float CompactHeaderTopInset = 62f;
+    private const float CompactHeaderHeight = 94f;
+    private const float CompactHeaderFontSize = 62f;
+    private const float CompactHeaderFontSizeMin = 42f;
+    private const float CompactHeaderFontSizeMax = 64f;
+    private const float CompactScrollTopInset = 190f;
+    private const float CompactScrollBottomInset = 214f;
+    private const float CompactButtonInset = 44f;
+    private const float CompactButtonSize = 156f;
     private const float CompactCardWidthRatio = 0.90f;
-    private const float CompactCardHeightRatio = 0.96f;
-    private const float CompactCardMinWidth = 150f;
+    private const float CompactCardHeightRatio = 0.82f;
+    private const float CompactCardMinWidth = 560f;
     private const float CompactCardMaxWidth = 720f;
-    private const float CompactCardSpacing = 12f;
+    private const float CompactCardSpacing = 28f;
 
     [SerializeField]
     private RectTransform _safeAreaRect;
@@ -241,7 +242,13 @@ public class StageSelectResponsiveLayout : MonoBehaviour
         if (_headerRect != null)
         {
             _headerRect.anchoredPosition = new Vector2(_defaultHeaderRectState.AnchoredPosition.x, -topInset);
-            _headerRect.sizeDelta = new Vector2(_defaultHeaderRectState.SizeDelta.x, height);
+            float headerWidth = _defaultHeaderRectState.SizeDelta.x;
+            if (enableAutoSizing && _safeAreaRect != null)
+            {
+                headerWidth = Mathf.Min(Mathf.Max(_safeAreaRect.rect.width - 160f, 620f), 920f);
+            }
+
+            _headerRect.sizeDelta = new Vector2(headerWidth, height);
         }
 
         if (_headerText != null)
@@ -250,6 +257,7 @@ public class StageSelectResponsiveLayout : MonoBehaviour
             _headerText.fontSize = fontSize;
             _headerText.fontSizeMin = fontSizeMin;
             _headerText.fontSizeMax = fontSizeMax;
+            _headerText.textWrappingMode = TextWrappingModes.NoWrap;
         }
     }
 
@@ -380,7 +388,11 @@ public class StageSelectResponsiveLayout : MonoBehaviour
 
     private bool IsCompactScreen()
     {
-        return Screen.width <= CompactMaxScreenWidth || Screen.height <= CompactMaxScreenHeight;
+        int shortSide = Mathf.Min(Screen.width, Screen.height);
+        int longSide = Mathf.Max(Screen.width, Screen.height);
+        float aspect = shortSide > 0 ? longSide / (float)shortSide : 0f;
+        return (shortSide <= CompactMaxScreenWidth && longSide <= CompactMaxScreenHeight)
+            || aspect >= CompactTallAspect;
     }
 
     private void CacheDefaultsIfNeeded()

@@ -12,8 +12,10 @@ public class ScoreState
     public int MissLimit { get; }
     public int CurrentScore { get; private set; }
     public int MissCount { get; private set; }
-    public bool HasReachedTargetScore => CurrentScore >= TargetScore;
-    public bool HasReachedMissLimit => MissCount >= MissLimit;
+    public bool IsEndless => TargetScore <= 0;
+    public int RemainingSuccessCount => IsEndless ? 0 : Mathf.Max(0, Mathf.CeilToInt((TargetScore - CurrentScore) / (float)ScorePerCorrect));
+    public bool HasReachedTargetScore => !IsEndless && CurrentScore >= TargetScore;
+    public bool HasReachedMissLimit => MissLimit > 0 && MissCount >= MissLimit;
 
     public ScoreState(int targetScore, int missLimit)
     {
@@ -31,6 +33,11 @@ public class ScoreState
     {
         CurrentScore = Mathf.Max(0, CurrentScore + ScorePerMiss);
         MissCount += 1;
+    }
+
+    public void ReviveFromContinue()
+    {
+        MissCount = Mathf.Max(0, MissLimit - 1);
     }
 
     public int GetCorrectCount(CarType laneType)
