@@ -12,6 +12,9 @@ public class CarSpawner : MonoBehaviour
     private const float MinSpawnGapRatio = 0.25f;
     private const float DefaultCarWidth = 1f;
     private const int CarSortingOrder = 20;
+    private const float RushWarningSeconds = 0.65f;
+    private const float RushSpawnIntervalSeconds = 0.22f;
+    private const int RushCarCount = 3;
 
     [SerializeField]
     private CarVisualDatabase _visualDatabase;
@@ -28,16 +31,22 @@ public class CarSpawner : MonoBehaviour
     private readonly List<CarController> _activeCars = new();
     private StageDefinition _stageDefinition;
     private Coroutine _spawnCoroutine;
+    private Coroutine _rushCoroutine;
     private bool _isSpawning;
+    private bool _isRushActive;
 
     public event Action<CarController> CarMissed;
+    public event Action<CarController> CarSpawned;
+    public event Action RushWarning;
+    public event Action RushStarted;
+
+    public int LastRushSpawnCount { get; private set; }
 
     public void Initialize(StageDefinition stageDefinition)
     {
+        StopSpawning();
         _stageDefinition = stageDefinition;
         _visualDatabase ??= CarVisualDatabase.LoadDefault();
-        _isSpawning = false;
-        _spawnCoroutine = null;
         CleanupNullCars();
     }
 
@@ -54,17 +63,20 @@ public class CarSpawner : MonoBehaviour
 
     public void StopSpawning()
     {
-        if (!_isSpawning)
-        {
-            return;
-        }
-
         _isSpawning = false;
         if (_spawnCoroutine != null)
         {
             StopCoroutine(_spawnCoroutine);
             _spawnCoroutine = null;
         }
+
+        if (_rushCoroutine != null)
+        {
+            StopCoroutine(_rushCoroutine);
+            _rushCoroutine = null;
+        }
+
+        _isRushActive = false;
     }
 
     public void StopAllCars()
@@ -88,9 +100,25 @@ public class CarSpawner : MonoBehaviour
 
     public CarController SpawnFixedCar(CarType carType, float carSpeed)
     {
-        return TrySpawnCar(carType, carSpeed, false, out CarController spawnedCar)
+        return SpawnFixedCar(carType, carSpeed, CarModifier.Normal);
+    }
+
+    public CarController SpawnFixedCar(CarType carType, float carSpeed, CarModifier modifier)
+    {
+        return TrySpawnCar(carType, modifier, carSpeed, false, out CarController spawnedCar)
             ? spawnedCar
             : null;
+    }
+
+    public bool TryStartRush()
+    {
+        if (!_isSpawning || _isRushActive || _rushCoroutine != null)
+        {
+            return false;
+        }
+
+        _rushCoroutine = StartCoroutine(RushRoutine());
+        return true;
     }
 
     public CarController GetActiveCar()
@@ -128,7 +156,10 @@ public class CarSpawner : MonoBehaviour
     {
         while (_isSpawning)
         {
-            SpawnIfPossible();
+            if (!_isRushActive)
+            {
+                SpawnIfPossible();
+            }
 
             float interval = _stageDefinition != null
                 ? Mathf.Max(_stageDefinition.SpawnInterval, MinimumIntervalSeconds)
@@ -137,34 +168,34 @@ public class CarSpawner : MonoBehaviour
         }
     }
 
-    private void SpawnIfPossible()
+    private bool SpawnIfPossible()
     {
         if (_stageDefinition == null)
         {
-            return;
+            return false;
         }
 
         if (!TryGetPlayZoneWorldRect(out Rect playZoneWorldRect))
         {
-            return;
+            return false;
         }
 
         CleanupNullCars();
         if (_activeCars.Count >= MaxCarsOnScreen)
         {
-            return;
+            return false;
         }
 
         CarType? selectedType = SelectWeightedCarType();
         if (!selectedType.HasValue)
         {
-            return;
+            return false;
         }
 
-        TrySpawnCar(selectedType.Value, _stageDefinition.CarSpeed, true, out _);
+        return TrySpawnCar(selectedType.Value, SelectCarModifier(), _stageDefinition.CarSpeed, true, out _);
     }
 
-    private bool TrySpawnCar(CarType carType, float carSpeed, bool enforceSpawnGap, out CarController spawnedCar)
+    private bool TrySpawnCar(CarType carType, CarModifier modifier, float carSpeed, bool enforceSpawnGap, out CarController spawnedCar)
     {
         spawnedCar = null;
         if (_stageDefinition == null)
@@ -197,7 +228,7 @@ public class CarSpawner : MonoBehaviour
         }
 
         float speedWorld = playZoneWorldRect.width * Mathf.Max(carSpeed, 0f);
-        car.Initialize(carType, speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
+        car.Initialize(carType, modifier, speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
 
         float carWidth = GetCarWidth(carObject);
         float spawnMarginX = carWidth * SpawnMarginRatio;
@@ -217,7 +248,37 @@ public class CarSpawner : MonoBehaviour
             spawnZ);
         RegisterCar(car);
         spawnedCar = car;
+        CarSpawned?.Invoke(car);
         return true;
+    }
+
+    private IEnumerator RushRoutine()
+    {
+        _isRushActive = true;
+        RushWarning?.Invoke();
+        yield return new WaitForSeconds(RushWarningSeconds);
+
+        if (!_isSpawning)
+        {
+            _isRushActive = false;
+            _rushCoroutine = null;
+            yield break;
+        }
+
+        RushStarted?.Invoke();
+        LastRushSpawnCount = 0;
+        while (LastRushSpawnCount < RushCarCount && _isSpawning)
+        {
+            if (SpawnIfPossible())
+            {
+                LastRushSpawnCount += 1;
+            }
+
+            yield return new WaitForSeconds(RushSpawnIntervalSeconds);
+        }
+
+        _isRushActive = false;
+        _rushCoroutine = null;
     }
 
     private GameObject CreateCarObject(Vector3 position)
@@ -331,6 +392,33 @@ public class CarSpawner : MonoBehaviour
         }
 
         return CarType.SportsCar;
+    }
+
+    private CarModifier SelectCarModifier()
+    {
+        if (_stageDefinition == null)
+        {
+            return CarModifier.Normal;
+        }
+
+        float brokenChance = CarModifierRules.ClampChance(_stageDefinition.BrokenChance);
+        float coveredChance = CarModifierRules.ClampChance(_stageDefinition.CoveredChance);
+        float expressChance = CarModifierRules.ClampChance(_stageDefinition.ExpressChance);
+        float roll = UnityEngine.Random.value;
+
+        if (roll < brokenChance)
+        {
+            return CarModifier.Broken;
+        }
+
+        roll -= brokenChance;
+        if (roll < coveredChance)
+        {
+            return CarModifier.Covered;
+        }
+
+        roll -= coveredChance;
+        return roll < expressChance ? CarModifier.Express : CarModifier.Normal;
     }
 
     private float GetCarWidth(GameObject target)

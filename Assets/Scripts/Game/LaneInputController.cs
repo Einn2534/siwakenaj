@@ -41,6 +41,7 @@ public class LaneInputController : MonoBehaviour
     private float _lastInputTime = InitialLastInputTime;
     private int _pendingFrame = InitialFrame;
     private CarType _pendingLaneType;
+    private PendingInputKind _pendingInputKind;
     private Coroutine _pendingCoroutine;
     private Coroutine _clearSuppressedClicksCoroutine;
     private int _suppressLaneAClickCount;
@@ -52,6 +53,12 @@ public class LaneInputController : MonoBehaviour
         LaneA,
         LaneB,
         LaneC
+    }
+
+    private enum PendingInputKind
+    {
+        Lane,
+        Repair
     }
 
     public CarType LaneAType => _laneAType;
@@ -157,6 +164,14 @@ public class LaneInputController : MonoBehaviour
         }
     }
 
+    internal void PressRepairPointerDown(RepairButtonPointerDownForwarder source)
+    {
+        if (source != null)
+        {
+            HandleRepairPress();
+        }
+    }
+
     private void HandleClick(LaneButtonId laneButtonId)
     {
         if (ConsumeSuppressedClick(laneButtonId))
@@ -169,6 +184,17 @@ public class LaneInputController : MonoBehaviour
 
     private bool HandlePress(CarType laneType)
     {
+        _pendingLaneType = laneType;
+        return QueuePendingInput(PendingInputKind.Lane);
+    }
+
+    private bool HandleRepairPress()
+    {
+        return QueuePendingInput(PendingInputKind.Repair);
+    }
+
+    private bool QueuePendingInput(PendingInputKind inputKind)
+    {
         if (_gameFlowController == null || !_gameFlowController.IsPlaying())
         {
             return false;
@@ -179,7 +205,7 @@ public class LaneInputController : MonoBehaviour
             return false;
         }
 
-        _pendingLaneType = laneType;
+        _pendingInputKind = inputKind;
         _pendingFrame = Time.frameCount;
 
         if (_pendingCoroutine == null)
@@ -193,11 +219,28 @@ public class LaneInputController : MonoBehaviour
     private IEnumerator ProcessPendingInput()
     {
         int frame = _pendingFrame;
-        yield return new WaitForEndOfFrame();
+        if (Application.isBatchMode)
+        {
+            // WaitForEndOfFrame is not advanced by Unity's headless batch loop.
+            // A next-frame yield preserves input coalescing for automated runs.
+            yield return null;
+        }
+        else
+        {
+            yield return new WaitForEndOfFrame();
+        }
 
         if (frame == _pendingFrame && _gameFlowController != null && _gameFlowController.IsPlaying())
         {
-            _gameFlowController.HandleLaneInput(_pendingLaneType);
+            if (_pendingInputKind == PendingInputKind.Repair)
+            {
+                _gameFlowController.HandleRepairInput();
+            }
+            else
+            {
+                _gameFlowController.HandleLaneInput(_pendingLaneType);
+            }
+
             _lastInputTime = Time.time;
         }
 

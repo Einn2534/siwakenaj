@@ -32,6 +32,7 @@ public class GameFlowController : MonoBehaviour
     private StageDefinition _currentStageDefinition;
     private TutorialController _tutorialController;
     private StageProgressHudController _stageProgressHudController;
+    private GimmickHudController _gimmickHudController;
     private ContinuePromptController _continuePromptController;
     private Coroutine _startGameRoutine;
     private Coroutine _continueRoutine;
@@ -57,6 +58,9 @@ public class GameFlowController : MonoBehaviour
         if (_carSpawner != null)
         {
             _carSpawner.CarMissed += OnCarMissed;
+            _carSpawner.CarSpawned += OnCarSpawned;
+            _carSpawner.RushWarning += OnRushWarning;
+            _carSpawner.RushStarted += OnRushStarted;
         }
     }
 
@@ -65,6 +69,9 @@ public class GameFlowController : MonoBehaviour
         if (_carSpawner != null)
         {
             _carSpawner.CarMissed -= OnCarMissed;
+            _carSpawner.CarSpawned -= OnCarSpawned;
+            _carSpawner.RushWarning -= OnRushWarning;
+            _carSpawner.RushStarted -= OnRushStarted;
         }
 
         if (_startGameRoutine != null)
@@ -88,6 +95,10 @@ public class GameFlowController : MonoBehaviour
         _continuePromptController?.Hide();
 
         _hudEffectsController?.StopEffects();
+        if (_gimmickHudController != null)
+        {
+            _gimmickHudController.StopEffects();
+        }
     }
 
     private void Start()
@@ -121,6 +132,7 @@ public class GameFlowController : MonoBehaviour
         _timeScaleBeforePause = Time.timeScale > 0f ? Time.timeScale : 1f;
         _currentState = GameState.Paused;
         Time.timeScale = 0f;
+        _gimmickHudController?.SetGameplayActive(false);
         return true;
     }
 
@@ -133,6 +145,7 @@ public class GameFlowController : MonoBehaviour
 
         _currentState = _stateBeforePause;
         RestoreTimeScale();
+        _gimmickHudController?.SetGameplayActive(_currentState == GameState.Playing);
     }
 
     public void StartGame()
@@ -175,11 +188,16 @@ public class GameFlowController : MonoBehaviour
 
         _scoreManager.Initialize(_currentStageDefinition);
         _carSpawner.Initialize(_currentStageDefinition);
+        _gimmickHudController = GimmickHudController.EnsureInstalled();
+        _gimmickHudController.Initialize(_currentStageDefinition, ResolveLaneInputController());
+        _gimmickHudController.UpdateState(_scoreManager.State);
+        _gimmickHudController.SetGameplayActive(false);
         SoundManager.EnsureInstance().PlayBgm();
 
         if (!SessionState.IsEndlessMode && TutorialLaunchService.ShouldStartTutorial(_currentStageDefinition.StageNumber))
         {
             _currentState = GameState.Playing;
+            _gimmickHudController.SetGameplayActive(true);
             _tutorialController = TutorialController.EnsureInstalled();
             _tutorialController.Begin(this, _scoreManager, _carSpawner, _currentStageDefinition);
             _startGameRoutine = null;
@@ -199,6 +217,7 @@ public class GameFlowController : MonoBehaviour
 
         _carSpawner.StartSpawning();
         _currentState = GameState.Playing;
+        _gimmickHudController.SetGameplayActive(true);
         _startGameRoutine = null;
     }
 
@@ -216,51 +235,78 @@ public class GameFlowController : MonoBehaviour
         }
 
         CarController activeCar = _carSpawner != null ? _carSpawner.GetActiveCar() : null;
+        if (activeCar != null && activeCar.RequiresRepair)
+        {
+            ApplyMiss("修理が必要！");
+            ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
+            EvaluateCompletion();
+            return;
+        }
+
+        if (activeCar != null && activeCar.IsCovered && !activeCar.IsRevealed)
+        {
+            ApplyMiss("まだ見えない！");
+            ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
+            EvaluateCompletion();
+            return;
+        }
+
         JudgeResult result = _judgeController != null
             ? _judgeController.Evaluate(activeCar, laneType)
             : JudgeEvaluator.Evaluate(activeCar != null ? activeCar.CarType : null, laneType);
 
+        bool wasCorrect = false;
         switch (result)
         {
             case JudgeResult.Correct:
-                _hudEffectsController?.ShowCorrectJudge();
-                _scoreManager.ApplySuccess(laneType);
-                ResolveStageProgressHudController()?.HighlightGoal();
-                _playerAnimationController?.PlayHappy();
-                SoundManager.EnsureInstance().PlayCorrect();
-                _carSpawner?.DespawnCar(activeCar);
-                if (!HasReachedTerminalCondition())
-                {
-                    VibrationService.PlayCorrect();
-                }
+                ApplyCorrect(activeCar);
+                wasCorrect = true;
                 break;
             case JudgeResult.WrongLane:
-                _hudEffectsController?.ShowMissJudge("\u3061\u304c\u3046\u8eca!");
+                ApplyMiss("ちがう車!");
                 ResolveLaneInputController()?.PlayWrongLaneFeedback(laneType, activeCar.CarType);
-                _scoreManager.ApplyMiss();
-                ResolveStageProgressHudController()?.HighlightMiss();
-                _playerAnimationController?.PlayCry();
-                SoundManager.EnsureInstance().PlayMiss();
-                if (!HasReachedTerminalCondition())
-                {
-                    VibrationService.PlayMiss();
-                }
                 break;
             case JudgeResult.NoCar:
-                _hudEffectsController?.ShowMissJudge("\u8eca\u304c\u3044\u306a\u3044!");
+                ApplyMiss("車がいない!");
                 ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
-                _scoreManager.ApplyMiss();
-                ResolveStageProgressHudController()?.HighlightMiss();
-                _playerAnimationController?.PlayCry();
-                SoundManager.EnsureInstance().PlayMiss();
-                if (!HasReachedTerminalCondition())
-                {
-                    VibrationService.PlayMiss();
-                }
                 break;
         }
 
         EvaluateCompletion();
+        if (wasCorrect && IsPlaying())
+        {
+            TryTriggerRush();
+        }
+    }
+
+    public void HandleRepairInput()
+    {
+        if (!IsPlaying())
+        {
+            return;
+        }
+
+        if (_tutorialController != null && _tutorialController.IsRunning)
+        {
+            return;
+        }
+
+        CarController activeCar = _carSpawner != null ? _carSpawner.GetActiveCar() : null;
+        bool wasCorrect = activeCar != null && activeCar.RequiresRepair;
+        if (wasCorrect)
+        {
+            ApplyCorrect(activeCar);
+        }
+        else
+        {
+            ApplyMiss(activeCar == null ? "車がいない!" : "修理は不要！");
+        }
+
+        EvaluateCompletion();
+        if (wasCorrect && IsPlaying())
+        {
+            TryTriggerRush();
+        }
     }
 
     private void OnCarMissed(CarController car)
@@ -276,8 +322,35 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
-        _scoreManager.ApplyMiss();
-        _hudEffectsController?.ShowMissJudge("\u898b\u9003\u3057!");
+        ApplyMiss("見逃し!");
+        EvaluateCompletion();
+    }
+
+    private void ApplyCorrect(CarController car)
+    {
+        if (car == null || _scoreManager == null)
+        {
+            return;
+        }
+
+        _hudEffectsController?.ShowCorrectJudge();
+        _scoreManager.ApplySuccess(car.CarType, car.ScoreMultiplier);
+        _gimmickHudController?.UpdateState(_scoreManager.State);
+        ResolveStageProgressHudController()?.HighlightGoal();
+        _playerAnimationController?.PlayHappy();
+        SoundManager.EnsureInstance().PlayCorrect();
+        _carSpawner?.DespawnCar(car);
+        if (!HasReachedTerminalCondition())
+        {
+            VibrationService.PlayCorrect();
+        }
+    }
+
+    private void ApplyMiss(string label)
+    {
+        _scoreManager?.ApplyMiss();
+        _gimmickHudController?.UpdateState(_scoreManager?.State);
+        _hudEffectsController?.ShowMissJudge(label);
         ResolveStageProgressHudController()?.HighlightMiss();
         _playerAnimationController?.PlayCry();
         SoundManager.EnsureInstance().PlayMiss();
@@ -285,7 +358,38 @@ public class GameFlowController : MonoBehaviour
         {
             VibrationService.PlayMiss();
         }
-        EvaluateCompletion();
+    }
+
+    private void TryTriggerRush()
+    {
+        if (_currentStageDefinition == null
+            || _currentStageDefinition.RushEveryCorrect <= 0
+            || _scoreManager == null
+            || _scoreManager.TotalCorrectCount <= 0
+            || _scoreManager.TotalCorrectCount % _currentStageDefinition.RushEveryCorrect != 0)
+        {
+            return;
+        }
+
+        _carSpawner?.TryStartRush();
+    }
+
+    private void OnCarSpawned(CarController car)
+    {
+        if (car != null)
+        {
+            _gimmickHudController?.ShowModifierHint(car.Modifier);
+        }
+    }
+
+    private void OnRushWarning()
+    {
+        _gimmickHudController?.ShowRushWarning();
+    }
+
+    private void OnRushStarted()
+    {
+        _gimmickHudController?.ShowRushStarted();
     }
 
     public void PlayTutorialCorrectFeedback()
@@ -316,6 +420,9 @@ public class GameFlowController : MonoBehaviour
         _hudEffectsController?.StopEffects();
         _scoreManager.Initialize(_currentStageDefinition);
         _carSpawner.Initialize(_currentStageDefinition);
+        _gimmickHudController?.Initialize(_currentStageDefinition, ResolveLaneInputController());
+        _gimmickHudController?.UpdateState(_scoreManager.State);
+        _gimmickHudController?.SetGameplayActive(false);
         _currentState = GameState.Ready;
 
         if (_startGameRoutine != null)
@@ -338,6 +445,7 @@ public class GameFlowController : MonoBehaviour
 
         _carSpawner?.StartSpawning();
         _currentState = GameState.Playing;
+        _gimmickHudController?.SetGameplayActive(true);
         _startGameRoutine = null;
     }
 
@@ -543,6 +651,7 @@ public class GameFlowController : MonoBehaviour
 
         _continuePromptController?.Hide();
         _scoreManager?.ReviveFromContinue();
+        _gimmickHudController?.UpdateState(_scoreManager?.State);
         _carSpawner?.DespawnAllCars();
         _playerAnimationController?.PlayHappy();
 
@@ -565,6 +674,7 @@ public class GameFlowController : MonoBehaviour
     private IEnumerator RestartAfterContinueRoutine()
     {
         _currentState = GameState.Ready;
+        _gimmickHudController?.SetGameplayActive(false);
 
         if (_hudEffectsController != null)
         {
@@ -579,6 +689,7 @@ public class GameFlowController : MonoBehaviour
 
         _carSpawner?.StartSpawning();
         _currentState = GameState.Playing;
+        _gimmickHudController?.SetGameplayActive(true);
         _continueRoutine = null;
     }
 
@@ -608,6 +719,8 @@ public class GameFlowController : MonoBehaviour
 
         _carSpawner?.StopSpawning();
         _carSpawner?.StopAllCars();
+        _gimmickHudController?.SetGameplayActive(false);
+        _gimmickHudController?.StopEffects();
     }
 
     private void StoreResult(bool isClear)
