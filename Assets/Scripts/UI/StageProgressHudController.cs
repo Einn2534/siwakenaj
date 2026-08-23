@@ -9,6 +9,14 @@ public sealed class StageProgressHudController : MonoBehaviour
     private const string MainSceneName = "Main";
     private const float ReferenceWidth = 1080f;
     private const float ReferenceHeight = 1920f;
+    private const float HudEdgeInset = 32f;
+    private const float HudToPauseGap = 16f;
+    private const float PanelGap = 13f;
+    private const float ProgressPanelRightInset =
+        MainPauseMenuController.PauseButtonEdgeInset
+        + MainPauseMenuController.PauseButtonSize
+        + HudToPauseGap
+        - HudEdgeInset;
 
     private static readonly Color PanelColor = new(1f, 1f, 1f, 0f);
     private static readonly Color MissPanelColor = Color.white;
@@ -237,12 +245,18 @@ public sealed class StageProgressHudController : MonoBehaviour
         safeRoot.gameObject.AddComponent<SafeAreaFitter>();
 
         RectTransform root = CreatePanel("StageProgressHud", safeRoot, PanelColor);
-        SetAnchored(root, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -32f), new Vector2(-64f, 150f));
+        SetAnchored(
+            root,
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(0.5f, 1f),
+            new Vector2(0f, -HudEdgeInset),
+            new Vector2(-HudEdgeInset * 2f, 150f));
 
         _missPanel = CreatePanel("MissPanel", root, MissPanelColor);
         _missPanelImage = _missPanel.GetComponent<Image>();
         ConfigureWoodPanel(_missPanelImage);
-        SetAnchored(_missPanel, new Vector2(0f, 0f), new Vector2(0.4f, 1f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(-13f, 0f));
+        SetAnchored(_missPanel, new Vector2(0f, 0f), new Vector2(0.4f, 1f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(-PanelGap, 0f));
         _missText = CreateText("MissText", _missPanel, "\u30df\u30b9", 38f, 28f, FontStyles.Normal, TextAlignmentOptions.Left);
         _missText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
         SetAnchored((RectTransform)_missText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(35f, 0f), new Vector2(96f, 70f));
@@ -263,10 +277,16 @@ public sealed class StageProgressHudController : MonoBehaviour
         _progressPanel = CreatePanel("ProgressPanel", root, ProgressPanelColor);
         _progressPanelImage = _progressPanel.GetComponent<Image>();
         ConfigureWoodPanel(_progressPanelImage);
-        SetAnchored(_progressPanel, new Vector2(0.4f, 0f), new Vector2(1f, 1f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(-13f, 0f));
+        SetAnchored(
+            _progressPanel,
+            new Vector2(0.4f, 0f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0.5f),
+            new Vector2(-ProgressPanelRightInset, 0f),
+            new Vector2(-(ProgressPanelRightInset + PanelGap), 0f));
         _remainingText = CreateText("RemainingText", _progressPanel, "\u3042\u30686\u53f0", 38f, 28f, FontStyles.Normal, TextAlignmentOptions.Left);
         _remainingText.font = LoadFont("UI/Tutorial/YomiyasuWide-Bold SDF");
-        SetAnchored((RectTransform)_remainingText.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(35f, -19f), new Vector2(280f, 58f));
+        SetAnchored((RectTransform)_remainingText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(35f, -19f), new Vector2(-190f, 58f));
 
         _fractionText = CreateText("FractionText", _progressPanel, "0/6", 32f, 24f, FontStyles.Normal, TextAlignmentOptions.Right);
         _fractionText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
@@ -303,7 +323,12 @@ public sealed class StageProgressHudController : MonoBehaviour
         canvasObject.layer = LayerMask.NameToLayer("UI");
 
         Canvas canvas = canvasObject.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        Camera gameplayCamera = Camera.main;
+        canvas.renderMode = gameplayCamera != null
+            ? RenderMode.ScreenSpaceCamera
+            : RenderMode.ScreenSpaceOverlay;
+        canvas.worldCamera = gameplayCamera;
+        canvas.planeDistance = 90f;
         canvas.sortingOrder = 40;
 
         CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
