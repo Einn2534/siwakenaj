@@ -26,8 +26,8 @@ public class StageSelectController : MonoBehaviour
     private const float StageNavButtonWidth = 112f;
     private const float StageNavButtonHeight = 132f;
     private const float StageNavButtonInset = 46f;
-    private const float StagePageDotWidth = 34f;
-    private const float StagePageDotHeight = 8f;
+    private const float StagePageDotWidth = 29f;
+    private const float StagePageDotHeight = 25f;
 
     private static readonly Color ModalScrimColor = new(0.04f, 0.07f, 0.11f, 0.58f);
     private static readonly Color CardColor = new(1f, 1f, 1f, 0.96f);
@@ -43,8 +43,10 @@ public class StageSelectController : MonoBehaviour
     private static readonly Color InkColor = new(0.025f, 0.075f, 0.145f, 1f);
     private static readonly Color StageNavButtonColor = new(1f, 0.97f, 0.84f, 0.86f);
     private static readonly Color StageNavDisabledColor = new(1f, 0.97f, 0.84f, 0.34f);
-    private static readonly Color ActiveDotColor = new(1f, 0.86f, 0.25f, 1f);
-    private static readonly Color InactiveDotColor = new(1f, 1f, 1f, 0.42f);
+    private static readonly Color ActiveDotColor = new(1f, 0.851f, 0.29f, 0.7f);
+    private static readonly Color InactiveDotColor = new(1f, 0.969f, 0.918f, 0.4f);
+    private static readonly Color PlayButtonColor = new(1f, 0.796f, 0.224f, 1f);
+    private static readonly Color LockedButtonColor = new(0.78f, 0.75f, 0.66f, 1f);
     private static Sprite s_RuntimeUiSprite;
 
     [SerializeField, FormerlySerializedAs("swipeSnapController")]
@@ -238,27 +240,7 @@ public class StageSelectController : MonoBehaviour
 
         _utilityUiBuilt = true;
         Sprite slicedSprite = GetBuiltinUiSprite();
-        _toggleOnSprite = Resources.Load<Sprite>(ToggleOnResourcePath);
-
-        _settingsButton = CreateRoundMenuButton("SettingsButtonTop", safeArea, Resources.Load<Sprite>(SettingsIconResourcePath), "\u8a2d\u5b9a", slicedSprite, "SET");
-        SetAnchored((RectTransform)_settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(108f, -90f), new Vector2(148f, 148f));
-        _settingsButton.onClick.AddListener(OnSettingsOpen);
-
-        _howToButton = CreateRoundMenuButton("HowToButtonTop", safeArea, Resources.Load<Sprite>(HowToIconResourcePath), "\u3042\u305d\u3073\u304b\u305f", slicedSprite, "?");
-        SetAnchored((RectTransform)_howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-108f, -90f), new Vector2(148f, 148f));
-        _howToButton.onClick.AddListener(OnHowToOpen);
         BuildStageNavigationUi(safeArea, slicedSprite);
-
-        _settingsOverlay = BuildSettingsOverlay(canvasTransform, slicedSprite).gameObject;
-        _howToOverlay = BuildHowToOverlay(canvasTransform, slicedSprite).gameObject;
-
-        SetPanelActive(_settingsOverlay, false);
-        SetPanelActive(_howToOverlay, false);
-
-        if (!SaveService.GetHowToShown())
-        {
-            OnHowToOpen();
-        }
     }
 
     private void RemoveUtilityListeners()
@@ -371,20 +353,30 @@ public class StageSelectController : MonoBehaviour
 
     private void BuildStageNavigationUi(RectTransform safeArea, Sprite slicedSprite)
     {
-        _previousStageButton = CreateButton("PreviousStageButton", safeArea, slicedSprite, new Vector2(StageNavButtonWidth, StageNavButtonHeight), "<", 58f, 34f, FontStyles.Bold, TextColor);
-        SetAnchored((RectTransform)_previousStageButton.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(StageNavButtonInset, 0f), new Vector2(StageNavButtonWidth, StageNavButtonHeight));
-        _previousStageButton.GetComponent<Image>().color = StageNavButtonColor;
-        _previousStageButton.onClick.AddListener(OnPreviousStagePressed);
-        AddShadow(_previousStageButton.gameObject, new Color(0.02f, 0.06f, 0.11f, 0.34f), new Vector2(0f, -5f));
+        Transform existingDots = safeArea.Find("StagePageDots");
+        if (existingDots != null)
+        {
+            _pageDotContainer = existingDots as RectTransform;
+            _pageDots.Clear();
+            for (int i = 0; i < existingDots.childCount; i += 1)
+            {
+                Image dot = existingDots.GetChild(i).GetComponent<Image>();
+                if (dot != null)
+                {
+                    _pageDots.Add(dot);
+                }
+            }
 
-        _nextStageButton = CreateButton("NextStageButton", safeArea, slicedSprite, new Vector2(StageNavButtonWidth, StageNavButtonHeight), ">", 58f, 34f, FontStyles.Bold, TextColor);
-        SetAnchored((RectTransform)_nextStageButton.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-StageNavButtonInset, 0f), new Vector2(StageNavButtonWidth, StageNavButtonHeight));
-        _nextStageButton.GetComponent<Image>().color = StageNavButtonColor;
-        _nextStageButton.onClick.AddListener(OnNextStagePressed);
-        AddShadow(_nextStageButton.gameObject, new Color(0.02f, 0.06f, 0.11f, 0.34f), new Vector2(0f, -5f));
+            _swipeHintText = safeArea.Find("SwipeHintText")?.GetComponent<TMP_Text>();
+            if (_swipeHintText != null)
+            {
+                _swipeHintText.gameObject.SetActive(PlayerPrefs.GetInt(SwipeHintSeenKey, 0) == 0);
+            }
+            return;
+        }
 
         _pageDotContainer = CreateUiObject("StagePageDots", safeArea);
-        SetAnchored(_pageDotContainer, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, 250f), new Vector2(520f, 36f));
+        SetAnchored(_pageDotContainer, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, 390f), new Vector2(520f, 36f));
 
         HorizontalLayoutGroup dotLayout = _pageDotContainer.gameObject.AddComponent<HorizontalLayoutGroup>();
         dotLayout.childAlignment = TextAnchor.MiddleCenter;
@@ -392,10 +384,10 @@ public class StageSelectController : MonoBehaviour
         dotLayout.childControlHeight = false;
         dotLayout.childForceExpandWidth = false;
         dotLayout.childForceExpandHeight = false;
-        dotLayout.spacing = 14f;
+        dotLayout.spacing = 4f;
 
-        _swipeHintText = CreateText("SwipeHintText", safeArea, "\u5de6\u53f3\u306b\u30b9\u30ef\u30a4\u30d7", 28f, 18f, FontStyles.Bold, Color.white, TextAlignmentOptions.Center);
-        SetAnchored((RectTransform)_swipeHintText.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, 292f), new Vector2(520f, 46f));
+        _swipeHintText = CreateText("SwipeHintText", safeArea, "< スワイプでめくる >", 32f, 20f, FontStyles.Normal, new Color(1f, 0.969f, 0.918f, 0.5f), TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)_swipeHintText.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, 335f), new Vector2(520f, 46f));
         _swipeHintText.outlineColor = InkColor;
         _swipeHintText.outlineWidth = 0.16f;
         _swipeHintText.textWrappingMode = TextWrappingModes.NoWrap;
@@ -546,6 +538,21 @@ public class StageSelectController : MonoBehaviour
         if (_playButton != null)
         {
             _playButton.interactable = canPlay;
+            Image playBackground = _playButton.GetComponent<Image>();
+            if (playBackground != null)
+            {
+                playBackground.color = canPlay ? PlayButtonColor : LockedButtonColor;
+            }
+
+            TMP_Text playLabel = _playButton.GetComponentInChildren<TMP_Text>(true);
+            if (playLabel != null)
+            {
+                playLabel.text = canPlay
+                    ? "このおしごとにする!\n<size=55%><color=#2B253070>PLAY</color></size>"
+                    : "まだえらべない\n<size=55%><color=#2B253070>LOCKED</color></size>";
+                playLabel.color = canPlay ? TextColor : new Color(0.39f, 0.37f, 0.33f, 0.58f);
+                playLabel.textWrappingMode = TextWrappingModes.Normal;
+            }
         }
 
         RefreshStageNavigationUi();

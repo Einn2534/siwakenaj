@@ -12,13 +12,17 @@ public static class StageCardPrefabUpgrader
     {
         "SelectionGlow",
         "Frame",
+        "Pin",
         "StageThumbnail",
+        "VehiclePreview",
         "LockOverlay",
         "InfoPanel",
         "StageNumberText",
+        "StageNameText",
         "TargetScoreText",
         "BestScoreText",
         "StatusText",
+        "ProgressTrack",
         "StarBadgeText",
         "Star01",
         "Star02",
@@ -68,7 +72,7 @@ public static class StageCardPrefabUpgrader
             return false;
         }
 
-        rootRect.sizeDelta = new Vector2(760f, 980f);
+        rootRect.sizeDelta = new Vector2(840f, 950f);
 
         Image rootImage = root.GetComponent<Image>() ?? root.AddComponent<Image>();
         rootImage.sprite = null;
@@ -76,89 +80,131 @@ public static class StageCardPrefabUpgrader
         rootImage.raycastTarget = true;
 
         LayoutElement layoutElement = root.GetComponent<LayoutElement>() ?? root.AddComponent<LayoutElement>();
-        layoutElement.preferredWidth = 720f;
-        layoutElement.preferredHeight = 928f;
+        layoutElement.preferredWidth = 840f;
+        layoutElement.preferredHeight = 950f;
         layoutElement.layoutPriority = 1;
+        PreferredSizeByParentWidth responsiveSizer = root.GetComponent<PreferredSizeByParentWidth>();
+        if (responsiveSizer != null)
+        {
+            Object.DestroyImmediate(responsiveSizer);
+        }
 
         PruneChildren(root.transform, VisualChildOrder);
 
-        Sprite frameSprite = LoadSprite(StageSelectSpriteRoot + "ui_stageselect_sheet15_item01.png");
-        Sprite selectionGlowSprite = LoadSprite(StageSelectSpriteRoot + "ui_stageselect_sheet15_item08.png");
+        Sprite plainSprite = GetBuiltInUiSprite();
+        Sprite frameSprite = LoadSprite("Assets/Resources/UI/Tutorial/speech_panel.png") ?? plainSprite;
+        Sprite selectionGlowSprite = GetBuiltInUiSprite();
         Sprite lockOverlaySprite = LoadSprite(StageSelectSpriteRoot + "ui_stageselect_sheet15_item07.png");
+        Sprite woodPanelSprite = LoadSprite("Assets/Resources/UI/Tutorial/hud_wood_panel.png");
+        Sprite magicShopSprite = LoadSprite("Assets/Art/Sprites/Backgrounds/magic_shop_background.png");
+        Sprite vehicleSprite = LoadSprite("Assets/Art/Sprites/Vehicles/truck.png");
         Sprite filledStarSprite = LoadSprite(StageSelectSpriteRoot + "ui_stage_star_filled.png");
         Sprite emptyStarSprite = LoadSprite(StageSelectSpriteRoot + "ui_stage_star_empty.png");
         Sprite[] thumbnailSprites =
         {
-            LoadSprite(StageSelectSpriteRoot + "ui_stage_thumb_city.png"),
-            LoadSprite(StageSelectSpriteRoot + "ui_stage_thumb_overpass.png"),
-            LoadSprite(StageSelectSpriteRoot + "ui_stage_thumb_crane.png")
+            magicShopSprite,
+            magicShopSprite,
+            magicShopSprite
         };
 
-        Image selectionGlow = UpsertImage(root.transform, "SelectionGlow", selectionGlowSprite, Vector2.zero, new Vector2(650f, 820f), false);
+        Image selectionGlow = UpsertImage(root.transform, "SelectionGlow", selectionGlowSprite, new Vector2(0f, -8f), new Vector2(860f, 970f), false);
+        selectionGlow.type = Image.Type.Sliced;
+        selectionGlow.color = Color.clear;
         selectionGlow.gameObject.SetActive(false);
 
-        Image frame = UpsertImage(root.transform, "Frame", frameSprite, Vector2.zero, new Vector2(640f, 920f), false);
-        Image thumbnail = UpsertImage(root.transform, "StageThumbnail", thumbnailSprites[0], new Vector2(0f, 145f), new Vector2(500f, 500f), true);
-        Image lockOverlay = UpsertImage(root.transform, "LockOverlay", lockOverlaySprite, new Vector2(0f, 80f), new Vector2(500f, 610f), true);
+        Image frame = UpsertImage(root.transform, "Frame", frameSprite, Vector2.zero, new Vector2(840f, 950f), false);
+        frame.type = Image.Type.Sliced;
+        frame.color = new Color(1f, 0.992f, 0.965f, 1f);
+        Shadow paperShadow = frame.GetComponent<Shadow>() ?? frame.gameObject.AddComponent<Shadow>();
+        paperShadow.effectColor = new Color(0f, 0f, 0f, 0.45f);
+        paperShadow.effectDistance = new Vector2(0f, -24f);
+        paperShadow.useGraphicAlpha = true;
+
+        Image pin = UpsertImage(root.transform, "Pin", plainSprite, new Vector2(0f, 458f), new Vector2(60f, 60f), false);
+        pin.type = Image.Type.Sliced;
+        pin.color = new Color(1f, 0.851f, 0.29f, 1f);
+
+        Image thumbnail = UpsertImage(root.transform, "StageThumbnail", thumbnailSprites[0], new Vector2(0f, 105f), new Vector2(720f, 420f), false);
+        Outline thumbnailOutline = thumbnail.GetComponent<Outline>() ?? thumbnail.gameObject.AddComponent<Outline>();
+        thumbnailOutline.effectColor = new Color(0.169f, 0.145f, 0.188f, 1f);
+        thumbnailOutline.effectDistance = new Vector2(6f, -6f);
+        Image vehiclePreview = UpsertImage(root.transform, "VehiclePreview", vehicleSprite, new Vector2(0f, 60f), new Vector2(260f, 170f), true);
+        Image lockOverlay = UpsertImage(root.transform, "LockOverlay", lockOverlaySprite, new Vector2(0f, 105f), new Vector2(720f, 420f), false);
+        lockOverlay.color = new Color(1f, 1f, 1f, 0.48f);
         lockOverlay.gameObject.SetActive(false);
 
-        Image infoPanel = UpsertImage(root.transform, "InfoPanel", GetBuiltInUiSprite(), new Vector2(0f, -260f), new Vector2(560f, 260f), false);
+        Image infoPanel = UpsertImage(root.transform, "InfoPanel", frameSprite, new Vector2(0f, -205f), new Vector2(720f, 155f), false);
         infoPanel.type = Image.Type.Sliced;
-        infoPanel.color = new Color(0.015f, 0.09f, 0.15f, 0.88f);
+        infoPanel.color = new Color(0.43f, 0.25f, 0.13f, 1f);
 
-        TMP_FontAsset headlineFont = LoadFont("Assets/Fonts/DotGothic16-Regular SDF.asset");
-        TMP_FontAsset bodyFont = headlineFont;
+        TMP_FontAsset headlineFont = LoadFont("Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset");
+        TMP_FontAsset bodyFont = LoadFont("Assets/Fonts/DotGothic16-Regular SDF.asset");
 
         TMP_Text stageNumberText = UpsertText(
             root.transform,
             "StageNumberText",
-            "STAGE <color=#35D7FF>01</color>",
-            new Vector2(0f, -165f),
-            new Vector2(520f, 82f),
+            "おしごと 1",
+            new Vector2(-150f, 382f),
+            new Vector2(320f, 70f),
             headlineFont,
-            56f,
-            36f,
-            Color.white);
+            48f,
+            32f,
+            new Color(0.169f, 0.145f, 0.188f, 1f));
+        stageNumberText.alignment = TextAlignmentOptions.MidlineLeft;
+
+        TMP_Text stageNameText = UpsertText(
+            root.transform,
+            "StageNameText",
+            "はじまりの街",
+            new Vector2(170f, 382f),
+            new Vector2(280f, 60f),
+            bodyFont,
+            30f,
+            20f,
+            new Color(0.169f, 0.145f, 0.188f, 0.45f));
+        stageNameText.alignment = TextAlignmentOptions.MidlineRight;
 
         TMP_Text targetScoreText = UpsertText(
             root.transform,
             "TargetScoreText",
-            "<color=#FFD84D>TARGET</color>  0",
-            new Vector2(0f, -240f),
-            new Vector2(500f, 56f),
+            "目標 60台",
+            new Vector2(-150f, -180f),
+            new Vector2(280f, 54f),
             bodyFont,
-            34f,
-            22f,
-            Color.white);
+            38f,
+            26f,
+            new Color(1f, 0.968f, 0.918f, 1f));
+        targetScoreText.alignment = TextAlignmentOptions.MidlineLeft;
 
         TMP_Text bestScoreText = UpsertText(
             root.transform,
             "BestScoreText",
-            "<color=#FFE05D>BEST</color>  -",
-            new Vector2(0f, -296f),
-            new Vector2(500f, 56f),
+            "ベスト -",
+            new Vector2(150f, -180f),
+            new Vector2(280f, 54f),
             bodyFont,
-            34f,
-            22f,
-            Color.white);
+            35f,
+            24f,
+            new Color(1f, 0.902f, 0.412f, 1f));
+        bestScoreText.alignment = TextAlignmentOptions.MidlineRight;
 
         TMP_Text statusText = UpsertText(
             root.transform,
             "StatusText",
             "LOCKED",
-            new Vector2(0f, 105f),
-            new Vector2(500f, 110f),
+            new Vector2(0f, -65f),
+            new Vector2(560f, 70f),
             headlineFont,
-            54f,
             30f,
-            new Color(1f, 0.93f, 0.62f, 1f));
+            22f,
+            new Color(0.25f, 0.22f, 0.20f, 0.78f));
         statusText.gameObject.SetActive(false);
 
         TMP_Text starBadgeText = UpsertText(
             root.transform,
             "StarBadgeText",
             string.Empty,
-            new Vector2(0f, -390f),
+            new Vector2(0f, -370f),
             new Vector2(280f, 60f),
             bodyFont,
             28f,
@@ -168,10 +214,29 @@ public static class StageCardPrefabUpgrader
 
         Image[] starImages =
         {
-            UpsertImage(root.transform, "Star01", emptyStarSprite, new Vector2(-120f, -404f), new Vector2(88f, 88f), true),
-            UpsertImage(root.transform, "Star02", emptyStarSprite, new Vector2(0f, -404f), new Vector2(88f, 88f), true),
-            UpsertImage(root.transform, "Star03", emptyStarSprite, new Vector2(120f, -404f), new Vector2(88f, 88f), true)
+            UpsertImage(root.transform, "Star01", emptyStarSprite, new Vector2(-140f, -370f), new Vector2(86f, 86f), true),
+            UpsertImage(root.transform, "Star02", emptyStarSprite, new Vector2(0f, -370f), new Vector2(86f, 86f), true),
+            UpsertImage(root.transform, "Star03", emptyStarSprite, new Vector2(140f, -370f), new Vector2(86f, 86f), true)
         };
+
+        Image progressTrack = UpsertImage(root.transform, "ProgressTrack", plainSprite, new Vector2(0f, -235f), new Vector2(650f, 20f), false);
+        progressTrack.type = Image.Type.Sliced;
+        progressTrack.color = new Color(0.20f, 0.13f, 0.08f, 0.45f);
+        GameObject fillObject = GetOrCreateChild(progressTrack.transform, "Fill");
+        EnsureComponent<CanvasRenderer>(fillObject);
+        Image progressFill = EnsureComponent<Image>(fillObject);
+        RectTransform fillRect = EnsureRectTransform(fillObject);
+        fillRect.anchorMin = Vector2.zero;
+        fillRect.anchorMax = Vector2.one;
+        fillRect.offsetMin = new Vector2(4f, 4f);
+        fillRect.offsetMax = new Vector2(-4f, -4f);
+        progressFill.sprite = plainSprite;
+        progressFill.type = Image.Type.Filled;
+        progressFill.fillMethod = Image.FillMethod.Horizontal;
+        progressFill.fillOrigin = 0;
+        progressFill.fillAmount = 1f;
+        progressFill.color = new Color(0.48f, 0.91f, 0.61f, 1f);
+        progressFill.raycastTarget = false;
         SetSiblingOrder(root.transform, VisualChildOrder);
 
         SerializedObject serializedCard = new SerializedObject(cardView);
@@ -180,10 +245,15 @@ public static class StageCardPrefabUpgrader
         SetObjectReference(serializedCard, "_bestScoreText", bestScoreText);
         SetObjectReference(serializedCard, "_statusText", statusText);
         SetObjectReference(serializedCard, "_starBadgeText", starBadgeText);
+        SetObjectReference(serializedCard, "_stageNameText", stageNameText);
         SetObjectReference(serializedCard, "_frameImage", frame);
         SetObjectReference(serializedCard, "_thumbnailImage", thumbnail);
         SetObjectReference(serializedCard, "_lockOverlayImage", lockOverlay);
         SetObjectReference(serializedCard, "_selectionGlowImage", selectionGlow);
+        SetObjectReference(serializedCard, "_vehiclePreviewImage", vehiclePreview);
+        SetObjectReference(serializedCard, "_progressFillImage", progressFill);
+        SetObjectReference(serializedCard, "_infoPanelImage", infoPanel);
+        SetObjectReference(serializedCard, "_pinImage", pin);
         SetObjectReference(serializedCard, "_filledStarSprite", filledStarSprite);
         SetObjectReference(serializedCard, "_emptyStarSprite", emptyStarSprite);
         SetObjectArray(serializedCard.FindProperty("_starImages"), starImages);

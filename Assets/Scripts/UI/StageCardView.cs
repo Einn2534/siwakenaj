@@ -17,17 +17,18 @@ public class StageCardView : MonoBehaviour
     private const string FilledStarTag = "<color=#FFD45C>\u2605</color>";
     private const string EmptyStarTag = "<color=#FFD45C55>\u2605</color>";
 
-    private static readonly Color LockedBackgroundColor = new(0.84f, 0.89f, 0.98f, 0.26f);
-    private static readonly Color ComingSoonBackgroundColor = new(0.92f, 0.96f, 1f, 0.3f);
-    private static readonly Color LockedPrimaryTextColor = new(0.84f, 0.9f, 0.98f, 0.9f);
-    private static readonly Color LockedSecondaryTextColor = new(0.73f, 0.8f, 0.9f, 0.92f);
-    private static readonly Color ComingSoonPrimaryTextColor = new(1f, 0.93f, 0.62f, 1f);
-    private static readonly Color ComingSoonSecondaryTextColor = new(0.92f, 0.96f, 1f, 0.96f);
-    private static readonly Color ClearedBestScoreColor = new(1f, 0.89f, 0.42f, 1f);
+    private static readonly Color LockedBackgroundColor = new(0.925f, 0.906f, 0.859f, 1f);
+    private static readonly Color ComingSoonBackgroundColor = new(0.925f, 0.906f, 0.859f, 1f);
+    private static readonly Color LockedPrimaryTextColor = new(0.32f, 0.29f, 0.27f, 0.78f);
+    private static readonly Color LockedOverlayTextColor = new(0.94f, 0.92f, 0.86f, 0.9f);
+    private static readonly Color LockedSecondaryTextColor = new(0.169f, 0.145f, 0.188f, 0.42f);
+    private static readonly Color ComingSoonPrimaryTextColor = new(0.169f, 0.145f, 0.188f, 0.5f);
+    private static readonly Color ComingSoonSecondaryTextColor = new(0.169f, 0.145f, 0.188f, 0.42f);
+    private static readonly Color ClearedBestScoreColor = new(1f, 0.902f, 0.412f, 1f);
     private static readonly Color EndlessAccentColor = new(1f, 0.42f, 0.46f, 1f);
     private static readonly Color UnlockedThumbnailColor = Color.white;
-    private static readonly Color LockedThumbnailColor = new(0.42f, 0.48f, 0.56f, 0.72f);
-    private static readonly Color ComingSoonThumbnailColor = new(0.30f, 0.42f, 0.58f, 0.58f);
+    private static readonly Color LockedThumbnailColor = new(0.86f, 0.84f, 0.78f, 0.58f);
+    private static readonly Color ComingSoonThumbnailColor = new(0.65f, 0.65f, 0.62f, 0.58f);
 
     [SerializeField, FormerlySerializedAs("stageNumberText")]
     private TMP_Text _stageNumberText;
@@ -44,6 +45,9 @@ public class StageCardView : MonoBehaviour
     [SerializeField]
     private TMP_Text _starBadgeText;
 
+    [SerializeField]
+    private TMP_Text _stageNameText;
+
     [Header("Art Layers")]
     [SerializeField]
     private Image _frameImage;
@@ -56,6 +60,18 @@ public class StageCardView : MonoBehaviour
 
     [SerializeField]
     private Image _selectionGlowImage;
+
+    [SerializeField]
+    private Image _vehiclePreviewImage;
+
+    [SerializeField]
+    private Image _progressFillImage;
+
+    [SerializeField]
+    private Image _infoPanelImage;
+
+    [SerializeField]
+    private Image _pinImage;
 
     [SerializeField]
     private Image[] _starImages;
@@ -87,7 +103,8 @@ public class StageCardView : MonoBehaviour
         _currentStageNumber = StageNumberUtility.Normalize(stageNumber);
         _currentStatus = status;
 
-        SetText(_stageNumberText, $"STAGE <color=#35D7FF>{_currentStageNumber:00}</color>");
+        SetText(_stageNumberText, $"おしごと {_currentStageNumber}");
+        SetText(_stageNameText, GetStageName(_currentStageNumber));
 
         switch (status)
         {
@@ -119,9 +136,9 @@ public class StageCardView : MonoBehaviour
         _currentStageNumber = StageNumberUtility.MinimumStageNumber;
         _currentStatus = StageCardStatus.Unlocked;
 
-        SetText(_stageNumberText, "<color=#35D7FF>ENDLESS</color>");
-        SetText(_targetScoreText, $"<color=#{ColorUtility.ToHtmlStringRGB(EndlessAccentColor)}>ONE MISS</color>  GAME OVER");
-        SetText(_bestScoreText, bestScore > 0 ? $"<color=#FFE05D>BEST</color>  {bestScore:N0}" : "<color=#FFE05D>BEST</color>  -");
+        SetText(_stageNumberText, "エンドレス");
+        SetText(_targetScoreText, $"<color=#{ColorUtility.ToHtmlStringRGB(EndlessAccentColor)}>1ミス</color> でゲームオーバー");
+        SetText(_bestScoreText, bestScore > 0 ? $"ベスト {bestScore:N0}" : "ベスト -");
         SetText(_statusText, string.Empty);
 
         SetColor(_stageNumberText, _defaultStageNumberColor);
@@ -198,8 +215,8 @@ public class StageCardView : MonoBehaviour
 
     private void ApplyUnlockedState(int targetScore, int bestScore)
     {
-        SetText(_targetScoreText, $"<color=#FFD84D>TARGET</color>  {targetScore:N0}");
-        SetText(_bestScoreText, bestScore > 0 ? $"<color=#FFE05D>BEST</color>  {bestScore:N0}" : "<color=#FFE05D>BEST</color>  -");
+        SetText(_targetScoreText, $"目標 {targetScore:N0}台");
+        SetText(_bestScoreText, bestScore > 0 ? $"ベスト {bestScore:N0}" : "ベスト -");
         SetText(_statusText, string.Empty);
 
         SetColor(_stageNumberText, _defaultStageNumberColor);
@@ -207,6 +224,16 @@ public class StageCardView : MonoBehaviour
         SetColor(_bestScoreText, bestScore > 0 ? ClearedBestScoreColor : _defaultBestScoreColor);
         SetColor(_statusText, _defaultStatusColor);
         SetBackgroundColor(_defaultBackgroundColor);
+        SetColor(_stageNameText, new Color(0.169f, 0.145f, 0.188f, 0.45f));
+        SetPanelColor(_infoPanelImage, new Color(0.43f, 0.25f, 0.13f, 1f));
+        SetPanelColor(_pinImage, new Color(1f, 0.851f, 0.29f, 1f));
+        SetPanelActive(_vehiclePreviewImage, true);
+        SetProgress(bestScore, targetScore, true);
+        if (_targetScoreText != null)
+        {
+            _targetScoreText.rectTransform.anchoredPosition = new Vector2(-150f, -180f);
+            _targetScoreText.alignment = TextAlignmentOptions.MidlineLeft;
+        }
 
         if (_statusText != null)
         {
@@ -220,15 +247,26 @@ public class StageCardView : MonoBehaviour
             ? requiredStageNumber
             : StageNumberUtility.Normalize(stageNumber - 1);
 
-        SetText(_targetScoreText, $"CLEAR STAGE {resolvedRequiredStageNumber:00}");
-        SetText(_bestScoreText, "TO UNLOCK");
-        SetText(_statusText, "LOCKED");
+        SetText(_stageNameText, "???");
+        SetText(_targetScoreText, "---");
+        SetText(_bestScoreText, string.Empty);
+        SetText(_statusText, $"おしごと{resolvedRequiredStageNumber}をクリアでかいふう");
 
         SetColor(_stageNumberText, LockedPrimaryTextColor);
         SetColor(_targetScoreText, LockedSecondaryTextColor);
         SetColor(_bestScoreText, LockedSecondaryTextColor);
-        SetColor(_statusText, LockedPrimaryTextColor);
+        SetColor(_statusText, LockedOverlayTextColor);
         SetBackgroundColor(LockedBackgroundColor);
+        SetColor(_stageNameText, LockedSecondaryTextColor);
+        SetPanelColor(_infoPanelImage, new Color(0.82f, 0.80f, 0.76f, 1f));
+        SetPanelColor(_pinImage, new Color(0.72f, 0.70f, 0.65f, 1f));
+        SetPanelActive(_vehiclePreviewImage, false);
+        SetProgress(0, 1, false);
+        if (_targetScoreText != null)
+        {
+            _targetScoreText.rectTransform.anchoredPosition = new Vector2(0f, -205f);
+            _targetScoreText.alignment = TextAlignmentOptions.Center;
+        }
 
         if (_statusText != null)
         {
@@ -238,15 +276,21 @@ public class StageCardView : MonoBehaviour
 
     private void ApplyComingSoonState()
     {
-        SetText(_targetScoreText, "NEW STAGE");
-        SetText(_bestScoreText, "IN PREPARATION");
-        SetText(_statusText, "COMING SOON");
+        SetText(_stageNumberText, "???");
+        SetText(_stageNameText, "???");
+        SetText(_targetScoreText, "---");
+        SetText(_bestScoreText, "じゅんびちゅう");
+        SetText(_statusText, "まだえらべない");
 
         SetColor(_stageNumberText, ComingSoonSecondaryTextColor);
         SetColor(_targetScoreText, ComingSoonSecondaryTextColor);
         SetColor(_bestScoreText, ComingSoonSecondaryTextColor);
         SetColor(_statusText, ComingSoonPrimaryTextColor);
         SetBackgroundColor(ComingSoonBackgroundColor);
+        SetColor(_stageNameText, ComingSoonSecondaryTextColor);
+        SetPanelColor(_infoPanelImage, new Color(0.82f, 0.80f, 0.76f, 1f));
+        SetPanelActive(_vehiclePreviewImage, false);
+        SetProgress(0, 1, false);
 
         if (_statusText != null)
         {
@@ -268,7 +312,7 @@ public class StageCardView : MonoBehaviour
             _thumbnailImage.sprite = thumbnailSprite;
         }
 
-        _thumbnailImage.preserveAspect = true;
+        _thumbnailImage.preserveAspect = false;
         _thumbnailImage.color = status switch
         {
             StageCardStatus.Locked => LockedThumbnailColor,
@@ -283,7 +327,7 @@ public class StageCardView : MonoBehaviour
         {
             _frameImage.color = status == StageCardStatus.Unlocked
                 ? Color.white
-                : new Color(0.75f, 0.84f, 0.95f, 0.82f);
+                : new Color(0.925f, 0.906f, 0.859f, 1f);
         }
 
         if (_lockOverlayImage != null)
@@ -303,7 +347,7 @@ public class StageCardView : MonoBehaviour
                 continue;
             }
 
-            bool isVisibleSlot = canShowStars && i < StarRatingUtility.MaxStars;
+            bool isVisibleSlot = i < StarRatingUtility.MaxStars;
             starImage.gameObject.SetActive(isVisibleSlot);
             if (!isVisibleSlot)
             {
@@ -317,7 +361,7 @@ public class StageCardView : MonoBehaviour
                 starImage.sprite = sprite;
             }
 
-            starImage.color = Color.white;
+            starImage.color = canShowStars ? Color.white : new Color(0.55f, 0.59f, 0.60f, 0.72f);
             starImage.preserveAspect = true;
         }
     }
@@ -326,7 +370,9 @@ public class StageCardView : MonoBehaviour
     {
         if (_selectionGlowImage != null)
         {
-            _selectionGlowImage.gameObject.SetActive(_isSelected && _currentStatus == StageCardStatus.Unlocked);
+            // The selected state is communicated by the pin and carousel position.
+            // Keep the legacy full-card glow hidden so it does not obscure the paper card.
+            _selectionGlowImage.gameObject.SetActive(false);
         }
     }
 
@@ -335,6 +381,48 @@ public class StageCardView : MonoBehaviour
         if (_backgroundImage != null)
         {
             _backgroundImage.color = _frameImage != null ? Color.clear : color;
+        }
+    }
+
+    private void SetProgress(int bestScore, int targetScore, bool visible)
+    {
+        if (_progressFillImage == null)
+        {
+            return;
+        }
+
+        _progressFillImage.transform.parent.gameObject.SetActive(visible);
+        _progressFillImage.fillAmount = visible && targetScore > 0
+            ? Mathf.Clamp01(bestScore / (float)targetScore)
+            : 0f;
+    }
+
+    private static string GetStageName(int stageNumber)
+    {
+        return stageNumber switch
+        {
+            1 => "はじまりの街",
+            2 => "急ぎの街道",
+            3 => "まぼろし工房",
+            4 => "こわれもの倉庫",
+            5 => "大名行列",
+            _ => $"おしごと {stageNumber}"
+        };
+    }
+
+    private static void SetPanelColor(Image image, Color color)
+    {
+        if (image != null)
+        {
+            image.color = color;
+        }
+    }
+
+    private static void SetPanelActive(Image image, bool active)
+    {
+        if (image != null)
+        {
+            image.gameObject.SetActive(active);
         }
     }
 
