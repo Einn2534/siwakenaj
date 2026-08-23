@@ -21,6 +21,11 @@ MonoBehaviour:
     WeightLightTruck: 3
     WeightCompactCar: 2
     WeightSportsCar: 1
+    ExpressChance: 0
+    CoveredChance: 0
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
     IsImplemented: 1
   - StageNumber: 2
     TargetScore: 140
@@ -30,6 +35,11 @@ MonoBehaviour:
     WeightLightTruck: 2
     WeightCompactCar: 3
     WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
     IsImplemented: 1
   - StageNumber: 3
     TargetScore: 220
@@ -39,6 +49,11 @@ MonoBehaviour:
     WeightLightTruck: 2
     WeightCompactCar: 2
     WeightSportsCar: 2
+    ExpressChance: 0.16
+    CoveredChance: 0.18
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
     IsImplemented: 1
   - StageNumber: 4
     TargetScore: 310
@@ -48,6 +63,11 @@ MonoBehaviour:
     WeightLightTruck: 1
     WeightCompactCar: 2
     WeightSportsCar: 3
+    ExpressChance: 0.15
+    CoveredChance: 0.16
+    BrokenChance: 0.14
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
     IsImplemented: 1
   - StageNumber: 5
     TargetScore: 420
@@ -57,4 +77,9 @@ MonoBehaviour:
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 4
+    ExpressChance: 0.18
+    CoveredChance: 0.18
+    BrokenChance: 0.16
+    RushEveryCorrect: 7
+    FeverComboThreshold: 6
     IsImplemented: 1

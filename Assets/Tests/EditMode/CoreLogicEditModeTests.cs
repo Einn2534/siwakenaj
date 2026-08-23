@@ -141,6 +141,44 @@ public sealed class CoreLogicEditModeTests
     }
 
     [Test]
+    public void ScoreState_ExpressAndFeverMultipliersStackAndMissResetsCombo()
+    {
+        Type carType = CoreReflection.RequiredType("CarType");
+        Type scoreStateType = CoreReflection.RequiredType("ScoreState");
+        object state = CoreReflection.New(scoreStateType, 100, 3, 3);
+        object lightTruck = CoreReflection.EnumValue(carType, "LightTruck");
+
+        Assert.That(CoreReflection.Call(state, "ApplySuccess", lightTruck, 2), Is.EqualTo(20));
+        Assert.That(CoreReflection.Call(state, "ApplySuccess", lightTruck), Is.EqualTo(10));
+        Assert.That(CoreReflection.Call(state, "ApplySuccess", lightTruck), Is.EqualTo(20));
+        Assert.That(CoreReflection.GetProperty<int>(state, "CurrentScore"), Is.EqualTo(50));
+        Assert.That(CoreReflection.GetProperty<int>(state, "ComboCount"), Is.EqualTo(3));
+        Assert.That(CoreReflection.GetProperty<int>(state, "TotalCorrectCount"), Is.EqualTo(3));
+        Assert.That(CoreReflection.GetProperty<bool>(state, "IsFeverActive"), Is.True);
+
+        CoreReflection.Call(state, "ApplyMiss");
+
+        Assert.That(CoreReflection.GetProperty<int>(state, "CurrentScore"), Is.EqualTo(45));
+        Assert.That(CoreReflection.GetProperty<int>(state, "ComboCount"), Is.Zero);
+        Assert.That(CoreReflection.GetProperty<bool>(state, "IsFeverActive"), Is.False);
+    }
+
+    [Test]
+    public void CarModifierRules_DefineExpressCoveredAndBrokenBehavior()
+    {
+        Type modifierType = CoreReflection.RequiredType("CarModifier");
+        Type rulesType = CoreReflection.RequiredType("CarModifierRules");
+        object express = CoreReflection.EnumValue(modifierType, "Express");
+        object covered = CoreReflection.EnumValue(modifierType, "Covered");
+        object broken = CoreReflection.EnumValue(modifierType, "Broken");
+
+        Assert.That(CoreReflection.CallStatic(rulesType, "GetScoreMultiplier", express), Is.EqualTo(2));
+        Assert.That((float)CoreReflection.CallStatic(rulesType, "GetSpeedMultiplier", express), Is.EqualTo(1.55f).Within(0.001f));
+        Assert.That(CoreReflection.CallStatic(rulesType, "StartsCovered", covered), Is.True);
+        Assert.That(CoreReflection.CallStatic(rulesType, "RequiresRepair", broken), Is.True);
+    }
+
+    [Test]
     public void GameResultData_FromScoreStateCopiesScoreAndLaneCounts()
     {
         Type carType = CoreReflection.RequiredType("CarType");

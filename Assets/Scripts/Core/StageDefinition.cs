@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class StageDefinition
@@ -14,6 +15,11 @@ public class StageDefinition
     public int WeightLightTruck = 1;
     public int WeightCompactCar = 1;
     public int WeightSportsCar = 1;
+    [Range(0f, 1f)] public float ExpressChance;
+    [Range(0f, 1f)] public float CoveredChance;
+    [Range(0f, 1f)] public float BrokenChance;
+    [Min(0)] public int RushEveryCorrect;
+    [Min(0)] public int FeverComboThreshold;
     public bool IsImplemented = true;
 
     public static StageDefinition CreateFallback(int stageNumber)
@@ -42,6 +48,11 @@ public class StageDefinition
             WeightLightTruck = sourceStage != null ? sourceStage.WeightLightTruck : 1,
             WeightCompactCar = sourceStage != null ? sourceStage.WeightCompactCar : 1,
             WeightSportsCar = sourceStage != null ? sourceStage.WeightSportsCar : 1,
+            ExpressChance = sourceStage != null ? sourceStage.ExpressChance : 0f,
+            CoveredChance = sourceStage != null ? sourceStage.CoveredChance : 0f,
+            BrokenChance = sourceStage != null ? sourceStage.BrokenChance : 0f,
+            RushEveryCorrect = sourceStage != null ? sourceStage.RushEveryCorrect : 0,
+            FeverComboThreshold = sourceStage != null ? sourceStage.FeverComboThreshold : 0,
             IsImplemented = true
         };
     }

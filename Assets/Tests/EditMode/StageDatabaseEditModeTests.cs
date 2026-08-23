@@ -24,6 +24,11 @@ public sealed class StageDatabaseEditModeTests
         definitionType.GetField("MissLimit").SetValue(source, 3);
         definitionType.GetField("CarSpeed").SetValue(source, 0.98f);
         definitionType.GetField("SpawnInterval").SetValue(source, 0.68f);
+        definitionType.GetField("ExpressChance").SetValue(source, 0.2f);
+        definitionType.GetField("CoveredChance").SetValue(source, 0.15f);
+        definitionType.GetField("BrokenChance").SetValue(source, 0.1f);
+        definitionType.GetField("RushEveryCorrect").SetValue(source, 7);
+        definitionType.GetField("FeverComboThreshold").SetValue(source, 6);
 
         object endless = CoreReflection.CallStatic(definitionType, "CreateEndless", source);
 
@@ -32,6 +37,31 @@ public sealed class StageDatabaseEditModeTests
         Assert.That(CoreReflection.GetField<int>(endless, "MissLimit"), Is.EqualTo(1));
         Assert.That(CoreReflection.GetField<float>(endless, "CarSpeed"), Is.EqualTo(0.98f));
         Assert.That(CoreReflection.GetField<float>(endless, "SpawnInterval"), Is.EqualTo(0.68f));
+        Assert.That(CoreReflection.GetField<float>(endless, "ExpressChance"), Is.EqualTo(0.2f));
+        Assert.That(CoreReflection.GetField<float>(endless, "CoveredChance"), Is.EqualTo(0.15f));
+        Assert.That(CoreReflection.GetField<float>(endless, "BrokenChance"), Is.EqualTo(0.1f));
+        Assert.That(CoreReflection.GetField<int>(endless, "RushEveryCorrect"), Is.EqualTo(7));
+        Assert.That(CoreReflection.GetField<int>(endless, "FeverComboThreshold"), Is.EqualTo(6));
+    }
+
+    [Test]
+    public void StageDatabase_ReleasedStagesIntroduceGimmicksInOrder()
+    {
+        ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
+        Assert.That(database, Is.Not.Null);
+
+        object stageOne = CoreReflection.Call(database, "GetStageDefinition", 1);
+        object stageTwo = CoreReflection.Call(database, "GetStageDefinition", 2);
+        object stageThree = CoreReflection.Call(database, "GetStageDefinition", 3);
+        object stageFour = CoreReflection.Call(database, "GetStageDefinition", 4);
+        object stageFive = CoreReflection.Call(database, "GetStageDefinition", 5);
+
+        Assert.That(CoreReflection.GetField<float>(stageOne, "ExpressChance"), Is.Zero);
+        Assert.That(CoreReflection.GetField<float>(stageTwo, "ExpressChance"), Is.GreaterThan(0f));
+        Assert.That(CoreReflection.GetField<float>(stageThree, "CoveredChance"), Is.GreaterThan(0f));
+        Assert.That(CoreReflection.GetField<float>(stageFour, "BrokenChance"), Is.GreaterThan(0f));
+        Assert.That(CoreReflection.GetField<int>(stageFive, "RushEveryCorrect"), Is.GreaterThan(0));
+        Assert.That(CoreReflection.GetField<int>(stageFive, "FeverComboThreshold"), Is.GreaterThan(0));
     }
 
     [Test]
