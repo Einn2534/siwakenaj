@@ -16,6 +16,7 @@ public static class TitleSceneLayoutBuilder
     private const string HeadlineFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string UiFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string JapaneseFallbackFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
+    private const string SettingsFontAssetPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
     private const string TitleBackgroundPath = "Assets/Art/UI/Sprites/Title/title_background_factory.png";
     private const string TitleLogoPath = "Assets/Art/UI/Sprites/Title/siwakennja.png";
     private const string SecondaryButtonPath = "Assets/Art/UI/Sprites/Result/Common/button_secondary_outline_strong.png";
@@ -24,6 +25,13 @@ public static class TitleSceneLayoutBuilder
     private const string HowToIconPath = "Assets/Art/UI/Sprites/Settings/ui_howto_icon.png";
     private const string ToggleOnPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_on.png";
     private const string ToggleOffPath = "Assets/Art/UI/Sprites/Settings/ui_settings_toggle_off.png";
+    private const string SettingsPinPath = "Assets/Art/UI/Sprites/Settings/ui_settings_pin.png";
+    private const string SettingsRowPanelPath = "Assets/Art/UI/Sprites/Settings/ui_settings_panel_frame.png";
+    private const string SettingsBackButtonPath = "Assets/Art/UI/Sprites/Settings/ui_settings_back_button.png";
+    private const string HowToArrowPath = "Assets/Art/UI/Sprites/HowTo/ui_howto_arrow.png";
+    private const string HowToSpeechPanelPath = "Assets/Resources/UI/Tutorial/speech_panel.png";
+    private const string HowToWoodPanelPath = "Assets/Resources/UI/Tutorial/hud_wood_panel.png";
+    private const string HowToMissOrbPath = "Assets/Resources/UI/Tutorial/miss_orb_lit.png";
     private const string PowaIdlePath = "Assets/Art/Sprites/Characters/Powa/Powa_Idle.png";
     private const string TruckSpritePath = "Assets/Art/Sprites/Vehicles/truck.png";
     private const string CarSpritePath = "Assets/Art/Sprites/Vehicles/car.png";
@@ -45,6 +53,17 @@ public static class TitleSceneLayoutBuilder
     private static readonly Color RowColor = new(0.975f, 0.982f, 0.992f, 1f);
     private static readonly Color DividerColor = new(0.902f, 0.922f, 0.953f, 1f);
     private static readonly Color ModalScrimColor = new(0.04f, 0.07f, 0.11f, 0.58f);
+    private static readonly Color SettingsPaperColor = new(0.984f, 0.976f, 0.925f, 1f);
+    private static readonly Color SettingsOutlineColor = new(0.196f, 0.137f, 0.118f, 1f);
+    private static readonly Color SettingsRowColor = new(0.467f, 0.325f, 0.216f, 1f);
+    private static readonly Color SettingsTrackColor = new(0.184f, 0.118f, 0.071f, 1f);
+    private static readonly Color SettingsMintColor = new(0.431f, 0.89f, 0.616f, 1f);
+    private static readonly Color SettingsGoldColor = new(1f, 0.784f, 0.196f, 1f);
+    private static readonly Color SettingsCreamColor = new(0.976f, 0.953f, 0.882f, 1f);
+    private static readonly Color SettingsMutedColor = new(0.68f, 0.64f, 0.62f, 1f);
+    private static readonly Color SettingsPurpleColor = new(0.49f, 0.43f, 0.93f, 1f);
+    private static readonly Color SettingsBellColor = new(1f, 0.76f, 0.24f, 1f);
+    private static readonly Color SettingsVibrationColor = new(1f, 0.43f, 0.31f, 1f);
 
     private static TMP_FontAsset s_JapaneseFontAsset;
 
@@ -237,6 +256,7 @@ public static class TitleSceneLayoutBuilder
         titleFontAsset ??= TMP_Settings.defaultFontAsset;
         headlineFontAsset ??= titleFontAsset;
         uiFontAsset ??= headlineFontAsset;
+        TMP_FontAsset settingsFontAsset = LoadFont(SettingsFontAssetPath) ?? headlineFontAsset;
         s_JapaneseFontAsset = japaneseFallbackFontAsset != null ? japaneseFallbackFontAsset : uiFontAsset;
 
         EnsureFallbackFont(titleFontAsset, japaneseFallbackFontAsset);
@@ -247,11 +267,13 @@ public static class TitleSceneLayoutBuilder
         Sprite backgroundSprite = LoadSprite(TitleBackgroundPath);
         Sprite logoSprite = LoadSprite(TitleLogoPath);
         Sprite secondaryButtonSprite = LoadSprite(SecondaryButtonPath);
-        Sprite backButtonSprite = LoadSprite(BackButtonPath);
         Sprite settingsIconSprite = LoadSprite(SettingsIconPath);
         Sprite howToIconSprite = LoadSprite(HowToIconPath);
         Sprite toggleOnSprite = LoadSprite(ToggleOnPath);
         Sprite toggleOffSprite = LoadSprite(ToggleOffPath);
+        Sprite settingsPinSprite = LoadSprite(SettingsPinPath);
+        Sprite settingsRowPanelSprite = LoadSprite(SettingsRowPanelPath);
+        Sprite settingsBackButtonSprite = LoadSprite(SettingsBackButtonPath);
         Sprite powaSprite = LoadSprite(PowaIdlePath);
         Sprite truckSprite = LoadSprite(TruckSpritePath);
         Sprite carSprite = LoadSprite(CarSpritePath);
@@ -268,8 +290,10 @@ public static class TitleSceneLayoutBuilder
 
         BuildTitleContent(safeAreaRoot, titleController, titleFontAsset, headlineFontAsset, uiFontAsset, logoSprite, settingsIconSprite, howToIconSprite, powaSprite, truckSprite, carSprite, sportsCarSprite, slicedSprite);
 
-        RectTransform howToOverlay = BuildHowToOverlay(canvas.transform, howToOverlayController, titleFontAsset, headlineFontAsset, uiFontAsset, secondaryButtonSprite, backButtonSprite, slicedSprite);
-        RectTransform settingsOverlay = BuildSettingsOverlay(canvas.transform, titleController, headlineFontAsset, uiFontAsset, slicedSprite, secondaryButtonSprite, backButtonSprite, toggleOnSprite, toggleOffSprite, slicedSprite, out SettingsPanelController settingsPanelController, out SettingsBindings settingsBindings);
+        s_JapaneseFontAsset = uiFontAsset;
+        RectTransform howToOverlay = BuildHowToOverlay(canvas.transform, howToOverlayController, titleFontAsset, headlineFontAsset, uiFontAsset, secondaryButtonSprite, slicedSprite);
+        s_JapaneseFontAsset = settingsFontAsset;
+        RectTransform settingsOverlay = BuildSettingsOverlay(canvas.transform, titleController, settingsFontAsset, uiFontAsset, slicedSprite, settingsPinSprite, settingsRowPanelSprite, settingsBackButtonSprite, slicedSprite, out SettingsPanelController settingsPanelController, out SettingsBindings settingsBindings);
 
         ApplyTitleControllerBindings(titleController, howToOverlay.gameObject, settingsOverlay.gameObject, howToOverlayController);
         ApplyHowToBindings(howToOverlayController, howToOverlay.gameObject);
@@ -553,72 +577,214 @@ public static class TitleSceneLayoutBuilder
         TMP_FontAsset headlineFontAsset,
         TMP_FontAsset uiFontAsset,
         Sprite secondaryButtonSprite,
-        Sprite backButtonSprite,
         Sprite slicedSprite)
     {
-        RectTransform overlay = CreatePanel("HowToOverlay", canvasTransform, slicedSprite, ModalScrimColor);
+        Sprite sceneBackgroundSprite = LoadSprite(TitleBackgroundPath);
+        Sprite paperSprite = LoadSprite(HowToSpeechPanelPath);
+        Sprite woodPanelSprite = LoadSprite(HowToWoodPanelPath);
+        Sprite missOrbSprite = LoadSprite(HowToMissOrbPath);
+        Sprite arrowSprite = LoadSprite(HowToArrowPath);
+        Sprite pinSprite = LoadSprite(SettingsPinPath);
+        Sprite yellowButtonSprite = LoadSprite(SettingsBackButtonPath);
+        Sprite sportsCarSprite = LoadSprite(SportsCarIconPath);
+        Sprite compactCarSprite = LoadSprite(CompactCarIconPath);
+        Sprite truckSprite = LoadSprite(LightTruckIconPath);
+        Sprite powaSprite = LoadSprite(PowaIdlePath);
+        TMP_FontAsset displayFontAsset = LoadFont(SettingsFontAssetPath) ?? headlineFontAsset;
+
+        RectTransform overlay = CreatePanel("HowToOverlay", canvasTransform, slicedSprite, new Color(0.15f, 0.135f, 0.17f, 0.98f));
         Stretch(overlay, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-        RectTransform dialog = CreateModalDialog("HowToPanel", overlay, slicedSprite, new Vector2(900f, 1260f));
-        BuildModalHeader(dialog, "HOW TO", titleFontAsset, backButtonSprite, out Button topCloseButton);
+        RectTransform guideFrame = CreatePanel("GuideFrame", overlay, slicedSprite, SettingsOutlineColor);
+        SetAnchored(guideFrame, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(940f, 1740f));
 
-        RectTransform body = CreateUIObject("Body", dialog);
-        Stretch(body, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(58f, 138f), new Vector2(-58f, -164f));
-        VerticalLayoutGroup bodyLayout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        bodyLayout.spacing = 18;
-        bodyLayout.childAlignment = TextAnchor.UpperCenter;
-        bodyLayout.childControlWidth = true;
-        bodyLayout.childControlHeight = true;
-        bodyLayout.childForceExpandWidth = true;
-        bodyLayout.childForceExpandHeight = false;
+        RectTransform sceneViewport = CreatePanel("SceneViewport", guideFrame, slicedSprite, Color.white);
+        Stretch(sceneViewport, Vector2.zero, Vector2.one, new Vector2(12f, 12f), new Vector2(-12f, -12f));
+        Mask sceneMask = sceneViewport.gameObject.AddComponent<Mask>();
+        sceneMask.showMaskGraphic = false;
 
-        CreateHowToStep(body, "01", "COMING CAR", "車を見て、同じレーンのボタンをタップ", BlueAccentColor, LoadSprite(LightTruckIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
-        CreateHowToStep(body, "02", "OK / GOOD", "正しく仕分けるとスコアアップ", SuccessColor, LoadSprite(CompactCarIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
-        CreateHowToStep(body, "03", "MISS LIMIT", "MISS が上限に届くと GAME OVER", new Color(0.914f, 0.408f, 0.416f, 1f), LoadSprite(SportsCarIconPath), headlineFontAsset, uiFontAsset, slicedSprite);
+        Image sceneBackground = CreateImage("FactoryBackground", sceneViewport, sceneBackgroundSprite, Color.white, false);
+        Stretch(sceneBackground.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-        Button closeButton = CreateButton("CloseButton", dialog, secondaryButtonSprite != null ? secondaryButtonSprite : slicedSprite, new Vector2(560f, 136f), "OK", headlineFontAsset, 48f, TextColor);
-        SetAnchored((RectTransform)closeButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 34f), new Vector2(560f, 136f));
+        RectTransform paper = CreatePanel("InstructionPaper", guideFrame, paperSprite != null ? paperSprite : slicedSprite, Color.white);
+        SetAnchored(paper, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -110f), new Vector2(820f, 1240f));
+        paper.GetComponent<Image>().type = Image.Type.Sliced;
+
+        if (pinSprite != null)
+        {
+            Image leftPin = CreateImage("LeftPin", paper, pinSprite, Color.white, true);
+            SetAnchored(leftPin.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(92f, 4f), new Vector2(62f, 62f));
+
+            Image rightPin = CreateImage("RightPin", paper, pinSprite, Color.white, true);
+            SetAnchored(rightPin.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-92f, 4f), new Vector2(62f, 62f));
+        }
+
+        TMP_Text title = CreateText("Title", paper, "しごとの手引き", displayFontAsset, 48f, 34f, InkColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)title.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -66f), new Vector2(650f, 64f));
+        title.font = displayFontAsset;
+        title.fontStyle = FontStyles.Normal;
+        title.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text subtitle = CreateText("Subtitle", paper, "H O W   T O   P L A Y", titleFontAsset, 17f, 14f, SettingsMutedColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)subtitle.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -122f), new Vector2(480f, 34f));
+        subtitle.textWrappingMode = TextWrappingModes.NoWrap;
+
+        CreateHowToDashedDivider(paper, slicedSprite, -164f);
+
+        TMP_Text firstHeading = CreateText("VehicleHeading", paper, "1. 車とボタンをあわせる", headlineFontAsset, 29f, 22f, MutedTextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)firstHeading.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -205f), new Vector2(720f, 42f));
+        firstHeading.textWrappingMode = TextWrappingModes.NoWrap;
+
+        CreateHowToVehicleRow(paper, "SportsCar", sportsCarSprite, arrowSprite, paperSprite, "スポーツカー", new Color(0.18f, 0.92f, 1f, 0.35f), -300f, displayFontAsset, slicedSprite);
+        CreateHowToVehicleRow(paper, "CompactCar", compactCarSprite, arrowSprite, paperSprite, "普通車", new Color(1f, 0.56f, 0.18f, 0.35f), -450f, displayFontAsset, slicedSprite);
+        CreateHowToVehicleRow(paper, "Truck", truckSprite, arrowSprite, paperSprite, "トラック", new Color(0.35f, 0.9f, 0.55f, 0.35f), -600f, displayFontAsset, slicedSprite);
+
+        TMP_Text secondHeading = CreateText("RulesHeading", paper, "2. おしごとのきまり", headlineFontAsset, 29f, 22f, MutedTextColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)secondHeading.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -690f), new Vector2(720f, 42f));
+        secondHeading.textWrappingMode = TextWrappingModes.NoWrap;
+
+        CreateHowToRules(paper, woodPanelSprite, missOrbSprite, displayFontAsset, slicedSprite);
+        CreateHowToTip(paper, paperSprite, powaSprite, displayFontAsset, slicedSprite);
+
+        Button tutorialButton = CreateButton("TutorialReplayButton", overlay, secondaryButtonSprite != null ? secondaryButtonSprite : slicedSprite, new Vector2(350f, 148f), string.Empty, headlineFontAsset, 1f, InkColor);
+        SetAnchored((RectTransform)tutorialButton.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-195f, -1605f), new Vector2(350f, 148f));
+        tutorialButton.GetComponent<Image>().type = Image.Type.Sliced;
+        TMP_Text tutorialLabel = CreateText("Label", tutorialButton.transform, "チュートリアル", displayFontAsset, 35f, 26f, InkColor, TextAlignmentOptions.Center);
+        Stretch((RectTransform)tutorialLabel.transform, Vector2.zero, Vector2.one, new Vector2(28f, 12f), new Vector2(-28f, -12f));
+        tutorialLabel.font = displayFontAsset;
+        tutorialLabel.fontStyle = FontStyles.Normal;
+        tutorialLabel.textWrappingMode = TextWrappingModes.NoWrap;
+
+        Button closeButton = CreateButton("CloseButton", overlay, yellowButtonSprite != null ? yellowButtonSprite : slicedSprite, new Vector2(390f, 148f), string.Empty, headlineFontAsset, 1f, InkColor);
+        SetAnchored((RectTransform)closeButton.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(190f, -1605f), new Vector2(390f, 148f));
+        closeButton.GetComponent<Image>().type = Image.Type.Sliced;
+        TMP_Text closeLabel = CreateText("Label", closeButton.transform, "わかった!", displayFontAsset, 40f, 28f, InkColor, TextAlignmentOptions.Center);
+        Stretch((RectTransform)closeLabel.transform, Vector2.zero, Vector2.one, new Vector2(30f, 12f), new Vector2(-30f, -12f));
+        closeLabel.font = displayFontAsset;
+        closeLabel.fontStyle = FontStyles.Normal;
+        closeLabel.textWrappingMode = TextWrappingModes.NoWrap;
 
         SerializedObject serializedHowTo = new(howToOverlayController);
         SetObjectReference(serializedHowTo, "_overlayPanel", overlay.gameObject);
         SetObjectReference(serializedHowTo, "_closeButton", closeButton);
-        SetObjectArray(serializedHowTo.FindProperty("_extraCloseButtons"), new Object[] { topCloseButton });
+        SetObjectArray(serializedHowTo.FindProperty("_extraCloseButtons"), System.Array.Empty<Object>());
         serializedHowTo.ApplyModifiedPropertiesWithoutUndo();
 
         overlay.gameObject.SetActive(false);
         return overlay;
     }
 
-    private static void CreateHowToStep(
+    private static void CreateHowToDashedDivider(RectTransform parent, Sprite slicedSprite, float anchoredY)
+    {
+        const int dashCount = 21;
+        const float dashWidth = 24f;
+        const float gap = 10f;
+        float totalWidth = dashCount * dashWidth + (dashCount - 1) * gap;
+        float left = -totalWidth * 0.5f + dashWidth * 0.5f;
+
+        for (int i = 0; i < dashCount; i += 1)
+        {
+            RectTransform dash = CreatePanel($"DividerDash_{i + 1:00}", parent, slicedSprite, new Color(0.62f, 0.59f, 0.55f, 0.72f));
+            SetAnchored(dash, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(left + i * (dashWidth + gap), anchoredY), new Vector2(dashWidth, 4f));
+            dash.GetComponent<Image>().raycastTarget = false;
+        }
+    }
+
+    private static void CreateHowToVehicleRow(
         RectTransform parent,
-        string number,
-        string title,
-        string detail,
-        Color accentColor,
-        Sprite iconSprite,
+        string name,
+        Sprite vehicleSprite,
+        Sprite arrowSprite,
+        Sprite rowSprite,
+        string label,
+        Color glowColor,
+        float anchoredY,
         TMP_FontAsset headlineFontAsset,
-        TMP_FontAsset uiFontAsset,
         Sprite slicedSprite)
     {
-        RectTransform row = CreatePanel($"Step_{number}", parent, slicedSprite, RowColor);
-        row.gameObject.AddComponent<LayoutElement>().preferredHeight = 230f;
+        RectTransform row = CreatePanel($"{name}Row", parent, rowSprite != null ? rowSprite : slicedSprite, new Color(0.97f, 0.965f, 0.93f, 1f));
+        SetAnchored(row, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, anchoredY), new Vector2(720f, 132f));
+        row.GetComponent<Image>().type = Image.Type.Sliced;
 
-        RectTransform accent = CreatePanel("AccentBar", row, slicedSprite, accentColor);
-        Stretch(accent, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(12f, 0f));
+        Image sourceVehicle = CreateImage("IncomingVehicle", row, vehicleSprite, Color.white, true);
+        SetAnchored(sourceVehicle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-260f, 0f), new Vector2(126f, 80f));
 
-        TMP_Text numberText = CreateText("Number", row, number, headlineFontAsset, 48f, 32f, accentColor, TextAlignmentOptions.Center);
-        SetAnchored((RectTransform)numberText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(84f, 0f), new Vector2(118f, 92f));
+        Image arrow = CreateImage("Arrow", row, arrowSprite, Color.white, true);
+        SetAnchored(arrow.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-112f, 0f), new Vector2(58f, 36f));
 
-        Image iconImage = CreateImage("Icon", row, iconSprite, Color.white, true);
-        SetAnchored(iconImage.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(218f, 0f), new Vector2(126f, 126f));
+        Image targetGlow = CreateImage("TargetGlow", row, vehicleSprite, glowColor, true);
+        SetAnchored(targetGlow.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(4f, 0f), new Vector2(136f, 88f));
 
-        TMP_Text titleText = CreateText("Title", row, title, headlineFontAsset, 38f, 24f, TextColor, TextAlignmentOptions.Left);
-        SetAnchored((RectTransform)titleText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, 42f), new Vector2(-330f, 58f));
-        titleText.textWrappingMode = TextWrappingModes.NoWrap;
+        Image targetVehicle = CreateImage("TargetVehicle", row, vehicleSprite, Color.white, true);
+        SetAnchored(targetVehicle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(4f, 0f), new Vector2(110f, 70f));
 
-        TMP_Text detailText = CreateText("Detail", row, detail, uiFontAsset, 30f, 22f, MutedTextColor, TextAlignmentOptions.Left);
-        SetAnchored((RectTransform)detailText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, -36f), new Vector2(-330f, 74f));
-        detailText.textWrappingMode = TextWrappingModes.Normal;
+        TMP_Text labelText = CreateText("Label", row, label, headlineFontAsset, 31f, 23f, InkColor, TextAlignmentOptions.Right);
+        SetAnchored((RectTransform)labelText.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-30f, 0f), new Vector2(260f, 60f));
+        labelText.font = headlineFontAsset;
+        labelText.fontStyle = FontStyles.Normal;
+        labelText.textWrappingMode = TextWrappingModes.NoWrap;
+    }
+
+    private static void CreateHowToRules(
+        RectTransform paper,
+        Sprite woodPanelSprite,
+        Sprite missOrbSprite,
+        TMP_FontAsset headlineFontAsset,
+        Sprite slicedSprite)
+    {
+        RectTransform missCard = CreatePanel("MissRule", paper, woodPanelSprite != null ? woodPanelSprite : slicedSprite, Color.white);
+        SetAnchored(missCard, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-190f, -810f), new Vector2(350f, 174f));
+        missCard.GetComponent<Image>().type = Image.Type.Sliced;
+
+        for (int i = 0; i < 3; i += 1)
+        {
+            Image orb = CreateImage($"MissOrb_{i + 1}", missCard, missOrbSprite, Color.white, true);
+            SetAnchored(orb.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2((i - 1) * 56f, 38f), new Vector2(48f, 48f));
+        }
+
+        TMP_Text missText = CreateText("Label", missCard, "ミス3回で\nおしまい", headlineFontAsset, 25f, 20f, Color.white, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)missText.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -24f), new Vector2(270f, 112f));
+        missText.font = headlineFontAsset;
+        missText.fontStyle = FontStyles.Normal;
+        missText.lineSpacing = -8f;
+
+        RectTransform goalCard = CreatePanel("GoalRule", paper, woodPanelSprite != null ? woodPanelSprite : slicedSprite, Color.white);
+        SetAnchored(goalCard, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(190f, -810f), new Vector2(350f, 174f));
+        goalCard.GetComponent<Image>().type = Image.Type.Sliced;
+
+        RectTransform goalTrack = CreatePanel("Track", goalCard, slicedSprite, new Color(0.18f, 0.12f, 0.07f, 1f));
+        SetAnchored(goalTrack, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 38f), new Vector2(236f, 30f));
+        goalTrack.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform goalFill = CreatePanel("Fill", goalTrack, slicedSprite, new Color(0.45f, 0.9f, 0.61f, 1f));
+        Stretch(goalFill, new Vector2(0f, 0f), new Vector2(0.65f, 1f), new Vector2(4f, 4f), new Vector2(-1f, -4f));
+        goalFill.GetComponent<Image>().raycastTarget = false;
+
+        TMP_Text goalText = CreateText("Label", goalCard, "目標の台数で\nクリア", headlineFontAsset, 25f, 20f, Color.white, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)goalText.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -24f), new Vector2(270f, 112f));
+        goalText.font = headlineFontAsset;
+        goalText.fontStyle = FontStyles.Normal;
+        goalText.lineSpacing = -8f;
+    }
+
+    private static void CreateHowToTip(
+        RectTransform paper,
+        Sprite speechPanelSprite,
+        Sprite powaSprite,
+        TMP_FontAsset headlineFontAsset,
+        Sprite slicedSprite)
+    {
+        Image powa = CreateImage("PowaTip", paper, powaSprite, Color.white, true);
+        SetAnchored(powa.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-295f, -1040f), new Vector2(150f, 150f));
+
+        RectTransform bubble = CreatePanel("TipBubble", paper, speechPanelSprite != null ? speechPanelSprite : slicedSprite, new Color(1f, 0.96f, 0.78f, 1f));
+        SetAnchored(bubble, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(92f, -1040f), new Vector2(570f, 150f));
+        bubble.GetComponent<Image>().type = Image.Type.Sliced;
+
+        TMP_Text tipText = CreateText("TipText", bubble, "コツ: はやく仕分けるほど\nスコアが のびるよ!", headlineFontAsset, 28f, 21f, InkColor, TextAlignmentOptions.Left);
+        Stretch((RectTransform)tipText.transform, Vector2.zero, Vector2.one, new Vector2(42f, 20f), new Vector2(-30f, -20f));
+        tipText.font = headlineFontAsset;
+        tipText.fontStyle = FontStyles.Normal;
     }
 
     private static RectTransform BuildSettingsOverlay(
@@ -627,10 +793,9 @@ public static class TitleSceneLayoutBuilder
         TMP_FontAsset headlineFontAsset,
         TMP_FontAsset uiFontAsset,
         Sprite panelSprite,
-        Sprite secondaryButtonSprite,
-        Sprite backButtonSprite,
-        Sprite toggleOnSprite,
-        Sprite toggleOffSprite,
+        Sprite settingsPinSprite,
+        Sprite settingsRowPanelSprite,
+        Sprite settingsBackButtonSprite,
         Sprite slicedSprite,
         out SettingsPanelController settingsPanelController,
         out SettingsBindings settingsBindings)
@@ -638,27 +803,35 @@ public static class TitleSceneLayoutBuilder
         RectTransform overlay = CreatePanel("SettingsOverlay", canvasTransform, slicedSprite, ModalScrimColor);
         Stretch(overlay, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-        RectTransform dialog = CreateModalDialog("SettingsPanel", overlay, panelSprite, new Vector2(900f, 1080f));
+        RectTransform dialog = CreateSettingsDialog("SettingsPanel", overlay, panelSprite, new Vector2(900f, 1400f));
+        SetAnchored(dialog, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 40f), new Vector2(900f, 1400f));
         settingsPanelController = GetOrAddComponent<SettingsPanelController>(dialog.gameObject);
-        BuildModalHeader(dialog, "SETTINGS", headlineFontAsset, backButtonSprite, out Button topCloseButton);
+        BuildSettingsHeader(dialog, headlineFontAsset, settingsPinSprite, slicedSprite, out Button topCloseButton);
         AddButtonListener(topCloseButton, titleController.OnSettingsClose);
 
         RectTransform body = CreateUIObject("Body", dialog);
-        Stretch(body, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(60f, 150f), new Vector2(-60f, -128f));
+        Stretch(body, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(50f, 310f), new Vector2(-50f, -214f));
 
         VerticalLayoutGroup bodyLayout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        bodyLayout.spacing = 24;
+        bodyLayout.spacing = 28;
         bodyLayout.childAlignment = TextAnchor.UpperCenter;
         bodyLayout.childControlWidth = true;
         bodyLayout.childControlHeight = true;
         bodyLayout.childForceExpandWidth = true;
         bodyLayout.childForceExpandHeight = false;
 
-        CreateSettingsRow(body, "BGM", "TITLE / STAGE MUSIC", SuccessColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out RectTransform bgmRow, out Toggle bgmToggle, out TMP_Text bgmState, out Image bgmToggleImage, out Image bgmAccent);
-        CreateSettingsVolumeControl(bgmRow, "BGM", SuccessColor, headlineFontAsset, slicedSprite, out Slider bgmVolumeSlider, out TMP_Text bgmVolumeValueText);
-        CreateSettingsRow(body, "SE", "BUTTON / JUDGE SOUNDS", BlueAccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out RectTransform seRow, out Toggle seToggle, out TMP_Text seState, out Image seToggleImage, out Image seAccent);
-        CreateSettingsVolumeControl(seRow, "SE", BlueAccentColor, headlineFontAsset, slicedSprite, out Slider seVolumeSlider, out TMP_Text seVolumeValueText);
-        CreateSettingsRow(body, "VIBRATION", "JUDGE / RESULT FEEDBACK", AccentColor, toggleOnSprite, headlineFontAsset, uiFontAsset, slicedSprite, out _, out Toggle vibrationToggle, out TMP_Text vibrationState, out Image vibrationToggleImage, out Image vibrationAccent);
+        CreateSettingsRow(body, "BGM", "BGM", "♪", SettingsPurpleColor, 252f, settingsRowPanelSprite, slicedSprite, headlineFontAsset, out RectTransform bgmRow, out Toggle bgmToggle, out TMP_Text bgmState, out Image bgmToggleImage, out Image bgmAccent);
+        CreateSettingsVolumeControl(bgmRow, "BGM", SettingsMintColor, headlineFontAsset, slicedSprite, out Slider bgmVolumeSlider, out TMP_Text bgmVolumeValueText);
+        CreateSettingsRow(body, "SE", "こうかおん", "◆", SettingsBellColor, 252f, settingsRowPanelSprite, slicedSprite, headlineFontAsset, out RectTransform seRow, out Toggle seToggle, out TMP_Text seState, out Image seToggleImage, out Image seAccent);
+        CreateSettingsVolumeControl(seRow, "SE", SettingsMintColor, headlineFontAsset, slicedSprite, out Slider seVolumeSlider, out TMP_Text seVolumeValueText);
+        CreateSettingsRow(body, "VIBRATION", "しんどう", "▣", SettingsVibrationColor, 174f, settingsRowPanelSprite, slicedSprite, headlineFontAsset, out _, out Toggle vibrationToggle, out TMP_Text vibrationState, out Image vibrationToggleImage, out Image vibrationAccent);
+
+        TMP_Text saveNotice = CreateText("SaveNotice", dialog, "せっていは すぐに ほぞんされるよ", uiFontAsset, 26f, 20f, SettingsMutedColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)saveNotice.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 54f), new Vector2(700f, 58f));
+        saveNotice.textWrappingMode = TextWrappingModes.NoWrap;
+
+        Button backButton = CreateSettingsBackButton(overlay, headlineFontAsset, uiFontAsset, settingsBackButtonSprite, slicedSprite);
+        AddButtonListener(backButton, titleController.OnSettingsClose);
 
         settingsBindings = new SettingsBindings(bgmToggle, seToggle, vibrationToggle, bgmVolumeSlider, seVolumeSlider, bgmState, seState, vibrationState, bgmVolumeValueText, seVolumeValueText, bgmToggleImage, seToggleImage, vibrationToggleImage, bgmAccent, seAccent, vibrationAccent);
         overlay.gameObject.SetActive(false);
@@ -667,48 +840,79 @@ public static class TitleSceneLayoutBuilder
 
     private static void CreateSettingsRow(
         RectTransform parent,
-        string label,
-        string detail,
+        string bindingLabel,
+        string visibleLabel,
+        string iconGlyph,
         Color accentColor,
-        Sprite toggleSprite,
-        TMP_FontAsset headlineFontAsset,
-        TMP_FontAsset uiFontAsset,
+        float preferredHeight,
+        Sprite rowPanelSprite,
         Sprite slicedSprite,
+        TMP_FontAsset headlineFontAsset,
         out RectTransform row,
         out Toggle toggle,
         out TMP_Text stateText,
         out Image toggleImage,
         out Image accentImage)
     {
-        row = CreatePanel($"{label}Row", parent, slicedSprite, RowColor);
-        row.gameObject.AddComponent<LayoutElement>().preferredHeight = 204f;
+        bool hasCustomPanel = rowPanelSprite != null;
+        row = CreatePanel(
+            $"{bindingLabel}Row",
+            parent,
+            hasCustomPanel ? rowPanelSprite : slicedSprite,
+            hasCustomPanel ? Color.white : SettingsOutlineColor);
+        row.gameObject.AddComponent<LayoutElement>().preferredHeight = preferredHeight;
+
+        if (!hasCustomPanel)
+        {
+            RectTransform cardFace = CreatePanel("CardFace", row, slicedSprite, SettingsRowColor);
+            Stretch(cardFace, Vector2.zero, Vector2.one, new Vector2(6f, 6f), new Vector2(-6f, -6f));
+            cardFace.GetComponent<Image>().raycastTarget = false;
+            cardFace.SetAsFirstSibling();
+        }
 
         accentImage = CreatePanel("AccentBar", row, slicedSprite, accentColor).GetComponent<Image>();
-        Stretch((RectTransform)accentImage.transform, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(12f, 0f));
+        SetAnchored((RectTransform)accentImage.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(52f, -40f), new Vector2(44f, 44f));
+        accentImage.raycastTarget = false;
 
-        TMP_Text labelText = CreateText("Label", row, label, headlineFontAsset, 52f, 34f, TextColor, TextAlignmentOptions.Left);
-        SetAnchored((RectTransform)labelText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(58f, 34f), new Vector2(360f, 70f));
+        TMP_Text iconText = CreateText("Icon", accentImage.transform, iconGlyph, headlineFontAsset, 30f, 22f, SettingsCreamColor, TextAlignmentOptions.Center);
+        Stretch((RectTransform)iconText.transform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        iconText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text labelText = CreateText("Label", row, visibleLabel, headlineFontAsset, 43f, 31f, SettingsCreamColor, TextAlignmentOptions.Left);
+        SetAnchored((RectTransform)labelText.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(110f, -35f), new Vector2(430f, 62f));
         labelText.textWrappingMode = TextWrappingModes.NoWrap;
 
-        TMP_Text detailText = CreateText("Detail", row, detail, uiFontAsset, 27f, 20f, MutedTextColor, TextAlignmentOptions.Left);
-        SetAnchored((RectTransform)detailText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(60f, -36f), new Vector2(500f, 58f));
-        detailText.textWrappingMode = TextWrappingModes.NoWrap;
+        stateText = CreateText("StateText", row, "ON", headlineFontAsset, 1f, 1f, Color.clear, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)stateText.transform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), Vector2.zero, Vector2.one);
 
-        stateText = CreateText("StateText", row, "ON", headlineFontAsset, 38f, 28f, TextColor, TextAlignmentOptions.Center);
-        SetAnchored((RectTransform)stateText.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-248f, 0f), new Vector2(96f, 60f));
-
-        GameObject toggleObject = new($"{label}Toggle", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Toggle));
+        Sprite roundSprite = GetRoundSprite();
+        GameObject toggleObject = new($"{bindingLabel}Toggle", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Toggle));
         toggleObject.layer = parent.gameObject.layer;
         toggleObject.transform.SetParent(row, false);
         toggleImage = toggleObject.GetComponent<Image>();
-        toggleImage.sprite = toggleSprite;
-        toggleImage.color = Color.white;
-        toggleImage.preserveAspect = true;
+        toggleImage.sprite = roundSprite;
+        toggleImage.type = Image.Type.Simple;
+        toggleImage.color = SettingsOutlineColor;
         toggleImage.raycastTarget = true;
         toggle = toggleObject.GetComponent<Toggle>();
         toggle.targetGraphic = toggleImage;
         toggle.graphic = null;
-        SetAnchored((RectTransform)toggleObject.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-48f, 0f), new Vector2(172f, 102f));
+        SetAnchored((RectTransform)toggleObject.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-48f, -32f), new Vector2(160f, 84f));
+
+        RectTransform trackFace = CreatePanel("TrackFace", toggleObject.transform, roundSprite, SettingsMintColor);
+        Stretch(trackFace, Vector2.zero, Vector2.one, new Vector2(6f, 6f), new Vector2(-6f, -6f));
+        trackFace.GetComponent<Image>().type = Image.Type.Simple;
+        trackFace.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform knob = CreatePanel("Knob", toggleObject.transform, roundSprite, SettingsOutlineColor);
+        SetAnchored(knob, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-8f, 0f), new Vector2(68f, 68f));
+        knob.GetComponent<Image>().type = Image.Type.Simple;
+        knob.GetComponent<Image>().raycastTarget = false;
+
+        RectTransform knobFace = CreatePanel("KnobFace", knob, roundSprite, SettingsCreamColor);
+        Stretch(knobFace, Vector2.zero, Vector2.one, new Vector2(5f, 5f), new Vector2(-5f, -5f));
+        knobFace.GetComponent<Image>().type = Image.Type.Simple;
+        knobFace.GetComponent<Image>().raycastTarget = false;
     }
 
     private static void CreateSettingsVolumeControl(
@@ -721,23 +925,29 @@ public static class TitleSceneLayoutBuilder
         out TMP_Text valueText)
     {
         RectTransform sliderRect = CreateUIObject($"{label}VolumeSlider", row);
-        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-58f, 24f), new Vector2(-282f, 38f));
+        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-52f, 44f), new Vector2(-250f, 70f));
 
-        RectTransform background = CreatePanel("Background", sliderRect, slicedSprite, DividerColor);
-        Stretch(background, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+        RectTransform background = CreatePanel("Background", sliderRect, slicedSprite, SettingsTrackColor);
+        Stretch(background, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -12f), new Vector2(0f, 12f));
 
         RectTransform fillArea = CreateUIObject("Fill Area", sliderRect);
-        Stretch(fillArea, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+        Stretch(fillArea, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -12f), new Vector2(0f, 12f));
 
         RectTransform fill = CreatePanel("Fill", fillArea, slicedSprite, accentColor);
         Stretch(fill, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         fill.GetComponent<Image>().raycastTarget = false;
 
         RectTransform handleArea = CreateUIObject("Handle Slide Area", sliderRect);
-        Stretch(handleArea, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        Stretch(handleArea, Vector2.zero, Vector2.one, new Vector2(0f, 3f), new Vector2(0f, -3f));
 
-        RectTransform handle = CreatePanel("Handle", handleArea, slicedSprite, Color.white);
-        SetAnchored(handle, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(34f, 2f));
+        Sprite roundSprite = GetRoundSprite();
+        RectTransform handle = CreatePanel("Handle", handleArea, roundSprite, SettingsOutlineColor);
+        SetAnchored(handle, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(64f, 64f));
+        handle.GetComponent<Image>().type = Image.Type.Simple;
+        RectTransform handleFace = CreatePanel("HandleFace", handle, roundSprite, SettingsCreamColor);
+        Stretch(handleFace, Vector2.zero, Vector2.one, new Vector2(6f, 6f), new Vector2(-6f, -6f));
+        handleFace.GetComponent<Image>().type = Image.Type.Simple;
+        handleFace.GetComponent<Image>().raycastTarget = false;
 
         slider = sliderRect.gameObject.AddComponent<Slider>();
         slider.minValue = 0f;
@@ -747,10 +957,103 @@ public static class TitleSceneLayoutBuilder
         slider.fillRect = fill;
         slider.handleRect = handle;
         slider.targetGraphic = handle.GetComponent<Image>();
+        slider.handleRect.sizeDelta = new Vector2(64f, 0f);
 
-        valueText = CreateText($"{label}VolumeValueText", row, "100%", headlineFontAsset, 26f, 18f, TextColor, TextAlignmentOptions.Center);
-        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-58f, 24f), new Vector2(112f, 44f));
+        valueText = CreateText($"{label}VolumeValueText", row, "100", headlineFontAsset, 31f, 23f, SettingsGoldColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-42f, 44f), new Vector2(92f, 52f));
         valueText.textWrappingMode = TextWrappingModes.NoWrap;
+    }
+
+    private static RectTransform CreateSettingsDialog(string name, RectTransform overlay, Sprite sprite, Vector2 size)
+    {
+        RectTransform shadow = CreatePanel($"{name}Shadow", overlay, sprite, new Color(0.08f, 0.045f, 0.035f, 0.52f));
+        SetAnchored(shadow, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 18f), size + new Vector2(18f, 22f));
+
+        RectTransform dialog = CreatePanel(name, overlay, sprite, SettingsOutlineColor);
+        SetAnchored(dialog, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, size);
+
+        RectTransform face = CreatePanel("PanelFace", dialog, sprite, SettingsPaperColor);
+        Stretch(face, Vector2.zero, Vector2.one, new Vector2(7f, 7f), new Vector2(-7f, -7f));
+        face.GetComponent<Image>().raycastTarget = false;
+        face.SetAsFirstSibling();
+        return dialog;
+    }
+
+    private static void BuildSettingsHeader(
+        RectTransform dialog,
+        TMP_FontAsset fontAsset,
+        Sprite pinSprite,
+        Sprite slicedSprite,
+        out Button closeButton)
+    {
+        TMP_Text titleText = CreateText("Title", dialog, "せってい", fontAsset, 62f, 42f, TextColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)titleText.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -66f), new Vector2(560f, 78f));
+        titleText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text subTitle = CreateText("Subtitle", dialog, "S E T T I N G S", fontAsset, 19f, 15f, SettingsMutedColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)subTitle.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -130f), new Vector2(420f, 42f));
+        subTitle.textWrappingMode = TextWrappingModes.NoWrap;
+
+        if (pinSprite != null)
+        {
+            Image pin = CreateImage("Pin", dialog, pinSprite, Color.white, true);
+            SetAnchored(pin.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, 6f), new Vector2(76f, 76f));
+        }
+
+        Sprite roundSprite = GetRoundSprite();
+        closeButton = CreateButton("CloseButtonTop", dialog, roundSprite, new Vector2(114f, 114f), string.Empty, fontAsset, 1f, SettingsOutlineColor);
+        RectTransform closeRect = (RectTransform)closeButton.transform;
+        SetAnchored(closeRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -24f), new Vector2(114f, 114f));
+        closeButton.GetComponent<Image>().color = SettingsOutlineColor;
+
+        RectTransform closeFace = CreatePanel("Face", closeRect, roundSprite, SettingsCreamColor);
+        Stretch(closeFace, Vector2.zero, Vector2.one, new Vector2(7f, 7f), new Vector2(-7f, -7f));
+        closeFace.GetComponent<Image>().type = Image.Type.Simple;
+        closeFace.GetComponent<Image>().raycastTarget = false;
+
+        TMP_Text closeIcon = CreateText("Icon", closeRect, "×", fontAsset, 64f, 48f, TextColor, TextAlignmentOptions.Center);
+        Stretch((RectTransform)closeIcon.transform, Vector2.zero, Vector2.one, new Vector2(0f, 2f), new Vector2(0f, -2f));
+        closeIcon.textWrappingMode = TextWrappingModes.NoWrap;
+    }
+
+    private static Button CreateSettingsBackButton(
+        RectTransform overlay,
+        TMP_FontAsset headlineFontAsset,
+        TMP_FontAsset uiFontAsset,
+        Sprite settingsBackButtonSprite,
+        Sprite slicedSprite)
+    {
+        bool hasCustomButton = settingsBackButtonSprite != null;
+        Button button = CreateButton(
+            "BackButton",
+            overlay,
+            hasCustomButton ? settingsBackButtonSprite : slicedSprite,
+            new Vector2(510f, 184f),
+            string.Empty,
+            headlineFontAsset,
+            1f,
+            SettingsOutlineColor);
+        RectTransform rect = (RectTransform)button.transform;
+        SetAnchored(rect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 38f), new Vector2(510f, 184f));
+        Image buttonImage = button.GetComponent<Image>();
+        buttonImage.color = hasCustomButton ? Color.white : SettingsOutlineColor;
+        buttonImage.type = Image.Type.Sliced;
+
+        if (!hasCustomButton)
+        {
+            RectTransform face = CreatePanel("Face", rect, slicedSprite, SettingsGoldColor);
+            Stretch(face, Vector2.zero, Vector2.one, new Vector2(8f, 14f), new Vector2(-8f, -7f));
+            face.GetComponent<Image>().raycastTarget = false;
+        }
+
+        TMP_Text label = CreateText("Label", rect, "もどる", headlineFontAsset, 47f, 34f, TextColor, TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)label.transform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, 18f), new Vector2(-56f, -66f));
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+
+        TMP_Text sub = CreateText("Subtitle", rect, "B A C K", uiFontAsset, 18f, 14f, new Color(0.29f, 0.22f, 0.16f, 0.7f), TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)sub.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 32f), new Vector2(300f, 30f));
+        sub.textWrappingMode = TextWrappingModes.NoWrap;
+        return button;
     }
 
     private static RectTransform CreateModalDialog(string name, RectTransform overlay, Sprite sprite, Vector2 size)
@@ -865,6 +1168,12 @@ public static class TitleSceneLayoutBuilder
         image.color = color;
         image.raycastTarget = true;
         return rectTransform;
+    }
+
+    private static Sprite GetRoundSprite()
+    {
+        return AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd")
+            ?? AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
     }
 
     private static TMP_Text CreateText(string name, Transform parent, string text, TMP_FontAsset fontAsset, float fontSizeMax, float fontSizeMin, Color color, TextAlignmentOptions alignment)

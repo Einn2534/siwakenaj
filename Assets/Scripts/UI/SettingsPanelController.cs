@@ -8,15 +8,19 @@ public class SettingsPanelController : MonoBehaviour
     private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
     private const string ToggleOffResourcePath = "UI/ui_settings_toggle_off";
 
-    private static readonly Color EnabledTextColor = new(0.137f, 0.184f, 0.275f, 1f);
+    private static readonly Color EnabledTextColor = new(0.976f, 0.953f, 0.882f, 1f);
     private static readonly Color DisabledTextColor = new(0.56f, 0.61f, 0.69f, 1f);
-    private static readonly Color BgmAccentColor = new(0.345f, 0.784f, 0.541f, 1f);
-    private static readonly Color DisabledAccentColor = new(0.824f, 0.855f, 0.902f, 1f);
-    private static readonly Color SeAccentColor = new(0.219f, 0.643f, 0.94f, 1f);
-    private static readonly Color VibrationAccentColor = new(0.949f, 0.772f, 0.259f, 1f);
-    private static readonly Color SliderTrackColor = new(0.824f, 0.855f, 0.902f, 1f);
-    private static readonly Color SliderHandleColor = new(1f, 1f, 1f, 1f);
-    private static readonly Vector2 SliderHandleSize = new(34f, 2f);
+    private static readonly Color BgmAccentColor = new(0.49f, 0.43f, 0.93f, 1f);
+    private static readonly Color DisabledAccentColor = new(0.35f, 0.29f, 0.25f, 1f);
+    private static readonly Color SeAccentColor = new(1f, 0.76f, 0.24f, 1f);
+    private static readonly Color VibrationAccentColor = new(1f, 0.43f, 0.31f, 1f);
+    private static readonly Color SliderTrackColor = new(0.184f, 0.118f, 0.071f, 1f);
+    private static readonly Color SliderHandleColor = new(0.196f, 0.137f, 0.118f, 1f);
+    private static readonly Color SwitchOnColor = new(0.431f, 0.89f, 0.616f, 1f);
+    private static readonly Color SwitchOffColor = new(0.27f, 0.2f, 0.15f, 1f);
+    private static readonly Color SwitchOutlineColor = new(0.196f, 0.137f, 0.118f, 1f);
+    private static readonly Color SwitchKnobColor = new(0.976f, 0.953f, 0.882f, 1f);
+    private static readonly Vector2 SliderHandleSize = new(64f, 0f);
 
     [SerializeField, FormerlySerializedAs("bgmToggle")]
     private Toggle _bgmToggle;
@@ -409,13 +413,13 @@ public class SettingsPanelController : MonoBehaviour
         out TMP_Text valueText)
     {
         RectTransform sliderRect = CreateRuntimeObject($"{label}VolumeSlider", row, typeof(Slider));
-        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-58f, 24f), new Vector2(-282f, 38f));
+        SetAnchored(sliderRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-52f, 44f), new Vector2(-250f, 70f));
 
         RectTransform background = CreateRuntimePanel("Background", sliderRect, SliderTrackColor, true);
-        Stretch(background, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+        Stretch(background, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -12f), new Vector2(0f, 12f));
 
         RectTransform fillArea = CreateRuntimeObject("Fill Area", sliderRect);
-        Stretch(fillArea, Vector2.zero, Vector2.one, new Vector2(0f, 13f), new Vector2(0f, -13f));
+        Stretch(fillArea, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -12f), new Vector2(0f, 12f));
 
         RectTransform fill = CreateRuntimePanel("Fill", fillArea, accentColor, false);
         Stretch(fill, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -534,8 +538,8 @@ public class SettingsPanelController : MonoBehaviour
 
     private static TMP_Text CreateVolumeValueText(Transform row, string label)
     {
-        TMP_Text valueText = CreateRuntimeText($"{label}VolumeValueText", row, "100%", TextAlignmentOptions.Center);
-        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-58f, 24f), new Vector2(112f, 44f));
+        TMP_Text valueText = CreateRuntimeText($"{label}VolumeValueText", row, "100", TextAlignmentOptions.Center);
+        SetAnchored((RectTransform)valueText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-42f, 44f), new Vector2(92f, 52f));
         return valueText;
     }
 
@@ -549,14 +553,35 @@ public class SettingsPanelController : MonoBehaviour
 
         if (toggleImage != null)
         {
-            Sprite stateSprite = isOn ? _toggleOnSprite : _toggleOffSprite;
-            if (stateSprite != null)
+            RectTransform knob = toggleImage.transform.Find("Knob") as RectTransform;
+            Image trackFace = toggleImage.transform.Find("TrackFace")?.GetComponent<Image>();
+            if (knob != null && trackFace != null)
             {
-                toggleImage.sprite = stateSprite;
-                toggleImage.type = Image.Type.Simple;
+                toggleImage.color = SwitchOutlineColor;
+                trackFace.color = isOn ? SwitchOnColor : SwitchOffColor;
+                float anchorX = isOn ? 1f : 0f;
+                knob.anchorMin = new Vector2(anchorX, 0.5f);
+                knob.anchorMax = new Vector2(anchorX, 0.5f);
+                knob.pivot = new Vector2(anchorX, 0.5f);
+                knob.anchoredPosition = new Vector2(isOn ? -8f : 8f, 0f);
+                knob.GetComponent<Image>().color = SwitchOutlineColor;
+                Image knobFace = knob.Find("KnobFace")?.GetComponent<Image>();
+                if (knobFace != null)
+                {
+                    knobFace.color = SwitchKnobColor;
+                }
             }
+            else
+            {
+                Sprite stateSprite = isOn ? _toggleOnSprite : _toggleOffSprite;
+                if (stateSprite != null)
+                {
+                    toggleImage.sprite = stateSprite;
+                    toggleImage.type = Image.Type.Simple;
+                }
 
-            toggleImage.color = Color.white;
+                toggleImage.color = Color.white;
+            }
         }
 
         if (accentImage != null)
@@ -569,7 +594,7 @@ public class SettingsPanelController : MonoBehaviour
     {
         if (valueText != null)
         {
-            valueText.text = $"{Mathf.RoundToInt(Mathf.Clamp01(volume) * 100f)}%";
+            valueText.text = Mathf.RoundToInt(Mathf.Clamp01(volume) * 100f).ToString();
         }
     }
 

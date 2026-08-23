@@ -126,7 +126,6 @@ public class HowToOverlayController : MonoBehaviour
         Transform existing = panelRect.Find("TutorialReplayButton");
         if (existing != null && existing.TryGetComponent(out Button existingButton))
         {
-            ArrangeCloseButtonForReplay(panelRect);
             _tutorialReplayButton = existingButton;
             _tutorialReplayButton.onClick.RemoveListener(ReplayTutorial);
             _tutorialReplayButton.onClick.AddListener(ReplayTutorial);

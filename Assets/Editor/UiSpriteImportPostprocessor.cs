@@ -4,13 +4,15 @@ using UnityEngine;
 public sealed class UiSpriteImportPostprocessor : AssetPostprocessor
 {
     private const string UiSpriteRoot = "Assets/Art/UI/Sprites/";
+    private const string RuntimePauseSpriteRoot = "Assets/Resources/UI/Pause/";
     private const float SpritePixelsPerUnit = 100f;
     private const float DefaultNineSliceBorder = 24f;
 
     private void OnPreprocessTexture()
     {
         string normalizedPath = assetPath.Replace("\\", "/");
-        if (!normalizedPath.StartsWith(UiSpriteRoot))
+        if (!normalizedPath.StartsWith(UiSpriteRoot)
+            && !normalizedPath.StartsWith(RuntimePauseSpriteRoot))
         {
             return;
         }
@@ -39,6 +41,31 @@ public sealed class UiSpriteImportPostprocessor : AssetPostprocessor
 
     private static float GetNineSliceBorder(string normalizedPath)
     {
+        if (normalizedPath.EndsWith("Settings/ui_settings_panel_frame.png", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return 52f;
+        }
+
+        if (normalizedPath.EndsWith("Settings/ui_settings_back_button.png", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return 64f;
+        }
+
+        if (normalizedPath.EndsWith("Pause/ui_pause_primary_button.png", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return 64f;
+        }
+
+        if (normalizedPath.EndsWith("Pause/ui_pause_secondary_button.png", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return 48f;
+        }
+
+        if (normalizedPath.EndsWith("Pause/ui_pause_card.png", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return 52f;
+        }
+
         if (normalizedPath.EndsWith("Result/Legacy/card_bg_soft.png", System.StringComparison.OrdinalIgnoreCase))
         {
             return 42f;
