@@ -11,8 +11,11 @@ using UnityEngine.UI;
 
 public static class ResultSceneLayoutBuilder
 {
-    private const float ResultStarSize = 128f;
-    private const float ResultStarRowHeight = 138f;
+    private const float ResultStarSize = 100f;
+    private const float ResultStarRowHeight = 112f;
+    private const float BreakdownCardHeight = 500f;
+    private const float BreakdownRowHeight = 82f;
+    private const float MissRowHeight = 94f;
     private const string ScenePath = "Assets/Scenes/Result.unity";
     private const string FontSourcePath = "Assets/Fonts/DotGothic16-Regular.ttf";
     private const string FontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
@@ -31,16 +34,17 @@ public static class ResultSceneLayoutBuilder
     private const string GameBackgroundPath = "Assets/Art/Sprites/Backgrounds/magic_shop_background.png";
 
     private static readonly Color CameraColor = new(0.945f, 0.962f, 0.99f, 1f);
-    private static readonly Color ClearTintColor = new(0.70f, 0.90f, 0.78f, 0.22f);
-    private static readonly Color GameOverTintColor = new(0.98f, 0.74f, 0.74f, 0.22f);
-    private static readonly Color CardColor = new(0.035f, 0.13f, 0.18f, 0.96f);
-    private static readonly Color CardShadowColor = new(0f, 0f, 0f, 0.28f);
-    private static readonly Color TextColor = new(1f, 1f, 1f, 1f);
+    private static readonly Color ClearTintColor = new(0.078f, 0.055f, 0.11f, 0.50f);
+    private static readonly Color GameOverTintColor = new(0.133f, 0.055f, 0.078f, 0.62f);
+    private static readonly Color CardColor = new(1f, 0.992f, 0.965f, 1f);
+    private static readonly Color CardShadowColor = new(0f, 0f, 0f, 0.40f);
+    private static readonly Color TextColor = new(0.169f, 0.145f, 0.188f, 1f);
     private static readonly Color BadgeTextColor = new(0.137f, 0.184f, 0.275f, 1f);
-    private static readonly Color MutedTextColor = new(0.84f, 0.93f, 1f, 1f);
-    private static readonly Color SuccessColor = new(0.345f, 0.784f, 0.541f, 1f);
-    private static readonly Color FailureColor = new(1f, 0.56f, 0.58f, 1f);
-    private static readonly Color RowColor = new(0.057f, 0.165f, 0.22f, 0.66f);
+    private static readonly Color MutedTextColor = new(0.169f, 0.145f, 0.188f, 0.50f);
+    private static readonly Color SuccessColor = new(1f, 0.968f, 0.918f, 1f);
+    private static readonly Color FailureColor = new(1f, 0.867f, 0.843f, 1f);
+    private static readonly Color RowColor = new(1f, 1f, 1f, 0f);
+    private static readonly Color MissRowColor = new(1f, 0.55f, 0.50f, 0.16f);
 
     [MenuItem("Tools/Scenes/Rebuild Result Scene UI")]
     public static void RebuildFromMenu() => BuildScene();
@@ -154,7 +158,7 @@ public static class ResultSceneLayoutBuilder
         uiFontAsset ??= titleFontAsset;
 
         Sprite slicedSprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
-        Sprite cardBackgroundSprite = AssetDatabase.LoadAssetAtPath<Sprite>(CardBackgroundPath);
+        Sprite cardBackgroundSprite = LoadSpriteAtPath("Assets/Resources/UI/Tutorial/speech_panel.png") ?? slicedSprite;
         Sprite accentLineSprite = AssetDatabase.LoadAssetAtPath<Sprite>(CardAccentLinePath);
         Sprite stageChipSprite = AssetDatabase.LoadAssetAtPath<Sprite>(StageChipBackgroundPath);
         Sprite retryButtonSprite = AssetDatabase.LoadAssetAtPath<Sprite>(RetryResultButtonPath);
@@ -167,6 +171,7 @@ public static class ResultSceneLayoutBuilder
         Sprite missHeartIconSprite = AssetDatabase.LoadAssetAtPath<Sprite>(MissHeartIconPath);
         Sprite newBestBadgeSprite = AssetDatabase.LoadAssetAtPath<Sprite>(NewBestBadgePath);
         Sprite gameBackgroundSprite = LoadSpriteAtPath(GameBackgroundPath);
+        Sprite powaSprite = LoadSpriteAtPath("Assets/Art/Sprites/Characters/Powa/Powa_Idle.png");
 
         RectTransform background = CreateUIObject("Background", canvas.transform);
         Stretch(background, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
@@ -194,24 +199,41 @@ public static class ResultSceneLayoutBuilder
         Stretch(contentRoot, Vector2.zero, Vector2.one, new Vector2(0f, 300f), Vector2.zero);
 
         VerticalLayoutGroup contentLayout = contentRoot.gameObject.AddComponent<VerticalLayoutGroup>();
-        contentLayout.padding = new RectOffset(48, 48, 62, 0);
-        contentLayout.spacing = 20;
+        contentLayout.padding = new RectOffset(70, 70, 63, 0);
+        contentLayout.spacing = 40;
         contentLayout.childAlignment = TextAnchor.UpperCenter;
         contentLayout.childControlWidth = true;
         contentLayout.childControlHeight = true;
         contentLayout.childForceExpandWidth = true;
         contentLayout.childForceExpandHeight = false;
 
-        RectTransform heroCard = CreateCardShell("HeroCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 336f);
+        RectTransform heroCard = CreateCardShell("HeroCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 370f);
         BuildHeaderCard(heroCard, titleFontAsset, uiFontAsset, stageChipSprite != null ? stageChipSprite : slicedSprite, accentLineSprite != null ? accentLineSprite : slicedSprite,
             out Image stageBadgeBackground,
             out TMP_Text stageText,
             out TMP_Text resultText,
             out TMP_Text subMessageText,
             out Image headerAccent);
+        heroCard.GetComponent<Image>().color = Color.clear;
+        Image heroShadow = heroCard.parent.Find("Shadow")?.GetComponent<Image>();
+        if (heroShadow != null)
+        {
+            heroShadow.color = Color.clear;
+        }
+        stageBadgeBackground.sprite = slicedSprite;
+        stageBadgeBackground.color = new Color(0.36f, 0.20f, 0.10f, 1f);
 
-        RectTransform scoreCard = CreateCardShell("ScoreCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 462f);
-        BuildScoreCard(scoreCard, titleFontAsset, uiFontAsset, accentLineSprite != null ? accentLineSprite : slicedSprite, emptyStarSprite, starGlowSprite,
+        RectTransform powa = CreatePanel("Powa", safeAreaRoot, powaSprite, Color.white);
+        powa.anchorMin = powa.anchorMax = new Vector2(1f, 1f);
+        powa.pivot = new Vector2(1f, 1f);
+        powa.anchoredPosition = new Vector2(-19f, -330f);
+        powa.sizeDelta = new Vector2(230f, 230f);
+        Image powaImage = powa.GetComponent<Image>();
+        powaImage.type = Image.Type.Simple;
+        powaImage.preserveAspect = true;
+
+        RectTransform scoreCard = CreateCardShell("ScoreCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 430f);
+        BuildScoreCard(scoreCard, titleFontAsset, uiFontAsset, accentLineSprite != null ? accentLineSprite : slicedSprite, filledStarSprite, starGlowSprite,
             out Image scoreAccent,
             out TMP_Text scoreText,
             out TMP_Text bestScoreText,
@@ -222,7 +244,7 @@ public static class ResultSceneLayoutBuilder
             out GameObject newBestBadge,
             newBestBadgeSprite);
 
-        RectTransform detailCard = CreateCardShell("BreakdownCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, 548f);
+        RectTransform detailCard = CreateCardShell("BreakdownCard", contentRoot, cardBackgroundSprite != null ? cardBackgroundSprite : slicedSprite, BreakdownCardHeight);
         BuildDetailCard(detailCard, uiFontAsset, accentLineSprite != null ? accentLineSprite : slicedSprite, missHeartIconSprite,
             out Image detailAccent,
             out TMP_Text countAText,
@@ -233,30 +255,56 @@ public static class ResultSceneLayoutBuilder
             out Image missRowBackground,
             out Image lightTruckIcon,
             out Image compactCarIcon,
-            out Image sportsCarIcon);
+            out Image sportsCarIcon,
+            out Image[] missOrbImages);
+        detailCard.GetComponent<Image>().color = new Color(0.43f, 0.29f, 0.18f, 1f);
+        Image detailShadow = detailCard.parent.Find("Shadow")?.GetComponent<Image>();
+        if (detailShadow != null)
+        {
+            detailShadow.color = new Color(0f, 0f, 0f, 0.38f);
+        }
 
         RectTransform actionDock = CreateUIObject("ActionDock", safeAreaRoot);
         actionDock.anchorMin = new Vector2(0f, 0f);
         actionDock.anchorMax = new Vector2(1f, 0f);
         actionDock.pivot = new Vector2(0.5f, 0f);
         actionDock.offsetMin = Vector2.zero;
-        actionDock.offsetMax = new Vector2(0f, 214f);
+        actionDock.offsetMax = new Vector2(0f, 430f);
 
-        HorizontalLayoutGroup actionLayout = actionDock.gameObject.AddComponent<HorizontalLayoutGroup>();
-        actionLayout.padding = new RectOffset(48, 48, 0, 44);
-        actionLayout.spacing = 20;
-        actionLayout.childAlignment = TextAnchor.LowerCenter;
-        actionLayout.childControlWidth = false;
-        actionLayout.childControlHeight = false;
-        actionLayout.childForceExpandWidth = false;
-        actionLayout.childForceExpandHeight = false;
+        Button primaryActionButton = CreateImageActionButton(actionDock, "PrimaryButton", cardBackgroundSprite, new Vector2(940f, 230f));
+        RectTransform primaryRect = primaryActionButton.transform as RectTransform;
+        primaryRect.anchorMin = primaryRect.anchorMax = new Vector2(0.5f, 0f);
+        primaryRect.pivot = new Vector2(0.5f, 0f);
+        primaryRect.anchoredPosition = new Vector2(0f, 255f);
+        primaryActionButton.GetComponent<Image>().color = new Color(1f, 0.796f, 0.224f, 1f);
+        Shadow primaryShadow = primaryActionButton.gameObject.AddComponent<Shadow>();
+        primaryShadow.effectColor = new Color(0.47f, 0.31f, 0.08f, 0.9f);
+        primaryShadow.effectDistance = new Vector2(0f, -12f);
 
-        Button primaryActionButton = CreateImageActionButton(actionDock, "RetryButton", retryButtonSprite, new Vector2(290f, 126f));
-        Button secondaryLeftButton = CreateImageActionButton(actionDock, "TitleButton", titleButtonSprite, new Vector2(290f, 126f));
-        Button secondaryRightButton = CreateImageActionButton(actionDock, "StageSelectButton", stageSelectButtonSprite, new Vector2(290f, 118f));
-        TMP_Text primaryActionLabel = null;
-        TMP_Text secondaryLeftLabel = null;
-        TMP_Text secondaryRightLabel = null;
+        RectTransform secondaryRow = CreateUIObject("SecondaryRow", actionDock);
+        secondaryRow.anchorMin = secondaryRow.anchorMax = new Vector2(0.5f, 0f);
+        secondaryRow.pivot = new Vector2(0.5f, 0f);
+        secondaryRow.anchoredPosition = new Vector2(0f, 90f);
+        secondaryRow.sizeDelta = new Vector2(940f, 110f);
+        HorizontalLayoutGroup secondaryLayout = secondaryRow.gameObject.AddComponent<HorizontalLayoutGroup>();
+        secondaryLayout.spacing = 30f;
+        secondaryLayout.childAlignment = TextAnchor.MiddleCenter;
+        secondaryLayout.childControlWidth = false;
+        secondaryLayout.childControlHeight = false;
+        secondaryLayout.childForceExpandWidth = false;
+        secondaryLayout.childForceExpandHeight = false;
+
+        Button secondaryLeftButton = CreateImageActionButton(secondaryRow, "RetryButton", cardBackgroundSprite, new Vector2(455f, 160f));
+        Button secondaryRightButton = CreateImageActionButton(secondaryRow, "StageSelectButton", cardBackgroundSprite, new Vector2(455f, 160f));
+        secondaryLeftButton.GetComponent<Image>().color = CardColor;
+        secondaryRightButton.GetComponent<Image>().color = CardColor;
+        TMP_Text primaryActionLabel = CreateText("GeneratedLabel", primaryActionButton.transform, "つぎのステージへ\n<size=55%><color=#2B253070>NEXT STAGE</color></size>", titleFontAsset, 48f, BadgeTextColor, TextAlignmentOptions.Center);
+        Stretch(primaryActionLabel.rectTransform, Vector2.zero, Vector2.one, new Vector2(18f, 10f), new Vector2(-18f, -10f));
+        primaryActionLabel.textWrappingMode = TextWrappingModes.Normal;
+        TMP_Text secondaryLeftLabel = CreateText("GeneratedLabel", secondaryLeftButton.transform, "もういちど", titleFontAsset, 38f, BadgeTextColor, TextAlignmentOptions.Center);
+        Stretch(secondaryLeftLabel.rectTransform, Vector2.zero, Vector2.one, new Vector2(18f, 10f), new Vector2(-18f, -10f));
+        TMP_Text secondaryRightLabel = CreateText("GeneratedLabel", secondaryRightButton.transform, "ステージ選択", titleFontAsset, 38f, BadgeTextColor, TextAlignmentOptions.Center);
+        Stretch(secondaryRightLabel.rectTransform, Vector2.zero, Vector2.one, new Vector2(18f, 10f), new Vector2(-18f, -10f));
         Image primaryActionIcon = null;
         Image secondaryLeftIcon = null;
         Image secondaryRightIcon = null;
@@ -300,12 +348,14 @@ public static class ResultSceneLayoutBuilder
             lightTruckIcon,
             compactCarIcon,
             sportsCarIcon,
+            missOrbImages,
             starRowRoot,
             filledStarSprite,
             emptyStarSprite,
-            retryButtonSprite,
-            titleButtonSprite,
-            stageSelectButtonSprite);
+            cardBackgroundSprite,
+            null,
+            null,
+            null);
     }
 
     private static GameObject BuildClearFx(Transform parent, Sprite slicedSprite, Sprite heroClearGlowSprite)
@@ -324,11 +374,11 @@ public static class ResultSceneLayoutBuilder
             heroGlowImage.sprite = heroClearGlowSprite;
             heroGlowImage.type = Image.Type.Simple;
             heroGlowImage.preserveAspect = false;
-            heroGlowImage.color = new Color(1f, 1f, 1f, 0.58f);
+            heroGlowImage.color = Color.clear;
             heroGlowImage.raycastTarget = false;
         }
 
-        RectTransform glowTop = CreatePanel("GlowTop", clearRoot, slicedSprite, new Color(0.396f, 0.859f, 0.631f, 0.12f));
+        RectTransform glowTop = CreatePanel("GlowTop", clearRoot, slicedSprite, Color.clear);
         glowTop.anchorMin = new Vector2(0.18f, 0.7f);
         glowTop.anchorMax = new Vector2(0.82f, 0.96f);
         glowTop.offsetMin = Vector2.zero;
@@ -377,11 +427,11 @@ public static class ResultSceneLayoutBuilder
         headerAccent.gameObject.SetActive(false);
 
         RectTransform body = CreateUIObject("Body", parent);
-        Stretch(body, Vector2.zero, Vector2.one, new Vector2(40f, 30f), new Vector2(-40f, -30f));
+        Stretch(body, Vector2.zero, Vector2.one, new Vector2(40f, 0f), new Vector2(-40f, 0f));
         VerticalLayoutGroup layout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        layout.padding = new RectOffset(0, 0, 16, 0);
+        layout.padding = new RectOffset(0, 0, 0, 0);
         layout.spacing = 12;
-        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.childAlignment = TextAnchor.UpperCenter;
         layout.childControlWidth = true;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = true;
@@ -389,7 +439,7 @@ public static class ResultSceneLayoutBuilder
 
         RectTransform badgeRoot = CreateUIObject("StageBadge", body);
         badgeRoot.gameObject.AddComponent<LayoutElement>().preferredHeight = 64f;
-        stageBadgeBackground = CreatePanel("BadgeBackground", badgeRoot, stageChipSprite, Color.white).GetComponent<Image>();
+        stageBadgeBackground = CreatePanel("BadgeBackground", badgeRoot, stageChipSprite, new Color(0.36f, 0.20f, 0.10f, 1f)).GetComponent<Image>();
         stageBadgeBackground.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         stageBadgeBackground.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         stageBadgeBackground.rectTransform.pivot = new Vector2(0.5f, 0.5f);
@@ -397,22 +447,22 @@ public static class ResultSceneLayoutBuilder
         stageBadgeBackground.type = Image.Type.Sliced;
         stageBadgeBackground.preserveAspect = false;
 
-        stageText = CreateText("StageText", badgeRoot, "STAGE 08", uiFontAsset, 40f, BadgeTextColor, TextAlignmentOptions.Center);
+        stageText = CreateText("StageText", badgeRoot, "ステージ 8", uiFontAsset, 40f, new Color(1f, 0.925f, 0.788f, 1f), TextAlignmentOptions.Center);
         Stretch(stageText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         stageText.fontStyle = FontStyles.Bold;
         stageText.enableAutoSizing = true;
         stageText.fontSizeMin = 34f;
         stageText.fontSizeMax = 42f;
 
-        resultText = CreateText("ResultTitle", body, "GAME CLEAR!", titleFontAsset, 86f, SuccessColor, TextAlignmentOptions.Center);
-        resultText.gameObject.AddComponent<LayoutElement>().preferredHeight = 118f;
+        resultText = CreateText("ResultTitle", body, "クリア!", titleFontAsset, 108f, SuccessColor, TextAlignmentOptions.Center);
+        resultText.gameObject.AddComponent<LayoutElement>().preferredHeight = 132f;
         resultText.enableAutoSizing = true;
         resultText.fontSizeMin = 68f;
-        resultText.fontSizeMax = 92f;
+        resultText.fontSizeMax = 110f;
         resultText.fontStyle = FontStyles.Normal;
         resultText.characterSpacing = 0.5f;
 
-        subText = CreateText("SubMessage", body, "MISSION COMPLETE", uiFontAsset, 40f, MutedTextColor, TextAlignmentOptions.Center);
+        subText = CreateText("SubMessage", body, "STAGE CLEAR", uiFontAsset, 35f, new Color(1f, 0.925f, 0.788f, 0.72f), TextAlignmentOptions.Center);
         subText.gameObject.AddComponent<LayoutElement>().preferredHeight = 44f;
         subText.enableAutoSizing = true;
         subText.fontSizeMin = 34f;
@@ -448,7 +498,7 @@ public static class ResultSceneLayoutBuilder
         Stretch(body, Vector2.zero, Vector2.one, new Vector2(40f, 34f), new Vector2(-40f, -34f));
 
         VerticalLayoutGroup layout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        layout.spacing = 10;
+        layout.spacing = 8;
         layout.childAlignment = TextAnchor.UpperCenter;
         layout.childControlWidth = true;
         layout.childControlHeight = false;
@@ -456,7 +506,7 @@ public static class ResultSceneLayoutBuilder
         layout.childForceExpandHeight = false;
 
         RectTransform headerRow = CreateUIObject("HeaderRow", body);
-        headerRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 64f;
+        headerRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
         HorizontalLayoutGroup headerLayout = headerRow.gameObject.AddComponent<HorizontalLayoutGroup>();
         headerLayout.childAlignment = TextAnchor.MiddleCenter;
         headerLayout.childControlWidth = true;
@@ -464,19 +514,21 @@ public static class ResultSceneLayoutBuilder
         headerLayout.childForceExpandWidth = true;
         headerLayout.childForceExpandHeight = true;
 
-        TMP_Text scoreLabel = CreateText("ScoreLabel", headerRow, "SCORE", uiFontAsset, 38f, MutedTextColor, TextAlignmentOptions.MidlineLeft);
+        TMP_Text scoreLabel = CreateText("ScoreLabel", headerRow, string.Empty, uiFontAsset, 1f, Color.clear, TextAlignmentOptions.MidlineLeft);
         scoreLabel.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         RectTransform badge = CreateUIObject("NewBestBadge", headerRow);
         LayoutElement badgeLayout = badge.gameObject.AddComponent<LayoutElement>();
-        badgeLayout.preferredWidth = 188f;
-        badgeLayout.preferredHeight = 58f;
+        badgeLayout.preferredWidth = 120f;
+        badgeLayout.preferredHeight = 36f;
         Image badgeImage = badge.gameObject.AddComponent<Image>();
-        badgeImage.sprite = newBestBadgeSprite;
-        badgeImage.type = Image.Type.Simple;
-        badgeImage.preserveAspect = newBestBadgeSprite != null;
-        badgeImage.color = Color.white;
+        badgeImage.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
+        badgeImage.type = Image.Type.Sliced;
+        badgeImage.preserveAspect = false;
+        badgeImage.color = new Color(0.94f, 0.29f, 0.34f, 1f);
         badgeImage.raycastTarget = false;
+        TMP_Text badgeText = CreateText("Label", badge, "記録更新!", uiFontAsset, 20f, Color.white, TextAlignmentOptions.Center);
+        Stretch(badgeText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         badge.gameObject.SetActive(false);
         newBestBadge = badge.gameObject;
 
@@ -499,7 +551,7 @@ public static class ResultSceneLayoutBuilder
             CreateStarToken(starRow, emptyStarSprite != null ? emptyStarSprite : accentLineSprite, starGlowSprite, uiFontAsset, out starImages[i], out starGlowImages[i], out starLabels[i]);
         }
 
-        scoreText = CreateText("TotalScoreValue", body, "12,450", displayFontAsset, 78f, TextColor, TextAlignmentOptions.Center);
+        scoreText = CreateText("TotalScoreValue", body, "12,450", displayFontAsset, 83f, TextColor, TextAlignmentOptions.Center);
         scoreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 100f;
         scoreText.enableAutoSizing = true;
         scoreText.fontSizeMin = 68f;
@@ -512,11 +564,11 @@ public static class ResultSceneLayoutBuilder
         bestLayout.spacing = 14;
         bestLayout.childAlignment = TextAnchor.MiddleCenter;
         bestLayout.childControlWidth = false;
-        bestLayout.childControlHeight = true;
+        bestLayout.childControlHeight = false;
         bestLayout.childForceExpandWidth = false;
-        bestLayout.childForceExpandHeight = true;
+        bestLayout.childForceExpandHeight = false;
 
-        TMP_Text bestLabel = CreateText("BestScoreLabel", bestRow, "BEST", uiFontAsset, 34f, MutedTextColor, TextAlignmentOptions.MidlineLeft);
+        TMP_Text bestLabel = CreateText("BestScoreLabel", bestRow, "ベスト", uiFontAsset, 35f, MutedTextColor, TextAlignmentOptions.MidlineLeft);
         bestLabel.gameObject.AddComponent<LayoutElement>().preferredWidth = 118f;
         bestLabel.enableAutoSizing = true;
         bestLabel.fontSizeMin = 28f;
@@ -527,6 +579,10 @@ public static class ResultSceneLayoutBuilder
         bestScoreText.fontSizeMin = 26f;
         bestScoreText.fontSizeMax = 36f;
         bestScoreText.fontStyle = FontStyles.Normal;
+        badge.transform.SetParent(bestRow, false);
+        badge.transform.SetAsLastSibling();
+        (badge.transform as RectTransform).sizeDelta = new Vector2(120f, 36f);
+        headerRow.gameObject.SetActive(false);
     }
 
     private static void BuildDetailCard(
@@ -543,7 +599,8 @@ public static class ResultSceneLayoutBuilder
         out Image missRowBackground,
         out Image lightTruckIcon,
         out Image compactCarIcon,
-        out Image sportsCarIcon)
+        out Image sportsCarIcon,
+        out Image[] missOrbImages)
     {
         detailAccent = CreatePanel("AccentBar", parent, accentLineSprite, SuccessColor).GetComponent<Image>();
         detailAccent.rectTransform.anchorMin = new Vector2(0f, 1f);
@@ -556,30 +613,60 @@ public static class ResultSceneLayoutBuilder
         RectTransform body = CreateUIObject("Body", parent);
         Stretch(body, Vector2.zero, Vector2.one, new Vector2(40f, 34f), new Vector2(-40f, -34f));
         VerticalLayoutGroup layout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        layout.spacing = 20;
+        layout.spacing = 0;
         layout.childAlignment = TextAnchor.UpperCenter;
         layout.childControlWidth = true;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = true;
         layout.childForceExpandHeight = false;
 
-        TMP_Text detailLabel = CreateText("DetailsTitle", body, "CORRECT CARS", fontAsset, 38f, MutedTextColor, TextAlignmentOptions.Left);
-        detailLabel.gameObject.AddComponent<LayoutElement>().preferredHeight = 46f;
+        TMP_Text detailLabel = CreateText("DetailsTitle", body, string.Empty, fontAsset, 1f, Color.clear, TextAlignmentOptions.Left);
+        detailLabel.gameObject.AddComponent<LayoutElement>().preferredHeight = 0f;
 
         RectTransform statList = CreateUIObject("StatList", body);
         VerticalLayoutGroup statLayout = statList.gameObject.AddComponent<VerticalLayoutGroup>();
-        statLayout.spacing = 14;
+        statLayout.spacing = 0;
         statLayout.childAlignment = TextAnchor.UpperCenter;
         statLayout.childControlWidth = true;
         statLayout.childControlHeight = false;
         statLayout.childForceExpandWidth = true;
         statLayout.childForceExpandHeight = false;
 
-        countAText = CreateBreakdownRow(statList, "Row_LightTruck", "Light Truck", null, fontAsset, "12", false, out _, out _, out lightTruckIcon);
-        countBText = CreateBreakdownRow(statList, "Row_CompactCar", "Compact Car", null, fontAsset, "9", false, out _, out _, out compactCarIcon);
-        countCText = CreateBreakdownRow(statList, "Row_SportsCar", "Sports Car", null, fontAsset, "7", false, out _, out _, out sportsCarIcon);
+        countAText = CreateBreakdownRow(statList, "Row_LightTruck", "トラック", null, fontAsset, "12", false, out _, out _, out lightTruckIcon);
+        countBText = CreateBreakdownRow(statList, "Row_CompactCar", "普通車", null, fontAsset, "9", false, out _, out _, out compactCarIcon);
+        countCText = CreateBreakdownRow(statList, "Row_SportsCar", "スポーツカー", null, fontAsset, "7", false, out _, out _, out sportsCarIcon);
 
-        missCountText = CreateBreakdownRow(statList, "Row_Misses", "Mistakes", missIconSprite, fontAsset, "1", true, out missLabelText, out missRowBackground, out _);
+        missCountText = CreateBreakdownRow(statList, "Row_Misses", "ミス", null, fontAsset, "1", true, out missLabelText, out missRowBackground, out _);
+        Transform missRow = missCountText.transform.parent;
+        Transform missIcon = missRow.Find("Icon");
+        if (missIcon != null)
+        {
+            missIcon.gameObject.SetActive(false);
+        }
+
+        RectTransform orbRow = CreateUIObject("MissOrbs", missRow);
+        orbRow.SetSiblingIndex(Mathf.Max(1, missCountText.transform.GetSiblingIndex()));
+        LayoutElement orbRowLayout = orbRow.gameObject.AddComponent<LayoutElement>();
+        orbRowLayout.preferredWidth = 180f;
+        orbRowLayout.preferredHeight = 48f;
+        HorizontalLayoutGroup orbLayout = orbRow.gameObject.AddComponent<HorizontalLayoutGroup>();
+        orbLayout.spacing = 12f;
+        orbLayout.childAlignment = TextAnchor.MiddleCenter;
+        orbLayout.childControlWidth = false;
+        orbLayout.childControlHeight = false;
+        orbLayout.childForceExpandWidth = false;
+        orbLayout.childForceExpandHeight = false;
+        Sprite filledOrbSprite = LoadSpriteAtPath("Assets/Resources/UI/Tutorial/miss_orb_lit.png");
+        Sprite emptyOrbSprite = LoadSpriteAtPath("Assets/Resources/UI/Tutorial/miss_orb_empty.png");
+        missOrbImages = new Image[3];
+        for (int i = 0; i < missOrbImages.Length; i += 1)
+        {
+            RectTransform orb = CreatePanel($"Orb{i + 1}", orbRow, i == 0 ? filledOrbSprite : emptyOrbSprite, Color.white);
+            orb.sizeDelta = new Vector2(46f, 46f);
+            orb.GetComponent<Image>().type = Image.Type.Simple;
+            orb.GetComponent<Image>().preserveAspect = true;
+            missOrbImages[i] = orb.GetComponent<Image>();
+        }
     }
 
     private static TMP_Text CreateBreakdownRow(
@@ -607,7 +694,7 @@ public static class ResultSceneLayoutBuilder
         out Image iconImage)
     {
         RectTransform row = CreateUIObject(name, parent);
-        row.gameObject.AddComponent<LayoutElement>().preferredHeight = 82f;
+        row.gameObject.AddComponent<LayoutElement>().preferredHeight = isMissRow ? MissRowHeight : BreakdownRowHeight;
 
         HorizontalLayoutGroup layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
         layout.padding = new RectOffset(18, 18, 0, 0);
@@ -619,7 +706,7 @@ public static class ResultSceneLayoutBuilder
         layout.childForceExpandHeight = true;
 
         rowBackground = row.gameObject.AddComponent<Image>();
-        rowBackground.color = RowColor;
+        rowBackground.color = isMissRow ? MissRowColor : RowColor;
         rowBackground.raycastTarget = false;
 
         RectTransform iconRoot = CreateUIObject("Icon", row);
@@ -641,11 +728,11 @@ public static class ResultSceneLayoutBuilder
             iconText.fontStyle = FontStyles.Bold;
         }
 
-        labelText = CreateText("Label", row, label, fontAsset, 34f, isMissRow ? FailureColor : TextColor, TextAlignmentOptions.MidlineLeft);
+        labelText = CreateText("Label", row, label, fontAsset, isMissRow ? 38f : 34f, isMissRow ? FailureColor : new Color(1f, 0.968f, 0.918f, 1f), TextAlignmentOptions.MidlineLeft);
         labelText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
         labelText.fontStyle = FontStyles.Bold;
 
-        TMP_Text valueText = CreateText("Value", row, initialValue, fontAsset, 46f, isMissRow ? FailureColor : TextColor, TextAlignmentOptions.MidlineRight);
+        TMP_Text valueText = CreateText("Value", row, initialValue, fontAsset, isMissRow ? 46f : 42f, isMissRow ? FailureColor : new Color(1f, 0.968f, 0.918f, 1f), TextAlignmentOptions.MidlineRight);
         valueText.gameObject.AddComponent<LayoutElement>().preferredWidth = 120f;
         valueText.fontStyle = FontStyles.Bold;
         return valueText;
@@ -685,7 +772,7 @@ public static class ResultSceneLayoutBuilder
         Vector2 fallbackSize)
     {
         RectTransform buttonRect = CreateUIObject(name, parent);
-        Vector2 size = GetSpriteSize(buttonSprite, fallbackSize);
+        Vector2 size = fallbackSize;
         buttonRect.sizeDelta = size;
 
         LayoutElement layout = buttonRect.gameObject.AddComponent<LayoutElement>();
@@ -696,9 +783,9 @@ public static class ResultSceneLayoutBuilder
 
         Image image = buttonRect.gameObject.AddComponent<Image>();
         image.sprite = buttonSprite;
-        image.type = Image.Type.Simple;
+        image.type = buttonSprite != null ? Image.Type.Sliced : Image.Type.Simple;
         image.color = Color.white;
-        image.preserveAspect = true;
+        image.preserveAspect = false;
 
         Button button = buttonRect.gameObject.AddComponent<Button>();
         button.transition = Selectable.Transition.ColorTint;
@@ -725,7 +812,7 @@ public static class ResultSceneLayoutBuilder
         Stretch(shadow, Vector2.zero, Vector2.one, new Vector2(8f, -10f), new Vector2(8f, -10f));
         shadow.GetComponent<Image>().raycastTarget = false;
 
-        RectTransform card = CreatePanel("Card", root, cardSprite, cardSprite != null ? Color.white : CardColor);
+        RectTransform card = CreatePanel("Card", root, cardSprite, CardColor);
         Stretch(card, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, 10f));
         return card;
     }
@@ -894,9 +981,11 @@ public static class ResultSceneLayoutBuilder
         Image lightTruckIcon,
         Image compactCarIcon,
         Image sportsCarIcon,
+        Image[] missOrbImages,
         GameObject starRowRoot,
         Sprite filledStarSprite,
         Sprite emptyStarSprite,
+        Sprite buttonBackgroundSprite,
         Sprite retryButtonSprite,
         Sprite titleButtonSprite,
         Sprite stageSelectButtonSprite)
@@ -933,9 +1022,13 @@ public static class ResultSceneLayoutBuilder
         SetObjectReference(serializedObject, "_lightTruckIcon", lightTruckIcon);
         SetObjectReference(serializedObject, "_compactCarIcon", compactCarIcon);
         SetObjectReference(serializedObject, "_sportsCarIcon", sportsCarIcon);
+        SetObjectArray(serializedObject, "_missOrbImages", missOrbImages);
+        SetObjectReference(serializedObject, "_filledMissOrbSprite", LoadSpriteAtPath("Assets/Resources/UI/Tutorial/miss_orb_lit.png"));
+        SetObjectReference(serializedObject, "_emptyMissOrbSprite", LoadSpriteAtPath("Assets/Resources/UI/Tutorial/miss_orb_empty.png"));
         SetObjectReference(serializedObject, "_starRowRoot", starRowRoot);
         SetObjectReference(serializedObject, "_filledStarSprite", filledStarSprite);
         SetObjectReference(serializedObject, "_emptyStarSprite", emptyStarSprite);
+        SetObjectReference(serializedObject, "_buttonBackgroundSprite", buttonBackgroundSprite);
         SetObjectReference(serializedObject, "_retryButtonSprite", retryButtonSprite);
         SetObjectReference(serializedObject, "_titleButtonSprite", titleButtonSprite);
         SetObjectReference(serializedObject, "_nextStageButtonSprite", null);
