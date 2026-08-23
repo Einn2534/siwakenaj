@@ -89,3 +89,14 @@ Assets/_Recovery.meta
 .utmp/
 *_BurstDebugInformation_DoNotShip/
 *.log
+
+# Local agent attachments and QA artifacts
+/.codex-remote-attachments/
+/.devspace/
+/PowaScreenshots/
+/RegressionArtifacts/
+/tmp/
+/TestResults*.xml
+/design-qa.md
+/Assets/InitTestScene*.unity
+/Assets/InitTestScene*.unity.meta
