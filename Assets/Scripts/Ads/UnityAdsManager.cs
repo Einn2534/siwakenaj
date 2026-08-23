@@ -179,6 +179,10 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
 
     private void Initialize()
     {
+#if UNITY_EDITOR
+        LogConfigurationWarning("Unity Ads is disabled in the Editor so automated regression runs never contact the ads service.");
+        return;
+#else
         _settings = Resources.Load<UnityAdsSettings>(SettingsResourcePath);
         if (_settings == null)
         {
@@ -218,6 +222,7 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, I
         }
 
         Advertisement.Initialize(gameId, _settings.TestMode, this);
+#endif
     }
 
     private void LoadInterstitial()
