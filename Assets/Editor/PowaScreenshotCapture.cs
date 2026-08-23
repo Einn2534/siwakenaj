@@ -43,7 +43,130 @@ public static class PowaScreenshotCapture
         Debug.Log($"[PowaScreenshotCapture] Saved screenshots to {Path.GetFullPath(outputDirectory)}");
     }
 
+    public static void CaptureDesignQaStatesFromBatchMode()
+    {
+        string outputDirectory = GetCommandLineValue("-powaScreenshotOutput", DefaultOutputDirectory);
+        int width = GetCommandLineInt("-powaScreenshotWidth", DefaultWidth);
+        int height = GetCommandLineInt("-powaScreenshotHeight", DefaultHeight);
+        Directory.CreateDirectory(outputDirectory);
+
+        Scene stageScene = EditorSceneManager.OpenScene("Assets/Scenes/StageSelect.unity", OpenSceneMode.Single);
+        PrepareStageSelectCards();
+        InvokePrivateMethod(UnityEngine.Object.FindFirstObjectByType<StageSelectController>(FindObjectsInactive.Include), "BuildUtilityUi");
+        PrepareStageDots(0);
+        CaptureScene(stageScene, Path.Combine(outputDirectory, $"StageSelect_Unlocked_{width}x{height}.png"), width, height);
+        PrepareLockedStageSelectPreview();
+        PrepareStageDots(2);
+        CaptureScene(stageScene, Path.Combine(outputDirectory, $"StageSelect_Locked_{width}x{height}.png"), width, height);
+
+        Scene resultScene = EditorSceneManager.OpenScene("Assets/Scenes/Result.unity", OpenSceneMode.Single);
+        PrepareClearResultPreview();
+        CaptureScene(resultScene, Path.Combine(outputDirectory, $"Result_Clear_{width}x{height}.png"), width, height);
+        PrepareGameOverResultPreview();
+        CaptureScene(resultScene, Path.Combine(outputDirectory, $"Result_GameOver_{width}x{height}.png"), width, height);
+
+        Debug.Log($"[PowaScreenshotCapture] Saved design QA states to {Path.GetFullPath(outputDirectory)}");
+    }
+
+    public static void CaptureSettingsFromBatchMode()
+    {
+        string outputDirectory = GetCommandLineValue("-powaScreenshotOutput", DefaultOutputDirectory);
+        int width = GetCommandLineInt("-powaScreenshotWidth", DefaultWidth);
+        int height = GetCommandLineInt("-powaScreenshotHeight", DefaultHeight);
+        Directory.CreateDirectory(outputDirectory);
+
+        Scene scene = EditorSceneManager.OpenScene("Assets/Scenes/Title.unity", OpenSceneMode.Single);
+        TitleController titleController = UnityEngine.Object.FindFirstObjectByType<TitleController>(FindObjectsInactive.Include);
+        titleController?.OnSettingsOpen();
+
+        string outputPath = Path.Combine(outputDirectory, $"Title_Settings_{width}x{height}.png");
+        CaptureScene(scene, outputPath, width, height);
+        Debug.Log($"[PowaScreenshotCapture] Saved settings screenshot to {Path.GetFullPath(outputPath)}");
+    }
+
+    public static void CaptureHowToFromBatchMode()
+    {
+        string outputDirectory = GetCommandLineValue("-powaScreenshotOutput", DefaultOutputDirectory);
+        int width = GetCommandLineInt("-powaScreenshotWidth", DefaultWidth);
+        int height = GetCommandLineInt("-powaScreenshotHeight", DefaultHeight);
+        Directory.CreateDirectory(outputDirectory);
+
+        TitleSceneLayoutBuilder.BuildFromBatchMode();
+        Scene scene = EditorSceneManager.OpenScene("Assets/Scenes/Title.unity", OpenSceneMode.Single);
+        TitleController titleController = UnityEngine.Object.FindFirstObjectByType<TitleController>(FindObjectsInactive.Include);
+        titleController?.OnHowToOpen();
+
+        string outputPath = Path.Combine(outputDirectory, $"Title_HowTo_{width}x{height}.png");
+        CaptureScene(scene, outputPath, width, height);
+        Debug.Log($"[PowaScreenshotCapture] Saved How To screenshot to {Path.GetFullPath(outputPath)}");
+    }
+
+    public static void CapturePauseMenuFromBatchMode()
+    {
+        string outputDirectory = GetCommandLineValue("-powaScreenshotOutput", DefaultOutputDirectory);
+        int width = GetCommandLineInt("-powaScreenshotWidth", DefaultWidth);
+        int height = GetCommandLineInt("-powaScreenshotHeight", DefaultHeight);
+        Directory.CreateDirectory(outputDirectory);
+
+        Scene scene = EditorSceneManager.OpenScene("Assets/Scenes/Main.unity", OpenSceneMode.Single);
+        SessionState.SelectStage(8);
+
+        MainPauseMenuController controller = UnityEngine.Object.FindFirstObjectByType<MainPauseMenuController>(FindObjectsInactive.Include);
+        if (controller == null)
+        {
+            GameObject controllerObject = new("MainPauseMenuController_Preview");
+            controller = controllerObject.AddComponent<MainPauseMenuController>();
+        }
+
+        if (GameObject.Find("PauseMenuCanvas") == null)
+        {
+            InvokePrivateMethod(controller, "BuildInterface");
+        }
+
+        GameObject gameplayCanvas = GameObject.Find("Canvas");
+        if (gameplayCanvas != null)
+        {
+            for (int i = 0; i < gameplayCanvas.transform.childCount; i += 1)
+            {
+                Transform child = gameplayCanvas.transform.GetChild(i);
+                child.gameObject.SetActive(string.Equals(child.name, "Background", StringComparison.Ordinal));
+            }
+        }
+
+        InvokePrivateMethod(controller, "RefreshStageText");
+        InvokePrivateMethod(controller, "ShowPauseMenuPanel");
+        GameObject pauseButton = GameObject.Find("PauseMenuCanvas/SafeAreaRoot/PauseButton");
+        if (pauseButton != null)
+        {
+            pauseButton.SetActive(false);
+        }
+
+        string outputPath = Path.Combine(outputDirectory, $"Main_PauseMenu_{width}x{height}.png");
+        CaptureScene(scene, outputPath, width, height);
+        Debug.Log($"[PowaScreenshotCapture] Saved pause-menu screenshot to {Path.GetFullPath(outputPath)}");
+    }
+
+    internal static void CaptureSceneForRegression(
+        Scene scene,
+        string outputPath,
+        int width,
+        int height,
+        Action<Camera> onLayoutReady)
+    {
+        CaptureScene(scene, outputPath, width, height, onLayoutReady);
+    }
+
     private static void CaptureScene(Scene scene, string outputPath, int width, int height)
+    {
+        CaptureScene(scene, outputPath, width, height, null);
+    }
+
+    private static void CaptureScene(
+        Scene scene,
+        string outputPath,
+        int width,
+        int height,
+        Action<Camera> onLayoutReady)
     {
         Camera camera = Camera.main != null
             ? Camera.main
@@ -78,13 +201,20 @@ public static class PowaScreenshotCapture
 
         RenderTexture renderTexture = new(width, height, 24, RenderTextureFormat.ARGB32)
         {
-            antiAliasing = 4
+            antiAliasing = 1
         };
 
         Texture2D texture = new(width, height, TextureFormat.RGBA32, false);
 
         try
         {
+            camera.targetTexture = renderTexture;
+            camera.aspect = (float)width / height;
+            camera.clearFlags = previousClearFlags == CameraClearFlags.Nothing
+                ? CameraClearFlags.SolidColor
+                : previousClearFlags;
+            camera.backgroundColor = previousBackgroundColor;
+
             Canvas.ForceUpdateCanvases();
             foreach (Canvas canvas in canvases)
             {
@@ -94,12 +224,12 @@ public static class PowaScreenshotCapture
                 }
             }
 
-            camera.targetTexture = renderTexture;
-            camera.aspect = (float)width / height;
-            camera.clearFlags = previousClearFlags == CameraClearFlags.Nothing
-                ? CameraClearFlags.SolidColor
-                : previousClearFlags;
-            camera.backgroundColor = previousBackgroundColor;
+            Canvas.ForceUpdateCanvases();
+            // A first render makes dynamically-created ScreenSpace canvases adopt
+            // the target texture dimensions before regression geometry is read.
+            camera.Render();
+            Canvas.ForceUpdateCanvases();
+            onLayoutReady?.Invoke(camera);
 
             RenderTexture.active = renderTexture;
             camera.Render();
@@ -139,7 +269,7 @@ public static class PowaScreenshotCapture
         }
     }
 
-    private static void PrepareMainScoreLanePreview()
+    internal static void PrepareMainScoreLanePreview()
     {
         ScoreLaneUI scoreLaneUI = UnityEngine.Object.FindFirstObjectByType<ScoreLaneUI>(FindObjectsInactive.Include);
         if (scoreLaneUI == null)
@@ -198,8 +328,8 @@ public static class PowaScreenshotCapture
             StageCardStatus status = stageDefinition == null || !stageDefinition.IsImplemented
                 ? StageCardStatus.ComingSoon
                 : isUnlocked ? StageCardStatus.Unlocked : StageCardStatus.Locked;
-            int bestScore = status == StageCardStatus.Unlocked ? SaveService.GetBestScore(stageNumber) : 0;
-            int starRating = status == StageCardStatus.Unlocked ? SaveService.GetStarRating(stageNumber) : 0;
+            int bestScore = i == 0 && status == StageCardStatus.Unlocked ? 65 : status == StageCardStatus.Unlocked ? SaveService.GetBestScore(stageNumber) : 0;
+            int starRating = i == 0 && status == StageCardStatus.Unlocked ? 3 : status == StageCardStatus.Unlocked ? SaveService.GetStarRating(stageNumber) : 0;
             int requiredStageNumber = status == StageCardStatus.Locked ? stageDatabase.GetRequiredClearStageNumber(i) : 0;
 
             card.name = $"StageCard_Capture_{stageNumber:00}";
@@ -215,6 +345,172 @@ public static class PowaScreenshotCapture
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(parent);
         }
+    }
+
+    private static void PrepareLockedStageSelectPreview()
+    {
+        StageSelectController controller = UnityEngine.Object.FindFirstObjectByType<StageSelectController>(FindObjectsInactive.Include);
+        SerializedObject serializedController = controller != null ? new SerializedObject(controller) : null;
+        RectTransform container = serializedController?.FindProperty("_stageCardContainer")?.objectReferenceValue as RectTransform;
+        StageCardView card = container != null && container.childCount > 0 ? container.GetChild(0).GetComponent<StageCardView>() : null;
+        if (card != null)
+        {
+            card.SetData(3, 0, 0, StageCardStatus.Locked, 0, 2);
+            card.SetSelected(false);
+        }
+
+        if (controller == null)
+        {
+            return;
+        }
+
+        Button playButton = serializedController.FindProperty("_playButton")?.objectReferenceValue as Button;
+        if (playButton != null)
+        {
+            playButton.interactable = false;
+            playButton.GetComponent<Image>().color = new Color(0.78f, 0.75f, 0.66f, 1f);
+            TMP_Text label = playButton.GetComponentInChildren<TMP_Text>(true);
+            if (label != null)
+            {
+                label.text = "まだえらべない\n<size=55%><color=#2B253070>LOCKED</color></size>";
+                label.color = new Color(0.39f, 0.37f, 0.33f, 0.58f);
+            }
+        }
+    }
+
+    private static void PrepareStageDots(int activeIndex)
+    {
+        GameObject containerObject = GameObject.Find("Canvas/SafeAreaRoot/StagePageDots");
+        if (containerObject == null)
+        {
+            return;
+        }
+
+        RectTransform container = containerObject.transform as RectTransform;
+        while (container.childCount < 3)
+        {
+            RectTransform dot = CreatePreviewPanel($"Dot_{container.childCount + 1}", container, Color.white);
+            LayoutElement layout = dot.gameObject.AddComponent<LayoutElement>();
+            layout.preferredWidth = 25f;
+            layout.preferredHeight = 25f;
+            layout.minWidth = 25f;
+            layout.minHeight = 25f;
+        }
+
+        for (int i = 0; i < container.childCount; i += 1)
+        {
+            Image image = container.GetChild(i).GetComponent<Image>();
+            if (image != null)
+            {
+                image.color = i == activeIndex
+                    ? new Color(1f, 0.851f, 0.29f, 0.9f)
+                    : new Color(1f, 0.969f, 0.918f, 0.45f);
+            }
+        }
+    }
+
+    internal static void PrepareClearResultPreview()
+    {
+        ResultController controller = UnityEngine.Object.FindFirstObjectByType<ResultController>(FindObjectsInactive.Include);
+        if (controller == null)
+        {
+            return;
+        }
+
+        InvokePrivateMethod(controller, "ApplyCarIcons");
+        SerializedObject serialized = new(controller);
+        SetPreviewText(serialized, "_stageText", "ステージ 8");
+        SetPreviewText(serialized, "_resultText", "クリア!");
+        SetPreviewText(serialized, "_subMessageText", "STAGE CLEAR");
+        SetPreviewText(serialized, "_scoreText", "12,450");
+        SetPreviewText(serialized, "_bestScoreText", "11,920");
+        SetPreviewText(serialized, "_countAText", "12");
+        SetPreviewText(serialized, "_countBText", "9");
+        SetPreviewText(serialized, "_countCText", "7");
+        SetPreviewText(serialized, "_missCountText", "1");
+        SetPreviewStars(serialized, 3);
+        SetPreviewMissOrbs(serialized, 1);
+        GameObject newBest = serialized.FindProperty("_newBestBadge")?.objectReferenceValue as GameObject;
+        newBest?.SetActive(true);
+    }
+
+    internal static void PrepareGameOverResultPreview()
+    {
+        ResultController controller = UnityEngine.Object.FindFirstObjectByType<ResultController>(FindObjectsInactive.Include);
+        if (controller == null)
+        {
+            return;
+        }
+
+        SerializedObject serialized = new(controller);
+        SetPreviewText(serialized, "_resultText", "ゲームオーバー...");
+        SetPreviewText(serialized, "_subMessageText", "GAME OVER");
+        SetPreviewText(serialized, "_scoreText", "6,180");
+        SetPreviewText(serialized, "_countAText", "5");
+        SetPreviewText(serialized, "_countBText", "4");
+        SetPreviewText(serialized, "_countCText", "3");
+        SetPreviewText(serialized, "_missCountText", "3");
+        SetPreviewStars(serialized, 1);
+        SetPreviewMissOrbs(serialized, 3);
+        GameObject newBest = serialized.FindProperty("_newBestBadge")?.objectReferenceValue as GameObject;
+        newBest?.SetActive(false);
+
+        TMP_Text resultText = serialized.FindProperty("_resultText")?.objectReferenceValue as TMP_Text;
+        if (resultText != null) resultText.color = new Color(1f, 0.72f, 0.72f, 1f);
+        Image stateTint = serialized.FindProperty("_stateTintImage")?.objectReferenceValue as Image;
+        if (stateTint != null) stateTint.color = new Color(0.13f, 0.055f, 0.078f, 0.62f);
+
+        Button primary = serialized.FindProperty("_primaryActionButton")?.objectReferenceValue as Button;
+        Button secondaryLeft = serialized.FindProperty("_secondaryLeftButton")?.objectReferenceValue as Button;
+        SetPreviewButton(primary, "もういちど\n<size=55%><color=#2B253070>RETRY</color></size>");
+        SetPreviewButton(secondaryLeft, "タイトル");
+
+    }
+
+    private static void SetPreviewText(SerializedObject serialized, string propertyName, string value)
+    {
+        TMP_Text text = serialized.FindProperty(propertyName)?.objectReferenceValue as TMP_Text;
+        if (text != null) text.text = value;
+    }
+
+    private static void SetPreviewStars(SerializedObject serialized, int filledCount)
+    {
+        SerializedProperty stars = serialized.FindProperty("_starImages");
+        Sprite filled = serialized.FindProperty("_filledStarSprite")?.objectReferenceValue as Sprite;
+        Sprite empty = serialized.FindProperty("_emptyStarSprite")?.objectReferenceValue as Sprite;
+        if (stars == null) return;
+        for (int i = 0; i < stars.arraySize; i += 1)
+        {
+            Image star = stars.GetArrayElementAtIndex(i).objectReferenceValue as Image;
+            if (star != null) star.sprite = i < filledCount ? filled : empty;
+        }
+    }
+
+    private static void SetPreviewMissOrbs(SerializedObject serialized, int filledCount)
+    {
+        SerializedProperty orbs = serialized.FindProperty("_missOrbImages");
+        Sprite filled = serialized.FindProperty("_filledMissOrbSprite")?.objectReferenceValue as Sprite;
+        Sprite empty = serialized.FindProperty("_emptyMissOrbSprite")?.objectReferenceValue as Sprite;
+        if (orbs == null) return;
+        for (int i = 0; i < orbs.arraySize; i += 1)
+        {
+            Image orb = orbs.GetArrayElementAtIndex(i).objectReferenceValue as Image;
+            if (orb != null) orb.sprite = i < filledCount ? filled : empty;
+        }
+    }
+
+    private static void SetPreviewButton(Button button, string label)
+    {
+        if (button == null) return;
+        TMP_Text text = button.GetComponentInChildren<TMP_Text>(true);
+        if (text != null) text.text = label;
+    }
+
+    private static void InvokePrivateMethod(object target, string methodName)
+    {
+        if (target == null) return;
+        MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        method?.Invoke(target, null);
     }
 
     private static void InvokePrivateLayoutPass()
