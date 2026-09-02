@@ -46,12 +46,20 @@ public static class RegressionCaptureRunner
         {
             foreach (DeviceProfile profile in DeviceProfiles)
             {
+                CaptureTitle(profile, absoluteOutputDirectory, false);
+                CaptureTitle(profile, absoluteOutputDirectory, true);
+                CaptureStageSelect(profile, absoluteOutputDirectory, 1);
+                CaptureStageSelect(profile, absoluteOutputDirectory, 3);
                 CaptureMain(profile, absoluteOutputDirectory);
                 CaptureMainStageFiveHud(profile, absoluteOutputDirectory);
+                CaptureMainDailyHud(profile, absoluteOutputDirectory);
+                CaptureMainEndlessHud(profile, absoluteOutputDirectory);
                 CapturePause(profile, absoluteOutputDirectory);
                 CaptureHowTo(profile, absoluteOutputDirectory);
                 CaptureResult(profile, absoluteOutputDirectory, isClear: true);
                 CaptureResult(profile, absoluteOutputDirectory, isClear: false);
+                CaptureDailyResult(profile, absoluteOutputDirectory);
+                CaptureEndlessResult(profile, absoluteOutputDirectory);
             }
         }
         finally
@@ -68,6 +76,46 @@ public static class RegressionCaptureRunner
         {
             throw new InvalidOperationException($"Regression layout validation found {failureCount} failure(s). See {reportPath}.");
         }
+    }
+
+    private static void CaptureTitle(DeviceProfile profile, string outputDirectory, bool extendedUnlocked)
+    {
+        CaptureState(
+            profile,
+            outputDirectory,
+            extendedUnlocked ? "Title_ModesUnlocked" : "Title_ModesLocked",
+            "Assets/Scenes/Title.unity",
+            () => PrepareTitlePreview(extendedUnlocked),
+            "Canvas");
+    }
+
+    private static void PrepareTitlePreview(bool extendedUnlocked)
+    {
+        const string key = "StageClear_5";
+        bool existed = PlayerPrefs.HasKey(key);
+        int previous = PlayerPrefs.GetInt(key, 0);
+        try
+        {
+            PlayerPrefs.SetInt(key, extendedUnlocked ? 1 : 0);
+            TitleController controller = UnityEngine.Object.FindFirstObjectByType<TitleController>(FindObjectsInactive.Include);
+            InvokePrivate(controller, "BuildModeButtons");
+        }
+        finally
+        {
+            if (existed) PlayerPrefs.SetInt(key, previous); else PlayerPrefs.DeleteKey(key);
+            PlayerPrefs.Save();
+        }
+    }
+
+    private static void CaptureStageSelect(DeviceProfile profile, string outputDirectory, int chapter)
+    {
+        CaptureState(
+            profile,
+            outputDirectory,
+            $"StageSelect_Chapter{chapter}",
+            "Assets/Scenes/StageSelect.unity",
+            () => PowaScreenshotCapture.PrepareStageSelectChapterForRegression(chapter),
+            "Canvas");
     }
 
     private static void CaptureMain(DeviceProfile profile, string outputDirectory)
@@ -101,9 +149,31 @@ public static class RegressionCaptureRunner
         CaptureState(
             profile,
             outputDirectory,
-            "Main_Stage5Hud",
+            "Main_Stage15Hud",
             "Assets/Scenes/Main.unity",
             PrepareMainStageFiveHudPreview,
+            "Canvas");
+    }
+
+    private static void CaptureMainDailyHud(DeviceProfile profile, string outputDirectory)
+    {
+        CaptureState(
+            profile,
+            outputDirectory,
+            "Main_DailyHud",
+            "Assets/Scenes/Main.unity",
+            PrepareMainDailyHudPreview,
+            "Canvas");
+    }
+
+    private static void CaptureMainEndlessHud(DeviceProfile profile, string outputDirectory)
+    {
+        CaptureState(
+            profile,
+            outputDirectory,
+            "Main_EndlessHud",
+            "Assets/Scenes/Main.unity",
+            PrepareMainEndlessHudPreview,
             "Canvas");
     }
 
@@ -133,6 +203,28 @@ public static class RegressionCaptureRunner
             isClear
                 ? PowaScreenshotCapture.PrepareClearResultPreview
                 : PowaScreenshotCapture.PrepareGameOverResultPreview,
+            "SafeAreaRoot");
+    }
+
+    private static void CaptureDailyResult(DeviceProfile profile, string outputDirectory)
+    {
+        CaptureState(
+            profile,
+            outputDirectory,
+            "Result_Daily",
+            "Assets/Scenes/Result.unity",
+            PowaScreenshotCapture.PrepareDailyResultPreview,
+            "SafeAreaRoot");
+    }
+
+    private static void CaptureEndlessResult(DeviceProfile profile, string outputDirectory)
+    {
+        CaptureState(
+            profile,
+            outputDirectory,
+            "Result_Endless",
+            "Assets/Scenes/Result.unity",
+            PowaScreenshotCapture.PrepareEndlessResultPreview,
             "SafeAreaRoot");
     }
 
@@ -204,7 +296,7 @@ public static class RegressionCaptureRunner
 
     private static void PrepareMainStageFiveHudPreview()
     {
-        SessionState.SelectStage(5);
+        SessionState.SelectStage(15);
         PowaScreenshotCapture.PrepareMainScoreLanePreview();
         MainSafeAreaLayout.EnsureInstalled(SceneManager.GetActiveScene());
 
@@ -220,8 +312,17 @@ public static class RegressionCaptureRunner
             InvokePrivate(progressHud, "Awake");
         }
 
-        progressHud.SetTutorialMode(true);
-        progressHud.SetTutorialProgress(378, 420, 1);
+        StageDatabase database = Resources.Load<StageDatabase>("StageDatabase");
+        StageDefinition stageFifteen = database != null ? database.GetStageDefinition(15) : StageDefinition.CreateFallback(15);
+        ScoreManager scoreManager = UnityEngine.Object.FindFirstObjectByType<ScoreManager>(FindObjectsInactive.Include);
+        scoreManager?.Initialize(stageFifteen, GameMode.Stage);
+        for (int i = 0; i < 38; i += 1)
+        {
+            scoreManager?.ApplySuccess((CarType)(i % 3));
+        }
+
+        progressHud.SetTutorialMode(false);
+        InvokePrivate(progressHud, "Refresh");
 
         GimmickHudController gimmickHud = UnityEngine.Object.FindFirstObjectByType<GimmickHudController>(FindObjectsInactive.Include);
         if (gimmickHud == null)
@@ -230,15 +331,8 @@ public static class RegressionCaptureRunner
             gimmickHud = gimmickObject.AddComponent<GimmickHudController>();
         }
 
-        StageDefinition stageFive = new()
-        {
-            StageNumber = 5,
-            TargetScore = 420,
-            BrokenChance = 0.16f,
-            FeverComboThreshold = 6
-        };
         LaneInputController laneInput = UnityEngine.Object.FindFirstObjectByType<LaneInputController>(FindObjectsInactive.Include);
-        gimmickHud.Initialize(stageFive, laneInput);
+        gimmickHud.Initialize(stageFifteen, laneInput);
 
         Transform messageRoot = FindTransform(SceneManager.GetActiveScene(), "GimmickMessage");
         if (messageRoot != null)
@@ -252,6 +346,66 @@ public static class RegressionCaptureRunner
             messageRoot.gameObject.SetActive(true);
         }
 
+        Canvas.ForceUpdateCanvases();
+    }
+
+    private static void PrepareMainDailyHudPreview()
+    {
+        SessionState.SelectDaily(15);
+        PowaScreenshotCapture.PrepareMainScoreLanePreview();
+        MainSafeAreaLayout.EnsureInstalled(SceneManager.GetActiveScene());
+        StageDefinition daily = DailyChallengeService.Create("20260824", 3, 15);
+        ScoreManager scoreManager = UnityEngine.Object.FindFirstObjectByType<ScoreManager>(FindObjectsInactive.Include);
+        scoreManager?.Initialize(daily, GameMode.Daily);
+        for (int i = 0; i < 12; i += 1)
+        {
+            scoreManager?.ApplySuccess((CarType)(i % 3));
+        }
+
+        scoreManager?.TickObjective(24f, true);
+        StageProgressHudController progressHud = UnityEngine.Object.FindFirstObjectByType<StageProgressHudController>(FindObjectsInactive.Include);
+        if (progressHud == null)
+        {
+            progressHud = new GameObject("StageProgressHudController_RegressionPreview").AddComponent<StageProgressHudController>();
+        }
+
+        if (FindTransform(SceneManager.GetActiveScene(), "StageProgressHudCanvas") == null)
+        {
+            InvokePrivate(progressHud, "Awake");
+        }
+
+        progressHud.SetTutorialMode(false);
+        InvokePrivate(progressHud, "Refresh");
+        Canvas.ForceUpdateCanvases();
+    }
+
+    private static void PrepareMainEndlessHudPreview()
+    {
+        SessionState.SelectEndless(15);
+        PowaScreenshotCapture.PrepareMainScoreLanePreview();
+        MainSafeAreaLayout.EnsureInstalled(SceneManager.GetActiveScene());
+        StageDatabase database = Resources.Load<StageDatabase>("StageDatabase");
+        StageDefinition endless = database != null ? database.GetEndlessStageDefinition(15) : StageDefinition.CreateFallback(15);
+        ScoreManager scoreManager = UnityEngine.Object.FindFirstObjectByType<ScoreManager>(FindObjectsInactive.Include);
+        scoreManager?.Initialize(endless, GameMode.Endless);
+        for (int i = 0; i < 12; i += 1)
+        {
+            scoreManager?.ApplySuccess((CarType)(i % 3));
+        }
+
+        StageProgressHudController progressHud = UnityEngine.Object.FindFirstObjectByType<StageProgressHudController>(FindObjectsInactive.Include);
+        if (progressHud == null)
+        {
+            progressHud = new GameObject("StageProgressHudController_RegressionPreview").AddComponent<StageProgressHudController>();
+        }
+
+        if (FindTransform(SceneManager.GetActiveScene(), "StageProgressHudCanvas") == null)
+        {
+            InvokePrivate(progressHud, "Awake");
+        }
+
+        progressHud.SetTutorialMode(false);
+        InvokePrivate(progressHud, "Refresh");
         Canvas.ForceUpdateCanvases();
     }
 
@@ -374,6 +528,10 @@ public static class RegressionCaptureRunner
 
         MainSafeAreaLayout mainLayout = MainSafeAreaLayout.EnsureInstalled(scene);
         mainLayout?.ApplyNow();
+
+        StageSelectController stageSelect = UnityEngine.Object.FindFirstObjectByType<StageSelectController>(FindObjectsInactive.Include);
+        InvokePrivate(stageSelect, "AlignChapterTabs");
+        Canvas.ForceUpdateCanvases();
     }
 
     private static void ForceLayouts(Scene scene)

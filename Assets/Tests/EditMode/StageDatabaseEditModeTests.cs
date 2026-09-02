@@ -51,17 +51,19 @@ public sealed class StageDatabaseEditModeTests
         Assert.That(database, Is.Not.Null);
 
         object stageOne = CoreReflection.Call(database, "GetStageDefinition", 1);
-        object stageTwo = CoreReflection.Call(database, "GetStageDefinition", 2);
         object stageThree = CoreReflection.Call(database, "GetStageDefinition", 3);
-        object stageFour = CoreReflection.Call(database, "GetStageDefinition", 4);
-        object stageFive = CoreReflection.Call(database, "GetStageDefinition", 5);
+        object stageSix = CoreReflection.Call(database, "GetStageDefinition", 6);
+        object stageEleven = CoreReflection.Call(database, "GetStageDefinition", 11);
+        object stageThirteen = CoreReflection.Call(database, "GetStageDefinition", 13);
+        object stageFourteen = CoreReflection.Call(database, "GetStageDefinition", 14);
 
         Assert.That(CoreReflection.GetField<float>(stageOne, "ExpressChance"), Is.Zero);
-        Assert.That(CoreReflection.GetField<float>(stageTwo, "ExpressChance"), Is.GreaterThan(0f));
-        Assert.That(CoreReflection.GetField<float>(stageThree, "CoveredChance"), Is.GreaterThan(0f));
-        Assert.That(CoreReflection.GetField<float>(stageFour, "BrokenChance"), Is.GreaterThan(0f));
-        Assert.That(CoreReflection.GetField<int>(stageFive, "RushEveryCorrect"), Is.GreaterThan(0));
-        Assert.That(CoreReflection.GetField<int>(stageFive, "FeverComboThreshold"), Is.GreaterThan(0));
+        Assert.That(CoreReflection.GetField<float>(stageThree, "CoveredChance"), Is.Zero);
+        Assert.That(CoreReflection.GetField<float>(stageThree, "ExpressChance"), Is.GreaterThan(0f));
+        Assert.That(CoreReflection.GetField<float>(stageSix, "CoveredChance"), Is.GreaterThan(0f));
+        Assert.That(CoreReflection.GetField<float>(stageEleven, "BrokenChance"), Is.GreaterThan(0f));
+        Assert.That(CoreReflection.GetField<int>(stageThirteen, "RushEveryCorrect"), Is.GreaterThan(0));
+        Assert.That(CoreReflection.GetField<int>(stageFourteen, "FeverComboThreshold"), Is.GreaterThan(0));
     }
 
     [Test]
@@ -136,11 +138,11 @@ public sealed class StageDatabaseEditModeTests
             Stage(definitionType, 3, 90, true));
 
         Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 0, null), Is.True);
-        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 1, new Func<int, int>(_ => 999)), Is.False);
-        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 2, new Func<int, int>(_ => 29)), Is.False);
-        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 2, new Func<int, int>(_ => 30)), Is.True);
+        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 1, new Func<int, bool>(_ => true)), Is.False);
+        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 2, new Func<int, bool>(_ => false)), Is.False);
+        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 2, new Func<int, bool>(_ => true)), Is.True);
         Assert.That(CoreReflection.Call(database, "GetRequiredClearStageNumber", 2), Is.EqualTo(1));
-        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", -1, new Func<int, int>(_ => 999)), Is.False);
+        Assert.That(CoreReflection.Call(database, "IsStageUnlocked", -1, new Func<int, bool>(_ => true)), Is.False);
         Assert.That(CoreReflection.Call(database, "GetRequiredClearStageNumber", 0), Is.Zero);
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -14,7 +15,7 @@ public sealed class GameplayFlowPlayModeTests
     private const float ResultUnlockTimeoutSeconds = 5f;
     private const float TestTimeScale = 20f;
 
-    private static readonly string[] PlayerPrefsKeys =
+    private static readonly string[] BasePlayerPrefsKeys =
     {
         "BGM_On",
         "SE_On",
@@ -26,10 +27,27 @@ public sealed class GameplayFlowPlayModeTests
         "LastStage",
         "LastGameMode",
         "BestScore_Stage1",
-        "StarRating_Stage1"
+        "StarRating_Stage1",
+        "ProgressMigrationVersion",
+        "Interstitial_CompletedSinceLast",
+        "GimmickHintSeen_Express",
+        "GimmickHintSeen_Covered",
+        "GimmickHintSeen_Broken"
     };
+    private static readonly string[] PlayerPrefsKeys = BuildIntPlayerPrefsKeys();
+    private static readonly string[] StringPlayerPrefsKeys =
+    {
+        "DailyChallengeSaveDataV1",
+        "Interstitial_LastShownUtcTicks"
+    };
+    private static readonly string[] FloatPlayerPrefsKeys = BuildFloatPlayerPrefsKeys();
 
     private readonly Dictionary<string, SavedIntPreference> _savedPreferences = new();
+    private readonly Dictionary<string, SavedStringPreference> _savedStringPreferences = new();
+    private readonly Dictionary<string, SavedFloatPreference> _savedFloatPreferences = new();
+    private string _telemetryPath;
+    private long _telemetryOriginalLength;
+    private bool _telemetryFileExisted;
 
     [OneTimeSetUp]
     public void SavePlayerPreferences()
@@ -38,6 +56,21 @@ public sealed class GameplayFlowPlayModeTests
         {
             _savedPreferences[key] = new SavedIntPreference(PlayerPrefs.HasKey(key), PlayerPrefs.GetInt(key));
         }
+
+        foreach (string key in StringPlayerPrefsKeys)
+        {
+            _savedStringPreferences[key] = new SavedStringPreference(PlayerPrefs.HasKey(key), PlayerPrefs.GetString(key, string.Empty));
+        }
+
+        foreach (string key in FloatPlayerPrefsKeys)
+        {
+            _savedFloatPreferences[key] = new SavedFloatPreference(PlayerPrefs.HasKey(key), PlayerPrefs.GetFloat(key));
+        }
+
+        Type telemetryType = RequiredType("LocalTelemetryService");
+        _telemetryPath = (string)GetStaticProperty(telemetryType, "OutputPath");
+        _telemetryFileExisted = File.Exists(_telemetryPath);
+        _telemetryOriginalLength = _telemetryFileExisted ? new FileInfo(_telemetryPath).Length : 0L;
     }
 
     [SetUp]
@@ -54,6 +87,20 @@ public sealed class GameplayFlowPlayModeTests
         PlayerPrefs.SetInt("LastGameMode", 0);
         PlayerPrefs.SetInt("BestScore_Stage1", 0);
         PlayerPrefs.SetInt("StarRating_Stage1", 0);
+        PlayerPrefs.DeleteKey("DailyChallengeSaveDataV1");
+        PlayerPrefs.DeleteKey("Interstitial_LastShownUtcTicks");
+        PlayerPrefs.SetInt("Interstitial_CompletedSinceLast", 0);
+        PlayerPrefs.DeleteKey("ProgressMigrationVersion");
+        PlayerPrefs.DeleteKey("GimmickHintSeen_Express");
+        PlayerPrefs.DeleteKey("GimmickHintSeen_Covered");
+        PlayerPrefs.DeleteKey("GimmickHintSeen_Broken");
+        for (int i = 1; i <= 15; i += 1)
+        {
+            PlayerPrefs.DeleteKey($"StageClear_{i}");
+            PlayerPrefs.DeleteKey($"BestTime_Stage{i}");
+            PlayerPrefs.SetInt($"BestScore_Stage{i}", 0);
+            PlayerPrefs.SetInt($"StarRating_Stage{i}", 0);
+        }
         PlayerPrefs.Save();
 
         InvokeStatic(RequiredType("SessionState"), "SelectStage", 1);
@@ -81,7 +128,41 @@ public sealed class GameplayFlowPlayModeTests
             }
         }
 
+        foreach (KeyValuePair<string, SavedStringPreference> pair in _savedStringPreferences)
+        {
+            if (pair.Value.Existed)
+            {
+                PlayerPrefs.SetString(pair.Key, pair.Value.Value);
+            }
+            else
+            {
+                PlayerPrefs.DeleteKey(pair.Key);
+            }
+        }
+
+        foreach (KeyValuePair<string, SavedFloatPreference> pair in _savedFloatPreferences)
+        {
+            if (pair.Value.Existed)
+            {
+                PlayerPrefs.SetFloat(pair.Key, pair.Value.Value);
+            }
+            else
+            {
+                PlayerPrefs.DeleteKey(pair.Key);
+            }
+        }
+
         PlayerPrefs.Save();
+
+        if (_telemetryFileExisted && File.Exists(_telemetryPath))
+        {
+            using FileStream restore = new(_telemetryPath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
+            restore.SetLength(_telemetryOriginalLength);
+        }
+        else if (!_telemetryFileExisted && File.Exists(_telemetryPath))
+        {
+            File.Delete(_telemetryPath);
+        }
     }
 
     [UnityTest]
@@ -98,6 +179,11 @@ public sealed class GameplayFlowPlayModeTests
         Assert.That(scoreManager, Is.Not.Null);
         Assert.That(carSpawner, Is.Not.Null);
         Assert.That(laneInput, Is.Not.Null);
+        UnityEngine.UI.Button earlyStageRepairButton = FindRepairButton();
+        Assert.That(
+            earlyStageRepairButton.gameObject.activeInHierarchy,
+            Is.False,
+            "Repair button should stay hidden on stages that cannot spawn broken cars.");
 
         Invoke(carSpawner, "StopSpawning");
         Invoke(carSpawner, "DespawnAllCars");
@@ -111,9 +197,17 @@ public sealed class GameplayFlowPlayModeTests
         yield return SettleInput();
         AssertScore(scoreManager, score: 0, misses: 1);
 
-        SpawnFixedCar(carSpawner, "CompactCar");
+        object mistappedCar = SpawnFixedCar(carSpawner, "CompactCar");
         PointerDown(laneInput, "LightTruck");
         yield return SettleInput();
+        AssertScore(scoreManager, score: 0, misses: 2);
+
+        PointerDown(laneInput, "LightTruck");
+        yield return SettleInput();
+        AssertScore(scoreManager, score: 0, misses: 2);
+
+        Invoke(gameFlow, "OnCarMissed", mistappedCar);
+        yield return null;
         AssertScore(scoreManager, score: 0, misses: 2);
         Invoke(carSpawner, "DespawnAllCars");
         yield return null;
@@ -132,7 +226,7 @@ public sealed class GameplayFlowPlayModeTests
         Assert.That(Invoke(scoreManager, "GetCorrectCount", EnumValue("CarType", "SportsCar")), Is.EqualTo(1),
             "The last Pointer Down in the frame should win and only one answer should be processed.");
 
-        for (int i = 0; i < 4; i += 1)
+        for (int i = 0; i < 10; i += 1)
         {
             SpawnFixedCar(carSpawner, "CompactCar");
             PointerDown(laneInput, "CompactCar");
@@ -140,7 +234,7 @@ public sealed class GameplayFlowPlayModeTests
         }
 
         yield return WaitForScene("Result", SceneTimeoutSeconds);
-        AssertStoredResult(isClear: true, expectedScore: 60, expectedMisses: 2);
+        AssertStoredResult(isClear: true, expectedScore: 120, expectedMisses: 2);
         yield return RetryFromResult();
     }
 
@@ -159,13 +253,13 @@ public sealed class GameplayFlowPlayModeTests
         Invoke(carSpawner, "DespawnAllCars");
         yield return null;
 
-        for (int i = 0; i < 4; i += 1)
+        for (int i = 0; i < 3; i += 1)
         {
             PointerDown(laneInput, "LightTruck");
             yield return SettleInput();
         }
 
-        AssertScore(scoreManager, score: 0, misses: 4);
+        AssertScore(scoreManager, score: 0, misses: 3);
         object continuePrompt = FindSceneComponent("ContinuePromptController");
         Assert.That(continuePrompt, Is.Not.Null, "The miss limit should open the continue prompt before game over.");
         object giveUpButton = GetField(continuePrompt, "_giveUpButton");
@@ -173,7 +267,7 @@ public sealed class GameplayFlowPlayModeTests
         Invoke(onClick, "Invoke");
 
         yield return WaitForScene("Result", SceneTimeoutSeconds);
-        AssertStoredResult(isClear: false, expectedScore: 0, expectedMisses: 4);
+        AssertStoredResult(isClear: false, expectedScore: 0, expectedMisses: 3);
         yield return RetryFromResult();
     }
 
@@ -181,7 +275,7 @@ public sealed class GameplayFlowPlayModeTests
     [Order(3)]
     public IEnumerator ExpressCoveredAndBrokenCarsUseTheirDedicatedRules()
     {
-        InvokeStatic(RequiredType("SessionState"), "SelectStage", 4);
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", 11);
         yield return LoadScene("Main");
         object gameFlow = FindSceneComponent("GameFlowController");
         yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Main did not enter Playing state.");
@@ -193,33 +287,53 @@ public sealed class GameplayFlowPlayModeTests
         Invoke(carSpawner, "DespawnAllCars");
         yield return null;
 
+        UnityEngine.UI.Button repairButton = FindRepairButton();
+        Assert.That(repairButton, Is.Not.Null);
+        Assert.That(repairButton.gameObject.activeInHierarchy, Is.True, "Repair button should remain visible throughout a repair stage.");
+        Assert.That(repairButton.interactable, Is.False, "Repair button should be disabled when there is no active car.");
+
         SpawnFixedCar(carSpawner, "LightTruck", "Express");
+        Assert.That(repairButton.interactable, Is.False, "Repair button should reject non-broken cars.");
+        RepairPointerDown();
+        yield return SettleInput();
+        AssertScore(scoreManager, score: 0, misses: 0);
+
         PointerDown(laneInput, "LightTruck");
         yield return SettleInput();
         AssertScore(scoreManager, score: 20, misses: 0);
+        Assert.That(repairButton.interactable, Is.False);
 
         object coveredCar = SpawnFixedCar(carSpawner, "CompactCar", "Covered");
         Assert.That(GetProperty(coveredCar, "IsRevealed"), Is.False);
+        Sprite coveredSprite = Resources.Load<Sprite>("Gameplay/covered_vehicle");
+        Assert.That(coveredSprite, Is.Not.Null, "Covered vehicle sprite was not imported as a Sprite resource.");
+        Assert.That(coveredSprite.bounds.size.x, Is.EqualTo(9.9f).Within(0.05f));
+        SpriteRenderer coveredRenderer = (coveredCar as Component)?.GetComponent<SpriteRenderer>();
+        Assert.That(coveredRenderer, Is.Not.Null);
+        Assert.That(coveredRenderer.sprite, Is.SameAs(coveredSprite), "Covered cars should use the neutral tarp silhouette.");
         PointerDown(laneInput, "CompactCar");
         yield return SettleInput();
         AssertScore(scoreManager, score: 15, misses: 1);
 
         Invoke(coveredCar, "Reveal");
+        Assert.That(coveredRenderer.sprite, Is.Not.SameAs(coveredSprite), "Reveal should restore the actual vehicle sprite.");
         PointerDown(laneInput, "CompactCar");
         yield return SettleInput();
         AssertScore(scoreManager, score: 25, misses: 1);
 
         SpawnFixedCar(carSpawner, "SportsCar", "Broken");
+        Assert.That(repairButton.interactable, Is.True, "Repair button should only enable for the active broken car.");
         RepairPointerDown();
         yield return SettleInput();
         AssertScore(scoreManager, score: 35, misses: 1);
+        Assert.That(repairButton.interactable, Is.False, "Repair button should disable immediately after resolving the broken car.");
     }
 
     [UnityTest]
     [Order(4)]
-    public IEnumerator StageFiveRushSpawnsAThreeCarProcessionAndShowsFeverHud()
+    public IEnumerator StageFourteenRushSpawnsAThreeCarProcessionAndShowsFeverHud()
     {
-        InvokeStatic(RequiredType("SessionState"), "SelectStage", 5);
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", 14);
         yield return LoadScene("Main");
         object gameFlow = FindSceneComponent("GameFlowController");
         yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Main did not enter Playing state.");
@@ -244,7 +358,7 @@ public sealed class GameplayFlowPlayModeTests
         RectTransform repairRoot = GetField(gimmickHud, "_repairRoot") as RectTransform;
         Assert.That(comboRoot, Is.Not.Null);
         Assert.That(repairRoot, Is.Not.Null);
-        Assert.That(comboRoot.gameObject.activeInHierarchy, Is.True, "Stage 5 should expose the fever combo HUD.");
+        Assert.That(comboRoot.gameObject.activeInHierarchy, Is.True, "Stage 14 should expose the fever combo HUD.");
         Assert.That(comboRoot.rect.width, Is.GreaterThan(0f));
         Assert.That(comboRoot.rect.height, Is.GreaterThan(0f));
 
@@ -279,7 +393,324 @@ public sealed class GameplayFlowPlayModeTests
         Invoke(carSpawner, "DespawnAllCars");
     }
 
-    private static IEnumerator RetryFromResult()
+    [UnityTest]
+    [Order(5)]
+    public IEnumerator TitleCampaignRouteAndChapterTabsUseRealSceneControls()
+    {
+        PlayerPrefs.SetInt("StageClear_5", 1);
+        PlayerPrefs.Save();
+        yield return LoadScene("Title");
+        yield return null;
+
+        UnityEngine.UI.Button campaign = FindSceneObject("StageSelectButton")?.GetComponent<UnityEngine.UI.Button>();
+        UnityEngine.UI.Button daily = FindSceneObject("DailyButton")?.GetComponent<UnityEngine.UI.Button>();
+        UnityEngine.UI.Button endless = FindSceneObject("EndlessButton")?.GetComponent<UnityEngine.UI.Button>();
+        Assert.That(campaign, Is.Not.Null);
+        Assert.That(daily, Is.Not.Null);
+        Assert.That(endless, Is.Not.Null);
+        Assert.That(GetButtonText(campaign), Does.Contain("おしごと"));
+        Assert.That(GetButtonText(daily), Does.Contain("デイリー"));
+        Assert.That(GetButtonText(endless), Does.Contain("エンドレス"));
+
+        campaign.onClick.Invoke();
+        yield return WaitForScene("StageSelect", SceneTimeoutSeconds);
+        yield return WaitUntil(() => FindSceneObject("ChapterTabs") != null, 3f, "Chapter tabs were not created.");
+        GameObject chapterTabs = FindSceneObject("ChapterTabs");
+        Assert.That(chapterTabs.GetComponentsInChildren<UnityEngine.UI.Button>(true), Has.Length.EqualTo(3));
+
+        object controller = FindSceneComponent("StageSelectController");
+        Invoke(controller, "SelectChapter", 3);
+        yield return null;
+        Assert.That(Invoke(controller, "GetSelectedStageNumber"), Is.EqualTo(11));
+        Component[] cards = FindSceneComponents("StageCardView").Where(component => component.gameObject.activeInHierarchy).ToArray();
+        Assert.That(cards, Has.Length.EqualTo(5));
+        Assert.That(cards.Select(card => GetTextComponentValue(GetField(card, "_statusText"))).Any(text => text.Contains("おしごと10")), Is.True);
+
+        Invoke(controller, "SelectChapter", 1);
+        yield return null;
+        UnityEngine.UI.Button playButton = GetField(controller, "_playButton") as UnityEngine.UI.Button;
+        Assert.That(playButton, Is.Not.Null.And.Property("interactable").True);
+        playButton.onClick.Invoke();
+        yield return WaitForScene("Main", SceneTimeoutSeconds);
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Campaign route did not reach Main.");
+        object spawner = FindSceneComponent("CarSpawner");
+        object laneInput = FindSceneComponent("LaneInputController");
+        Invoke(spawner, "StopSpawning");
+        Invoke(spawner, "DespawnAllCars");
+        for (int i = 0; i < 12; i += 1)
+        {
+            SpawnFixedCar(spawner, "LightTruck");
+            PointerDown(laneInput, "LightTruck");
+            yield return SettleInput();
+        }
+
+        yield return WaitForScene("Result", SceneTimeoutSeconds);
+        Assert.That(PlayerPrefs.GetInt("StageClear_1", 0), Is.EqualTo(1));
+        Assert.That(PlayerPrefs.GetInt("BestScore_Stage1", 0), Is.EqualTo(120));
+        object resultController = FindSceneComponent("ResultController");
+        yield return WaitUntil(
+            () => (bool)GetField(resultController, "_areResultActionsUnlocked"),
+            ResultUnlockTimeoutSeconds,
+            "Campaign result actions did not unlock.");
+        Invoke(resultController, "OnNextStagePressed");
+        yield return WaitForScene("Main", SceneTimeoutSeconds);
+        Assert.That(GetStaticProperty(RequiredType("SessionState"), "SelectedStageNumber"), Is.EqualTo(2));
+    }
+
+    [UnityTest]
+    [Order(6)]
+    public IEnumerator DailyTitleRouteRunsSixtySecondsWithoutContinueAndRetries()
+    {
+        PlayerPrefs.SetInt("StageClear_5", 1);
+        PlayerPrefs.Save();
+        yield return LoadScene("Title");
+        yield return null;
+        UnityEngine.UI.Button daily = FindSceneObject("DailyButton")?.GetComponent<UnityEngine.UI.Button>();
+        Assert.That(daily, Is.Not.Null.And.Property("interactable").True);
+        daily.onClick.Invoke();
+        yield return WaitForScene("Main", SceneTimeoutSeconds);
+
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Daily Main did not enter Playing.");
+        Assert.That(GetStaticProperty(RequiredType("SessionState"), "SelectedGameMode").ToString(), Is.EqualTo("Daily"));
+        object stage = GetField(gameFlow, "_currentStageDefinition");
+        Assert.That(GetField(stage, "MissLimit"), Is.EqualTo(3));
+        Assert.That(GetField(stage, "SurvivalSeconds"), Is.EqualTo(60f));
+        Assert.That(GetField(stage, "AllowRewardedContinue"), Is.EqualTo(false));
+        object pauseMenu = FindSceneComponent("MainPauseMenuController");
+        Assert.That(pauseMenu, Is.Not.Null);
+        Invoke(pauseMenu, "OpenMenu");
+        yield return null;
+        Assert.That(GetTextComponentValue(GetField(pauseMenu, "_stageText")), Is.EqualTo("デイリー"));
+        Invoke(pauseMenu, "RetryStage");
+        yield return WaitForScene("Main", SceneTimeoutSeconds);
+        gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Daily pause retry did not reach Main.");
+        Assert.That(GetStaticProperty(RequiredType("SessionState"), "SelectedGameMode").ToString(), Is.EqualTo("Daily"));
+        Invoke(FindSceneComponent("CarSpawner"), "StopSpawning");
+
+        yield return WaitForScene("Result", 6f);
+        object dailyResult = GetStaticProperty(RequiredType("SessionState"), "LastResult");
+        Assert.That(GetProperty(dailyResult, "IsDaily"), Is.EqualTo(true));
+        Assert.That(GetProperty(dailyResult, "IsClear"), Is.EqualTo(true));
+        Assert.That((float)GetProperty(dailyResult, "PlayTimeSeconds"), Is.GreaterThanOrEqualTo(60f));
+        object dailySave = InvokeStatic(
+            RequiredType("DailyChallengeService"),
+            "LoadForDate",
+            GetProperty(dailyResult, "DailyDateKey"));
+        Assert.That(GetField(dailySave, "CompletedToday"), Is.EqualTo(true));
+        yield return RetryFromResult(5);
+        Assert.That(GetStaticProperty(RequiredType("SessionState"), "SelectedGameMode").ToString(), Is.EqualTo("Daily"));
+    }
+
+    [UnityTest]
+    [Order(7)]
+    public IEnumerator EndlessTitleRouteUsesHighestClearedStageAndOffersOneContinue()
+    {
+        PlayerPrefs.SetInt("StageClear_5", 1);
+        PlayerPrefs.Save();
+        yield return LoadScene("Title");
+        yield return null;
+        UnityEngine.UI.Button endless = FindSceneObject("EndlessButton")?.GetComponent<UnityEngine.UI.Button>();
+        Assert.That(endless, Is.Not.Null.And.Property("interactable").True);
+        endless.onClick.Invoke();
+        yield return WaitForScene("Main", SceneTimeoutSeconds);
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Endless Main did not enter Playing.");
+        object stage = GetField(gameFlow, "_currentStageDefinition");
+        Assert.That(GetField(stage, "StageNumber"), Is.EqualTo(5));
+        Assert.That(GetStaticProperty(RequiredType("SessionState"), "SelectedGameMode").ToString(), Is.EqualTo("Endless"));
+        object progressHud = FindSceneComponent("StageProgressHudController");
+        Assert.That(CountActiveSlots(progressHud, "_missOrbs"), Is.EqualTo(1));
+
+        object spawner = FindSceneComponent("CarSpawner");
+        Invoke(spawner, "StopSpawning");
+        Invoke(spawner, "DespawnAllCars");
+        PointerDown(FindSceneComponent("LaneInputController"), "LightTruck");
+        yield return SettleInput();
+        object continuePrompt = FindSceneComponent("ContinuePromptController");
+        Assert.That(continuePrompt, Is.Not.Null, "Endless should offer its one rewarded continue.");
+        object giveUpButton = GetField(continuePrompt, "_giveUpButton");
+        Invoke(GetProperty(giveUpButton, "onClick"), "Invoke");
+        yield return WaitForScene("Result", SceneTimeoutSeconds);
+        Assert.That(GetProperty(GetStaticProperty(RequiredType("SessionState"), "LastResult"), "IsEndless"), Is.EqualTo(true));
+        Assert.That(CountActiveSlots(FindSceneComponent("ResultController"), "_missOrbImages"), Is.EqualTo(1));
+    }
+
+    [UnityTest]
+    [Order(8)]
+    public IEnumerator SurvivalStagePauseFreezesObjectiveClockInRealMainScene()
+    {
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", 8);
+        yield return LoadScene("Main");
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Stage 8 did not enter Playing.");
+        Invoke(FindSceneComponent("CarSpawner"), "StopSpawning");
+        object scoreManager = FindSceneComponent("ScoreManager");
+        object evaluator = GetProperty(scoreManager, "ObjectiveEvaluator");
+        Assert.That(Invoke(gameFlow, "PauseGame"), Is.EqualTo(true));
+        float pausedAt = (float)GetProperty(evaluator, "ElapsedSeconds");
+        yield return new WaitForSecondsRealtime(0.2f);
+        Assert.That((float)GetProperty(evaluator, "ElapsedSeconds"), Is.EqualTo(pausedAt).Within(0.001f));
+        Invoke(gameFlow, "ResumeGame");
+        yield return new WaitForSecondsRealtime(0.2f);
+        Assert.That((float)GetProperty(evaluator, "ElapsedSeconds"), Is.GreaterThan(pausedAt));
+    }
+
+    [UnityTest]
+    [Order(9)]
+    public IEnumerator AllFifteenStagesClearThroughRealMainAndResultScenesInSequence()
+    {
+        ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
+        Func<int, bool> getCleared = stageNumber => PlayerPrefs.GetInt($"StageClear_{stageNumber}", 0) == 1;
+        for (int stageNumber = 1; stageNumber <= 15; stageNumber += 1)
+        {
+            Assert.That(Invoke(database, "IsStageUnlocked", stageNumber - 1, getCleared), Is.True, $"Stage {stageNumber} should unlock in sequence.");
+            InvokeStatic(RequiredType("SessionState"), "SelectStage", stageNumber);
+            yield return LoadScene("Main");
+            object gameFlow = FindSceneComponent("GameFlowController");
+            yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, $"Stage {stageNumber} did not enter Playing.");
+
+            if (stageNumber is 1 or 5 or 10)
+            {
+                int expectedMissSlots = stageNumber == 5 ? 1 : stageNumber == 10 ? 2 : 3;
+                Assert.That(CountActiveSlots(FindSceneComponent("StageProgressHudController"), "_missOrbs"), Is.EqualTo(expectedMissSlots), $"stage {stageNumber}");
+            }
+
+            yield return CompleteCurrentStageThroughRealInput(gameFlow, stageNumber);
+            if (SceneManager.GetActiveScene().name != "Result")
+            {
+                yield return WaitForScene("Result", SceneTimeoutSeconds);
+            }
+
+            object result = GetStaticProperty(RequiredType("SessionState"), "LastResult");
+            Assert.That(GetProperty(result, "StageNumber"), Is.EqualTo(stageNumber));
+            Assert.That(GetProperty(result, "IsClear"), Is.EqualTo(true), $"Stage {stageNumber} should clear through Main.");
+            Assert.That(getCleared(stageNumber), Is.True, $"Stage {stageNumber} clear should persist in Result.");
+        }
+
+        Assert.That(Enumerable.Range(1, 15).All(getCleared), Is.True);
+    }
+
+    [UnityTest]
+    [Order(10)]
+    public IEnumerator LateTapImmediatelyAfterPassDoesNotAddAnotherMiss()
+    {
+        yield return LoadScene("Main");
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Main did not enter Playing state.");
+
+        object scoreManager = FindSceneComponent("ScoreManager");
+        object carSpawner = FindSceneComponent("CarSpawner");
+        object laneInput = FindSceneComponent("LaneInputController");
+        Invoke(carSpawner, "StopSpawning");
+        Invoke(carSpawner, "DespawnAllCars");
+        yield return null;
+
+        object passedCar = SpawnFixedCar(carSpawner, "CompactCar");
+        Invoke(carSpawner, "HandleCarMissed", passedCar);
+        AssertScore(scoreManager, score: 0, misses: 1);
+
+        PointerDown(laneInput, "CompactCar");
+        yield return SettleInput();
+        AssertScore(scoreManager, score: 0, misses: 1);
+
+        yield return new WaitForSecondsRealtime(0.2f);
+        PointerDown(laneInput, "CompactCar");
+        yield return SettleInput();
+        AssertScore(scoreManager, score: 0, misses: 2);
+    }
+
+    [UnityTest]
+    [Order(11)]
+    public IEnumerator GimmickHintsAppearOnlyOnFirstEncounter()
+    {
+        yield return LoadScene("Main");
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Main did not enter Playing state.");
+
+        object carSpawner = FindSceneComponent("CarSpawner");
+        object laneInput = FindSceneComponent("LaneInputController");
+        object gimmickHud = FindSceneComponent("GimmickHudController");
+        object stage = GetField(gameFlow, "_currentStageDefinition");
+        RectTransform messageRoot = GetField(gimmickHud, "_messageRoot") as RectTransform;
+        Invoke(carSpawner, "StopSpawning");
+        Invoke(carSpawner, "DespawnAllCars");
+        yield return null;
+
+        Invoke(gimmickHud, "ShowModifierHint", EnumValue("CarModifier", "Express"));
+        Assert.That(messageRoot.gameObject.activeSelf, Is.True);
+        Invoke(gimmickHud, "StopEffects");
+        Invoke(gimmickHud, "Initialize", stage, laneInput);
+        Invoke(gimmickHud, "ShowModifierHint", EnumValue("CarModifier", "Express"));
+        Assert.That(messageRoot.gameObject.activeSelf, Is.False, "Express hint should not repeat on another stage entry.");
+
+        Invoke(gimmickHud, "ShowModifierHint", EnumValue("CarModifier", "Covered"));
+        Assert.That(messageRoot.gameObject.activeSelf, Is.True);
+        Invoke(gimmickHud, "StopEffects");
+        Invoke(gimmickHud, "Initialize", stage, laneInput);
+        Invoke(gimmickHud, "ShowModifierHint", EnumValue("CarModifier", "Covered"));
+        Assert.That(messageRoot.gameObject.activeSelf, Is.False, "Covered hint should not repeat on another stage entry.");
+    }
+
+    private static IEnumerator CompleteCurrentStageThroughRealInput(object gameFlow, int stageNumber)
+    {
+        object stage = GetField(gameFlow, "_currentStageDefinition");
+        object scoreManager = FindSceneComponent("ScoreManager");
+        object spawner = FindSceneComponent("CarSpawner");
+        object laneInput = FindSceneComponent("LaneInputController");
+        Invoke(spawner, "StopSpawning");
+        Invoke(spawner, "DespawnAllCars");
+        yield return null;
+
+        string goalType = GetField(stage, "GoalType").ToString();
+        int safety = 0;
+        if (goalType == "Survival")
+        {
+            yield return WaitForScene("Result", SceneTimeoutSeconds);
+            yield break;
+        }
+
+        if (goalType == "VehicleQuota")
+        {
+            foreach (string carType in new[] { "LightTruck", "CompactCar", "SportsCar" })
+            {
+                int target = GetField(stage, carType + "Quota") is int value ? value : 0;
+                while (SceneManager.GetActiveScene().name == "Main"
+                    && (int)Invoke(scoreManager, "GetCorrectCount", EnumValue("CarType", carType)) < target)
+                {
+                    Assert.That(SpawnFixedCar(spawner, carType), Is.Not.Null, $"Stage {stageNumber} could not spawn {carType}.");
+                    PointerDown(laneInput, carType);
+                    yield return SettleInput();
+                    Assert.That(++safety, Is.LessThan(100), $"Stage {stageNumber} quota did not converge.");
+                }
+            }
+
+            yield break;
+        }
+
+        int targetValue = GetField(stage, "GoalValue") is int goal ? goal : 0;
+        while (SceneManager.GetActiveScene().name == "Main")
+        {
+            int current = goalType == "Score"
+                ? (int)GetProperty(scoreManager, "CurrentScore")
+                : goalType == "Combo"
+                    ? (int)GetProperty(scoreManager, "ComboCount")
+                    : (int)GetProperty(scoreManager, "TotalCorrectCount");
+            if (current >= targetValue)
+            {
+                break;
+            }
+
+            Assert.That(SpawnFixedCar(spawner, "LightTruck"), Is.Not.Null, $"Stage {stageNumber} could not spawn a playable car.");
+            PointerDown(laneInput, "LightTruck");
+            yield return SettleInput();
+            Assert.That(++safety, Is.LessThan(100), $"Stage {stageNumber} objective did not converge.");
+        }
+    }
+
+    private static IEnumerator RetryFromResult(int expectedStageNumber = 1)
     {
         object resultController = FindSceneComponent("ResultController");
         Assert.That(resultController, Is.Not.Null);
@@ -292,7 +723,7 @@ public sealed class GameplayFlowPlayModeTests
         yield return WaitForScene("Main", SceneTimeoutSeconds);
 
         Type sessionState = RequiredType("SessionState");
-        Assert.That(GetStaticProperty(sessionState, "SelectedStageNumber"), Is.EqualTo(1));
+        Assert.That(GetStaticProperty(sessionState, "SelectedStageNumber"), Is.EqualTo(expectedStageNumber));
         Assert.That(FindSceneComponent("GameFlowController"), Is.Not.Null, "Retry should load a fresh Main flow.");
     }
 
@@ -328,6 +759,15 @@ public sealed class GameplayFlowPlayModeTests
         Component forwarder = hudComponent.GetComponentsInChildren(forwarderType, true).FirstOrDefault();
         Assert.That(forwarder, Is.Not.Null, "Repair Pointer Down forwarder was not configured.");
         Invoke(forwarder, "OnPointerDown", new object[] { null });
+    }
+
+    private static UnityEngine.UI.Button FindRepairButton()
+    {
+        object gimmickHud = FindSceneComponent("GimmickHudController");
+        Assert.That(gimmickHud, Is.Not.Null);
+        return (gimmickHud as Component)
+            ?.GetComponentsInChildren<UnityEngine.UI.Button>(true)
+            .Single(button => button.name == "RepairButton");
     }
 
     private static void PointerDown(object laneInput, string carTypeName)
@@ -388,6 +828,13 @@ public sealed class GameplayFlowPlayModeTests
         Assert.That(GetProperty(scoreManager, "MissCount"), Is.EqualTo(misses));
     }
 
+    private static int CountActiveSlots(object target, string fieldName)
+    {
+        return ((IEnumerable)GetField(target, fieldName))
+            .Cast<Component>()
+            .Count(component => component != null && component.gameObject.activeSelf);
+    }
+
     private static Rect GetScreenRect(RectTransform rectTransform, Camera camera)
     {
         Assert.That(rectTransform, Is.Not.Null);
@@ -438,6 +885,44 @@ public sealed class GameplayFlowPlayModeTests
         }
 
         return null;
+    }
+
+    private static IEnumerable<Component> FindSceneComponents(string typeName)
+    {
+        Type type = RequiredType(typeName);
+        return Resources.FindObjectsOfTypeAll(type)
+            .OfType<Component>()
+            .Where(component => component.gameObject.scene.IsValid() && component.gameObject.scene.isLoaded);
+    }
+
+    private static GameObject FindSceneObject(string objectName)
+    {
+        return Resources.FindObjectsOfTypeAll<Transform>()
+            .FirstOrDefault(transform => transform != null
+                && transform.gameObject.scene.IsValid()
+                && transform.gameObject.scene.isLoaded
+                && transform.name == objectName)
+            ?.gameObject;
+    }
+
+    private static string GetButtonText(UnityEngine.UI.Button button)
+    {
+        return string.Join(" ", button.GetComponentsInChildren<Component>(true)
+            .Select(GetTextComponentValue)
+            .Where(value => !string.IsNullOrWhiteSpace(value)));
+    }
+
+    private static string GetTextComponentValue(object component)
+    {
+        if (component == null)
+        {
+            return string.Empty;
+        }
+
+        PropertyInfo property = component.GetType().GetProperty("text", BindingFlags.Public | BindingFlags.Instance);
+        return property != null && property.PropertyType == typeof(string)
+            ? property.GetValue(component) as string ?? string.Empty
+            : string.Empty;
     }
 
     private static Canvas FindSceneCanvas(string objectName)
@@ -540,5 +1025,55 @@ public sealed class GameplayFlowPlayModeTests
 
         public bool Existed { get; }
         public int Value { get; }
+    }
+
+    private readonly struct SavedStringPreference
+    {
+        public SavedStringPreference(bool existed, string value)
+        {
+            Existed = existed;
+            Value = value;
+        }
+
+        public bool Existed { get; }
+        public string Value { get; }
+    }
+
+    private readonly struct SavedFloatPreference
+    {
+        public SavedFloatPreference(bool existed, float value)
+        {
+            Existed = existed;
+            Value = value;
+        }
+
+        public bool Existed { get; }
+        public float Value { get; }
+    }
+
+    private static string[] BuildIntPlayerPrefsKeys()
+    {
+        List<string> keys = new(BasePlayerPrefsKeys);
+        for (int i = 1; i <= 15; i += 1)
+        {
+            keys.Add($"BestScore_Stage{i}");
+            keys.Add($"StarRating_Stage{i}");
+            keys.Add($"StageClear_{i}");
+        }
+
+        foreach (string mode in new[] { "0", "1", "2" })
+        {
+            for (int i = 1; i <= 15; i += 1)
+            {
+                keys.Add($"Telemetry_Attempted_{mode}_{i}");
+            }
+        }
+
+        return keys.Distinct().ToArray();
+    }
+
+    private static string[] BuildFloatPlayerPrefsKeys()
+    {
+        return Enumerable.Range(1, 15).Select(stage => $"BestTime_Stage{stage}").ToArray();
     }
 }

@@ -324,7 +324,7 @@ public static class PowaScreenshotCapture
                 : StageNumberUtility.FromIndex(i);
             bool isUnlocked = stageDefinition != null
                 && stageDefinition.IsImplemented
-                && stageDatabase.IsStageUnlocked(i, SaveService.GetBestScore);
+                && stageDatabase.IsStageUnlocked(i, SaveService.GetStageCleared);
             StageCardStatus status = stageDefinition == null || !stageDefinition.IsImplemented
                 ? StageCardStatus.ComingSoon
                 : isUnlocked ? StageCardStatus.Unlocked : StageCardStatus.Locked;
@@ -334,7 +334,7 @@ public static class PowaScreenshotCapture
 
             card.name = $"StageCard_Capture_{stageNumber:00}";
             card.gameObject.SetActive(true);
-            card.SetData(stageNumber, stageDefinition != null ? stageDefinition.TargetScore : 0, bestScore, status, starRating, requiredStageNumber);
+            card.SetData(stageDefinition, bestScore, status, starRating, requiredStageNumber);
             card.SetSelected(i == 0 && status == StageCardStatus.Unlocked);
         }
 
@@ -345,6 +345,32 @@ public static class PowaScreenshotCapture
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(parent);
         }
+    }
+
+    public static void PrepareStageSelectChapterForRegression(int chapter)
+    {
+        PrepareStageSelectCards();
+        StageSelectController controller = UnityEngine.Object.FindFirstObjectByType<StageSelectController>(FindObjectsInactive.Include);
+        StageDatabase stageDatabase = Resources.Load<StageDatabase>("StageDatabase");
+        if (controller == null || stageDatabase == null)
+        {
+            return;
+        }
+
+        RectTransform container = new SerializedObject(controller).FindProperty("_stageCardContainer")?.objectReferenceValue as RectTransform;
+        StageCardView[] cards = container != null
+            ? container.GetComponentsInChildren<StageCardView>(true)
+            : Array.Empty<StageCardView>();
+        SetPrivateField(controller, "_stageDatabase", stageDatabase);
+        SetPrivateField(controller, "_stageCardViews", cards);
+        SetPrivateField(controller, "_currentChapter", Mathf.Clamp(chapter, 1, 3));
+        InvokePrivateMethod(controller, "BuildUtilityUi");
+        InvokePrivateMethod(controller, "ApplyChapterFilter");
+        InvokePrivateMethod(controller, "ApplySelectionIndex", 0);
+        InvokePrivateLayoutPass();
+        Canvas.ForceUpdateCanvases();
+        InvokePrivateMethod(controller, "AlignChapterTabs");
+        Canvas.ForceUpdateCanvases();
     }
 
     private static void PrepareLockedStageSelectPreview()
@@ -395,6 +421,7 @@ public static class PowaScreenshotCapture
             layout.preferredHeight = 25f;
             layout.minWidth = 25f;
             layout.minHeight = 25f;
+            dot.sizeDelta = new Vector2(25f, 25f);
         }
 
         for (int i = 0; i < container.childCount; i += 1)
@@ -419,7 +446,7 @@ public static class PowaScreenshotCapture
 
         InvokePrivateMethod(controller, "ApplyCarIcons");
         SerializedObject serialized = new(controller);
-        SetPreviewText(serialized, "_stageText", "ステージ 8");
+        SetPreviewText(serialized, "_stageText", "おしごと 8");
         SetPreviewText(serialized, "_resultText", "クリア!");
         SetPreviewText(serialized, "_subMessageText", "STAGE CLEAR");
         SetPreviewText(serialized, "_scoreText", "12,450");
@@ -467,6 +494,60 @@ public static class PowaScreenshotCapture
 
     }
 
+    internal static void PrepareDailyResultPreview()
+    {
+        ResultController controller = UnityEngine.Object.FindFirstObjectByType<ResultController>(FindObjectsInactive.Include);
+        if (controller == null)
+        {
+            return;
+        }
+
+        GameResultData result = new(
+            GameMode.Daily, 15, true, 3420, 1, 22, 20, 18,
+            60f, 24, 60, StageGoalType.Survival, "20260824", 42u, 3);
+        PrepareModeResultPreview(controller, result, "デイリー", "60秒完走  MAX 24 COMBO", 3280);
+    }
+
+    internal static void PrepareEndlessResultPreview()
+    {
+        ResultController controller = UnityEngine.Object.FindFirstObjectByType<ResultController>(FindObjectsInactive.Include);
+        if (controller == null)
+        {
+            return;
+        }
+
+        GameResultData result = new(
+            GameMode.Endless, 15, false, 4860, 1, 31, 29, 27,
+            94f, 33, 87, StageGoalType.Score, string.Empty, 84u, 0);
+        PrepareModeResultPreview(controller, result, "エンドレス", "自己ベストへ挑戦  87台", 4620);
+    }
+
+    private static void PrepareModeResultPreview(ResultController controller, GameResultData result, string modeLabel, string subMessage, int bestScore)
+    {
+        InvokePrivateMethod(controller, "ApplyCarIcons");
+        SerializedObject serialized = new(controller);
+        SetPreviewText(serialized, "_stageText", modeLabel);
+        SetPreviewText(serialized, "_resultText", result.IsClear ? "クリア!" : "ゲームオーバー...");
+        SetPreviewText(serialized, "_subMessageText", subMessage);
+        SetPreviewText(serialized, "_scoreText", result.Score.ToString("N0"));
+        SetPreviewText(serialized, "_bestScoreText", bestScore.ToString("N0"));
+        SetPreviewText(serialized, "_countAText", result.LightTruckCount.ToString("N0"));
+        SetPreviewText(serialized, "_countBText", result.CompactCarCount.ToString("N0"));
+        SetPreviewText(serialized, "_countCText", result.SportsCarCount.ToString("N0"));
+        SetPreviewText(serialized, "_missCountText", result.IsDaily
+            ? $"{result.MissCount:N0} / 3"
+            : $"{result.MissCount:N0} / 1");
+        SetPreviewMissOrbs(serialized, result.MissCount, result.IsDaily ? 3 : 1);
+        GameObject starRow = serialized.FindProperty("_starRowRoot")?.objectReferenceValue as GameObject;
+        starRow?.SetActive(false);
+        GameObject newBest = serialized.FindProperty("_newBestBadge")?.objectReferenceValue as GameObject;
+        newBest?.SetActive(result.IsClear);
+        InvokePrivateMethod(controller, "ApplyVisualState", result.IsClear, false);
+        InvokePrivateMethod(controller, "ConfigureButtons", result);
+        SetPreviewText(serialized, "_scoreText", result.Score.ToString("N0"));
+        Canvas.ForceUpdateCanvases();
+    }
+
     private static void SetPreviewText(SerializedObject serialized, string propertyName, string value)
     {
         TMP_Text text = serialized.FindProperty(propertyName)?.objectReferenceValue as TMP_Text;
@@ -486,7 +567,7 @@ public static class PowaScreenshotCapture
         }
     }
 
-    private static void SetPreviewMissOrbs(SerializedObject serialized, int filledCount)
+    private static void SetPreviewMissOrbs(SerializedObject serialized, int filledCount, int visibleCount = 3)
     {
         SerializedProperty orbs = serialized.FindProperty("_missOrbImages");
         Sprite filled = serialized.FindProperty("_filledMissOrbSprite")?.objectReferenceValue as Sprite;
@@ -495,7 +576,10 @@ public static class PowaScreenshotCapture
         for (int i = 0; i < orbs.arraySize; i += 1)
         {
             Image orb = orbs.GetArrayElementAtIndex(i).objectReferenceValue as Image;
-            if (orb != null) orb.sprite = i < filledCount ? filled : empty;
+            if (orb == null) continue;
+            bool visible = i < Mathf.Clamp(visibleCount, 1, orbs.arraySize);
+            orb.gameObject.SetActive(visible);
+            if (visible) orb.sprite = i < filledCount ? filled : empty;
         }
     }
 
@@ -506,11 +590,16 @@ public static class PowaScreenshotCapture
         if (text != null) text.text = label;
     }
 
-    private static void InvokePrivateMethod(object target, string methodName)
+    private static void InvokePrivateMethod(object target, string methodName, params object[] arguments)
     {
         if (target == null) return;
         MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-        method?.Invoke(target, null);
+        method?.Invoke(target, arguments);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        target?.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(target, value);
     }
 
     private static void InvokePrivateLayoutPass()
