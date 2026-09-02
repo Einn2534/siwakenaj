@@ -18,6 +18,17 @@ public static class StageSelectionService
         return safeStageNumber;
     }
 
+    public static int SelectDaily(int sourceStageNumber)
+    {
+        int safeStageNumber = StageNumberUtility.Normalize(sourceStageNumber);
+        SessionState.SelectDaily(safeStageNumber);
+        SaveService.SetSelectedStage(safeStageNumber);
+        SaveService.SetLastStage(safeStageNumber);
+        SaveService.SetLastGameMode(GameMode.Daily);
+        SaveService.Save();
+        return safeStageNumber;
+    }
+
     public static int RememberLastStage(int stageNumber)
     {
         int safeStageNumber = StageNumberUtility.Normalize(stageNumber);

@@ -99,23 +99,42 @@ public class StageCardView : MonoBehaviour
 
     public void SetData(int stageNumber, int targetScore, int bestScore, StageCardStatus status, int starRating, int requiredStageNumber)
     {
+        SetData(
+            new StageDefinition
+            {
+                StageNumber = stageNumber,
+                DisplayName = GetStageName(stageNumber),
+                MissionText = $"{targetScore:N0}点へ到達しろ",
+                GoalType = StageGoalType.Score,
+                GoalValue = targetScore,
+                TargetScore = targetScore
+            },
+            bestScore,
+            status,
+            starRating,
+            requiredStageNumber);
+    }
+
+    public void SetData(StageDefinition stageDefinition, int bestScore, StageCardStatus status, int starRating, int requiredStageNumber)
+    {
         CacheDefaultsIfNeeded();
-        _currentStageNumber = StageNumberUtility.Normalize(stageNumber);
+        StageDefinition stage = stageDefinition ?? StageDefinition.CreateFallback(1);
+        _currentStageNumber = StageNumberUtility.Normalize(stage.StageNumber);
         _currentStatus = status;
 
         SetText(_stageNumberText, $"おしごと {_currentStageNumber}");
-        SetText(_stageNameText, GetStageName(_currentStageNumber));
+        SetText(_stageNameText, stage.DisplayName);
 
         switch (status)
         {
             case StageCardStatus.Locked:
-                ApplyLockedState(stageNumber, requiredStageNumber);
+                ApplyLockedState(stage.StageNumber, requiredStageNumber);
                 break;
             case StageCardStatus.ComingSoon:
                 ApplyComingSoonState();
                 break;
             default:
-                ApplyUnlockedState(targetScore, bestScore);
+                ApplyUnlockedState(stage, bestScore);
                 break;
         }
 
@@ -213,10 +232,10 @@ public class StageCardView : MonoBehaviour
         _defaultsCached = true;
     }
 
-    private void ApplyUnlockedState(int targetScore, int bestScore)
+    private void ApplyUnlockedState(StageDefinition stageDefinition, int bestScore)
     {
-        SetText(_targetScoreText, $"目標 {targetScore:N0}台");
-        SetText(_bestScoreText, bestScore > 0 ? $"ベスト {bestScore:N0}" : "ベスト -");
+        SetText(_targetScoreText, $"MISSION\n{stageDefinition.MissionText}");
+        SetText(_bestScoreText, bestScore > 0 ? $"BEST SCORE {bestScore:N0}" : "BEST SCORE -");
         SetText(_statusText, string.Empty);
 
         SetColor(_stageNumberText, _defaultStageNumberColor);
@@ -228,7 +247,8 @@ public class StageCardView : MonoBehaviour
         SetPanelColor(_infoPanelImage, new Color(0.43f, 0.25f, 0.13f, 1f));
         SetPanelColor(_pinImage, new Color(1f, 0.851f, 0.29f, 1f));
         SetPanelActive(_vehiclePreviewImage, true);
-        SetProgress(bestScore, targetScore, true);
+        int scoreTarget = stageDefinition.GoalType == StageGoalType.Score ? stageDefinition.EffectiveGoalValue : 0;
+        SetProgress(bestScore, scoreTarget, scoreTarget > 0);
         if (_targetScoreText != null)
         {
             _targetScoreText.rectTransform.anchoredPosition = new Vector2(-150f, -180f);
@@ -250,7 +270,7 @@ public class StageCardView : MonoBehaviour
         SetText(_stageNameText, "???");
         SetText(_targetScoreText, "---");
         SetText(_bestScoreText, string.Empty);
-        SetText(_statusText, $"おしごと{resolvedRequiredStageNumber}をクリアでかいふう");
+        SetText(_statusText, $"おしごと{resolvedRequiredStageNumber}をクリアで解放");
 
         SetColor(_stageNumberText, LockedPrimaryTextColor);
         SetColor(_targetScoreText, LockedSecondaryTextColor);

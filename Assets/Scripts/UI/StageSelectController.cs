@@ -79,10 +79,14 @@ public class StageSelectController : MonoBehaviour
     private RectTransform _pageDotContainer;
     private TMP_Text _swipeHintText;
     private readonly List<Image> _pageDots = new();
+    private readonly List<Button> _chapterButtons = new();
+    private RectTransform _chapterTabs;
+    private RectTransform _safeArea;
     private Sprite _toggleOnSprite;
     private GameMode _selectedGameMode = GameMode.Stage;
     private int _selectedStageNumber = 1;
     private bool _utilityUiBuilt;
+    private int _currentChapter = 1;
 
     private void OnEnable()
     {
@@ -98,6 +102,9 @@ public class StageSelectController : MonoBehaviour
         BuildUtilityUi();
 
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
+        SaveService.EnsureProgressMigration(_stageDatabase);
+        int lastStageNumber = SaveService.GetLastStage();
+        _currentChapter = Mathf.Clamp(((lastStageNumber - 1) / 5) + 1, 1, 3);
         EnsureStageCardViews();
 
         if (_swipeSnapController != null)
@@ -108,7 +115,6 @@ public class StageSelectController : MonoBehaviour
         UpdateCards();
         yield return null;
 
-        int lastStageNumber = SaveService.GetLastStage();
         int startIndex = GetInitialStageIndex(lastStageNumber);
         _swipeSnapController?.JumpToIndex(startIndex);
         ApplySelectionIndex(startIndex);
@@ -128,6 +134,11 @@ public class StageSelectController : MonoBehaviour
     {
         MarkSwipeHintSeen();
         ApplySelectionIndex(index);
+    }
+
+    private void LateUpdate()
+    {
+        AlignChapterTabs();
     }
 
     public void OnPlayPressed()
@@ -239,8 +250,128 @@ public class StageSelectController : MonoBehaviour
         }
 
         _utilityUiBuilt = true;
+        _safeArea = safeArea;
         Sprite slicedSprite = GetBuiltinUiSprite();
+        BuildChapterTabs(safeArea, slicedSprite);
         BuildStageNavigationUi(safeArea, slicedSprite);
+    }
+
+    private void BuildChapterTabs(RectTransform safeArea, Sprite slicedSprite)
+    {
+        Transform subtitle = safeArea.Find("SubtitleText");
+        if (subtitle != null)
+        {
+            subtitle.gameObject.SetActive(false);
+        }
+
+        Transform existing = safeArea.Find("ChapterTabs");
+        if (existing != null)
+        {
+            _chapterTabs = existing as RectTransform;
+            return;
+        }
+
+        RectTransform tabs = CreateUiObject("ChapterTabs", safeArea);
+        _chapterTabs = tabs;
+        SetAnchored(tabs, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -248f), new Vector2(810f, 86f));
+        HorizontalLayoutGroup layout = tabs.gameObject.AddComponent<HorizontalLayoutGroup>();
+        layout.spacing = 16f;
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.childControlWidth = true;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = true;
+        layout.childForceExpandHeight = true;
+
+        for (int chapter = 1; chapter <= 3; chapter += 1)
+        {
+            int capturedChapter = chapter;
+            Button button = CreateButton($"Chapter{chapter}Tab", tabs, slicedSprite, Vector2.zero, $"第{chapter}章", 34f, 24f, FontStyles.Bold, TextColor);
+            button.onClick.AddListener(() => SelectChapter(capturedChapter));
+            _chapterButtons.Add(button);
+        }
+
+        RefreshChapterTabs();
+        AlignChapterTabs();
+    }
+
+    private void AlignChapterTabs()
+    {
+        if (_chapterTabs == null || _safeArea == null || _stageCardViews == null)
+        {
+            return;
+        }
+
+        StageCardView activeCard = null;
+        foreach (StageCardView card in _stageCardViews)
+        {
+            if (card != null && card.gameObject.activeInHierarchy)
+            {
+                activeCard = card;
+                break;
+            }
+        }
+
+        if (activeCard == null)
+        {
+            return;
+        }
+
+        Bounds cardBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_safeArea, activeCard.transform);
+        float cardTopDistance = _safeArea.rect.yMax - cardBounds.max.y;
+        float tabsTopDistance = Mathf.Max(0f, cardTopDistance - _chapterTabs.rect.height - 10f);
+        _chapterTabs.anchoredPosition = new Vector2(0f, -tabsTopDistance);
+    }
+
+    public void SelectChapter(int chapter)
+    {
+        _currentChapter = Mathf.Clamp(chapter, 1, 3);
+        ApplyChapterFilter();
+        _swipeSnapController?.JumpToIndex(0);
+        ApplySelectionIndex(0);
+    }
+
+    private void ApplyChapterFilter()
+    {
+        if (_stageCardViews == null)
+        {
+            return;
+        }
+
+        foreach (StageCardView card in _stageCardViews)
+        {
+            if (card == null)
+            {
+                continue;
+            }
+
+            int index = Array.IndexOf(_stageCardViews, card);
+            StageDefinition stage = _stageDatabase != null && index >= 0 && index < _stageDatabase.Stages.Count
+                ? _stageDatabase.Stages[index]
+                : null;
+            card.gameObject.SetActive(stage != null && stage.ChapterNumber == _currentChapter);
+        }
+
+        _swipeSnapController?.Refresh();
+        RefreshChapterTabs();
+        RefreshStageNavigationUi();
+    }
+
+    private void RefreshChapterTabs()
+    {
+        for (int i = 0; i < _chapterButtons.Count; i += 1)
+        {
+            Button button = _chapterButtons[i];
+            if (button == null)
+            {
+                continue;
+            }
+
+            Image image = button.GetComponent<Image>();
+            if (image != null)
+            {
+                image.color = i + 1 == _currentChapter ? PlayButtonColor : StageNavButtonColor;
+            }
+        }
     }
 
     private void RemoveUtilityListeners()
@@ -432,17 +563,43 @@ public class StageSelectController : MonoBehaviour
         Sprite dotSprite = GetBuiltinUiSprite();
         while (_pageDots.Count < pageCount)
         {
-            RectTransform dotRect = CreatePanel($"Dot_{_pageDots.Count + 1:00}", _pageDotContainer, dotSprite, InactiveDotColor);
-            dotRect.GetComponent<Image>().raycastTarget = false;
+            Image dotImage;
+            if (_pageDots.Count > 0 && _pageDots[0] != null)
+            {
+                GameObject clone = Instantiate(_pageDots[0].gameObject, _pageDotContainer, false);
+                clone.name = $"Dot_{_pageDots.Count + 1:00}";
+                dotImage = clone.GetComponent<Image>();
+            }
+            else
+            {
+                RectTransform created = CreatePanel($"Dot_{_pageDots.Count + 1:00}", _pageDotContainer, dotSprite, InactiveDotColor);
+                dotImage = created.GetComponent<Image>();
+            }
 
-            LayoutElement layoutElement = dotRect.gameObject.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = StagePageDotWidth;
-            layoutElement.preferredHeight = StagePageDotHeight;
-            layoutElement.minWidth = StagePageDotWidth;
-            layoutElement.minHeight = StagePageDotHeight;
-
-            _pageDots.Add(dotRect.GetComponent<Image>());
+            ConfigurePageDot(dotImage);
+            _pageDots.Add(dotImage);
         }
+
+        foreach (Image dot in _pageDots)
+        {
+            ConfigurePageDot(dot);
+        }
+    }
+
+    private static void ConfigurePageDot(Image dot)
+    {
+        if (dot == null)
+        {
+            return;
+        }
+
+        dot.raycastTarget = false;
+        dot.rectTransform.sizeDelta = new Vector2(StagePageDotWidth, StagePageDotHeight);
+        LayoutElement layoutElement = dot.GetComponent<LayoutElement>() ?? dot.gameObject.AddComponent<LayoutElement>();
+        layoutElement.preferredWidth = StagePageDotWidth;
+        layoutElement.preferredHeight = StagePageDotHeight;
+        layoutElement.minWidth = StagePageDotWidth;
+        layoutElement.minHeight = StagePageDotHeight;
     }
 
     private static void SetStageNavButtonState(Button button, bool isInteractable)
@@ -477,7 +634,7 @@ public class StageSelectController : MonoBehaviour
             return null;
         }
 
-        Transform safeArea = canvasTransform.Find("SafeArea");
+        Transform safeArea = canvasTransform.Find("SafeArea") ?? canvasTransform.Find("SafeAreaRoot");
         return safeArea != null ? safeArea as RectTransform : canvasTransform;
     }
 
@@ -508,17 +665,11 @@ public class StageSelectController : MonoBehaviour
         }
 
         int clampedIndex = Mathf.Clamp(index, 0, selectableCount - 1);
-        if (IsEndlessIndex(clampedIndex))
-        {
-            _selectedGameMode = GameMode.Endless;
-            _selectedStageNumber = GetEndlessSourceStageNumber();
-        }
-        else
-        {
-            _selectedGameMode = GameMode.Stage;
-            StageDefinition stageDefinition = _stageDatabase.Stages[clampedIndex];
-            _selectedStageNumber = GetDisplayStageNumber(stageDefinition, clampedIndex);
-        }
+        int databaseIndex = ((_currentChapter - 1) * 5) + clampedIndex;
+        databaseIndex = Mathf.Clamp(databaseIndex, 0, _stageDatabase.Stages.Count - 1);
+        _selectedGameMode = GameMode.Stage;
+        StageDefinition stageDefinition = _stageDatabase.Stages[databaseIndex];
+        _selectedStageNumber = GetDisplayStageNumber(stageDefinition, databaseIndex);
 
         UpdateCards();
 
@@ -565,25 +716,17 @@ public class StageSelectController : MonoBehaviour
             return;
         }
 
-        int count = Mathf.Min(GetSelectableCardCount(), _stageCardViews.Length);
+        int count = Mathf.Min(_stageDatabase.Stages.Count, _stageCardViews.Length);
         for (int i = 0; i < count; i += 1)
         {
-            if (IsEndlessIndex(i))
-            {
-                _stageCardViews[i].SetEndlessData(SaveService.GetBestEndlessScore());
-                _stageCardViews[i].SetSelected(_selectedGameMode == GameMode.Endless);
-                continue;
-            }
-
             StageDefinition stageDefinition = _stageDatabase.Stages[i];
             int stageNumber = GetDisplayStageNumber(stageDefinition, i);
-            bool isUnlocked = _stageDatabase.IsStageUnlocked(i, SaveService.GetBestScore);
+            bool isUnlocked = _stageDatabase.IsStageUnlocked(i, SaveService.GetStageCleared);
             StageCardStatus cardStatus = GetCardStatus(stageDefinition, isUnlocked);
             int bestScore = cardStatus == StageCardStatus.Unlocked ? SaveService.GetBestScore(stageNumber) : 0;
             int starRating = cardStatus == StageCardStatus.Unlocked ? SaveService.GetStarRating(stageNumber) : 0;
             _stageCardViews[i].SetData(
-                stageNumber,
-                stageDefinition != null ? stageDefinition.TargetScore : 0,
+                stageDefinition,
                 bestScore,
                 cardStatus,
                 starRating,
@@ -606,7 +749,7 @@ public class StageSelectController : MonoBehaviour
             return;
         }
 
-        int requiredCount = GetSelectableCardCount();
+        int requiredCount = _stageDatabase.Stages.Count;
         while (cardViews.Count < requiredCount)
         {
             StageCardView clone = CreateStageCard(cardViews.Count + 1);
@@ -635,7 +778,7 @@ public class StageSelectController : MonoBehaviour
         }
 
         _stageCardViews = activeCardViews.ToArray();
-        _swipeSnapController?.Refresh();
+        ApplyChapterFilter();
     }
 
     private bool ResolveStageCardContainer()
@@ -747,21 +890,21 @@ public class StageSelectController : MonoBehaviour
             return 0;
         }
 
-        if (SaveService.GetLastGameMode() == GameMode.Endless)
-        {
-            return GetEndlessIndex();
-        }
-
         if (_stageDatabase.TryGetStageIndex(preferredStageNumber, out int preferredIndex) && IsPlayableStage(preferredIndex))
         {
-            return preferredIndex;
+            _currentChapter = Mathf.Clamp((_stageDatabase.Stages[preferredIndex].ChapterNumber), 1, 3);
+            ApplyChapterFilter();
+            return preferredIndex % 5;
         }
 
         for (int i = 0; i < _stageDatabase.Stages.Count; i += 1)
         {
             if (IsPlayableStage(i))
             {
-                return i;
+                StageDefinition stage = _stageDatabase.Stages[i];
+                _currentChapter = stage != null ? Mathf.Clamp(stage.ChapterNumber, 1, 3) : 1;
+                ApplyChapterFilter();
+                return i % 5;
             }
         }
 
@@ -778,7 +921,7 @@ public class StageSelectController : MonoBehaviour
         StageDefinition stageDefinition = _stageDatabase.Stages[stageIndex];
         return stageDefinition != null
             && stageDefinition.IsImplemented
-            && _stageDatabase.IsStageUnlocked(stageIndex, SaveService.GetBestScore);
+            && _stageDatabase.IsStageUnlocked(stageIndex, SaveService.GetStageCleared);
     }
 
     private static StageCardStatus GetCardStatus(StageDefinition stageDefinition, bool isUnlocked)
@@ -798,7 +941,21 @@ public class StageSelectController : MonoBehaviour
 
     private int GetSelectableCardCount()
     {
-        return _stageDatabase != null ? _stageDatabase.Stages.Count + 1 : 0;
+        if (_stageDatabase == null)
+        {
+            return 0;
+        }
+
+        int count = 0;
+        foreach (StageDefinition stage in _stageDatabase.Stages)
+        {
+            if (stage != null && stage.ChapterNumber == _currentChapter)
+            {
+                count += 1;
+            }
+        }
+
+        return count;
     }
 
     private int GetEndlessIndex()
@@ -808,7 +965,7 @@ public class StageSelectController : MonoBehaviour
 
     private bool IsEndlessIndex(int index)
     {
-        return _stageDatabase != null && index == GetEndlessIndex();
+        return false;
     }
 
     private int GetEndlessSourceStageNumber()

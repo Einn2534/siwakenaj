@@ -14,72 +14,500 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stages:
   - StageNumber: 1
-    TargetScore: 60
-    MissLimit: 4
-    CarSpeed: 0.62
+    ChapterNumber: 1
+    DisplayName: 仕分け開始
+    MissionText: 12台を仕分けろ
+    GoalType: 1
+    GoalValue: 12
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.58
     SpawnInterval: 1.15
-    WeightLightTruck: 3
-    WeightCompactCar: 2
+    WeightLightTruck: 1
+    WeightCompactCar: 1
     WeightSportsCar: 1
     ExpressChance: 0
     CoveredChance: 0
     BrokenChance: 0
     RushEveryCorrect: 0
     FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 60
     IsImplemented: 1
   - StageNumber: 2
-    TargetScore: 140
-    MissLimit: 4
-    CarSpeed: 0.74
+    ChapterNumber: 1
+    DisplayName: 三種チェック
+    MissionText: 各車種を4台ずつ仕分けろ
+    GoalType: 3
+    GoalValue: 12
+    TargetScore: 0
+    LightTruckQuota: 4
+    CompactCarQuota: 4
+    SportsCarQuota: 4
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.62
+    SpawnInterval: 1.05
+    WeightLightTruck: 4
+    WeightCompactCar: 4
+    WeightSportsCar: 4
+    ExpressChance: 0
+    CoveredChance: 0
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 1
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 140
+    IsImplemented: 1
+  - StageNumber: 3
+    ChapterNumber: 1
+    DisplayName: 急送便
+    MissionText: 180点へ到達しろ
+    GoalType: 0
+    GoalValue: 180
+    TargetScore: 180
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.7
     SpawnInterval: 0.95
-    WeightLightTruck: 2
-    WeightCompactCar: 3
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.2
+    CoveredChance: 0
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 2
+    IntroSpawns:
+    - CarType: 0
+      Modifier: 0
+    - CarType: 1
+      Modifier: 1
+    - CarType: 2
+      Modifier: 0
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 180
+    ThreeStarThreshold: 190
+    LegacyClearScore: 220
+    IsImplemented: 1
+  - StageNumber: 4
+    ChapterNumber: 1
+    DisplayName: 連続作業
+    MissionText: 12コンボへ到達しろ
+    GoalType: 2
+    GoalValue: 12
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.74
+    SpawnInterval: 0.88
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.15
+    CoveredChance: 0
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 150
+    ThreeStarThreshold: 220
+    LegacyClearScore: 310
+    IsImplemented: 1
+  - StageNumber: 5
+    ChapterNumber: 1
+    DisplayName: 第一検定
+    MissionText: 15台をノーミスで仕分けろ
+    GoalType: 1
+    GoalValue: 15
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 1
+    AllowRewardedContinue: 0
+    CarSpeed: 0.78
+    SpawnInterval: 0.82
+    WeightLightTruck: 1
+    WeightCompactCar: 1
     WeightSportsCar: 1
     ExpressChance: 0.18
     CoveredChance: 0
     BrokenChance: 0
     RushEveryCorrect: 0
     FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 3
+    TwoStarThreshold: 22
+    ThreeStarThreshold: 18
+    LegacyClearScore: 420
     IsImplemented: 1
-  - StageNumber: 3
-    TargetScore: 220
+  - StageNumber: 6
+    ChapterNumber: 2
+    DisplayName: 正体不明
+    MissionText: 12台を仕分けろ
+    GoalType: 1
+    GoalValue: 12
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
     MissLimit: 3
-    CarSpeed: 0.86
-    SpawnInterval: 0.82
-    WeightLightTruck: 2
-    WeightCompactCar: 2
-    WeightSportsCar: 2
-    ExpressChance: 0.16
-    CoveredChance: 0.18
+    AllowRewardedContinue: 1
+    CarSpeed: 0.64
+    SpawnInterval: 1.05
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0
+    CoveredChance: 0.25
     BrokenChance: 0
     RushEveryCorrect: 0
     FeverComboThreshold: 0
+    SpawnPattern: 2
+    IntroSpawns:
+    - CarType: 0
+      Modifier: 0
+    - CarType: 1
+      Modifier: 2
+    - CarType: 2
+      Modifier: 0
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
     IsImplemented: 1
-  - StageNumber: 4
-    TargetScore: 310
+  - StageNumber: 7
+    ChapterNumber: 2
+    DisplayName: 見切り
+    MissionText: 各車種を4台ずつ仕分けろ
+    GoalType: 3
+    GoalValue: 12
+    TargetScore: 0
+    LightTruckQuota: 4
+    CompactCarQuota: 4
+    SportsCarQuota: 4
+    SurvivalSeconds: 0
     MissLimit: 3
-    CarSpeed: 0.98
-    SpawnInterval: 0.68
-    WeightLightTruck: 1
-    WeightCompactCar: 2
-    WeightSportsCar: 3
-    ExpressChance: 0.15
-    CoveredChance: 0.16
-    BrokenChance: 0.14
+    AllowRewardedContinue: 1
+    CarSpeed: 0.72
+    SpawnInterval: 0.92
+    WeightLightTruck: 4
+    WeightCompactCar: 4
+    WeightSportsCar: 4
+    ExpressChance: 0.1
+    CoveredChance: 0.3
+    BrokenChance: 0
     RushEveryCorrect: 0
     FeverComboThreshold: 0
+    SpawnPattern: 1
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
     IsImplemented: 1
-  - StageNumber: 5
-    TargetScore: 420
+  - StageNumber: 8
+    ChapterNumber: 2
+    DisplayName: 30秒耐久
+    MissionText: 30秒間生き残れ
+    GoalType: 4
+    GoalValue: 30
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 30
     MissLimit: 3
-    CarSpeed: 1.12
+    AllowRewardedContinue: 1
+    CarSpeed: 0.78
+    SpawnInterval: 0.82
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.12
+    CoveredChance: 0.35
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 220
+    ThreeStarThreshold: 300
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 9
+    ChapterNumber: 2
+    DisplayName: 見破り連鎖
+    MissionText: 15コンボへ到達しろ
+    GoalType: 2
+    GoalValue: 15
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.82
+    SpawnInterval: 0.74
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0.35
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 240
+    ThreeStarThreshold: 320
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 10
+    ChapterNumber: 2
+    DisplayName: 第二検定
+    MissionText: 300点へ到達しろ
+    GoalType: 0
+    GoalValue: 300
+    TargetScore: 300
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 2
+    AllowRewardedContinue: 1
+    CarSpeed: 0.88
+    SpawnInterval: 0.68
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.22
+    CoveredChance: 0.32
+    BrokenChance: 0
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 300
+    ThreeStarThreshold: 310
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 11
+    ChapterNumber: 3
+    DisplayName: 故障対応
+    MissionText: 12台を仕分けろ
+    GoalType: 1
+    GoalValue: 12
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.68
+    SpawnInterval: 1
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0
+    CoveredChance: 0
+    BrokenChance: 0.25
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 2
+    IntroSpawns:
+    - CarType: 0
+      Modifier: 0
+    - CarType: 1
+      Modifier: 3
+    - CarType: 2
+      Modifier: 0
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 12
+    ChapterNumber: 3
+    DisplayName: 整備集中
+    MissionText: 18台を仕分けろ
+    GoalType: 1
+    GoalValue: 18
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.78
+    SpawnInterval: 0.82
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0
+    CoveredChance: 0.1
+    BrokenChance: 0.35
+    RushEveryCorrect: 0
+    FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 13
+    ChapterNumber: 3
+    DisplayName: 大名行列
+    MissionText: 35秒間生き残れ
+    GoalType: 4
+    GoalValue: 35
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 35
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.84
+    SpawnInterval: 0.72
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.15
+    CoveredChance: 0.18
+    BrokenChance: 0.2
+    RushEveryCorrect: 7
+    FeverComboThreshold: 0
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 300
+    ThreeStarThreshold: 420
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 14
+    ChapterNumber: 3
+    DisplayName: フィーバー維持
+    MissionText: 18コンボへ到達しろ
+    GoalType: 2
+    GoalValue: 18
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.9
+    SpawnInterval: 0.64
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.15
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 9
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 1
+    TwoStarThreshold: 350
+    ThreeStarThreshold: 480
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 15
+    ChapterNumber: 3
+    DisplayName: 最終検定
+    MissionText: 500点へ到達しろ
+    GoalType: 0
+    GoalValue: 500
+    TargetScore: 500
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 0.98
     SpawnInterval: 0.56
     WeightLightTruck: 1
     WeightCompactCar: 1
-    WeightSportsCar: 4
+    WeightSportsCar: 1
     ExpressChance: 0.18
     CoveredChance: 0.18
-    BrokenChance: 0.16
+    BrokenChance: 0.18
     RushEveryCorrect: 7
     FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 2
+    TwoStarThreshold: 18
+    ThreeStarThreshold: 25
+    LegacyClearScore: 0
     IsImplemented: 1

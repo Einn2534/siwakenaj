@@ -8,17 +8,23 @@ public class GameResultData
     public int LightTruckCount { get; }
     public int CompactCarCount { get; }
     public int SportsCarCount { get; }
+    public float PlayTimeSeconds { get; }
+    public int MaxCombo { get; }
+    public int TotalCorrect { get; }
+    public StageGoalType GoalType { get; }
+    public string DailyDateKey { get; }
+    public uint Seed { get; }
+    public int DailyTier { get; }
     public bool IsEndless => Mode == GameMode.Endless;
+    public bool IsDaily => Mode == GameMode.Daily;
 
-    public GameResultData(
-        int stageNumber,
-        bool isClear,
-        int score,
-        int missCount,
-        int lightTruckCount,
-        int compactCarCount,
-        int sportsCarCount)
+    public GameResultData(int stageNumber, bool isClear, int score, int missCount, int lightTruckCount, int compactCarCount, int sportsCarCount)
         : this(GameMode.Stage, stageNumber, isClear, score, missCount, lightTruckCount, compactCarCount, sportsCarCount)
+    {
+    }
+
+    public GameResultData(GameMode mode, int stageNumber, bool isClear, int score, int missCount, int lightTruckCount, int compactCarCount, int sportsCarCount)
+        : this(mode, stageNumber, isClear, score, missCount, lightTruckCount, compactCarCount, sportsCarCount, 0f, 0, lightTruckCount + compactCarCount + sportsCarCount, StageGoalType.Score, string.Empty, 0u, 0)
     {
     }
 
@@ -30,7 +36,14 @@ public class GameResultData
         int missCount,
         int lightTruckCount,
         int compactCarCount,
-        int sportsCarCount)
+        int sportsCarCount,
+        float playTimeSeconds,
+        int maxCombo,
+        int totalCorrect,
+        StageGoalType goalType,
+        string dailyDateKey,
+        uint seed,
+        int dailyTier)
     {
         Mode = mode;
         StageNumber = stageNumber;
@@ -40,6 +53,13 @@ public class GameResultData
         LightTruckCount = lightTruckCount;
         CompactCarCount = compactCarCount;
         SportsCarCount = sportsCarCount;
+        PlayTimeSeconds = playTimeSeconds;
+        MaxCombo = maxCombo;
+        TotalCorrect = totalCorrect;
+        GoalType = goalType;
+        DailyDateKey = dailyDateKey ?? string.Empty;
+        Seed = seed;
+        DailyTier = dailyTier;
     }
 
     public int GetCorrectCount(CarType carType)
@@ -65,10 +85,21 @@ public class GameResultData
 
     public static GameResultData FromScoreState(int stageNumber, bool isClear, ScoreState scoreState)
     {
-        return FromScoreState(GameMode.Stage, stageNumber, isClear, scoreState);
+        return FromScoreState(GameMode.Stage, stageNumber, isClear, scoreState, null, null);
     }
 
     public static GameResultData FromScoreState(GameMode mode, int stageNumber, bool isClear, ScoreState scoreState)
+    {
+        return FromScoreState(mode, stageNumber, isClear, scoreState, null, null);
+    }
+
+    public static GameResultData FromScoreState(
+        GameMode mode,
+        int stageNumber,
+        bool isClear,
+        ScoreState scoreState,
+        StageDefinition stageDefinition,
+        StageObjectiveEvaluator evaluator)
     {
         if (scoreState == null)
         {
@@ -83,6 +114,13 @@ public class GameResultData
             scoreState.MissCount,
             scoreState.GetCorrectCount(CarType.LightTruck),
             scoreState.GetCorrectCount(CarType.CompactCar),
-            scoreState.GetCorrectCount(CarType.SportsCar));
+            scoreState.GetCorrectCount(CarType.SportsCar),
+            evaluator != null ? evaluator.ElapsedSeconds : 0f,
+            scoreState.MaxComboCount,
+            scoreState.TotalCorrectCount,
+            stageDefinition != null ? stageDefinition.GoalType : StageGoalType.Score,
+            stageDefinition != null ? stageDefinition.DailyDateKey : string.Empty,
+            stageDefinition != null ? stageDefinition.FixedSeed : 0u,
+            stageDefinition != null ? stageDefinition.DailyTier : 0);
     }
 }

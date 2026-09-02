@@ -14,6 +14,7 @@ public class ScoreState
     public int CurrentScore { get; private set; }
     public int MissCount { get; private set; }
     public int ComboCount { get; private set; }
+    public int MaxComboCount { get; private set; }
     public int TotalCorrectCount { get; private set; }
     public bool IsEndless => TargetScore <= 0;
     public bool IsFeverActive => FeverComboThreshold > 0 && ComboCount >= FeverComboThreshold;
@@ -42,6 +43,7 @@ public class ScoreState
     public int ApplySuccess(CarType laneType, int scoreMultiplier)
     {
         ComboCount += 1;
+        MaxComboCount = Mathf.Max(MaxComboCount, ComboCount);
         TotalCorrectCount += 1;
         int safeScoreMultiplier = Mathf.Max(1, scoreMultiplier);
         int earnedScore = ScorePerCorrect * safeScoreMultiplier * FeverScoreMultiplier;

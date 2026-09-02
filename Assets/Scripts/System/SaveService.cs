@@ -16,6 +16,11 @@ public static class SaveService
     private const string EndlessBestScoreKey = "BestScore_Endless";
     private const string BestScoreKeyFormat = "BestScore_Stage{0}";
     private const string StarRatingKeyFormat = "StarRating_Stage{0}";
+    private const string StageClearKeyFormat = "StageClear_{0}";
+    private const string BestTimeKeyFormat = "BestTime_Stage{0}";
+    private const string GimmickHintSeenKeyFormat = "GimmickHintSeen_{0}";
+    private const string ProgressMigrationVersionKey = "ProgressMigrationVersion";
+    private const int CurrentProgressMigrationVersion = 1;
     private const int BoolTrue = 1;
     private const int BoolFalse = 0;
     private const int DefaultBestScore = 0;
@@ -114,14 +119,15 @@ public static class SaveService
 
     public static GameMode GetLastGameMode()
     {
-        return PlayerPrefs.GetInt(LastGameModeKey, 0) == (int)GameMode.Endless
+        int raw = PlayerPrefs.GetInt(LastGameModeKey, 0);
+        return raw == (int)GameMode.Endless
             ? GameMode.Endless
-            : GameMode.Stage;
+            : raw == (int)GameMode.Daily ? GameMode.Daily : GameMode.Stage;
     }
 
     public static void SetLastGameMode(GameMode mode)
     {
-        PlayerPrefs.SetInt(LastGameModeKey, mode == GameMode.Endless ? (int)GameMode.Endless : (int)GameMode.Stage);
+        PlayerPrefs.SetInt(LastGameModeKey, (int)mode);
     }
 
     public static int GetSelectedStage()
@@ -141,7 +147,8 @@ public static class SaveService
 
     public static void SetBestScore(int stageNumber, int score)
     {
-        PlayerPrefs.SetInt(GetBestScoreKey(stageNumber), Mathf.Max(DefaultBestScore, score));
+        int bestScore = Mathf.Max(GetBestScore(stageNumber), score);
+        PlayerPrefs.SetInt(GetBestScoreKey(stageNumber), Mathf.Max(DefaultBestScore, bestScore));
     }
 
     public static int GetBestEndlessScore()
@@ -151,7 +158,7 @@ public static class SaveService
 
     public static void SetBestEndlessScore(int score)
     {
-        PlayerPrefs.SetInt(EndlessBestScoreKey, Mathf.Max(DefaultBestScore, score));
+        PlayerPrefs.SetInt(EndlessBestScoreKey, Mathf.Max(GetBestEndlessScore(), score));
     }
 
     public static int GetStarRating(int stageNumber)
@@ -161,7 +168,8 @@ public static class SaveService
 
     public static void SetStarRating(int stageNumber, int stars)
     {
-        PlayerPrefs.SetInt(GetStarRatingKey(stageNumber), StarRatingUtility.Clamp(stars));
+        int bestStars = Mathf.Max(GetStarRating(stageNumber), stars);
+        PlayerPrefs.SetInt(GetStarRatingKey(stageNumber), StarRatingUtility.Clamp(bestStars));
     }
 
     public static void Save()
@@ -169,14 +177,144 @@ public static class SaveService
         PlayerPrefs.Save();
     }
 
+    public static bool HasSeenGimmickHint(CarModifier modifier)
+    {
+        return modifier == CarModifier.Normal
+            || GetBool(GetGimmickHintSeenKey(modifier), false);
+    }
+
+    public static void SetGimmickHintSeen(CarModifier modifier)
+    {
+        if (modifier == CarModifier.Normal)
+        {
+            return;
+        }
+
+        SetBool(GetGimmickHintSeenKey(modifier), true);
+        Save();
+    }
+
     private static string GetBestScoreKey(int stageNumber)
     {
         return GetStageKey(BestScoreKeyFormat, stageNumber);
     }
 
+    public static bool GetStageCleared(int stageNumber)
+    {
+        return GetBool(GetStageClearKey(stageNumber), false);
+    }
+
+    public static void SetStageCleared(int stageNumber, bool isCleared)
+    {
+        SetBool(GetStageClearKey(stageNumber), isCleared);
+    }
+
+    public static float GetBestTime(int stageNumber)
+    {
+        return Mathf.Max(0f, PlayerPrefs.GetFloat(GetBestTimeKey(stageNumber), 0f));
+    }
+
+    public static void SetBestTime(int stageNumber, float seconds)
+    {
+        if (seconds <= 0f)
+        {
+            return;
+        }
+
+        string key = GetBestTimeKey(stageNumber);
+        float current = GetBestTime(stageNumber);
+        if (current <= 0f || seconds < current)
+        {
+            PlayerPrefs.SetFloat(key, seconds);
+        }
+    }
+
+    public static void RecordStageResult(GameResultData result, StageDefinition stageDefinition, int stars)
+    {
+        if (result == null || result.Mode != GameMode.Stage)
+        {
+            return;
+        }
+
+        int stageNumber = StageNumberUtility.Normalize(result.StageNumber);
+        if (result.Score > GetBestScore(stageNumber))
+        {
+            SetBestScore(stageNumber, result.Score);
+        }
+
+        if (stars > GetStarRating(stageNumber))
+        {
+            SetStarRating(stageNumber, stars);
+        }
+
+        if (result.IsClear)
+        {
+            SetStageCleared(stageNumber, true);
+            SetBestTime(stageNumber, result.PlayTimeSeconds);
+        }
+
+        Save();
+    }
+
+    public static int GetHighestClearedStageNumber(StageDatabase database)
+    {
+        if (database == null)
+        {
+            return StageNumberUtility.MinimumStageNumber;
+        }
+
+        StageDefinition highest = database.GetHighestClearedStage(GetStageCleared);
+        return highest != null ? StageNumberUtility.Normalize(highest.StageNumber) : StageNumberUtility.MinimumStageNumber;
+    }
+
+    public static bool IsExtendedModeUnlocked()
+    {
+        return GetStageCleared(5);
+    }
+
+    public static void EnsureProgressMigration(StageDatabase database)
+    {
+        if (database == null || PlayerPrefs.GetInt(ProgressMigrationVersionKey, 0) >= CurrentProgressMigrationVersion)
+        {
+            return;
+        }
+
+        foreach (StageDefinition stage in database.Stages)
+        {
+            if (stage == null || stage.StageNumber > 5 || GetStageCleared(stage.StageNumber))
+            {
+                continue;
+            }
+
+            int legacyTarget = stage.LegacyClearScore > 0 ? stage.LegacyClearScore : stage.TargetScore;
+            if (legacyTarget > 0 && GetBestScore(stage.StageNumber) >= legacyTarget)
+            {
+                SetStageCleared(stage.StageNumber, true);
+            }
+        }
+
+        PlayerPrefs.SetInt(ProgressMigrationVersionKey, CurrentProgressMigrationVersion);
+        Save();
+    }
+
     private static string GetStarRatingKey(int stageNumber)
     {
         return GetStageKey(StarRatingKeyFormat, stageNumber);
+    }
+
+    private static string GetStageClearKey(int stageNumber)
+    {
+        return GetStageKey(StageClearKeyFormat, stageNumber);
+    }
+
+    private static string GetBestTimeKey(int stageNumber)
+    {
+        return GetStageKey(BestTimeKeyFormat, stageNumber);
+    }
+
+    private static string GetGimmickHintSeenKey(CarModifier modifier)
+    {
+        return string.Format(GimmickHintSeenKeyFormat, modifier);
     }
 
     private static int GetStageNumber(string key)

@@ -20,8 +20,9 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private const string PauseFontResourcePath = "Fonts/Y1YomiyasuWide-Bold SDF";
     private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
     private const string ToggleOffResourcePath = "UI/ui_settings_toggle_off";
-    private const string StageFormat = "ステージ  {0}";
+    private const string StageFormat = "おしごと  {0}";
     private const string EndlessModeLabel = "エンドレス";
+    private const string DailyModeLabel = "デイリー";
     private const float ReferenceWidth = 1080f;
     private const float ReferenceHeight = 1920f;
     internal const float PauseButtonEdgeInset = 34f;
@@ -355,6 +356,10 @@ public sealed class MainPauseMenuController : MonoBehaviour
         {
             StageSelectionService.SelectEndless(SessionState.SelectedStageNumber);
         }
+        else if (SessionState.IsDailyMode)
+        {
+            StageSelectionService.SelectDaily(SessionState.SelectedStageNumber);
+        }
         else
         {
             StageSelectionService.SelectStage(SessionState.SelectedStageNumber);
@@ -489,7 +494,9 @@ public sealed class MainPauseMenuController : MonoBehaviour
         {
             _stageText.text = SessionState.IsEndlessMode
                 ? EndlessModeLabel
-                : string.Format(StageFormat, StageNumberUtility.Normalize(SessionState.SelectedStageNumber));
+                : SessionState.IsDailyMode
+                    ? DailyModeLabel
+                    : string.Format(StageFormat, StageNumberUtility.Normalize(SessionState.SelectedStageNumber));
         }
     }
 

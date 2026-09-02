@@ -3,7 +3,8 @@ using UnityEngine;
 public enum GameMode
 {
     Stage,
-    Endless
+    Endless,
+    Daily
 }
 
 public static class SessionState
@@ -12,6 +13,7 @@ public static class SessionState
     public static int SelectedStageNumber { get; private set; } = StageNumberUtility.MinimumStageNumber;
     public static GameResultData LastResult { get; private set; } = GameResultData.Empty(GameMode.Stage, StageNumberUtility.MinimumStageNumber);
     public static bool IsEndlessMode => SelectedGameMode == GameMode.Endless;
+    public static bool IsDailyMode => SelectedGameMode == GameMode.Daily;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeFromSave()
@@ -20,6 +22,10 @@ public static class SessionState
         if (SaveService.GetLastGameMode() == GameMode.Endless)
         {
             SelectEndless(selectedStageNumber);
+        }
+        else if (SaveService.GetLastGameMode() == GameMode.Daily)
+        {
+            SelectDaily(selectedStageNumber);
         }
         else
         {
@@ -41,6 +47,12 @@ public static class SessionState
         SelectedStageNumber = StageNumberUtility.Normalize(sourceStageNumber);
     }
 
+    public static void SelectDaily(int sourceStageNumber)
+    {
+        SelectedGameMode = GameMode.Daily;
+        SelectedStageNumber = StageNumberUtility.Normalize(sourceStageNumber);
+    }
+
     public static void StoreResult(GameResultData result)
     {
         if (result == null)
@@ -51,6 +63,10 @@ public static class SessionState
         if (result.Mode == GameMode.Endless)
         {
             SelectEndless(result.StageNumber);
+        }
+        else if (result.Mode == GameMode.Daily)
+        {
+            SelectDaily(result.StageNumber);
         }
         else
         {

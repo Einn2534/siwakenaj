@@ -12,18 +12,35 @@ public class ScoreManager : MonoBehaviour
     public int RemainingSuccessCount => State != null ? State.RemainingSuccessCount : 0;
     public int ComboCount => State != null ? State.ComboCount : 0;
     public int TotalCorrectCount => State != null ? State.TotalCorrectCount : 0;
+    public int MaxComboCount => State != null ? State.MaxComboCount : 0;
     public bool IsFeverActive => State != null && State.IsFeverActive;
     public bool HasReachedTargetScore => State != null && State.HasReachedTargetScore;
     public bool HasReachedMissLimit => State != null && State.HasReachedMissLimit;
+    public StageObjectiveEvaluator ObjectiveEvaluator { get; private set; }
+    public StageOutcome ObjectiveOutcome => ObjectiveEvaluator != null ? ObjectiveEvaluator.Outcome : StageOutcome.Playing;
+    public StageProgressSnapshot ProgressSnapshot => ObjectiveEvaluator != null
+        ? ObjectiveEvaluator.GetProgressSnapshot()
+        : new StageProgressSnapshot(string.Empty, string.Empty, 0f, 0, 0);
 
     public void Initialize(StageDefinition stageDefinition)
+    {
+        Initialize(stageDefinition, SessionState.SelectedGameMode);
+    }
+
+    public void Initialize(StageDefinition stageDefinition, GameMode mode)
     {
         StageDefinition safeStageDefinition = stageDefinition ?? StageDefinition.CreateFallback(1);
         State = new ScoreState(
             safeStageDefinition.TargetScore,
             safeStageDefinition.MissLimit,
             safeStageDefinition.FeverComboThreshold);
+        ObjectiveEvaluator = new StageObjectiveEvaluator(safeStageDefinition, State, mode);
         _scoreLaneUi?.ResetAll();
+    }
+
+    public void TickObjective(float deltaTime, bool gameplayActive)
+    {
+        ObjectiveEvaluator?.Tick(deltaTime, gameplayActive);
     }
 
     public int ApplySuccess(CarType laneType)

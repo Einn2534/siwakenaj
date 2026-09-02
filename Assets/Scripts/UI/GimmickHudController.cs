@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -17,8 +16,6 @@ public sealed class GimmickHudController : MonoBehaviour
     private static readonly Color ComboColor = new(76f / 255f, 182f / 255f, 214f / 255f, 0.96f);
     private static readonly Color FeverColor = new(1f, 197f / 255f, 66f / 255f, 1f);
 
-    private readonly HashSet<CarModifier> _shownModifierHints = new();
-
     private RectTransform _repairRoot;
     private UnityEngine.UI.Button _repairButton;
     private RepairButtonPointerDownForwarder _repairForwarder;
@@ -31,6 +28,8 @@ public sealed class GimmickHudController : MonoBehaviour
     private TMP_Text _messageText;
     private Coroutine _messageRoutine;
     private int _feverThreshold;
+    private bool _isGameplayActive;
+    private bool _activeCarRequiresRepair;
 
     public static GimmickHudController EnsureInstalled()
     {
@@ -52,21 +51,26 @@ public sealed class GimmickHudController : MonoBehaviour
 
         bool hasRepairCars = safeStage.BrokenChance > 0f;
         _repairRoot.gameObject.SetActive(hasRepairCars);
-        _repairButton.interactable = hasRepairCars;
+        _isGameplayActive = false;
+        _activeCarRequiresRepair = false;
         _repairForwarder.Configure(laneInputController, _repairButton);
+        RefreshRepairButtonState();
 
         _comboRoot.gameObject.SetActive(_feverThreshold > 0);
-        _shownModifierHints.Clear();
         HideMessage();
         UpdateState(null);
     }
 
     public void SetGameplayActive(bool isActive)
     {
-        if (_repairButton != null)
-        {
-            _repairButton.interactable = isActive && _repairRoot.gameObject.activeSelf;
-        }
+        _isGameplayActive = isActive;
+        RefreshRepairButtonState();
+    }
+
+    public void SetActiveCar(CarController activeCar)
+    {
+        _activeCarRequiresRepair = activeCar != null && activeCar.RequiresRepair;
+        RefreshRepairButtonState();
     }
 
     public void UpdateState(ScoreState state)
@@ -90,10 +94,12 @@ public sealed class GimmickHudController : MonoBehaviour
 
     public void ShowModifierHint(CarModifier modifier)
     {
-        if (modifier == CarModifier.Normal || !_shownModifierHints.Add(modifier))
+        if (SaveService.HasSeenGimmickHint(modifier))
         {
             return;
         }
+
+        SaveService.SetGimmickHintSeen(modifier);
 
         switch (modifier)
         {
@@ -168,6 +174,16 @@ public sealed class GimmickHudController : MonoBehaviour
         {
             _messageRoot.gameObject.SetActive(false);
             _messageRoot.localScale = Vector3.one;
+        }
+    }
+
+    private void RefreshRepairButtonState()
+    {
+        if (_repairButton != null)
+        {
+            _repairButton.interactable = _repairRoot.gameObject.activeSelf
+                && _isGameplayActive
+                && _activeCarRequiresRepair;
         }
     }
 

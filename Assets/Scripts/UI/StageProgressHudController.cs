@@ -192,17 +192,47 @@ public sealed class StageProgressHudController : MonoBehaviour
         }
 
         ScoreState state = _scoreManager != null ? _scoreManager.State : null;
-        int remaining = _scoreManager != null ? _scoreManager.RemainingSuccessCount : 0;
         int missCount = state != null ? state.MissCount : 0;
-        int missLimit = state != null ? state.MissLimit : 0;
-        int score = state != null ? state.CurrentScore : 0;
-        int targetScore = state != null ? state.TargetScore : 0;
-        bool isEndless = state != null && state.IsEndless;
-        float progress = isEndless ? 1f : targetScore > 0 ? Mathf.Clamp01(score / (float)targetScore) : 0f;
+        StageProgressSnapshot snapshot = _scoreManager != null
+            ? _scoreManager.ProgressSnapshot
+            : new StageProgressSnapshot(string.Empty, string.Empty, 0f, 0, 0);
+        ApplySnapshot(snapshot, missCount, state != null ? state.MissLimit : _missOrbs.Length);
+    }
 
-        int completed = isEndless ? score : Mathf.Max(0, targetScore - remaining);
-        int total = isEndless ? Mathf.Max(1, score) : Mathf.Max(1, targetScore);
-        ApplyValues(completed, total, missCount, isEndless, score);
+    private void ApplySnapshot(StageProgressSnapshot snapshot, int missCount, int missLimit)
+    {
+        if (_remainingText != null)
+        {
+            _remainingText.text = snapshot.MainLabel;
+        }
+
+        if (_missText != null)
+        {
+            _missText.text = "ミス";
+        }
+
+        if (_fractionText != null)
+        {
+            _fractionText.text = snapshot.DetailLabel;
+        }
+
+        if (_progressFillImage != null)
+        {
+            _progressFillImage.fillAmount = snapshot.Progress01;
+        }
+
+        for (int i = 0; i < _missOrbs.Length; i += 1)
+        {
+            if (_missOrbs[i] != null)
+            {
+                bool visible = i < Mathf.Clamp(missLimit, 1, _missOrbs.Length);
+                _missOrbs[i].gameObject.SetActive(visible);
+                if (visible)
+                {
+                    _missOrbs[i].sprite = i < missCount ? _litOrbSprite : _emptyOrbSprite;
+                }
+            }
+        }
     }
 
     private void ApplyValues(int completed, int total, int missCount, bool isEndless, int score)
@@ -232,6 +262,7 @@ public sealed class StageProgressHudController : MonoBehaviour
         {
             if (_missOrbs[i] != null)
             {
+                _missOrbs[i].gameObject.SetActive(true);
                 _missOrbs[i].sprite = i < missCount ? _litOrbSprite : _emptyOrbSprite;
             }
         }
@@ -284,16 +315,16 @@ public sealed class StageProgressHudController : MonoBehaviour
             new Vector2(1f, 0.5f),
             new Vector2(-ProgressPanelRightInset, 0f),
             new Vector2(-(ProgressPanelRightInset + PanelGap), 0f));
-        _remainingText = CreateText("RemainingText", _progressPanel, "\u3042\u30686\u53f0", 38f, 28f, FontStyles.Normal, TextAlignmentOptions.Left);
+        _remainingText = CreateText("RemainingText", _progressPanel, "\u3042\u30686\u53f0", 34f, 24f, FontStyles.Normal, TextAlignmentOptions.Left);
         _remainingText.font = LoadFont("UI/Tutorial/YomiyasuWide-Bold SDF");
-        SetAnchored((RectTransform)_remainingText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(35f, -19f), new Vector2(-190f, 58f));
+        SetAnchored((RectTransform)_remainingText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(35f, -26f), new Vector2(-70f, 48f));
 
-        _fractionText = CreateText("FractionText", _progressPanel, "0/6", 32f, 24f, FontStyles.Normal, TextAlignmentOptions.Right);
+        _fractionText = CreateText("FractionText", _progressPanel, "0/6", 26f, 18f, FontStyles.Normal, TextAlignmentOptions.Right);
         _fractionText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
-        SetAnchored((RectTransform)_fractionText.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-35f, -19f), new Vector2(120f, 58f));
+        SetAnchored((RectTransform)_fractionText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(35f, -78f), new Vector2(-70f, 34f));
 
         RectTransform track = CreatePanel("ProgressTrack", _progressPanel, TrackColor);
-        Stretch(track, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(35f, 19f), new Vector2(-35f, 48f));
+        Stretch(track, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(35f, 12f), new Vector2(-35f, 32f));
         track.GetComponent<Image>().raycastTarget = false;
 
         RectTransform fill = CreatePanel("ProgressFill", track, FillColor);

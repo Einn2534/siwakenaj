@@ -68,7 +68,7 @@ public class StageDatabase : ScriptableObject
         return StageDefinition.CreateEndless(sourceStage);
     }
 
-    public bool IsStageUnlocked(int stageIndex, Func<int, int> getBestScore)
+    public bool IsStageUnlocked(int stageIndex, Func<int, bool> getStageCleared)
     {
         if (stageIndex < 0 || stageIndex >= Stages.Count)
         {
@@ -92,7 +92,7 @@ public class StageDatabase : ScriptableObject
             return false;
         }
 
-        return getBestScore != null && getBestScore(requiredStage.StageNumber) >= requiredStage.TargetScore;
+        return getStageCleared != null && getStageCleared(requiredStage.StageNumber);
     }
 
     public int GetRequiredClearStageNumber(int stageIndex)
@@ -123,6 +123,21 @@ public class StageDatabase : ScriptableObject
         }
 
         return null;
+    }
+
+    public StageDefinition GetHighestClearedStage(Func<int, bool> getStageCleared)
+    {
+        StageDefinition highest = null;
+        for (int i = 0; i < Stages.Count; i += 1)
+        {
+            StageDefinition stage = Stages[i];
+            if (stage != null && stage.IsImplemented && getStageCleared != null && getStageCleared(stage.StageNumber))
+            {
+                highest = stage;
+            }
+        }
+
+        return highest ?? (Stages.Count > 0 ? Stages[0] : StageDefinition.CreateFallback(1));
     }
 
     private StageDefinition GetLastImplementedStage()

@@ -12,12 +12,18 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
     private Canvas _canvas;
     private RectTransform _root;
     private RectTransform _carCutoutRect;
+    private RectTransform _buttonCutoutRect;
+    private RectTransform _buttonIconCutoutRect;
     private RectTransform _ringRect;
     private RectTransform _pointerRect;
     private Image _carCutoutImage;
+    private Image _buttonCutoutImage;
+    private RawImage _buttonIconCutoutImage;
     private Image _ringImage;
     private Image _pointerImage;
     private RectTransform _targetButton;
+    private Image _targetButtonImage;
+    private RawImage _targetButtonIcon;
     private SpriteRenderer _targetCarRenderer;
     private Coroutine _animationRoutine;
     private Vector2 _pointerBasePosition;
@@ -41,6 +47,14 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         _carCutoutImage.preserveAspect = false;
         _carCutoutImage.useSpriteMesh = true;
         _carCutoutImage.raycastTarget = false;
+
+        _buttonCutoutRect = CreateCenteredRect("ButtonCutout", _root);
+        _buttonCutoutImage = _buttonCutoutRect.gameObject.AddComponent<Image>();
+        _buttonCutoutImage.raycastTarget = false;
+
+        _buttonIconCutoutRect = CreateCenteredRect("ButtonIconCutout", _root);
+        _buttonIconCutoutImage = _buttonIconCutoutRect.gameObject.AddComponent<RawImage>();
+        _buttonIconCutoutImage.raycastTarget = false;
 
         _ringRect = CreateRect("CorrectRing", _root);
         _ringRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -66,23 +80,34 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
 
     public void ShowFocus(CarType expectedType, LaneInputController laneInputController, CarController activeCar)
     {
-        if (_root == null || activeCar == null)
+        if (_root == null)
         {
             HideFocus();
             return;
         }
 
-        _targetCarRenderer = activeCar.GetComponentInChildren<SpriteRenderer>();
-        if (_targetCarRenderer == null || _targetCarRenderer.sprite == null)
+        _targetCarRenderer = activeCar != null
+            ? activeCar.GetComponentInChildren<SpriteRenderer>()
+            : null;
+        UnityEngine.UI.Button targetButton = null;
+        if (laneInputController != null)
+        {
+            laneInputController.TryGetButtonForLane(expectedType, out targetButton);
+        }
+
+        _targetButton = targetButton != null ? targetButton.transform as RectTransform : null;
+        _targetButtonImage = targetButton != null
+            ? targetButton.targetGraphic as Image ?? targetButton.GetComponent<Image>()
+            : null;
+        _targetButtonIcon = targetButton != null
+            ? targetButton.GetComponentInChildren<RawImage>(true)
+            : null;
+        if (_targetButton == null && (_targetCarRenderer == null || _targetCarRenderer.sprite == null))
         {
             HideFocus();
             return;
         }
 
-        _targetButton = laneInputController != null
-            && laneInputController.TryGetButtonForLane(expectedType, out RectTransform button)
-                ? button
-                : null;
         _root.gameObject.SetActive(true);
         UpdateLayout();
         if (_targetButton != null)
@@ -94,6 +119,8 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
     public void HideFocus()
     {
         _targetButton = null;
+        _targetButtonImage = null;
+        _targetButtonIcon = null;
         _targetCarRenderer = null;
         if (_animationRoutine != null)
         {
@@ -109,6 +136,16 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         if (_carCutoutImage != null)
         {
             _carCutoutImage.sprite = null;
+        }
+
+        if (_buttonCutoutImage != null)
+        {
+            _buttonCutoutImage.sprite = null;
+        }
+
+        if (_buttonIconCutoutImage != null)
+        {
+            _buttonIconCutoutImage.texture = null;
         }
     }
 
@@ -129,7 +166,8 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_targetCarRenderer != null && _root != null && _root.gameObject.activeInHierarchy)
+        if (_root != null && _root.gameObject.activeInHierarchy
+            && (_targetButton != null || _targetCarRenderer != null))
         {
             UpdateLayout();
         }
@@ -142,6 +180,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
     private void UpdateLayout()
     {
         UpdateCarCutout();
+        UpdateButtonCutout();
 
         bool hasButtonTarget = _targetButton != null;
         _ringRect.gameObject.SetActive(hasButtonTarget);
@@ -151,9 +190,14 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
             return;
         }
 
-        Bounds bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_root, _targetButton);
-        Vector2 center = bounds.center;
-        float diameter = Mathf.Max(bounds.size.x, bounds.size.y) + (RingPadding * 2f);
+        if (!TryGetTargetRect(_targetButton, out Vector2 center, out Vector2 size))
+        {
+            _ringRect.gameObject.SetActive(false);
+            _pointerRect.gameObject.SetActive(false);
+            return;
+        }
+
+        float diameter = Mathf.Max(size.x, size.y) + (RingPadding * 2f);
         _ringRect.anchoredPosition = center;
         _ringRect.sizeDelta = new Vector2(diameter, diameter);
 
@@ -172,8 +216,14 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
 
     private void UpdateCarCutout()
     {
-        if (_targetCarRenderer == null || _targetCarRenderer.sprite == null
-            || _carCutoutRect == null || _carCutoutImage == null)
+        bool hasCarTarget = _targetCarRenderer != null && _targetCarRenderer.sprite != null
+            && _carCutoutRect != null && _carCutoutImage != null;
+        if (_carCutoutRect != null)
+        {
+            _carCutoutRect.gameObject.SetActive(hasCarTarget);
+        }
+
+        if (!hasCarTarget)
         {
             return;
         }
@@ -199,6 +249,81 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
             _targetCarRenderer.flipX ? -1f : 1f,
             _targetCarRenderer.flipY ? -1f : 1f,
             1f);
+    }
+
+    private void UpdateButtonCutout()
+    {
+        Vector2 buttonCenter = Vector2.zero;
+        Vector2 buttonSize = Vector2.zero;
+        bool hasButtonImage = _targetButtonImage != null
+            && TryGetTargetRect(_targetButton, out buttonCenter, out buttonSize);
+        _buttonCutoutRect.gameObject.SetActive(hasButtonImage);
+        if (hasButtonImage)
+        {
+            _buttonCutoutRect.anchoredPosition = buttonCenter;
+            _buttonCutoutRect.sizeDelta = buttonSize;
+            _buttonCutoutImage.sprite = _targetButtonImage.sprite;
+            _buttonCutoutImage.type = _targetButtonImage.type;
+            _buttonCutoutImage.preserveAspect = _targetButtonImage.preserveAspect;
+            _buttonCutoutImage.fillCenter = _targetButtonImage.fillCenter;
+            _buttonCutoutImage.fillMethod = _targetButtonImage.fillMethod;
+            _buttonCutoutImage.fillAmount = _targetButtonImage.fillAmount;
+            _buttonCutoutImage.fillClockwise = _targetButtonImage.fillClockwise;
+            _buttonCutoutImage.fillOrigin = _targetButtonImage.fillOrigin;
+            _buttonCutoutImage.color = _targetButtonImage.color;
+            _buttonCutoutImage.material = _targetButtonImage.material;
+        }
+
+        Vector2 iconCenter = Vector2.zero;
+        Vector2 iconSize = Vector2.zero;
+        bool hasButtonIcon = _targetButtonIcon != null
+            && TryGetTargetRect(_targetButtonIcon.rectTransform, out iconCenter, out iconSize);
+        _buttonIconCutoutRect.gameObject.SetActive(hasButtonIcon);
+        if (hasButtonIcon)
+        {
+            _buttonIconCutoutRect.anchoredPosition = iconCenter;
+            _buttonIconCutoutRect.sizeDelta = iconSize;
+            _buttonIconCutoutImage.texture = _targetButtonIcon.texture;
+            _buttonIconCutoutImage.uvRect = _targetButtonIcon.uvRect;
+            _buttonIconCutoutImage.color = _targetButtonIcon.color;
+            _buttonIconCutoutImage.material = _targetButtonIcon.material;
+        }
+    }
+
+    private bool TryGetTargetRect(RectTransform target, out Vector2 center, out Vector2 size)
+    {
+        center = Vector2.zero;
+        size = Vector2.zero;
+        if (target == null || _root == null)
+        {
+            return false;
+        }
+
+        Canvas targetCanvas = target.GetComponentInParent<Canvas>();
+        Camera targetCamera = targetCanvas != null && targetCanvas.renderMode != RenderMode.ScreenSpaceOverlay
+            ? targetCanvas.worldCamera
+            : null;
+        Vector3[] corners = new Vector3[4];
+        target.GetWorldCorners(corners);
+
+        Vector2 screenMin = RectTransformUtility.WorldToScreenPoint(targetCamera, corners[0]);
+        Vector2 screenMax = screenMin;
+        for (int i = 1; i < corners.Length; i += 1)
+        {
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(targetCamera, corners[i]);
+            screenMin = Vector2.Min(screenMin, screenPoint);
+            screenMax = Vector2.Max(screenMax, screenPoint);
+        }
+
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMin, null, out Vector2 localMin)
+            || !RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMax, null, out Vector2 localMax))
+        {
+            return false;
+        }
+
+        center = (localMin + localMax) * 0.5f;
+        size = new Vector2(Mathf.Abs(localMax.x - localMin.x), Mathf.Abs(localMax.y - localMin.y));
+        return size.x > 0f && size.y > 0f;
     }
 
     private IEnumerator AnimateGuide()
@@ -259,6 +384,15 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("UI");
         gameObject.transform.SetParent(parent, false);
         return (RectTransform)gameObject.transform;
+    }
+
+    private static RectTransform CreateCenteredRect(string name, Transform parent)
+    {
+        RectTransform rect = CreateRect(name, parent);
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        return rect;
     }
 
     private static void Stretch(RectTransform rectTransform)

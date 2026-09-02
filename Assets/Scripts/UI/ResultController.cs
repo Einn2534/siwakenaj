@@ -12,8 +12,9 @@ public class ResultController : MonoBehaviour
     private const string TitleSceneName = "Title";
     private const string StageSelectSceneName = "StageSelect";
     private const string StageDatabaseResourcePath = "StageDatabase";
-    private const string StageFormat = "ステージ {0}";
+    private const string StageFormat = "おしごと {0}";
     private const string EndlessLabel = "ENDLESS";
+    private const string DailyLabel = "デイリー";
     private const string ScoreFormat = "{0:N0}";
     private const string GameClearLabel = "クリア!";
     private const string GameOverLabel = "ゲームオーバー...";
@@ -24,6 +25,8 @@ public class ResultController : MonoBehaviour
     private const float ResultInterstitialDelay = 1f;
     private const float ResultStarSize = 100f;
     private const float ResultStarRowHeight = 112f;
+    private const float ScoreCardHeightWithStars = 440f;
+    private const float ScoreCardHeightWithoutStars = 250f;
     private const float BreakdownCardHeight = 500f;
     private const float BreakdownRowHeight = 82f;
     private const float MissRowHeight = 94f;
@@ -296,6 +299,7 @@ public class ResultController : MonoBehaviour
 
     public void OnRetryPressed()
     {
+        LocalTelemetryService.RecordRetry(SessionState.LastResult);
         Navigate(() =>
         {
             SelectPlayableStage(_resultGameMode, _resultStageNumber);
@@ -436,14 +440,18 @@ public class ResultController : MonoBehaviour
         int stageNumber = StageNumberUtility.Normalize(result.StageNumber);
         _resultGameMode = result.Mode;
         _resultStageNumber = stageNumber;
-        int starRating = StarRatingUtility.CalculateForResult(result);
-        BestUpdateInfo bestUpdate = UpdateBestResults(result.Mode, stageNumber, result.Score, starRating);
         StageDefinition stageDefinition = _stageDatabase != null
-            ? (result.IsEndless ? _stageDatabase.GetEndlessStageDefinition(stageNumber) : _stageDatabase.GetStageDefinition(stageNumber))
+            ? (result.IsEndless
+                ? _stageDatabase.GetEndlessStageDefinition(stageNumber)
+                : result.IsDaily
+                    ? DailyChallengeService.Create(result.DailyDateKey, result.DailyTier, stageNumber)
+                    : _stageDatabase.GetStageDefinition(stageNumber))
             : null;
+        int starRating = result.IsDaily || result.IsEndless ? 0 : StarRatingUtility.CalculateForResult(result, stageDefinition);
+        BestUpdateInfo bestUpdate = UpdateBestResults(result, stageDefinition, starRating);
 
         ApplyCarIcons();
-        SetText(_stageText, result.IsEndless ? EndlessLabel : string.Format(StageFormat, stageNumber));
+        SetText(_stageText, result.IsEndless ? EndlessLabel : result.IsDaily ? DailyLabel : string.Format(StageFormat, stageNumber));
         SetText(_scoreText, string.Format(ScoreFormat, 0));
         SetText(_bestScoreText, string.Format(ScoreFormat, bestUpdate.BestScore));
         SetText(_countAText, string.Format(ScoreFormat, result.LightTruckCount));
@@ -451,7 +459,7 @@ public class ResultController : MonoBehaviour
         SetText(_countCText, string.Format(ScoreFormat, result.SportsCarCount));
         SetText(_missLabelText, "ミス");
         SetText(_missCountText, FormatMissCount(result, stageDefinition));
-        UpdateMissOrbs(result.MissCount);
+        UpdateMissOrbs(result.MissCount, stageDefinition != null ? stageDefinition.MissLimit : 3);
         SetText(_resultText, result.IsClear ? GameClearLabel : GameOverLabel);
         SetText(_subMessageText, GetSubMessage(result, stageDefinition));
 
@@ -460,7 +468,7 @@ public class ResultController : MonoBehaviour
             _newBestBadge.SetActive(bestUpdate.IsNewBest);
         }
 
-        ApplyVisualState(result.IsClear, !result.IsEndless);
+        ApplyVisualState(result.IsClear, !result.IsEndless && !result.IsDaily);
         ConfigureButtons(result);
         ResetStarDisplay();
         StartAnimations(result.Score, starRating, result.IsClear);
@@ -491,6 +499,9 @@ public class ResultController : MonoBehaviour
         SetImageColor(_stateTintImage, isClear ? ClearTintColor : GameOverTintColor);
         SetImageColor(_missRowBackground, isClear ? ClearMissRowColor : GameOverMissRowColor);
         SetPanelActive(_starRowRoot, showStars);
+        SetPreferredHeight(
+            FindChild("SafeAreaRoot/ContentRoot/ScoreCard"),
+            showStars ? ScoreCardHeightWithStars : ScoreCardHeightWithoutStars);
 
         if (_stageBadgeBackground != null)
         {
@@ -650,7 +661,7 @@ public class ResultController : MonoBehaviour
 
     private void ConfigureButtons(GameResultData result)
     {
-        if (result != null && result.IsClear && !result.IsEndless)
+        if (result != null && result.IsClear && !result.IsEndless && !result.IsDaily)
         {
             NextStageNavigation navigation = GetNextStageNavigation(_resultStageNumber);
             if (navigation.HasDestination)
@@ -975,9 +986,15 @@ public class ResultController : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSecondsRealtime(ResultInterstitialDelay);
-
         _resultPresentationCoroutine = null;
+        if (!InterstitialGate.CanShow(_resultGameMode, DateTime.UtcNow))
+        {
+            UnlockResultActions();
+            yield break;
+        }
+
+        yield return new WaitForSecondsRealtime(ResultInterstitialDelay);
+        InterstitialGate.RecordShown(DateTime.UtcNow);
         UnityAdsManager.Instance.ShowInterstitialThenContinue(UnlockResultActions);
     }
 
@@ -1109,44 +1126,41 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private BestUpdateInfo UpdateBestResults(GameMode mode, int stageNumber, int score, int starRating)
+    private BestUpdateInfo UpdateBestResults(GameResultData result, StageDefinition stageDefinition, int starRating)
     {
-        if (mode == GameMode.Endless)
+        int stageNumber = StageNumberUtility.Normalize(result.StageNumber);
+        if (result.Mode == GameMode.Endless)
         {
             int endlessBestScore = SaveService.GetBestEndlessScore();
-            bool isEndlessScoreUpdated = score > endlessBestScore;
+            bool isEndlessScoreUpdated = result.Score > endlessBestScore;
             if (isEndlessScoreUpdated)
             {
-                SaveService.SetBestEndlessScore(score);
+                SaveService.SetBestEndlessScore(result.Score);
                 SaveService.Save();
-                endlessBestScore = score;
+                endlessBestScore = result.Score;
             }
 
             return new BestUpdateInfo(endlessBestScore, isEndlessScoreUpdated);
         }
 
+        if (result.Mode == GameMode.Daily)
+        {
+            DailyChallengeSaveData before = DailyChallengeService.LoadForDate(result.DailyDateKey);
+            bool isDailyBestUpdated = result.Score > before.BestScore
+                || result.MaxCombo > before.BestMaxCombo
+                || (result.IsClear && !before.CompletedToday);
+            DailyChallengeSaveData daily = DailyChallengeService.RecordResult(result);
+            return new BestUpdateInfo(daily.BestScore, isDailyBestUpdated);
+        }
+
         int currentBestScore = SaveService.GetBestScore(stageNumber);
         int currentBestStars = SaveService.GetStarRating(stageNumber);
-        bool isScoreUpdated = score > currentBestScore;
+        bool wasCleared = SaveService.GetStageCleared(stageNumber);
+        bool isScoreUpdated = result.Score > currentBestScore;
         bool isStarUpdated = starRating > currentBestStars;
-
-        if (isScoreUpdated)
-        {
-            SaveService.SetBestScore(stageNumber, score);
-            currentBestScore = score;
-        }
-
-        if (isStarUpdated)
-        {
-            SaveService.SetStarRating(stageNumber, starRating);
-        }
-
-        if (isScoreUpdated || isStarUpdated)
-        {
-            SaveService.Save();
-        }
-
-        return new BestUpdateInfo(currentBestScore, isScoreUpdated || isStarUpdated);
+        SaveService.RecordStageResult(result, stageDefinition, starRating);
+        currentBestScore = SaveService.GetBestScore(stageNumber);
+        return new BestUpdateInfo(currentBestScore, isScoreUpdated || isStarUpdated || (result.IsClear && !wasCleared));
     }
 
     private NextStageNavigation GetNextStageNavigation(int stageNumber)
@@ -1170,6 +1184,12 @@ public class ResultController : MonoBehaviour
         if (mode == GameMode.Endless)
         {
             StageSelectionService.SelectEndless(stageNumber);
+            return;
+        }
+
+        if (mode == GameMode.Daily)
+        {
+            StageSelectionService.SelectDaily(stageNumber);
             return;
         }
 
@@ -1199,12 +1219,19 @@ public class ResultController : MonoBehaviour
 
         if (result.IsEndless)
         {
-            return "GAME OVER";
+            return $"自己ベストへ挑戦  {result.TotalCorrect:N0}台";
+        }
+
+        if (result.IsDaily)
+        {
+            return result.IsClear
+                ? $"60秒完走  MAX {result.MaxCombo:N0} COMBO"
+                : $"3ミスで終了  SCORE {result.Score:N0}";
         }
 
         if (result.IsClear)
         {
-            return "STAGE CLEAR";
+            return stageDefinition != null ? $"MISSION COMPLETE  {stageDefinition.MissionText}" : "MISSION COMPLETE";
         }
 
         if (stageDefinition != null && stageDefinition.MissLimit > 0 && result.MissCount >= stageDefinition.MissLimit)
@@ -1215,18 +1242,26 @@ public class ResultController : MonoBehaviour
         return "GAME OVER";
     }
 
-    private void UpdateMissOrbs(int missCount)
+    private void UpdateMissOrbs(int missCount, int missLimit)
     {
         if (_missOrbImages == null)
         {
             return;
         }
 
-        int filledCount = Mathf.Clamp(missCount, 0, _missOrbImages.Length);
+        int visibleCount = Mathf.Clamp(missLimit, 1, _missOrbImages.Length);
+        int filledCount = Mathf.Clamp(missCount, 0, visibleCount);
         for (int i = 0; i < _missOrbImages.Length; i += 1)
         {
             Image orb = _missOrbImages[i];
             if (orb == null)
+            {
+                continue;
+            }
+
+            bool visible = i < visibleCount;
+            orb.gameObject.SetActive(visible);
+            if (!visible)
             {
                 continue;
             }
@@ -1249,7 +1284,9 @@ public class ResultController : MonoBehaviour
             return string.Format(ScoreFormat, 0);
         }
 
-        return string.Format(ScoreFormat, result.MissCount);
+        return stageDefinition != null && stageDefinition.MissLimit > 0
+            ? $"{result.MissCount:N0} / {stageDefinition.MissLimit:N0}"
+            : string.Format(ScoreFormat, result.MissCount);
     }
 
     private static void ClearButtonListeners(Button button)

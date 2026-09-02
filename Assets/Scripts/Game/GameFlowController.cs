@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 public class GameFlowController : MonoBehaviour
 {
     private const float ContinueFailureDelaySeconds = 0.7f;
+    private const float LateInputGraceSeconds = 0.18f;
     private const string ResultSceneName = "Result";
     private const string StageDatabaseResourcePath = "StageDatabase";
     private const int ReadabilityOverlaySortingOrder = 5;
@@ -41,6 +42,8 @@ public class GameFlowController : MonoBehaviour
     private bool _hasUsedContinue;
     private SpriteRenderer _readabilityOverlayRenderer;
     private static Sprite s_ReadabilityOverlaySprite;
+    private bool _isFirstAttempt;
+    private float _ignoreInputUntilUnscaledTime;
 
     private void Awake()
     {
@@ -111,6 +114,26 @@ public class GameFlowController : MonoBehaviour
         return _currentState == GameState.Playing;
     }
 
+    private void Update()
+    {
+        if (_currentState != GameState.Playing)
+        {
+            return;
+        }
+
+        RefreshRepairAvailability();
+        if (_scoreManager == null)
+        {
+            return;
+        }
+
+        _scoreManager.TickObjective(Time.deltaTime, true);
+        if (_scoreManager.ObjectiveOutcome != StageOutcome.Playing)
+        {
+            EvaluateCompletion();
+        }
+    }
+
     public bool IsPaused()
     {
         return _currentState == GameState.Paused;
@@ -175,10 +198,18 @@ public class GameFlowController : MonoBehaviour
 
         int selectedStageNumber = StageNumberUtility.Normalize(SessionState.SelectedStageNumber);
         _hasUsedContinue = false;
+        SaveService.EnsureProgressMigration(_stageDatabase);
         if (SessionState.IsEndlessMode)
         {
-            _currentStageDefinition = _stageDatabase.GetEndlessStageDefinition(selectedStageNumber);
+            int highestCleared = SaveService.GetHighestClearedStageNumber(_stageDatabase);
+            _currentStageDefinition = _stageDatabase.GetEndlessStageDefinition(highestCleared);
             SessionState.SelectEndless(_currentStageDefinition.StageNumber);
+        }
+        else if (SessionState.IsDailyMode)
+        {
+            int highestCleared = SaveService.GetHighestClearedStageNumber(_stageDatabase);
+            _currentStageDefinition = DailyChallengeService.CreateForToday(highestCleared);
+            SessionState.SelectDaily(_currentStageDefinition.StageNumber);
         }
         else
         {
@@ -186,7 +217,8 @@ public class GameFlowController : MonoBehaviour
             SessionState.SelectStage(_currentStageDefinition.StageNumber);
         }
 
-        _scoreManager.Initialize(_currentStageDefinition);
+        _isFirstAttempt = LocalTelemetryService.BeginAttempt(SessionState.SelectedGameMode, _currentStageDefinition.StageNumber);
+        _scoreManager.Initialize(_currentStageDefinition, SessionState.SelectedGameMode);
         _carSpawner.Initialize(_currentStageDefinition);
         _gimmickHudController = GimmickHudController.EnsureInstalled();
         _gimmickHudController.Initialize(_currentStageDefinition, ResolveLaneInputController());
@@ -234,10 +266,15 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
+        if (ShouldIgnoreLateInput())
+        {
+            return;
+        }
+
         CarController activeCar = _carSpawner != null ? _carSpawner.GetActiveCar() : null;
         if (activeCar != null && activeCar.RequiresRepair)
         {
-            ApplyMiss("修理が必要！");
+            ApplyMissForCar(activeCar, "修理が必要！");
             ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
             EvaluateCompletion();
             return;
@@ -245,7 +282,7 @@ public class GameFlowController : MonoBehaviour
 
         if (activeCar != null && activeCar.IsCovered && !activeCar.IsRevealed)
         {
-            ApplyMiss("まだ見えない！");
+            ApplyMissForCar(activeCar, "まだ見えない！");
             ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
             EvaluateCompletion();
             return;
@@ -263,7 +300,7 @@ public class GameFlowController : MonoBehaviour
                 wasCorrect = true;
                 break;
             case JudgeResult.WrongLane:
-                ApplyMiss("ちがう車!");
+                ApplyMissForCar(activeCar, "ちがう車!");
                 ResolveLaneInputController()?.PlayWrongLaneFeedback(laneType, activeCar.CarType);
                 break;
             case JudgeResult.NoCar:
@@ -291,6 +328,11 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
+        if (ShouldIgnoreLateInput())
+        {
+            return;
+        }
+
         CarController activeCar = _carSpawner != null ? _carSpawner.GetActiveCar() : null;
         bool wasCorrect = activeCar != null && activeCar.RequiresRepair;
         if (wasCorrect)
@@ -299,7 +341,14 @@ public class GameFlowController : MonoBehaviour
         }
         else
         {
-            ApplyMiss(activeCar == null ? "車がいない!" : "修理は不要！");
+            if (activeCar == null)
+            {
+                ApplyMiss("車がいない!");
+            }
+            else
+            {
+                ApplyMissForCar(activeCar, "修理は不要！");
+            }
         }
 
         EvaluateCompletion();
@@ -316,14 +365,18 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
+        RefreshRepairAvailability();
         if (_tutorialController != null && _tutorialController.IsRunning)
         {
             _tutorialController.HandleCarMissed(car);
             return;
         }
 
-        ApplyMiss("見逃し!");
-        EvaluateCompletion();
+        if (ApplyMissForCar(car, "見逃し!"))
+        {
+            _ignoreInputUntilUnscaledTime = Time.unscaledTime + LateInputGraceSeconds;
+            EvaluateCompletion();
+        }
     }
 
     private void ApplyCorrect(CarController car)
@@ -340,6 +393,7 @@ public class GameFlowController : MonoBehaviour
         _playerAnimationController?.PlayHappy();
         SoundManager.EnsureInstance().PlayCorrect();
         _carSpawner?.DespawnCar(car);
+        RefreshRepairAvailability();
         if (!HasReachedTerminalCondition())
         {
             VibrationService.PlayCorrect();
@@ -358,6 +412,22 @@ public class GameFlowController : MonoBehaviour
         {
             VibrationService.PlayMiss();
         }
+    }
+
+    private bool ApplyMissForCar(CarController car, string label)
+    {
+        if (car == null || !car.TryRegisterMissPenalty())
+        {
+            return false;
+        }
+
+        ApplyMiss(label);
+        return true;
+    }
+
+    private bool ShouldIgnoreLateInput()
+    {
+        return Time.unscaledTime < _ignoreInputUntilUnscaledTime;
     }
 
     private void TryTriggerRush()
@@ -380,6 +450,14 @@ public class GameFlowController : MonoBehaviour
         {
             _gimmickHudController?.ShowModifierHint(car.Modifier);
         }
+
+        RefreshRepairAvailability();
+    }
+
+    private void RefreshRepairAvailability()
+    {
+        CarController activeCar = _carSpawner != null ? _carSpawner.GetActiveCar() : null;
+        _gimmickHudController?.SetActiveCar(activeCar);
     }
 
     private void OnRushWarning()
@@ -418,7 +496,7 @@ public class GameFlowController : MonoBehaviour
         StopGameplay();
         _carSpawner.DespawnAllCars();
         _hudEffectsController?.StopEffects();
-        _scoreManager.Initialize(_currentStageDefinition);
+        _scoreManager.Initialize(_currentStageDefinition, SessionState.SelectedGameMode);
         _carSpawner.Initialize(_currentStageDefinition);
         _gimmickHudController?.Initialize(_currentStageDefinition, ResolveLaneInputController());
         _gimmickHudController?.UpdateState(_scoreManager.State);
@@ -451,8 +529,7 @@ public class GameFlowController : MonoBehaviour
 
     private bool HasReachedTerminalCondition()
     {
-        return _scoreManager != null &&
-            (_scoreManager.HasReachedMissLimit || _scoreManager.HasReachedTargetScore);
+        return _scoreManager != null && _scoreManager.ObjectiveOutcome != StageOutcome.Playing;
     }
 
     private StageProgressHudController ResolveStageProgressHudController()
@@ -544,7 +621,7 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
-        if (_scoreManager.HasReachedMissLimit)
+        if (_scoreManager.ObjectiveOutcome == StageOutcome.Failed)
         {
             if (CanOfferContinue())
             {
@@ -558,7 +635,7 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
-        if (_scoreManager.HasReachedTargetScore)
+        if (_scoreManager.ObjectiveOutcome == StageOutcome.Cleared)
         {
             FinishStage();
         }
@@ -587,7 +664,11 @@ public class GameFlowController : MonoBehaviour
 
     private bool CanOfferContinue()
     {
-        return _currentState == GameState.Playing && !_hasUsedContinue;
+        return _currentState == GameState.Playing
+            && !_hasUsedContinue
+            && _scoreManager != null
+            && _scoreManager.ObjectiveEvaluator != null
+            && _scoreManager.ObjectiveEvaluator.CanOfferRewardedContinue;
     }
 
     private void ShowContinuePrompt()
@@ -616,6 +697,8 @@ public class GameFlowController : MonoBehaviour
         }
 
         _continuePromptController?.ShowAdWaiting();
+        LocalTelemetryService.RecordRewardedContinueSelected(
+            GameResultData.FromScoreState(SessionState.SelectedGameMode, _currentStageDefinition.StageNumber, false, _scoreManager?.State, _currentStageDefinition, _scoreManager?.ObjectiveEvaluator));
         UnityAdsManager.Instance.ShowRewardedThenContinue(OnRewardedContinueCompleted);
     }
 
@@ -726,7 +809,21 @@ public class GameFlowController : MonoBehaviour
     private void StoreResult(bool isClear)
     {
         int stageNumber = _currentStageDefinition != null ? _currentStageDefinition.StageNumber : SessionState.SelectedStageNumber;
-        SessionState.StoreResult(GameResultData.FromScoreState(SessionState.SelectedGameMode, stageNumber, isClear, _scoreManager?.State));
+        GameResultData result = GameResultData.FromScoreState(
+            SessionState.SelectedGameMode,
+            stageNumber,
+            isClear,
+            _scoreManager?.State,
+            _currentStageDefinition,
+            _scoreManager?.ObjectiveEvaluator);
+        SessionState.StoreResult(result);
+
+        if (result.Mode == GameMode.Stage && result.IsClear)
+        {
+            InterstitialGate.RecordCompletedRun();
+        }
+
+        LocalTelemetryService.RecordResult(result, _isFirstAttempt);
     }
 
     private void StartResultSceneLoad()

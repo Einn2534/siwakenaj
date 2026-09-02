@@ -24,6 +24,7 @@ public sealed class TutorialController : MonoBehaviour
     private const float ReferenceWidth = 1080f;
     private const float ReferenceHeight = 1920f;
     private const float TutorialSpeedRatio = 0.7f;
+    private const float FirstTruckArrivalSeconds = 0.8f;
     private const float IdleReinforceSeconds = 5f;
     private const float FirstMissIntroSeconds = 0.2f;
     private const int FirstIndependentIndex = 3;
@@ -65,6 +66,7 @@ public sealed class TutorialController : MonoBehaviour
     private RectTransform _powaRect;
     private TMP_Text _instructionText;
     private TMP_Text _advancePromptText;
+    private UnityEngine.UI.Button _dialogueAdvanceButton;
     private Button _speechButton;
     private Button _skipButton;
     private RectTransform _firstMissCutIn;
@@ -221,7 +223,7 @@ public sealed class TutorialController : MonoBehaviour
         _carSpawner?.DespawnAllCars();
         _scoreManager?.Initialize(_stageDefinition);
 
-        SetInstruction("\u9b54\u6cd5\u306e\u8eca\u304c\u6765\u308b\u3088!\u540c\u3058\u30dc\u30bf\u30f3\u3092\u30bf\u30c3\u30d7\u3060\u3088\u3063\u3002");
+        SetInstruction("\u304d\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046");
         yield return WaitForDialogueTap();
         yield return RunGuidedStep(0, TutorialState.GuidedTruck, true);
         yield return WaitForDialogueTap();
@@ -248,13 +250,9 @@ public sealed class TutorialController : MonoBehaviour
     private IEnumerator RunGuidedStep(int carIndex, TutorialState state, bool isFirstTruck)
     {
         _state = state;
-        if (isFirstTruck)
+        if (!isFirstTruck)
         {
-            SetInstruction("\u6765\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046");
-        }
-        else
-        {
-            SetInstruction("\u6765\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046");
+            SetInstruction("\u304d\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046");
         }
 
         yield return RunStep(carIndex, true, isFirstTruck);
@@ -268,24 +266,22 @@ public sealed class TutorialController : MonoBehaviour
     private IEnumerator RunStep(int carIndex, bool showGuideImmediately, bool isFirstTruck)
     {
         _expectedType = TutorialCars[carIndex];
-        _currentCarSpeed = isFirstTruck
-            ? 0f
-            : GetTutorialCarSpeed();
+        _currentCarSpeed = isFirstTruck ? 0f : GetTutorialCarSpeed();
         _stepSucceeded = false;
         _isAwaitingInput = false;
         ClearButtonGuide();
 
         yield return SpawnCurrentCar();
 
+        if (isFirstTruck)
+        {
+            yield return WaitForFirstTruckArrival();
+            SetInstruction("\u30c8\u30e9\u30c3\u30af\u3060\uff01\u30c8\u30e9\u30c3\u30af\u3092\u62bc\u305d\u3046");
+        }
+
         if (showGuideImmediately)
         {
             ApplyButtonGuide(_expectedType);
-        }
-
-        if (isFirstTruck)
-        {
-            yield return WaitForDialogueTap();
-            SetInstruction("\u30c8\u30e9\u30c3\u30af\u3060\u3002\u30c8\u30e9\u30c3\u30af\u3092\u30bf\u30c3\u30d7");
         }
 
         _isAwaitingInput = true;
@@ -429,11 +425,6 @@ public sealed class TutorialController : MonoBehaviour
             _activeCar = _carSpawner.SpawnFixedCar(_expectedType, _currentCarSpeed);
             if (_activeCar != null)
             {
-                if (Mathf.Approximately(_currentCarSpeed, 0f))
-                {
-                    PlaceStoppedCarInView(_activeCar);
-                }
-
                 yield break;
             }
 
@@ -441,14 +432,42 @@ public sealed class TutorialController : MonoBehaviour
         }
     }
 
-    private void PlaceStoppedCarInView(CarController car)
+    private IEnumerator WaitForFirstTruckArrival()
     {
-        if (car == null || !BoundsHelper.TryGetBounds(car.gameObject, out Bounds bounds))
+        CarController car = _activeCar;
+        if (car == null)
         {
-            return;
+            yield break;
         }
 
-        car.transform.position += Vector3.left * (bounds.size.x * 0.95f);
+        if (!BoundsHelper.TryGetBounds(car.gameObject, out Bounds bounds))
+        {
+            car.Stop();
+            yield break;
+        }
+
+        float stoppedPositionX = car.transform.position.x - (bounds.size.x * 0.95f);
+        float startPositionX = car.transform.position.x;
+        float elapsed = 0f;
+        while (_isRunning && car != null && car == _activeCar && elapsed < FirstTruckArrivalSeconds)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsed / FirstTruckArrivalSeconds);
+            Vector3 movingPosition = car.transform.position;
+            movingPosition.x = Mathf.Lerp(startPositionX, stoppedPositionX, Mathf.SmoothStep(0f, 1f, progress));
+            car.transform.position = movingPosition;
+            yield return null;
+        }
+
+        if (car == null || car != _activeCar)
+        {
+            yield break;
+        }
+
+        Vector3 stoppedPosition = car.transform.position;
+        stoppedPosition.x = stoppedPositionX;
+        car.transform.position = stoppedPosition;
+        car.Stop();
     }
 
     private float GetTutorialCarSpeed()
@@ -507,9 +526,7 @@ public sealed class TutorialController : MonoBehaviour
 
         StartBlink(expectedType);
         bool shouldShowFocusGuide = ShouldShowFocusGuide() || reinforceOnly;
-        // Keep the base scrim visible while focusing. The highlighted car is
-        // rendered by TutorialFocusGuideView above this layer.
-        SetInstructionScrimVisible(true);
+        SetInstructionScrimVisible(ShouldShowInstructionScrim());
         if (shouldShowFocusGuide)
         {
             _focusGuideView?.ShowFocus(expectedType, _laneInputController, _activeCar);
@@ -552,7 +569,7 @@ public sealed class TutorialController : MonoBehaviour
     {
         StopBlink();
         _focusGuideView?.HideFocus();
-        SetInstructionScrimVisible(true);
+        SetInstructionScrimVisible(ShouldShowInstructionScrim());
 
         foreach (KeyValuePair<CanvasGroup, float> entry in _originalGroupAlpha)
         {
@@ -590,11 +607,20 @@ public sealed class TutorialController : MonoBehaviour
             || _state == TutorialState.GuidedSportsCar;
     }
 
+    private bool ShouldShowInstructionScrim()
+    {
+        return _state == TutorialState.Introduction
+            || _state == TutorialState.GuidedTruck;
+    }
+
     private void SetInstructionScrimVisible(bool isVisible)
     {
         if (_instructionScrimImage != null)
         {
-            _instructionScrimImage.enabled = isVisible;
+            // Keep the graphic enabled so its full-screen Button can still
+            // advance dialogue after the visual dimming has been removed.
+            _instructionScrimImage.enabled = true;
+            _instructionScrimImage.color = isVisible ? ScrimColor : Color.clear;
         }
     }
 
@@ -629,6 +655,16 @@ public sealed class TutorialController : MonoBehaviour
 
     private void SetDialogueAdvanceEnabled(bool enabled)
     {
+        if (_dialogueAdvanceButton != null)
+        {
+            _dialogueAdvanceButton.interactable = enabled;
+        }
+
+        if (_instructionScrimImage != null)
+        {
+            _instructionScrimImage.raycastTarget = enabled;
+        }
+
         if (_speechButton != null)
         {
             _speechButton.interactable = enabled;
@@ -746,10 +782,16 @@ public sealed class TutorialController : MonoBehaviour
         Stretch(safeRoot, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         safeRoot.gameObject.AddComponent<SafeAreaFitter>();
 
-        RectTransform scrim = CreatePanel("InstructionScrim", safeRoot, ScrimColor);
+        RectTransform scrim = CreatePanel("InstructionScrim", canvasObject.transform, ScrimColor);
         Stretch(scrim, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        scrim.SetAsFirstSibling();
         _instructionScrimImage = scrim.GetComponent<Image>();
         _instructionScrimImage.raycastTarget = false;
+        _dialogueAdvanceButton = scrim.gameObject.AddComponent<UnityEngine.UI.Button>();
+        _dialogueAdvanceButton.targetGraphic = _instructionScrimImage;
+        _dialogueAdvanceButton.transition = Selectable.Transition.None;
+        _dialogueAdvanceButton.interactable = false;
+        _dialogueAdvanceButton.onClick.AddListener(AdvanceDialogue);
 
         _focusGuideView = gameObject.GetComponent<TutorialFocusGuideView>();
         if (_focusGuideView == null)
@@ -775,8 +817,8 @@ public sealed class TutorialController : MonoBehaviour
         SetAnchored(speechTail, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0.5f, 1f), new Vector2(282f, 664f), new Vector2(128f, 128f));
         speechTail.SetSiblingIndex(_speechRoot.GetSiblingIndex() + 1);
 
-        _instructionText = CreateText("InstructionText", _speechRoot, string.Empty, 43f, 31f, FontStyles.Bold, TextAlignmentOptions.Center, TextColor);
-        _instructionText.font = LoadFont("UI/Tutorial/YomiyasuWide-Bold SDF");
+        _instructionText = CreateText("InstructionText", _speechRoot, string.Empty, 43f, 31f, FontStyles.Normal, TextAlignmentOptions.Center, TextColor);
+        _instructionText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
         Stretch((RectTransform)_instructionText.transform, Vector2.zero, Vector2.one, new Vector2(38f, 28f), new Vector2(-38f, -28f));
         _instructionText.textWrappingMode = TextWrappingModes.Normal;
 

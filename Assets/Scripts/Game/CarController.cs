@@ -20,6 +20,7 @@ public class CarController : MonoBehaviour
     private float _coveredRevealX;
     private bool _hasMissLine;
     private bool _hasReportedMiss;
+    private bool _hasMissPenalty;
     private bool _isDespawning;
     private bool _isInitialized;
 
@@ -57,6 +58,7 @@ public class CarController : MonoBehaviour
         _coveredRevealX = leftEdgeX + (playZoneWidth * CoveredRevealLineRatio);
         _hasMissLine = true;
         _hasReportedMiss = false;
+        _hasMissPenalty = false;
         _isDespawning = false;
         _isInitialized = true;
     }
@@ -64,6 +66,17 @@ public class CarController : MonoBehaviour
     public void Stop()
     {
         _speedWorld = 0f;
+    }
+
+    public bool TryRegisterMissPenalty()
+    {
+        if (_hasMissPenalty)
+        {
+            return false;
+        }
+
+        _hasMissPenalty = true;
+        return true;
     }
 
     public float GetMinX()

@@ -4,9 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class CarVisualController : MonoBehaviour
 {
+    private const string CoveredSpriteResourcePath = "Gameplay/covered_vehicle";
+
     private static readonly Color ExpressColor = new(1f, 0.78f, 0.22f, 1f);
-    private static readonly Color CoveredColor = new(0.24f, 0.27f, 0.33f, 1f);
     private static readonly Color BrokenColor = new(1f, 0.38f, 0.42f, 1f);
+    private static Sprite s_CoveredSprite;
 
     [SerializeField]
     private CarVisualDatabase _visualDatabase;
@@ -41,8 +43,10 @@ public class CarVisualController : MonoBehaviour
             return;
         }
 
-        CarType visibleType = isRevealed ? carType : CarType.CompactCar;
-        Sprite sprite = _visualDatabase.GetBodySprite(visibleType);
+        Sprite sprite = modifier == CarModifier.Covered && !isRevealed
+            ? GetCoveredSprite()
+            : _visualDatabase.GetBodySprite(carType);
+        sprite ??= _visualDatabase.GetBodySprite(CarType.CompactCar);
         if (sprite != null)
         {
             _spriteRenderer.sprite = sprite;
@@ -97,6 +101,12 @@ public class CarVisualController : MonoBehaviour
         _modifierBadge.renderer.sortingOrder = _spriteRenderer.sortingOrder + 1;
     }
 
+    private static Sprite GetCoveredSprite()
+    {
+        s_CoveredSprite ??= Resources.Load<Sprite>(CoveredSpriteResourcePath);
+        return s_CoveredSprite;
+    }
+
     private void EnsureModifierBadge()
     {
         if (_modifierBadge != null)
@@ -125,7 +135,6 @@ public class CarVisualController : MonoBehaviour
         return modifier switch
         {
             CarModifier.Express => ExpressColor,
-            CarModifier.Covered when !isRevealed => CoveredColor,
             CarModifier.Broken => BrokenColor,
             _ => Color.white
         };

@@ -34,6 +34,7 @@ public class CarSpawner : MonoBehaviour
     private Coroutine _rushCoroutine;
     private bool _isSpawning;
     private bool _isRushActive;
+    private DeterministicSpawnSequence _spawnSequence;
 
     public event Action<CarController> CarMissed;
     public event Action<CarController> CarSpawned;
@@ -46,6 +47,10 @@ public class CarSpawner : MonoBehaviour
     {
         StopSpawning();
         _stageDefinition = stageDefinition;
+        uint seed = stageDefinition != null && stageDefinition.UseFixedSeed
+            ? stageDefinition.FixedSeed
+            : unchecked((uint)(Environment.TickCount ^ GetInstanceID()));
+        _spawnSequence = new DeterministicSpawnSequence(stageDefinition, seed);
         _visualDatabase ??= CarVisualDatabase.LoadDefault();
         CleanupNullCars();
     }
@@ -186,13 +191,27 @@ public class CarSpawner : MonoBehaviour
             return false;
         }
 
-        CarType? selectedType = SelectWeightedCarType();
-        if (!selectedType.HasValue)
+        int totalWeight = Mathf.Max(0, _stageDefinition.WeightLightTruck)
+            + Mathf.Max(0, _stageDefinition.WeightCompactCar)
+            + Mathf.Max(0, _stageDefinition.WeightSportsCar);
+        if (totalWeight <= 0)
         {
             return false;
         }
 
-        return TrySpawnCar(selectedType.Value, SelectCarModifier(), _stageDefinition.CarSpeed, true, out _);
+        SpawnInstruction instruction = _spawnSequence?.Peek();
+        if (instruction == null)
+        {
+            return false;
+        }
+
+        bool spawned = TrySpawnCar(instruction.CarType, instruction.Modifier, _stageDefinition.CarSpeed, true, out _);
+        if (spawned)
+        {
+            _spawnSequence.Commit();
+        }
+
+        return spawned;
     }
 
     private bool TrySpawnCar(CarType carType, CarModifier modifier, float carSpeed, bool enforceSpawnGap, out CarController spawnedCar)

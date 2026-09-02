@@ -11,11 +11,13 @@ public class CameraAspectLetterbox : MonoBehaviour
 
     private Camera cam;
     private Camera clearCamera;
+    private float referenceOrthographicSize;
 
     private void Awake()
     {
         cam = GetComponent<Camera>();
         letterboxColor = cam.backgroundColor;
+        referenceOrthographicSize = cam.orthographicSize;
         CreateClearCamera();
         Apply();
     }
@@ -35,19 +37,31 @@ public class CameraAspectLetterbox : MonoBehaviour
 
     private void Apply()
     {
+        if (Screen.width <= 0 || Screen.height <= 0 || targetAspect <= 0f)
+        {
+            return;
+        }
+
         float windowAspect = (float)Screen.width / Screen.height;
         float scaleHeight = windowAspect / targetAspect;
 
         if (scaleHeight < 1f)
         {
-            float y = (1f - scaleHeight) * 0.5f;
-            cam.rect = new Rect(0f, y, 1f, scaleHeight);
+            cam.rect = new Rect(0f, 0f, 1f, 1f);
+            if (cam.orthographic)
+            {
+                cam.orthographicSize = referenceOrthographicSize / scaleHeight;
+            }
         }
         else
         {
             float scaleWidth = 1f / scaleHeight;
             float x = (1f - scaleWidth) * 0.5f;
             cam.rect = new Rect(x, 0f, scaleWidth, 1f);
+            if (cam.orthographic)
+            {
+                cam.orthographicSize = referenceOrthographicSize;
+            }
         }
 
         if (clearCamera != null)
