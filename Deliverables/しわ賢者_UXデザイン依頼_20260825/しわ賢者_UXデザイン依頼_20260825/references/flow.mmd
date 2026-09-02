@@ -1,0 +1,20 @@
+flowchart TD
+    Boot[起動] --> Title[Title]
+    Title -->|初回| HowTo[How To]
+    Title -->|おしごと| StageSelect[StageSelect]
+    Title -->|解放後| Daily[Main / Daily]
+    Title -->|解放後| Endless[Main / Endless]
+    StageSelect --> Main[Main / おしごと]
+    Main --> Pause[Pause]
+    Main -->|Clear/復活不可| Result[Result]
+    Main -->|復活可能| Continue[Continue Prompt]
+    Continue --> Rewarded[Rewarded Ad]
+    Rewarded -->|完了| Main
+    Rewarded -->|失敗/Skip| Result
+    Rewarded -.->|Timeout追加| Result
+    Result -->|Retry/Next| Main
+    Result --> StageSelect
+    Result --> Title
+    SaveError[保存エラー] -.-> ErrorModal[共通データエラー]
+    DbError[StageDatabaseエラー] -.-> ErrorModal
+
