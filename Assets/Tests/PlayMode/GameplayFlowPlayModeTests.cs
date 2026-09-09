@@ -654,6 +654,67 @@ public sealed class GameplayFlowPlayModeTests
         Assert.That(messageRoot.gameObject.activeSelf, Is.False, "Covered hint should not repeat on another stage entry.");
     }
 
+    [UnityTest]
+    [Order(12)]
+    public IEnumerator PauseHowToShowsCurrentRulesAndReturnsToThePauseMenu()
+    {
+        yield return LoadScene("Main");
+        object gameFlow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(gameFlow, "IsPlaying"), SceneTimeoutSeconds, "Main did not enter Playing state.");
+
+        object pauseMenu = FindSceneComponent("MainPauseMenuController");
+        Assert.That(pauseMenu, Is.Not.Null);
+        Invoke(pauseMenu, "OpenMenu");
+        yield return null;
+        Invoke(pauseMenu, "OpenHowTo");
+        yield return null;
+
+        GameObject howToRoot = GetField(pauseMenu, "_howToPanelRoot") as GameObject;
+        Assert.That(howToRoot, Is.Not.Null.And.Property("activeInHierarchy").True);
+        string howToCopy = string.Join("\n", howToRoot.GetComponentsInChildren<Component>(true)
+            .Select(GetTextComponentValue)
+            .Where(value => !string.IsNullOrWhiteSpace(value)));
+
+        Assert.That(howToCopy, Does.Contain("しごとの手引き"));
+        Assert.That(howToCopy, Does.Contain("右から来る車"));
+        Assert.That(howToCopy, Does.Contain("車がいない時もMISS"));
+        Assert.That(howToCopy, Does.Contain("故障車"));
+        Assert.That(howToCopy, Does.Contain("整備へ送る"));
+        Assert.That(howToCopy, Does.Contain("覆面車"));
+        Assert.That(howToCopy, Does.Contain("? が消えるまで待つ"));
+        Assert.That(howToCopy, Does.Contain("急送車"));
+        Assert.That(howToCopy, Does.Contain("得点が ×2"));
+        Assert.That(howToCopy, Does.Contain("COMBO"));
+        Assert.That(howToCopy, Does.Contain("FEVER"));
+        Assert.That(howToCopy, Does.Contain("大名行列（RUSH）は3台連続"));
+        Assert.That(howToCopy, Does.Not.Contain("COMING CAR"));
+
+        UnityEngine.UI.Button tutorialButton = GetField(pauseMenu, "_howToTutorialButton") as UnityEngine.UI.Button;
+        UnityEngine.UI.Button closeButton = GetField(pauseMenu, "_howToCloseButton") as UnityEngine.UI.Button;
+        Assert.That(tutorialButton, Is.Not.Null.And.Property("interactable").True);
+        Assert.That(closeButton, Is.Not.Null.And.Property("interactable").True);
+        Assert.That(GetButtonText(tutorialButton), Does.Contain("チュートリアル"));
+        Assert.That(GetButtonText(closeButton), Does.Contain("わかった"));
+        UnityEngine.UI.Image closeButtonImage = closeButton.targetGraphic as UnityEngine.UI.Image;
+        Assert.That(closeButtonImage, Is.Not.Null);
+        Assert.That(closeButtonImage.type, Is.EqualTo(UnityEngine.UI.Image.Type.Simple));
+        Assert.That(closeButtonImage.preserveAspect, Is.True);
+        float buttonAspect = (closeButton.transform as RectTransform).rect.width / (closeButton.transform as RectTransform).rect.height;
+        float spriteAspect = closeButtonImage.sprite.rect.width / closeButtonImage.sprite.rect.height;
+        Assert.That(buttonAspect, Is.EqualTo(spriteAspect).Within(0.01f));
+
+        RectTransform paper = howToRoot.GetComponentsInChildren<RectTransform>(true)
+            .Single(rect => rect.name == "InstructionPaper");
+        Assert.That(paper.rect.width, Is.GreaterThan(0f));
+        Assert.That(paper.rect.height, Is.GreaterThan(0f));
+
+        Invoke(pauseMenu, "CloseHowTo");
+        yield return null;
+        Assert.That(howToRoot.activeSelf, Is.False);
+        Assert.That((GetField(pauseMenu, "_menuPanelRoot") as GameObject)?.activeSelf, Is.True);
+        Invoke(pauseMenu, "ResumeGame");
+    }
+
     private static IEnumerator CompleteCurrentStageThroughRealInput(object gameFlow, int stageNumber)
     {
         object stage = GetField(gameFlow, "_currentStageDefinition");

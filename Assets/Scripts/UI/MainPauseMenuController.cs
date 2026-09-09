@@ -17,6 +17,8 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private const string SettingsIconResourcePath = "UI/Pause/ui_pause_settings_icon";
     private const string PowaResourcePath = "UI/Pause/ui_pause_powa";
     private const string SpeechPanelResourcePath = "UI/Tutorial/speech_panel";
+    private const string HowToWoodPanelResourcePath = "UI/Tutorial/hud_wood_panel";
+    private const string HowToMissOrbResourcePath = "UI/Tutorial/miss_orb_lit";
     private const string PauseFontResourcePath = "Fonts/Y1YomiyasuWide-Bold SDF";
     private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
     private const string ToggleOffResourcePath = "UI/ui_settings_toggle_off";
@@ -34,8 +36,10 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private const float SettingsRowHeight = 204f;
     private const float SettingsSliderHandleWidth = 34f;
     private const float SettingsSliderHandleHeight = 2f;
-    private const float HowToPanelWidth = 900f;
-    private const float HowToPanelHeight = 1260f;
+    private const float HowToPanelWidth = 940f;
+    private const float HowToPanelHeight = 1740f;
+    private const float HowToPaperWidth = 820f;
+    private const float HowToPaperHeight = 1400f;
 
     private static readonly Color OverlayColor = new(0.095f, 0.067f, 0.102f, 0.72f);
     private static readonly Color PrimaryButtonColor = new(1f, 0.78f, 0.26f, 1f);
@@ -59,13 +63,15 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private static readonly Color SettingsBgmAccentColor = new(0.345f, 0.784f, 0.541f, 1f);
     private static readonly Color SettingsSeAccentColor = new(0.219f, 0.643f, 0.94f, 1f);
     private static readonly Color SettingsVibrationAccentColor = new(0.949f, 0.772f, 0.259f, 1f);
-    private static readonly Color HowToPanelColor = new(1f, 1f, 1f, 0.96f);
-    private static readonly Color HowToShadowColor = new(0.08f, 0.15f, 0.24f, 0.12f);
-    private static readonly Color HowToRowColor = new(0.975f, 0.982f, 0.992f, 1f);
-    private static readonly Color HowToDividerColor = new(0.902f, 0.922f, 0.953f, 1f);
-    private static readonly Color HowToTextColor = new(0.137f, 0.184f, 0.275f, 1f);
-    private static readonly Color HowToMutedTextColor = new(0.44f, 0.49f, 0.58f, 1f);
-    private static readonly Color HowToBlueAccentColor = new(0.219f, 0.643f, 0.94f, 1f);
+    private static readonly Color HowToPanelColor = new(0.16f, 0.12f, 0.11f, 0.98f);
+    private static readonly Color HowToShadowColor = new(0.04f, 0.025f, 0.02f, 0.72f);
+    private static readonly Color HowToPaperColor = new(1f, 0.985f, 0.92f, 1f);
+    private static readonly Color HowToRowColor = new(0.97f, 0.965f, 0.93f, 1f);
+    private static readonly Color HowToDividerColor = new(0.62f, 0.59f, 0.55f, 0.72f);
+    private static readonly Color HowToTextColor = new(0.115f, 0.075f, 0.06f, 1f);
+    private static readonly Color HowToMutedTextColor = new(0.42f, 0.39f, 0.38f, 1f);
+    private static readonly Color HowToCoveredAccentColor = new(0.30f, 0.66f, 0.78f, 1f);
+    private static readonly Color HowToExpressAccentColor = new(1f, 0.72f, 0.18f, 1f);
 
     private static MainPauseMenuController _activeController;
     private static TMP_FontAsset _pauseFontAsset;
@@ -829,52 +835,74 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private void BuildHowToPanel(Transform parent)
     {
         RectTransform root = CreateUiObject("HowToPanelRoot", parent);
-        SetAnchored(root, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
+        Stretch(root, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         _howToPanelRoot = root.gameObject;
 
         RectTransform shadow = CreatePanel("HowToPanelShadow", root, HowToShadowColor);
-        SetAnchored(shadow, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -18f), new Vector2(HowToPanelWidth, HowToPanelHeight));
+        SetAnchored(shadow, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -16f), new Vector2(HowToPanelWidth, HowToPanelHeight));
 
         RectTransform panel = CreatePanel("HowToPanel", root, HowToPanelColor);
         SetAnchored(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(HowToPanelWidth, HowToPanelHeight));
 
-        BuildHowToHeader(panel, out Button topCloseButton);
-        topCloseButton.onClick.AddListener(CloseHowTo);
-
-        RectTransform body = CreateUiObject("Body", panel);
-        Stretch(body, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(58f, 138f), new Vector2(-58f, -164f));
-
-        VerticalLayoutGroup bodyLayout = body.gameObject.AddComponent<VerticalLayoutGroup>();
-        bodyLayout.spacing = 18f;
-        bodyLayout.childAlignment = TextAnchor.UpperCenter;
-        bodyLayout.childControlWidth = true;
-        bodyLayout.childControlHeight = true;
-        bodyLayout.childForceExpandWidth = true;
-        bodyLayout.childForceExpandHeight = false;
-
+        Sprite paperSprite = Resources.Load<Sprite>(SpeechPanelResourcePath);
+        Sprite woodPanelSprite = Resources.Load<Sprite>(HowToWoodPanelResourcePath);
+        Sprite missOrbSprite = Resources.Load<Sprite>(HowToMissOrbResourcePath);
+        Sprite powaSprite = Resources.Load<Sprite>(PowaResourcePath);
         CarVisualDatabase visualDatabase = CarVisualDatabase.LoadDefault();
-        CreateHowToStep(body, "01", "COMING CAR", "\u6765\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046", HowToBlueAccentColor, GetHowToIcon(visualDatabase, CarType.LightTruck));
-        CreateHowToStep(body, "02", "OK / GOOD", "\u6b63\u3057\u304f\u4ed5\u5206\u3051\u308b\u3068\u30b9\u30b3\u30a2\u30a2\u30c3\u30d7", ToggleOnColor, GetHowToIcon(visualDatabase, CarType.CompactCar));
-        CreateHowToStep(body, "03", "MISS LIMIT", "MISS \u304c\u4e0a\u9650\u306b\u5c4a\u304f\u3068 GAME OVER", DangerButtonColor, GetHowToIcon(visualDatabase, CarType.SportsCar));
 
-        _howToCloseButton = CreateModalCloseButton(panel, "CloseButton", "OK", new Vector2(-210f, 34f), new Vector2(360f, 136f));
-        _howToCloseButton.onClick.AddListener(CloseHowTo);
-        _howToTutorialButton = CreateModalCloseButton(panel, "TutorialButton", "TUTORIAL", new Vector2(210f, 34f), new Vector2(360f, 136f));
+        RectTransform paper = CreatePanel("InstructionPaper", panel, HowToPaperColor);
+        SetAnchored(paper, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -46f), new Vector2(HowToPaperWidth, HowToPaperHeight));
+        Image paperImage = paper.GetComponent<Image>();
+        paperImage.sprite = paperSprite;
+        paperImage.type = paperSprite != null && paperSprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+        paperImage.color = paperSprite != null ? HowToPaperColor : Color.white;
+
+        TMP_Text title = CreateText("Title", paper, "しごとの手引き", 48f, FontStyles.Normal, TextAlignmentOptions.Center, HowToTextColor, new Vector2(0f, 642f), new Vector2(650f, 68f));
+        ApplyPauseFont(title);
+        TMP_Text subtitle = CreateText("Subtitle", paper, "H O W   T O   P L A Y", 17f, FontStyles.Normal, TextAlignmentOptions.Center, HowToMutedTextColor, new Vector2(0f, 594f), new Vector2(480f, 32f));
+        subtitle.characterSpacing = 4f;
+        CreateHowToDashedDivider(paper, 560f);
+
+        TMP_Text vehicleHeading = CreateText("VehicleHeading", paper, "1. 右から来る車とボタンをあわせる", 29f, FontStyles.Normal, TextAlignmentOptions.Left, HowToMutedTextColor, new Vector2(0f, 520f), new Vector2(720f, 42f));
+        ApplyPauseFont(vehicleHeading);
+        CreateHowToVehicleRow(paper, "SportsCar", GetHowToIcon(visualDatabase, CarType.SportsCar), "スポーツカー", new Color(0.18f, 0.92f, 1f, 0.28f), 440f);
+        CreateHowToVehicleRow(paper, "CompactCar", GetHowToIcon(visualDatabase, CarType.CompactCar), "普通車", new Color(1f, 0.56f, 0.18f, 0.28f), 340f);
+        CreateHowToVehicleRow(paper, "Truck", GetHowToIcon(visualDatabase, CarType.LightTruck), "トラック", new Color(0.35f, 0.9f, 0.55f, 0.28f), 240f);
+
+        TMP_Text rulesHeading = CreateText("RulesHeading", paper, "2. おしごとのきまり", 29f, FontStyles.Normal, TextAlignmentOptions.Left, HowToMutedTextColor, new Vector2(0f, 164f), new Vector2(720f, 42f));
+        ApplyPauseFont(rulesHeading);
+        CreateHowToRules(paper, woodPanelSprite, missOrbSprite);
+
+        TMP_Text specialHeading = CreateText("SpecialHeading", paper, "3. 特殊な車とボーナス", 29f, FontStyles.Normal, TextAlignmentOptions.Left, HowToMutedTextColor, new Vector2(0f, -34f), new Vector2(720f, 42f));
+        ApplyPauseFont(specialHeading);
+        CreateHowToSpecialRule(paper, "BrokenRule", "X", "故障車", "「整備へ送る」を押す", DangerButtonColor, -112f);
+        CreateHowToSpecialRule(paper, "CoveredRule", "?", "覆面車", "? が消えるまで待つ", HowToCoveredAccentColor, -200f);
+        CreateHowToSpecialRule(paper, "ExpressRule", "!", "急送車", "得点が ×2", HowToExpressAccentColor, -288f);
+        CreateHowToTip(paper, paperSprite, powaSprite);
+
+        Sprite secondaryButtonSprite = Resources.Load<Sprite>(SecondaryButtonResourcePath);
+        Sprite primaryButtonSprite = Resources.Load<Sprite>(PrimaryButtonResourcePath);
+        _howToTutorialButton = CreateHowToActionButton(panel, "TutorialButton", secondaryButtonSprite, "チュートリアル", new Vector2(-195f, -752f), new Vector2(350f, 148f));
         _howToTutorialButton.onClick.AddListener(ReplayTutorial);
+        Vector2 closeButtonSize = GetSpriteDisplaySize(primaryButtonSprite, 390f);
+        _howToCloseButton = CreateHowToActionButton(panel, "CloseButton", primaryButtonSprite, "わかった!", new Vector2(190f, -752f), closeButtonSize, true);
+        _howToCloseButton.onClick.AddListener(CloseHowTo);
         _howToPanelRoot.SetActive(false);
     }
 
-    private static void BuildHowToHeader(Transform parent, out Button closeButton)
+    private static void CreateHowToDashedDivider(RectTransform parent, float anchoredY)
     {
-        TMP_Text titleText = CreateText("Title", parent, "HOW TO", 58f, FontStyles.Normal, TextAlignmentOptions.Left, HowToTextColor, Vector2.zero, Vector2.zero);
-        SetAnchored((RectTransform)titleText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(58f, -42f), new Vector2(-230f, 92f));
-        titleText.textWrappingMode = TextWrappingModes.NoWrap;
-
-        RectTransform divider = CreatePanel("Divider", parent, HowToDividerColor);
-        SetAnchored(divider, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -128f), new Vector2(-116f, 4f));
-        divider.GetComponent<Image>().raycastTarget = false;
-
-        closeButton = CreateTopCloseButton(parent);
+        const int dashCount = 20;
+        const float dashWidth = 24f;
+        const float gap = 10f;
+        float totalWidth = dashCount * dashWidth + (dashCount - 1) * gap;
+        float left = -totalWidth * 0.5f + dashWidth * 0.5f;
+        for (int i = 0; i < dashCount; i += 1)
+        {
+            RectTransform dash = CreatePanel($"DividerDash{i + 1:00}", parent, HowToDividerColor);
+            SetAnchored(dash, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(left + i * (dashWidth + gap), anchoredY), new Vector2(dashWidth, 4f));
+            dash.GetComponent<Image>().raycastTarget = false;
+        }
     }
 
     private static Sprite GetHowToIcon(CarVisualDatabase visualDatabase, CarType carType)
@@ -882,43 +910,121 @@ public sealed class MainPauseMenuController : MonoBehaviour
         return visualDatabase != null ? visualDatabase.GetIconSprite(carType) : null;
     }
 
-    private static void CreateHowToStep(Transform parent, string number, string title, string detail, Color accentColor, Sprite iconSprite)
+    private static void CreateHowToVehicleRow(RectTransform parent, string name, Sprite vehicleSprite, string label, Color glowColor, float anchoredY)
     {
-        RectTransform row = CreatePanel($"Step{number}", parent, HowToRowColor);
-        LayoutElement layoutElement = row.gameObject.AddComponent<LayoutElement>();
-        layoutElement.preferredHeight = 230f;
-        layoutElement.flexibleWidth = 1f;
+        RectTransform row = CreatePanel($"{name}Row", parent, HowToRowColor);
+        SetAnchored(row, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, anchoredY), new Vector2(720f, 88f));
 
-        RectTransform accent = CreatePanel("AccentBar", row, accentColor);
-        Stretch(accent, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(12f, 0f));
-        accent.GetComponent<Image>().raycastTarget = false;
+        Image incomingVehicle = CreateImage("IncomingVehicle", row, vehicleSprite, Color.white, true);
+        SetAnchored(incomingVehicle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-260f, 0f), new Vector2(112f, 68f));
 
-        TMP_Text numberText = CreateText("Number", row, number, 48f, FontStyles.Bold, TextAlignmentOptions.Center, accentColor, Vector2.zero, Vector2.zero);
-        SetAnchored((RectTransform)numberText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(84f, 0f), new Vector2(118f, 92f));
+        TMP_Text arrow = CreateText("Arrow", row, "→", 40f, FontStyles.Normal, TextAlignmentOptions.Center, HowToMutedTextColor, new Vector2(-125f, 0f), new Vector2(70f, 60f));
+        ApplyPauseFont(arrow);
 
-        Image iconImage = CreateImage("Icon", row, iconSprite, Color.white, true);
-        SetAnchored(iconImage.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(218f, 0f), new Vector2(126f, 126f));
+        RectTransform targetGlow = CreatePanel("TargetGlow", row, glowColor);
+        SetAnchored(targetGlow, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-18f, 0f), new Vector2(132f, 72f));
+        targetGlow.GetComponent<Image>().raycastTarget = false;
 
-        TMP_Text titleText = CreateText("Title", row, title, 38f, FontStyles.Bold, TextAlignmentOptions.Left, HowToTextColor, Vector2.zero, Vector2.zero);
-        SetAnchored((RectTransform)titleText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, 42f), new Vector2(-330f, 58f));
-        titleText.textWrappingMode = TextWrappingModes.NoWrap;
+        Image targetVehicle = CreateImage("TargetVehicle", row, vehicleSprite, Color.white, true);
+        SetAnchored(targetVehicle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-18f, 0f), new Vector2(104f, 62f));
 
-        TMP_Text detailText = CreateText("Detail", row, detail, 30f, FontStyles.Normal, TextAlignmentOptions.Left, HowToMutedTextColor, Vector2.zero, Vector2.zero);
-        SetAnchored((RectTransform)detailText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, -36f), new Vector2(-330f, 74f));
-        detailText.textWrappingMode = TextWrappingModes.Normal;
+        TMP_Text labelText = CreateText("Label", row, label, 29f, FontStyles.Normal, TextAlignmentOptions.Right, HowToTextColor, new Vector2(210f, 0f), new Vector2(250f, 58f));
+        ApplyPauseFont(labelText);
     }
 
-    private static Button CreateTopCloseButton(Transform parent)
+    private static void CreateHowToRules(RectTransform paper, Sprite woodPanelSprite, Sprite missOrbSprite)
     {
-        RectTransform rect = CreatePanel("CloseButtonTop", parent, HowToBlueAccentColor, typeof(Button));
-        SetAnchored(rect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-42f, -34f), new Vector2(180f, 82f));
+        RectTransform missCard = CreatePanel("MissRule", paper, woodPanelSprite != null ? Color.white : DangerButtonColor);
+        SetAnchored(missCard, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-190f, 66f), new Vector2(350f, 150f));
+        Image missCardImage = missCard.GetComponent<Image>();
+        missCardImage.sprite = woodPanelSprite;
+        missCardImage.type = woodPanelSprite != null && woodPanelSprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+
+        for (int i = 0; i < 3; i += 1)
+        {
+            Image orb = CreateImage($"MissOrb{i + 1}", missCard, missOrbSprite, Color.white, true);
+            SetAnchored(orb.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2((i - 1) * 48f, 34f), new Vector2(40f, 40f));
+        }
+
+        TMP_Text missText = CreateText("Label", missCard, "車がいない時もMISS\n上限でしごと終了", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, new Vector2(0f, -30f), new Vector2(300f, 76f));
+        ApplyPauseFont(missText);
+
+        RectTransform goalCard = CreatePanel("GoalRule", paper, woodPanelSprite != null ? Color.white : ToggleOnColor);
+        SetAnchored(goalCard, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(190f, 66f), new Vector2(350f, 150f));
+        Image goalCardImage = goalCard.GetComponent<Image>();
+        goalCardImage.sprite = woodPanelSprite;
+        goalCardImage.type = woodPanelSprite != null && woodPanelSprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+
+        RectTransform goalTrack = CreatePanel("Track", goalCard, new Color(0.18f, 0.12f, 0.07f, 1f));
+        SetAnchored(goalTrack, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 34f), new Vector2(230f, 25f));
+        goalTrack.GetComponent<Image>().raycastTarget = false;
+        RectTransform goalFill = CreatePanel("Fill", goalTrack, ToggleOnColor);
+        Stretch(goalFill, new Vector2(0f, 0f), new Vector2(0.66f, 1f), new Vector2(4f, 4f), new Vector2(-1f, -4f));
+        goalFill.GetComponent<Image>().raycastTarget = false;
+
+        TMP_Text goalText = CreateText("Label", goalCard, "上のMISSIONを\n達成でクリア", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, new Vector2(0f, -30f), new Vector2(300f, 76f));
+        ApplyPauseFont(goalText);
+    }
+
+    private static void CreateHowToSpecialRule(RectTransform paper, string name, string marker, string title, string detail, Color accentColor, float anchoredY)
+    {
+        RectTransform row = CreatePanel(name, paper, new Color(accentColor.r, accentColor.g, accentColor.b, 0.13f));
+        SetAnchored(row, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, anchoredY), new Vector2(720f, 74f));
+
+        RectTransform badge = CreatePanel("Badge", row, accentColor);
+        SetAnchored(badge, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-314f, 0f), new Vector2(56f, 56f));
+        badge.GetComponent<Image>().raycastTarget = false;
+        TMP_Text markerText = CreateText("Marker", badge, marker, 34f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, Vector2.zero, new Vector2(48f, 48f));
+        ApplyPauseFont(markerText);
+
+        TMP_Text titleText = CreateText("Title", row, title, 27f, FontStyles.Normal, TextAlignmentOptions.Left, HowToTextColor, new Vector2(-190f, 0f), new Vector2(180f, 52f));
+        ApplyPauseFont(titleText);
+        TMP_Text detailText = CreateText("Detail", row, detail, 25f, FontStyles.Normal, TextAlignmentOptions.Left, HowToMutedTextColor, new Vector2(150f, 0f), new Vector2(450f, 52f));
+        ApplyPauseFont(detailText);
+    }
+
+    private static void CreateHowToTip(RectTransform paper, Sprite speechPanelSprite, Sprite powaSprite)
+    {
+        Image powa = CreateImage("PowaTip", paper, powaSprite, Color.white, true);
+        SetAnchored(powa.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-298f, -426f), new Vector2(130f, 130f));
+
+        RectTransform bubble = CreatePanel("TipBubble", paper, speechPanelSprite != null ? Color.white : new Color(1f, 0.96f, 0.78f, 1f));
+        SetAnchored(bubble, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(88f, -426f), new Vector2(570f, 126f));
+        Image bubbleImage = bubble.GetComponent<Image>();
+        bubbleImage.sprite = speechPanelSprite;
+        bubbleImage.type = speechPanelSprite != null && speechPanelSprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+        bubbleImage.color = speechPanelSprite != null ? new Color(1f, 0.96f, 0.78f, 1f) : bubbleImage.color;
+
+        TMP_Text tipText = CreateText("TipText", bubble, "COMBOをつなぐとFEVERで得点×2\n大名行列（RUSH）は3台連続!", 24f, FontStyles.Normal, TextAlignmentOptions.Left, HowToTextColor, Vector2.zero, new Vector2(500f, 88f));
+        ApplyPauseFont(tipText);
+    }
+
+    private static Button CreateHowToActionButton(
+        Transform parent,
+        string name,
+        Sprite sprite,
+        string label,
+        Vector2 position,
+        Vector2 size,
+        bool preserveSpriteAspect = false)
+    {
+        RectTransform rect = CreatePanel(name, parent, sprite != null ? Color.white : NeutralButtonColor, typeof(Button));
+        SetAnchored(rect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), position, size);
+
+        Image image = rect.GetComponent<Image>();
+        image.sprite = sprite;
+        image.type = preserveSpriteAspect
+            ? Image.Type.Simple
+            : sprite != null && sprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+        image.preserveAspect = preserveSpriteAspect;
+        image.color = sprite != null ? Color.white : NeutralButtonColor;
 
         Button button = rect.GetComponent<Button>();
-        button.targetGraphic = rect.GetComponent<Image>();
+        button.targetGraphic = image;
         ApplyButtonColors(button, Color.white);
 
-        TMP_Text label = CreateText("Label", rect, "X", 34f, FontStyles.Bold, TextAlignmentOptions.Center, Color.white, Vector2.zero, new Vector2(132f, 58f));
-        label.characterSpacing = 1f;
+        TMP_Text labelText = CreateText("Label", rect, label, name == "CloseButton" ? 40f : 34f, FontStyles.Normal, TextAlignmentOptions.Center, HowToTextColor, Vector2.zero, size - new Vector2(48f, 28f));
+        ApplyPauseFont(labelText);
         return button;
     }
 
