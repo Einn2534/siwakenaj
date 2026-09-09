@@ -109,6 +109,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         }
 
         _root.gameObject.SetActive(true);
+        _root.SetAsLastSibling();
         UpdateLayout();
         if (_targetButton != null)
         {

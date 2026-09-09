@@ -385,6 +385,8 @@ public class LaneInputController : MonoBehaviour
             return;
         }
 
+        CacheLaneButton(button, laneButtonId);
+
         LaneButtonPointerDownForwarder forwarder = button.GetComponent<LaneButtonPointerDownForwarder>();
         if (forwarder == null)
         {
@@ -392,6 +394,22 @@ public class LaneInputController : MonoBehaviour
         }
 
         forwarder.Configure(this, GetLaneType(laneButtonId), (int)laneButtonId, button);
+    }
+
+    private void CacheLaneButton(Button button, LaneButtonId laneButtonId)
+    {
+        switch (laneButtonId)
+        {
+            case LaneButtonId.LaneA when _laneAButton == null:
+                _laneAButton = button;
+                break;
+            case LaneButtonId.LaneB when _laneBButton == null:
+                _laneBButton = button;
+                break;
+            case LaneButtonId.LaneC when _laneCButton == null:
+                _laneCButton = button;
+                break;
+        }
     }
 
     private bool TryResolveLaneButtonId(Button button, out LaneButtonId laneButtonId)

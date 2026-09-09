@@ -738,6 +738,58 @@ public sealed class GameplayFlowPlayModeTests
         Assert.That(buttonAspect, Is.EqualTo(spriteAspect).Within(0.01f));
     }
 
+    [UnityTest]
+    [Order(14)]
+    public IEnumerator TutorialHighlightsTheTruckButtonDuringTheFirstGuidedStep()
+    {
+        PlayerPrefs.SetInt("Tutorial_Completed", 0);
+        PlayerPrefs.SetInt("Tutorial_Skipped", 0);
+        PlayerPrefs.Save();
+        InvokeStatic(RequiredType("TutorialLaunchService"), "RequestReplay");
+
+        yield return LoadScene("Main");
+        yield return WaitUntil(
+            () => FindSceneComponent("TutorialController") != null,
+            SceneTimeoutSeconds,
+            "Tutorial controller was not installed.");
+
+        object tutorial = FindSceneComponent("TutorialController");
+        yield return WaitUntil(
+            () => (bool)GetProperty(tutorial, "IsRunning"),
+            SceneTimeoutSeconds,
+            "Tutorial did not start.");
+
+        object laneInput = FindSceneComponent("LaneInputController");
+        UnityEngine.UI.Button truckButton = GetField(laneInput, "_laneAButton") as UnityEngine.UI.Button;
+        UnityEngine.UI.Button compactButton = GetField(laneInput, "_laneBButton") as UnityEngine.UI.Button;
+        UnityEngine.UI.Button sportsButton = GetField(laneInput, "_laneCButton") as UnityEngine.UI.Button;
+        Assert.That(truckButton, Is.Not.Null, "The scene's truck button was not resolved at runtime.");
+        Assert.That(compactButton, Is.Not.Null);
+        Assert.That(sportsButton, Is.Not.Null);
+
+        Invoke(tutorial, "AdvanceDialogue");
+        yield return WaitUntil(
+            () => GetProperty(tutorial, "State").ToString() == "GuidedTruck"
+                && (bool)GetField(tutorial, "_isAwaitingInput"),
+            SceneTimeoutSeconds,
+            "Tutorial did not reach the guided truck input step.");
+
+        object focusGuide = FindSceneComponent("TutorialFocusGuideView");
+        Assert.That(focusGuide, Is.Not.Null);
+        RectTransform guideRoot = GetField(focusGuide, "_root") as RectTransform;
+        Assert.That(guideRoot, Is.Not.Null);
+        Assert.That(guideRoot.gameObject.activeInHierarchy, Is.True);
+        Assert.That(GetField(focusGuide, "_targetButton"), Is.SameAs(truckButton.transform));
+        Assert.That(guideRoot.Find("CorrectRing")?.gameObject.activeSelf, Is.True);
+        Assert.That(guideRoot.Find("WitchPointer")?.gameObject.activeSelf, Is.True);
+        Assert.That(truckButton.interactable, Is.True);
+        Assert.That(compactButton.interactable, Is.False);
+        Assert.That(sportsButton.interactable, Is.False);
+
+        Invoke(tutorial, "SkipTutorial");
+        yield return null;
+    }
+
     private static IEnumerator CompleteCurrentStageThroughRealInput(object gameFlow, int stageNumber)
     {
         object stage = GetField(gameFlow, "_currentStageDefinition");
