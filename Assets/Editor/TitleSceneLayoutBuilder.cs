@@ -655,9 +655,12 @@ public static class TitleSceneLayoutBuilder
         tutorialLabel.fontStyle = FontStyles.Normal;
         tutorialLabel.textWrappingMode = TextWrappingModes.NoWrap;
 
-        Button closeButton = CreateButton("CloseButton", overlay, yellowButtonSprite != null ? yellowButtonSprite : slicedSprite, new Vector2(390f, 148f), string.Empty, headlineFontAsset, 1f, InkColor);
-        SetAnchored((RectTransform)closeButton.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(190f, -1605f), new Vector2(390f, 148f));
-        closeButton.GetComponent<Image>().type = Image.Type.Sliced;
+        Vector2 closeButtonSize = new(390f, 168f);
+        Button closeButton = CreateButton("CloseButton", overlay, yellowButtonSprite != null ? yellowButtonSprite : slicedSprite, closeButtonSize, string.Empty, headlineFontAsset, 1f, InkColor);
+        SetAnchored((RectTransform)closeButton.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(190f, -1605f), closeButtonSize);
+        Image closeButtonImage = closeButton.GetComponent<Image>();
+        closeButtonImage.type = Image.Type.Simple;
+        closeButtonImage.preserveAspect = true;
         TMP_Text closeLabel = CreateText("Label", closeButton.transform, "わかった!", displayFontAsset, 40f, 28f, InkColor, TextAlignmentOptions.Center);
         Stretch((RectTransform)closeLabel.transform, Vector2.zero, Vector2.one, new Vector2(30f, 12f), new Vector2(-30f, -12f));
         closeLabel.font = displayFontAsset;

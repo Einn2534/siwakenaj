@@ -715,6 +715,29 @@ public sealed class GameplayFlowPlayModeTests
         Invoke(pauseMenu, "ResumeGame");
     }
 
+    [UnityTest]
+    [Order(13)]
+    public IEnumerator TitleHowToCloseButtonKeepsItsArtworkAspect()
+    {
+        yield return LoadScene("Title");
+        object howTo = FindSceneComponent("HowToOverlayController");
+        Assert.That(howTo, Is.Not.Null);
+        Invoke(howTo, "ShowOverlay");
+        yield return null;
+
+        UnityEngine.UI.Button closeButton = GetField(howTo, "_closeButton") as UnityEngine.UI.Button;
+        Assert.That(closeButton, Is.Not.Null);
+        UnityEngine.UI.Image closeImage = closeButton.targetGraphic as UnityEngine.UI.Image;
+        Assert.That(closeImage, Is.Not.Null);
+        Assert.That(closeImage.type, Is.EqualTo(UnityEngine.UI.Image.Type.Simple));
+        Assert.That(closeImage.preserveAspect, Is.True);
+
+        RectTransform closeRect = closeButton.transform as RectTransform;
+        float buttonAspect = closeRect.rect.width / closeRect.rect.height;
+        float spriteAspect = closeImage.sprite.rect.width / closeImage.sprite.rect.height;
+        Assert.That(buttonAspect, Is.EqualTo(spriteAspect).Within(0.01f));
+    }
+
     private static IEnumerator CompleteCurrentStageThroughRealInput(object gameFlow, int stageNumber)
     {
         object stage = GetField(gameFlow, "_currentStageDefinition");

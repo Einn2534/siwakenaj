@@ -36,6 +36,7 @@ public class HowToOverlayController : MonoBehaviour
 
         RefreshInstructionText();
         EnsureTutorialReplayButton();
+        NormalizeCloseButtonArtwork();
 
         if (!SaveService.GetHowToShown())
         {
@@ -159,6 +160,31 @@ public class HowToOverlayController : MonoBehaviour
         }
 
         SetAnchored(closeRect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-210f, 34f), new Vector2(360f, 136f));
+    }
+
+    private void NormalizeCloseButtonArtwork()
+    {
+        if (_closeButton == null
+            || _closeButton.transform is not RectTransform closeRect
+            || _closeButton.targetGraphic is not Image closeImage
+            || closeImage.sprite == null
+            || closeImage.sprite.rect.width <= 0f)
+        {
+            return;
+        }
+
+        closeImage.type = Image.Type.Simple;
+        closeImage.preserveAspect = true;
+
+        float width = closeRect.sizeDelta.x > 0f ? closeRect.sizeDelta.x : closeRect.rect.width;
+        float height = width * (closeImage.sprite.rect.height / closeImage.sprite.rect.width);
+        closeRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+        if (closeRect.TryGetComponent(out LayoutElement layoutElement))
+        {
+            layoutElement.preferredWidth = width;
+            layoutElement.preferredHeight = height;
+        }
     }
 
     private void RemoveTutorialReplayListener()
