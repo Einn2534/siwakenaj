@@ -18,7 +18,11 @@ public sealed class TutorialController : MonoBehaviour
         MissExplanation,
         ClearExplanation,
         Graduation,
-        Completed
+        Completed,
+        ExpressIntroduction,
+        GuidedExpress,
+        ExpressPractice,
+        ExpressComplete
     }
 
     private const float ReferenceWidth = 1080f;
@@ -27,6 +31,8 @@ public sealed class TutorialController : MonoBehaviour
     private const float FirstTruckArrivalSeconds = 0.8f;
     private const float IdleReinforceSeconds = 5f;
     private const float FirstMissIntroSeconds = 0.2f;
+    private const float DialogueAutoAdvanceSeconds = 2f;
+    private const int ExpressTutorialCarCount = 2;
     private const int FirstIndependentIndex = 3;
     private const int RequiredIndependentSuccessCount = 3;
 
@@ -88,6 +94,7 @@ public sealed class TutorialController : MonoBehaviour
     private float _currentCarSpeed;
     private float _lastActionTime;
     private bool _isRunning;
+    private bool _isExpressTutorial;
     private bool _isAwaitingInput;
     private bool _stepSucceeded;
     private bool _firstMissExplained;
@@ -99,6 +106,8 @@ public sealed class TutorialController : MonoBehaviour
 
     public bool IsRunning => _isRunning;
     public TutorialState State => _state;
+    private int TutorialCarCount => _isExpressTutorial ? ExpressTutorialCarCount : TutorialCars.Length;
+    private bool IsPaused => _gameFlowController != null && _gameFlowController.IsPaused();
 
     public static TutorialController EnsureInstalled()
     {
@@ -114,7 +123,7 @@ public sealed class TutorialController : MonoBehaviour
 
     private void Update()
     {
-        if (!_isRunning || !_isAwaitingInput)
+        if (!_isRunning || !_isAwaitingInput || IsPaused)
         {
             return;
         }
@@ -138,6 +147,26 @@ public sealed class TutorialController : MonoBehaviour
         CarSpawner carSpawner,
         StageDefinition stageDefinition)
     {
+        BeginInternal(gameFlowController, scoreManager, carSpawner, stageDefinition, false);
+    }
+
+    public void BeginExpressTutorial(
+        GameFlowController gameFlowController,
+        ScoreManager scoreManager,
+        CarSpawner carSpawner,
+        StageDefinition stageDefinition)
+    {
+        BeginInternal(gameFlowController, scoreManager, carSpawner, stageDefinition, true);
+    }
+
+    private void BeginInternal(
+        GameFlowController gameFlowController,
+        ScoreManager scoreManager,
+        CarSpawner carSpawner,
+        StageDefinition stageDefinition,
+        bool isExpressTutorial)
+    {
+        _isExpressTutorial = isExpressTutorial;
         _gameFlowController = gameFlowController;
         _scoreManager = scoreManager;
         _carSpawner = carSpawner;
@@ -160,9 +189,10 @@ public sealed class TutorialController : MonoBehaviour
         _tutorialMissCount = 0;
         _firstMissExplained = false;
         _dialogueTapped = false;
+        _isAwaitingInput = false;
         _isRunning = true;
         _progressHudController?.SetTutorialMode(true);
-        _progressHudController?.SetTutorialProgress(0, TutorialCars.Length, 0);
+        _progressHudController?.SetTutorialProgress(0, TutorialCarCount, 0);
 
         if (_powaBobRoutine != null)
         {
@@ -176,7 +206,7 @@ public sealed class TutorialController : MonoBehaviour
             StopCoroutine(_tutorialRoutine);
         }
 
-        _tutorialRoutine = StartCoroutine(RunTutorial());
+        _tutorialRoutine = StartCoroutine(_isExpressTutorial ? RunExpressTutorial() : RunTutorial());
     }
 
     public void HandleLaneInput(CarType laneType)
@@ -224,21 +254,21 @@ public sealed class TutorialController : MonoBehaviour
         _scoreManager?.Initialize(_stageDefinition);
 
         SetInstruction("\u304d\u305f\u8eca\u3068\u540c\u3058\u30dc\u30bf\u30f3\u3092\u62bc\u305d\u3046");
-        yield return WaitForDialogueTap();
+        yield return WaitForDialogueAdvance();
         yield return RunGuidedStep(0, TutorialState.GuidedTruck, true);
-        yield return WaitForDialogueTap();
+        yield return WaitForDialogueAdvance();
         yield return RunGuidedStep(1, TutorialState.GuidedCompactCar, false);
-        yield return WaitForDialogueTap();
+        yield return WaitForDialogueAdvance();
         yield return RunGuidedStep(2, TutorialState.GuidedSportsCar, false);
-        yield return WaitForDialogueTap();
+        yield return WaitForDialogueAdvance();
 
         _state = TutorialState.IndependentPractice;
         SetInstruction("\u0033\u53f0\u9023\u7d9a\u3067\u6210\u529f\u3057\u3088\u3046");
-        yield return WaitForDialogueTap();
+        yield return WaitForDialogueAdvance();
         for (int i = FirstIndependentIndex; i < TutorialCars.Length; i += 1)
         {
             yield return RunPracticeStep(i);
-            yield return WaitForDialogueTap();
+            yield return WaitForDialogueAdvance();
         }
 
         if (_independentSuccessCount >= RequiredIndependentSuccessCount)
@@ -258,6 +288,67 @@ public sealed class TutorialController : MonoBehaviour
         yield return RunStep(carIndex, true, isFirstTruck);
     }
 
+    private IEnumerator RunExpressTutorial()
+    {
+        _state = TutorialState.ExpressIntroduction;
+        _carSpawner?.StopSpawning();
+        _carSpawner?.DespawnAllCars();
+        ClearButtonGuide();
+
+        SetInstruction("このおしごとから\n「急送車」が登場するよ！");
+        yield return WaitForDialogueAdvance();
+        yield return RunExpressStep(CarType.LightTruck, true);
+        yield return WaitForDialogueAdvance();
+
+        _state = TutorialState.ExpressPractice;
+        SetInstruction("今度は走っている急送車を\n仕分けてみよう！");
+        yield return WaitForDialogueAdvance();
+        yield return RunExpressStep(CarType.CompactCar, false);
+        yield return WaitForDialogueAdvance();
+
+        _state = TutorialState.ExpressComplete;
+        SetInstruction("準備OK！\n急送車を見つけて仕分けよう！");
+        yield return WaitForDialogueAdvance();
+        SaveService.SetExpressTutorialSeen();
+        _state = TutorialState.Completed;
+        FinishAndStartRegularStage();
+    }
+
+    private IEnumerator RunExpressStep(CarType carType, bool stopForExplanation)
+    {
+        _state = stopForExplanation ? TutorialState.GuidedExpress : TutorialState.ExpressPractice;
+        _expectedType = carType;
+        _currentCarSpeed = stopForExplanation ? 0f : _stageDefinition.CarSpeed;
+        _stepSucceeded = false;
+        _isAwaitingInput = false;
+        ClearButtonGuide();
+        yield return SpawnCurrentCar();
+
+        if (stopForExplanation)
+        {
+            yield return WaitForStoppedCarArrival();
+            _focusGuideView?.ShowFocus(_expectedType, null, _activeCar);
+            SetInstruction("「!」が目印の急送車！\nいつもより速く走るよ");
+            yield return WaitForDialogueAdvance();
+            SetInstruction("仕分け方は同じ！\n同じ車のボタンを押そう");
+            ApplyButtonGuide(_expectedType);
+        }
+        else
+        {
+            SetInstruction("速い車も、同じボタン！\n通りすぎる前に押そう");
+        }
+
+        _isAwaitingInput = true;
+        _lastActionTime = Time.time;
+        while (_isRunning && !_stepSucceeded)
+        {
+            yield return null;
+        }
+
+        ClearButtonGuide();
+        _isAwaitingInput = false;
+    }
+
     private IEnumerator RunPracticeStep(int carIndex)
     {
         yield return RunStep(carIndex, false, false);
@@ -275,7 +366,7 @@ public sealed class TutorialController : MonoBehaviour
 
         if (isFirstTruck)
         {
-            yield return WaitForFirstTruckArrival();
+            yield return WaitForStoppedCarArrival();
             SetInstruction("\u30c8\u30e9\u30c3\u30af\u3060\uff01\u30c8\u30e9\u30c3\u30af\u3092\u62bc\u305d\u3046");
         }
 
@@ -323,18 +414,28 @@ public sealed class TutorialController : MonoBehaviour
         }
 
         _completedCarCount += 1;
-        _progressHudController?.SetTutorialProgress(_completedCarCount, TutorialCars.Length, _tutorialMissCount);
-        SetInstruction("\u3084\u3063\u305f\u306d!\u305d\u306e\u8abf\u5b50!");
+        _progressHudController?.SetTutorialProgress(_completedCarCount, TutorialCarCount, _tutorialMissCount);
+        SetInstruction(_isExpressTutorial
+            ? "できたね！\n急送車は得点が2倍だよ！"
+            : "\u3084\u3063\u305f\u306d!\u305d\u306e\u8abf\u5b50!");
 
+        _isAwaitingInput = false;
         _stepSucceeded = true;
     }
 
     private void HandleTutorialMiss()
     {
         _tutorialMissCount = Mathf.Min(3, _tutorialMissCount + 1);
-        _progressHudController?.SetTutorialProgress(_completedCarCount, TutorialCars.Length, _tutorialMissCount);
+        _progressHudController?.SetTutorialProgress(_completedCarCount, TutorialCarCount, _tutorialMissCount);
         _progressHudController?.HighlightMiss();
         _gameFlowController?.PlayTutorialMissFeedback();
+
+        if (_isExpressTutorial)
+        {
+            SetInstruction("だいじょうぶ！\n同じ車のボタンでもう一度！");
+            RestartCurrentCar();
+            return;
+        }
 
         if (_state == TutorialState.IndependentPractice && !_firstMissExplained)
         {
@@ -374,7 +475,7 @@ public sealed class TutorialController : MonoBehaviour
             yield return null;
         }
 
-        yield return WaitForDialogueTap();
+        yield return WaitForDialogueAdvance();
 
         _firstMissCutIn.gameObject.SetActive(false);
         _state = TutorialState.IndependentPractice;
@@ -402,6 +503,7 @@ public sealed class TutorialController : MonoBehaviour
     private IEnumerator RestartCurrentCarRoutine()
     {
         _isAwaitingInput = false;
+        ClearButtonGuide();
         if (_activeCar != null)
         {
             _carSpawner?.DespawnCar(_activeCar);
@@ -410,8 +512,13 @@ public sealed class TutorialController : MonoBehaviour
 
         yield return null;
         yield return SpawnCurrentCar();
+        if (_state == TutorialState.GuidedExpress)
+        {
+            yield return WaitForStoppedCarArrival();
+        }
         _isAwaitingInput = true;
-        if (ShouldShowFocusGuide())
+        _lastActionTime = Time.time;
+        if (ShouldShowFocusGuide() || _isExpressTutorial)
         {
             ReinforceCorrectButton();
         }
@@ -422,7 +529,8 @@ public sealed class TutorialController : MonoBehaviour
     {
         while (_isRunning && _activeCar == null && _carSpawner != null)
         {
-            _activeCar = _carSpawner.SpawnFixedCar(_expectedType, _currentCarSpeed);
+            _activeCar = _carSpawner.SpawnFixedCar(
+                _expectedType, _currentCarSpeed, _isExpressTutorial ? CarModifier.Express : CarModifier.Normal);
             if (_activeCar != null)
             {
                 yield break;
@@ -432,7 +540,7 @@ public sealed class TutorialController : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitForFirstTruckArrival()
+    private IEnumerator WaitForStoppedCarArrival()
     {
         CarController car = _activeCar;
         if (car == null)
@@ -447,10 +555,20 @@ public sealed class TutorialController : MonoBehaviour
         }
 
         float stoppedPositionX = car.transform.position.x - (bounds.size.x * 0.95f);
+        if (_isExpressTutorial && _carSpawner != null && _carSpawner.TryGetPlayZoneWorldRect(out Rect playZone))
+        {
+            stoppedPositionX = playZone.center.x;
+        }
         float startPositionX = car.transform.position.x;
         float elapsed = 0f;
         while (_isRunning && car != null && car == _activeCar && elapsed < FirstTruckArrivalSeconds)
         {
+            if (IsPaused)
+            {
+                yield return null;
+                continue;
+            }
+
             elapsed += Time.unscaledDeltaTime;
             float progress = Mathf.Clamp01(elapsed / FirstTruckArrivalSeconds);
             Vector3 movingPosition = car.transform.position;
@@ -604,13 +722,16 @@ public sealed class TutorialController : MonoBehaviour
     {
         return _state == TutorialState.GuidedTruck
             || _state == TutorialState.GuidedCompactCar
-            || _state == TutorialState.GuidedSportsCar;
+            || _state == TutorialState.GuidedSportsCar
+            || _state == TutorialState.GuidedExpress;
     }
 
     private bool ShouldShowInstructionScrim()
     {
         return _state == TutorialState.Introduction
-            || _state == TutorialState.GuidedTruck;
+            || _state == TutorialState.GuidedTruck
+            || _state == TutorialState.ExpressIntroduction
+            || _state == TutorialState.GuidedExpress;
     }
 
     private void SetInstructionScrimVisible(bool isVisible)
@@ -635,19 +756,24 @@ public sealed class TutorialController : MonoBehaviour
 
     private void AdvanceDialogue()
     {
-        if (_isRunning && _speechButton != null && _speechButton.interactable)
+        if (_isRunning && !IsPaused && _speechButton != null && _speechButton.interactable)
         {
             _dialogueTapped = true;
         }
     }
 
-    private IEnumerator WaitForDialogueTap()
+    private IEnumerator WaitForDialogueAdvance()
     {
         _dialogueTapped = false;
         SetDialogueAdvanceEnabled(true);
-        while (_isRunning && !_dialogueTapped)
+        float elapsed = 0f;
+        while (_isRunning && !_dialogueTapped && elapsed < DialogueAutoAdvanceSeconds)
         {
             yield return null;
+            if (!IsPaused)
+            {
+                elapsed += Time.unscaledDeltaTime;
+            }
         }
 
         SetDialogueAdvanceEnabled(false);
@@ -688,7 +814,14 @@ public sealed class TutorialController : MonoBehaviour
             return;
         }
 
-        TutorialLaunchService.MarkSkipped();
+        if (_isExpressTutorial)
+        {
+            SaveService.SetExpressTutorialSeen();
+        }
+        else
+        {
+            TutorialLaunchService.MarkSkipped();
+        }
         if (_tutorialRoutine != null)
         {
             StopCoroutine(_tutorialRoutine);
@@ -813,16 +946,17 @@ public sealed class TutorialController : MonoBehaviour
         _speechButton.transition = Selectable.Transition.None;
         _speechButton.onClick.AddListener(AdvanceDialogue);
 
-        RectTransform speechTail = CreateSpriteImage("SpeechTail", safeRoot, LoadSprite("UI/Tutorial/speech_tail"), true);
-        SetAnchored(speechTail, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0.5f, 1f), new Vector2(282f, 664f), new Vector2(128f, 128f));
-        speechTail.SetSiblingIndex(_speechRoot.GetSiblingIndex() + 1);
+        RectTransform speechTail = CreateSpriteImage("SpeechTail", _speechRoot, LoadSprite("UI/Tutorial/speech_tail"), true);
+        // Account for the tail sprite's transparent top margin and overlap the panel border.
+        // Parenting also keeps the tail attached during the message pop animation.
+        SetAnchored(speechTail, Vector2.zero, Vector2.zero, new Vector2(0.5f, 1f), new Vector2(90f, 74f), new Vector2(128f, 128f));
 
         _instructionText = CreateText("InstructionText", _speechRoot, string.Empty, 43f, 31f, FontStyles.Normal, TextAlignmentOptions.Center, TextColor);
-        _instructionText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
+        _instructionText.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
         Stretch((RectTransform)_instructionText.transform, Vector2.zero, Vector2.one, new Vector2(38f, 28f), new Vector2(-38f, -28f));
         _instructionText.textWrappingMode = TextWrappingModes.Normal;
 
-        _advancePromptText = CreateText("AdvancePrompt", _speechRoot, "TAP \u25b6", 22f, 18f, FontStyles.Bold, TextAlignmentOptions.BottomRight, TextColor);
+        _advancePromptText = CreateText("AdvancePrompt", _speechRoot, "TAP \u25b6", 22f, 18f, FontStyles.Normal, TextAlignmentOptions.BottomRight, TextColor);
         SetAnchored((RectTransform)_advancePromptText.transform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-30f, 14f), new Vector2(150f, 34f));
         _advancePromptText.gameObject.SetActive(false);
         SetDialogueAdvanceEnabled(false);
@@ -871,19 +1005,19 @@ public sealed class TutorialController : MonoBehaviour
             _graduationStars.Add(star);
         }
 
-        TMP_Text title = CreateText("Title", _graduationCard, "\u898b\u7fd2\u3044\u5352\u696d\u3060\u3088!", 67f, 48f, FontStyles.Bold, TextAlignmentOptions.Center, TextColor);
-        title.font = LoadFont("UI/Tutorial/YomiyasuWide-Bold SDF");
+        TMP_Text title = CreateText("Title", _graduationCard, "\u898b\u7fd2\u3044\u5352\u696d\u3060\u3088!", 67f, 48f, FontStyles.Normal, TextAlignmentOptions.Center, TextColor);
+        title.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
         SetAnchored((RectTransform)title.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -204f), new Vector2(820f, 100f));
 
         TMP_Text subtitle = CreateText("Subtitle", _graduationCard, "TUTORIAL COMPLETE", 41f, 30f, FontStyles.Normal, TextAlignmentOptions.Center, new Color(43f / 255f, 37f / 255f, 48f / 255f, 0.55f));
-        subtitle.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
+        subtitle.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
         SetAnchored((RectTransform)subtitle.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -298f), new Vector2(760f, 70f));
 
         RectTransform cta = CreatePanel("StageOneButton", _graduationCard, new Color(1f, 197f / 255f, 66f / 255f, 1f));
         SetAnchored(cta, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 64f), new Vector2(780f, 170f));
         AddOutline(cta.gameObject, TextColor, new Vector2(10f, 10f));
-        TMP_Text ctaLabel = CreateText("Label", cta, "\u30b9\u30c6\u30fc\u30b81\u3078\n<TAP TO PLAY>", 52f, 28f, FontStyles.Bold, TextAlignmentOptions.Center, TextColor);
-        ctaLabel.font = LoadFont("UI/Tutorial/YomiyasuWide-Bold SDF");
+        TMP_Text ctaLabel = CreateText("Label", cta, "\u30b9\u30c6\u30fc\u30b81\u3078\n<TAP TO PLAY>", 52f, 28f, FontStyles.Normal, TextAlignmentOptions.Center, TextColor);
+        ctaLabel.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
         Stretch((RectTransform)ctaLabel.transform, Vector2.zero, Vector2.one, new Vector2(24f, 14f), new Vector2(-24f, -14f));
         _graduationRoot.gameObject.SetActive(false);
     }
@@ -1015,7 +1149,7 @@ public sealed class TutorialController : MonoBehaviour
         button.targetGraphic = rect.GetComponent<Image>();
         ApplyButtonColors(button);
 
-        TMP_Text text = CreateText("Label", rect, label, 30f, 18f, FontStyles.Bold, TextAlignmentOptions.Center, SkipTextColor);
+        TMP_Text text = CreateText("Label", rect, label, 30f, 18f, FontStyles.Normal, TextAlignmentOptions.Center, SkipTextColor);
         Stretch((RectTransform)text.transform, Vector2.zero, Vector2.one, new Vector2(18f, 8f), new Vector2(-18f, -8f));
         text.textWrappingMode = TextWrappingModes.NoWrap;
         return button;

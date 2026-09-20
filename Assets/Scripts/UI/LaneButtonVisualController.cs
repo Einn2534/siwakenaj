@@ -13,7 +13,7 @@ public class LaneButtonVisualController : MonoBehaviour
     private const float LabelFontSize = 30f;
     private const float LabelFontSizeMin = 18f;
 
-    private static readonly Color LabelColor = new(1f, 0.96f, 0.72f, 1f);
+    private static readonly Color LabelColor = new(1f, 1f, 1f, 1f);
     private static readonly Color LabelOutlineColor = new(0.02f, 0.05f, 0.10f, 1f);
 
     [SerializeField]
@@ -237,7 +237,7 @@ public class LaneButtonVisualController : MonoBehaviour
         text.alignment = TextAlignmentOptions.Center;
         text.color = LabelColor;
         text.outlineColor = LabelOutlineColor;
-        text.outlineWidth = 0.18f;
+        text.outlineWidth = 0.045f;
         text.raycastTarget = false;
         text.textWrappingMode = TextWrappingModes.NoWrap;
         return text;

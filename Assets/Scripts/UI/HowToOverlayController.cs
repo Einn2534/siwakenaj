@@ -142,7 +142,7 @@ public class HowToOverlayController : MonoBehaviour
         ApplyButtonColors(_tutorialReplayButton);
         _tutorialReplayButton.onClick.AddListener(ReplayTutorial);
 
-        TMP_Text label = CreateText("Label", buttonRect, "TUTORIAL", 42f, 24f, FontStyles.Bold, TextAlignmentOptions.Center, TutorialTextColor);
+        TMP_Text label = CreateText("Label", buttonRect, "TUTORIAL", 42f, 24f, FontStyles.Normal, TextAlignmentOptions.Center, TutorialTextColor);
         Stretch((RectTransform)label.transform, Vector2.zero, Vector2.one, new Vector2(34f, 12f), new Vector2(-34f, -12f));
         label.textWrappingMode = TextWrappingModes.NoWrap;
     }

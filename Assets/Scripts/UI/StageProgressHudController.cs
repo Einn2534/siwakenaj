@@ -12,6 +12,7 @@ public sealed class StageProgressHudController : MonoBehaviour
     private const float HudEdgeInset = 32f;
     private const float HudToPauseGap = 16f;
     private const float PanelGap = 13f;
+    private const float ProgressContentInset = 52f;
     private const float ProgressPanelRightInset =
         MainPauseMenuController.PauseButtonEdgeInset
         + MainPauseMenuController.PauseButtonSize
@@ -38,6 +39,8 @@ public sealed class StageProgressHudController : MonoBehaviour
     private Image _progressPanelImage;
     private RectTransform _missPanel;
     private RectTransform _progressPanel;
+    private RectTransform _hudRoot;
+    private RectTransform _topZone;
     private Coroutine _missHighlightRoutine;
     private Coroutine _goalHighlightRoutine;
     private readonly Image[] _missOrbs = new Image[3];
@@ -111,6 +114,34 @@ public sealed class StageProgressHudController : MonoBehaviour
         }
 
         Refresh();
+    }
+
+    private void LateUpdate()
+    {
+        if (_topZone == null)
+        {
+            ScoreLaneUI lanes = FindAnyObjectByType<ScoreLaneUI>();
+            if (lanes != null)
+            {
+                Transform candidate = lanes.transform;
+                while (candidate != null && candidate.name != "TopZone")
+                    candidate = candidate.parent;
+                _topZone = candidate as RectTransform;
+            }
+        }
+
+        if (_topZone == null || _hudRoot == null || _topZone.parent is not RectTransform parent)
+            return;
+
+        // The HUD follows the safe area; keep the lane frame below it in the other canvas too.
+        Canvas hudCanvas = _hudRoot.GetComponentInParent<Canvas>();
+        Canvas laneCanvas = _topZone.GetComponentInParent<Canvas>();
+        Vector3 bottom = _hudRoot.TransformPoint(new Vector3(0f, _hudRoot.rect.yMin - 24f, 0f));
+        Vector2 screen = RectTransformUtility.WorldToScreenPoint(hudCanvas.worldCamera, bottom);
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, screen, laneCanvas.worldCamera, out Vector2 local))
+        {
+            _topZone.anchoredPosition = new Vector2(_topZone.anchoredPosition.x, local.y - parent.rect.yMax);
+        }
     }
 
     private void OnDestroy()
@@ -216,10 +247,7 @@ public sealed class StageProgressHudController : MonoBehaviour
             _fractionText.text = snapshot.DetailLabel;
         }
 
-        if (_progressFillImage != null)
-        {
-            _progressFillImage.fillAmount = snapshot.Progress01;
-        }
+        SetProgress(snapshot.Progress01);
 
         for (int i = 0; i < _missOrbs.Length; i += 1)
         {
@@ -253,10 +281,7 @@ public sealed class StageProgressHudController : MonoBehaviour
             _fractionText.text = isEndless ? string.Empty : $"{completed}/{total}";
         }
 
-        if (_progressFillImage != null)
-        {
-            _progressFillImage.fillAmount = isEndless ? 1f : Mathf.Clamp01(completed / (float)Mathf.Max(1, total));
-        }
+        SetProgress(isEndless ? 1f : completed / (float)Mathf.Max(1, total));
 
         for (int i = 0; i < _missOrbs.Length; i += 1)
         {
@@ -268,6 +293,19 @@ public sealed class StageProgressHudController : MonoBehaviour
         }
     }
 
+    private void SetProgress(float progress)
+    {
+        if (_progressFillImage == null)
+        {
+            return;
+        }
+
+        // A sprite-less Image ignores fillAmount; size the solid fill within its track instead.
+        float amount = Mathf.Clamp01(progress);
+        _progressFillImage.rectTransform.anchorMax = new Vector2(amount, 1f);
+        _progressFillImage.enabled = amount > 0f;
+    }
+
     private void BuildInterface()
     {
         Canvas canvas = CreateCanvas();
@@ -276,6 +314,7 @@ public sealed class StageProgressHudController : MonoBehaviour
         safeRoot.gameObject.AddComponent<SafeAreaFitter>();
 
         RectTransform root = CreatePanel("StageProgressHud", safeRoot, PanelColor);
+        _hudRoot = root;
         SetAnchored(
             root,
             new Vector2(0f, 1f),
@@ -289,7 +328,7 @@ public sealed class StageProgressHudController : MonoBehaviour
         ConfigureWoodPanel(_missPanelImage);
         SetAnchored(_missPanel, new Vector2(0f, 0f), new Vector2(0.4f, 1f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(-PanelGap, 0f));
         _missText = CreateText("MissText", _missPanel, "\u30df\u30b9", 38f, 28f, FontStyles.Normal, TextAlignmentOptions.Left);
-        _missText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
+        _missText.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
         SetAnchored((RectTransform)_missText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(35f, 0f), new Vector2(96f, 70f));
 
         _emptyOrbSprite = Resources.Load<Sprite>("UI/Tutorial/miss_orb_empty");
@@ -315,25 +354,24 @@ public sealed class StageProgressHudController : MonoBehaviour
             new Vector2(1f, 0.5f),
             new Vector2(-ProgressPanelRightInset, 0f),
             new Vector2(-(ProgressPanelRightInset + PanelGap), 0f));
-        _remainingText = CreateText("RemainingText", _progressPanel, "\u3042\u30686\u53f0", 34f, 24f, FontStyles.Normal, TextAlignmentOptions.Left);
-        _remainingText.font = LoadFont("UI/Tutorial/YomiyasuWide-Bold SDF");
-        SetAnchored((RectTransform)_remainingText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(35f, -26f), new Vector2(-70f, 48f));
+        // The wood sprite has transparent edges; keep all content inside the visible face.
+        _remainingText = CreateText("RemainingText", _progressPanel, "\u3042\u30686\u53f0", 34f, 24f, FontStyles.Normal, TextAlignmentOptions.Center);
+        _remainingText.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
+        SetAnchored((RectTransform)_remainingText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(ProgressContentInset, -28f), new Vector2(-ProgressContentInset * 2f, 44f));
 
-        _fractionText = CreateText("FractionText", _progressPanel, "0/6", 26f, 18f, FontStyles.Normal, TextAlignmentOptions.Right);
-        _fractionText.font = LoadFont("UI/Tutorial/DotGothic16-Regular SDF");
-        SetAnchored((RectTransform)_fractionText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(35f, -78f), new Vector2(-70f, 34f));
+        _fractionText = CreateText("FractionText", _progressPanel, "0/6", 24f, 16f, FontStyles.Normal, TextAlignmentOptions.Center);
+        _fractionText.font = LoadFont("Fonts/NotoSansCJKjp-Regular SDF");
+        SetAnchored((RectTransform)_fractionText.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(ProgressContentInset, -70f), new Vector2(-ProgressContentInset * 2f, 30f));
 
         RectTransform track = CreatePanel("ProgressTrack", _progressPanel, TrackColor);
-        Stretch(track, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(35f, 12f), new Vector2(-35f, 32f));
+        Stretch(track, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(ProgressContentInset, 34f), new Vector2(-ProgressContentInset, 46f));
         track.GetComponent<Image>().raycastTarget = false;
 
         RectTransform fill = CreatePanel("ProgressFill", track, FillColor);
         Stretch(fill, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         _progressFillImage = fill.GetComponent<Image>();
-        _progressFillImage.type = Image.Type.Filled;
-        _progressFillImage.fillMethod = Image.FillMethod.Horizontal;
-        _progressFillImage.fillOrigin = (int)Image.OriginHorizontal.Left;
         _progressFillImage.raycastTarget = false;
+        SetProgress(0f);
     }
 
     private static void ConfigureWoodPanel(Image image)

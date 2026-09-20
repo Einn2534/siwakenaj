@@ -9,6 +9,38 @@ using UnityEngine;
 public sealed class P1SystemsEditModeTests
 {
     [Test]
+    public void ExpressTutorialOnlyStartsForUnseenStageThreeAndIgnoresLegacyHintSeen()
+    {
+        Dictionary<string, (bool, int)> original = BackupInts(new[] { "ExpressTutorial_Seen", "GimmickHintSeen_Express" });
+        Type session = CoreReflection.RequiredType("SessionState");
+        Type launch = CoreReflection.RequiredType("TutorialLaunchService");
+        string originalMode = session.GetProperty("SelectedGameMode").GetValue(null).ToString();
+        object originalStage = session.GetProperty("SelectedStageNumber").GetValue(null);
+        try
+        {
+            PlayerPrefs.DeleteKey("ExpressTutorial_Seen");
+            PlayerPrefs.SetInt("GimmickHintSeen_Express", 1);
+            CoreReflection.CallStatic(session, "SelectStage", 3);
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartExpressTutorial", 3), Is.EqualTo(true));
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartExpressTutorial", 1), Is.EqualTo(false));
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartExpressTutorial", 4), Is.EqualTo(false));
+            CoreReflection.CallStatic(session, "SelectDaily", 3);
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartExpressTutorial", 3), Is.EqualTo(false));
+            CoreReflection.CallStatic(session, "SelectEndless", 3);
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartExpressTutorial", 3), Is.EqualTo(false));
+            CoreReflection.CallStatic(session, "SelectStage", 3);
+            CoreReflection.CallStatic(CoreReflection.RequiredType("SaveService"), "SetExpressTutorialSeen");
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartExpressTutorial", 3), Is.EqualTo(false));
+        }
+        finally
+        {
+            string restoreMethod = originalMode == "Daily" ? "SelectDaily" : originalMode == "Endless" ? "SelectEndless" : "SelectStage";
+            CoreReflection.CallStatic(session, restoreMethod, originalStage);
+            RestoreInts(original);
+        }
+    }
+
+    [Test]
     public void StageDatabase_ContainsThreeChaptersAndAllFiveGoalTypes()
     {
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");

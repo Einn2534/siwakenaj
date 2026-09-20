@@ -251,8 +251,10 @@ public class StageCardView : MonoBehaviour
         SetProgress(bestScore, scoreTarget, scoreTarget > 0);
         if (_targetScoreText != null)
         {
-            _targetScoreText.rectTransform.anchoredPosition = new Vector2(-150f, -180f);
-            _targetScoreText.alignment = TextAlignmentOptions.MidlineLeft;
+            // Center the complete two-line mission block, not the font midline.
+            _targetScoreText.rectTransform.anchoredPosition = new Vector2(-150f, -195f);
+            _targetScoreText.rectTransform.sizeDelta = new Vector2(280f, 70f);
+            _targetScoreText.alignment = TextAlignmentOptions.Left;
         }
 
         if (_statusText != null)

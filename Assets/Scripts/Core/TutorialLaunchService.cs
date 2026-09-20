@@ -3,6 +3,7 @@ using UnityEngine;
 public static class TutorialLaunchService
 {
     public const int TutorialStageNumber = 1;
+    public const int ExpressTutorialStageNumber = 3;
 
     private static bool _replayRequested;
 
@@ -34,6 +35,13 @@ public static class TutorialLaunchService
         bool wasRequested = _replayRequested;
         _replayRequested = false;
         return wasRequested;
+    }
+
+    public static bool ShouldStartExpressTutorial(int stageNumber)
+    {
+        return SessionState.SelectedGameMode == GameMode.Stage
+            && stageNumber == ExpressTutorialStageNumber
+            && !SaveService.HasSeenExpressTutorial();
     }
 
     public static void MarkCompleted()

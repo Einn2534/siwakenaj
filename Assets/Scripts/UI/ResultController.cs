@@ -630,13 +630,13 @@ public class ResultController : MonoBehaviour
         if (_missLabelText != null)
         {
             _missLabelText.fontSize = MissLabelFontSize;
-            _missLabelText.fontStyle = FontStyles.Bold;
+            _missLabelText.fontStyle = FontStyles.Normal;
         }
 
         if (_missCountText != null)
         {
             _missCountText.fontSize = MissCountFontSize;
-            _missCountText.fontStyle = FontStyles.Bold;
+            _missCountText.fontStyle = FontStyles.Normal;
         }
 
         if (missRow != null)
@@ -995,7 +995,7 @@ public class ResultController : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(ResultInterstitialDelay);
         InterstitialGate.RecordShown(DateTime.UtcNow);
-        UnityAdsManager.Instance.ShowInterstitialThenContinue(UnlockResultActions);
+        AdMobManager.Instance.ShowInterstitialThenContinue(UnlockResultActions);
     }
 
     private void UnlockResultActions()

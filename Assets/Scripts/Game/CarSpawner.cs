@@ -371,7 +371,7 @@ public class CarSpawner : MonoBehaviour
         _activeCars.RemoveAll(car => car == null);
     }
 
-    private bool TryGetPlayZoneWorldRect(out Rect worldRect)
+    public bool TryGetPlayZoneWorldRect(out Rect worldRect)
     {
         worldRect = new Rect();
         if (_playZone == null)

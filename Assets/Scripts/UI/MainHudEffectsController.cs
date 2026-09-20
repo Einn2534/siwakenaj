@@ -328,11 +328,11 @@ public class MainHudEffectsController : MonoBehaviour
         text.fontSizeMax = 44f;
         text.fontSizeMin = 24f;
         text.enableAutoSizing = true;
-        text.fontStyle = FontStyles.Bold;
+        text.fontStyle = FontStyles.Normal;
         text.alignment = TextAlignmentOptions.Center;
         text.color = Color.white;
         text.outlineColor = new Color(0.02f, 0.04f, 0.08f, 1f);
-        text.outlineWidth = 0.18f;
+        text.outlineWidth = 0.045f;
         text.raycastTarget = false;
         text.textWrappingMode = TextWrappingModes.NoWrap;
         return text;

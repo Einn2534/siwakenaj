@@ -86,6 +86,10 @@ status_utf8.txt
 Assets/_Recovery.meta
 
 # Local Unity/Android generated output
+# Android signing material must be backed up outside source control.
+*.keystore
+*.jks
+*.aab
 .utmp/
 *_BurstDebugInformation_DoNotShip/
 *.log

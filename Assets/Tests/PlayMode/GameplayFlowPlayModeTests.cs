@@ -23,6 +23,7 @@ public sealed partial class GameplayFlowPlayModeTests
         "HowTo_Shown",
         "Tutorial_Completed",
         "Tutorial_Skipped",
+        "ExpressTutorial_Seen",
         "SelectedStage",
         "LastStage",
         "LastGameMode",
@@ -82,6 +83,7 @@ public sealed partial class GameplayFlowPlayModeTests
         PlayerPrefs.SetInt("HowTo_Shown", 1);
         PlayerPrefs.SetInt("Tutorial_Completed", 1);
         PlayerPrefs.SetInt("Tutorial_Skipped", 0);
+        PlayerPrefs.SetInt("ExpressTutorial_Seen", 1);
         PlayerPrefs.SetInt("SelectedStage", 1);
         PlayerPrefs.SetInt("LastStage", 1);
         PlayerPrefs.SetInt("LastGameMode", 0);
@@ -788,6 +790,112 @@ public sealed partial class GameplayFlowPlayModeTests
 
         Invoke(tutorial, "SkipTutorial");
         yield return null;
+    }
+
+    [UnityTest]
+    [Order(15)]
+    public IEnumerator ExpressTutorialTeachesStoppedAndMovingCarsBeforeStartingStageThree()
+    {
+        PlayerPrefs.DeleteKey("ExpressTutorial_Seen");
+        PlayerPrefs.SetInt("GimmickHintSeen_Express", 1);
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", 3);
+        Time.timeScale = 1f;
+        yield return LoadScene("Main");
+
+        object tutorial = FindSceneComponent("TutorialController");
+        object gameFlow = FindSceneComponent("GameFlowController");
+        object spawner = FindSceneComponent("CarSpawner");
+        object scoreManager = FindSceneComponent("ScoreManager");
+        object laneInput = FindSceneComponent("LaneInputController");
+        Assert.That(tutorial, Is.Not.Null, "The old brief hint must not suppress the new tutorial.");
+        Assert.That((bool)GetProperty(tutorial, "IsRunning"), Is.True);
+        Assert.That((bool)GetField(spawner, "_isSpawning"), Is.False);
+
+        Assert.That(Invoke(gameFlow, "PauseGame"), Is.EqualTo(true));
+        yield return new WaitForSecondsRealtime(2.2f);
+        Assert.That(GetProperty(tutorial, "State").ToString(), Is.EqualTo("ExpressIntroduction"),
+            "Dialogue should wait while the game is paused.");
+        Invoke(gameFlow, "ResumeGame");
+
+        yield return WaitUntil(
+            () => GetProperty(tutorial, "State").ToString() == "GuidedExpress"
+                && (bool)GetField(tutorial, "_isAwaitingInput"),
+            SceneTimeoutSeconds, "The explanations did not automatically reach guided practice.");
+        object stoppedCar = GetField(tutorial, "_activeCar");
+        Assert.That(GetProperty(stoppedCar, "Modifier").ToString(), Is.EqualTo("Express"));
+        Assert.That(GetField(stoppedCar, "_speedWorld"), Is.EqualTo(0f));
+        Assert.That(GetProperty(stoppedCar, "ScoreMultiplier"), Is.EqualTo(2));
+        SpriteRenderer carBody = ((Component)stoppedCar).GetComponent<SpriteRenderer>();
+        Renderer marker = ((Component)stoppedCar).transform.Find("ModifierBadge").GetComponent<Renderer>();
+        Assert.That(marker.bounds.size.y, Is.GreaterThanOrEqualTo(carBody.bounds.size.y * 0.4f),
+            "The express marker must be readable relative to the car.");
+        Assert.That(Camera.main.WorldToViewportPoint(carBody.bounds.min).x, Is.GreaterThan(0f));
+        Assert.That(Camera.main.WorldToViewportPoint(carBody.bounds.max).x, Is.LessThan(1f),
+            "The stopped practice car must be fully visible.");
+        Assert.That(GetField(FindSceneComponent("TutorialFocusGuideView"), "_targetButton"),
+            Is.SameAs(((Component)GetField(laneInput, "_laneAButton")).transform));
+        yield return new WaitForSecondsRealtime(2.2f);
+        Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(0),
+            "Practice must require a real lane input, even after two seconds.");
+        AssertScore(scoreManager, 0, 0);
+
+        PointerDown(laneInput, "LightTruck");
+        yield return SettleInput();
+        Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(1));
+        Assert.That(GetTextComponentValue(GetField(tutorial, "_instructionText")), Does.Contain("2倍"));
+        Assert.That(PlayerPrefs.GetInt("ExpressTutorial_Seen", 0), Is.Zero);
+
+        yield return WaitUntil(
+            () => GetProperty(tutorial, "State").ToString() == "ExpressPractice"
+                && (bool)GetField(tutorial, "_isAwaitingInput"),
+            SceneTimeoutSeconds, "The moving-car practice did not start.");
+        object movingCar = GetField(tutorial, "_activeCar");
+        Assert.That(GetProperty(movingCar, "Modifier").ToString(), Is.EqualTo("Express"));
+        Assert.That((float)GetField(movingCar, "_speedWorld"), Is.GreaterThan(0f));
+        PointerDown(laneInput, "LightTruck");
+        yield return SettleInput();
+        yield return WaitUntil(() => (bool)GetField(tutorial, "_isAwaitingInput"),
+            SceneTimeoutSeconds, "A mistake did not allow another practice attempt.");
+        AssertScore(scoreManager, 0, 0);
+        Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(1));
+        Assert.That(GetProperty(GetField(tutorial, "_activeCar"), "Modifier").ToString(), Is.EqualTo("Express"));
+
+        PointerDown(laneInput, "CompactCar");
+        yield return SettleInput();
+        Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(2));
+        yield return WaitUntil(() => !(bool)GetProperty(tutorial, "IsRunning"),
+            SceneTimeoutSeconds, "Completing practice did not start the regular stage.");
+        yield return null;
+        Assert.That(GetField(GetField(gameFlow, "_currentStageDefinition"), "StageNumber"), Is.EqualTo(3));
+        AssertScore(scoreManager, 0, 0);
+        Assert.That(PlayerPrefs.GetInt("ExpressTutorial_Seen", 0), Is.EqualTo(1));
+        Assert.That(PlayerPrefs.GetInt("Tutorial_Skipped", 0), Is.Zero);
+
+        yield return LoadScene("Main");
+        Assert.That(FindSceneComponent("TutorialController"), Is.Null,
+            "The completed express tutorial should not repeat on retry.");
+    }
+
+    [UnityTest]
+    [Order(16)]
+    public IEnumerator SkippingExpressTutorialStartsStageThreeWithoutSkippingTheBasicTutorial()
+    {
+        PlayerPrefs.DeleteKey("ExpressTutorial_Seen");
+        PlayerPrefs.SetInt("Tutorial_Completed", 0);
+        PlayerPrefs.SetInt("Tutorial_Skipped", 0);
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", 3);
+        yield return LoadScene("Main");
+        object tutorial = FindSceneComponent("TutorialController");
+        object gameFlow = FindSceneComponent("GameFlowController");
+        Assert.That(tutorial, Is.Not.Null);
+        Invoke(tutorial, "SkipTutorial");
+        yield return WaitUntil(() => !(bool)GetProperty(tutorial, "IsRunning") && GetBool(gameFlow, "IsPlaying"),
+            SceneTimeoutSeconds, "Skipping the express tutorial did not resume stage three.");
+        Assert.That(GetField(GetField(gameFlow, "_currentStageDefinition"), "StageNumber"), Is.EqualTo(3));
+        Assert.That(PlayerPrefs.GetInt("ExpressTutorial_Seen", 0), Is.EqualTo(1));
+        Assert.That(PlayerPrefs.GetInt("Tutorial_Completed", 0), Is.Zero);
+        Assert.That(PlayerPrefs.GetInt("Tutorial_Skipped", 0), Is.Zero);
+        AssertScore(FindSceneComponent("ScoreManager"), 0, 0);
     }
 
     private static IEnumerator CompleteCurrentStageThroughRealInput(object gameFlow, int stageNumber)

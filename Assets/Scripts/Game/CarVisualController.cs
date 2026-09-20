@@ -99,6 +99,28 @@ public class CarVisualController : MonoBehaviour
         _modifierBadge.text = badge;
         _modifierBadge.color = Color.white;
         _modifierBadge.renderer.sortingOrder = _spriteRenderer.sortingOrder + 1;
+        if (modifier == CarModifier.Express && _spriteRenderer.sprite != null)
+        {
+            // World-space TMP size varies with the font. Match the marker to the car body.
+            _modifierBadge.ForceMeshUpdate();
+            Bounds textBounds = _modifierBadge.mesh.bounds;
+            Bounds bodyBounds = _spriteRenderer.sprite.bounds;
+            if (textBounds.size.y > 0f)
+            {
+                float markerHeight = bodyBounds.size.y * 0.45f;
+                float markerScale = markerHeight / textBounds.size.y;
+                _modifierBadge.transform.localScale = Vector3.one * markerScale;
+                _modifierBadge.transform.localPosition = new Vector3(
+                    bodyBounds.center.x - textBounds.center.x * markerScale,
+                    bodyBounds.max.y + markerHeight * 0.75f - textBounds.center.y * markerScale,
+                    -0.1f);
+            }
+        }
+        else
+        {
+            _modifierBadge.transform.localScale = Vector3.one;
+            _modifierBadge.transform.localPosition = new Vector3(0f, 3.5f, -0.1f);
+        }
     }
 
     private static Sprite GetCoveredSprite()
@@ -123,9 +145,9 @@ public class CarVisualController : MonoBehaviour
         _modifierBadge = badgeObject.GetComponent<TextMeshPro>();
         _modifierBadge.alignment = TextAlignmentOptions.Center;
         _modifierBadge.fontSize = 4.2f;
-        _modifierBadge.fontStyle = FontStyles.Bold;
+        _modifierBadge.fontStyle = FontStyles.Normal;
         _modifierBadge.enableAutoSizing = false;
-        _modifierBadge.outlineWidth = 0.22f;
+        _modifierBadge.outlineWidth = 0.045f;
         _modifierBadge.outlineColor = new Color32(33, 24, 39, 255);
         _modifierBadge.raycastTarget = false;
     }

@@ -124,7 +124,7 @@ public class GameFlowController : MonoBehaviour
 
     private void Update()
     {
-        if (_currentState != GameState.Playing)
+        if (_currentState != GameState.Playing || (_tutorialController != null && _tutorialController.IsRunning))
         {
             return;
         }
@@ -242,6 +242,15 @@ public class GameFlowController : MonoBehaviour
             _gimmickHudController.SetGameplayActive(true);
             _tutorialController = TutorialController.EnsureInstalled();
             _tutorialController.Begin(this, _scoreManager, _carSpawner, _currentStageDefinition);
+            _startGameRoutine = null;
+            yield break;
+        }
+
+        if (TutorialLaunchService.ShouldStartExpressTutorial(_currentStageDefinition.StageNumber))
+        {
+            _currentState = GameState.Playing;
+            _tutorialController = TutorialController.EnsureInstalled();
+            _tutorialController.BeginExpressTutorial(this, _scoreManager, _carSpawner, _currentStageDefinition);
             _startGameRoutine = null;
             yield break;
         }
@@ -456,7 +465,7 @@ public class GameFlowController : MonoBehaviour
 
     private void OnCarSpawned(CarController car)
     {
-        if (car != null)
+        if (car != null && !(_tutorialController != null && _tutorialController.IsRunning))
         {
             _gimmickHudController?.ShowModifierHint(car.Modifier);
         }
@@ -713,7 +722,7 @@ public class GameFlowController : MonoBehaviour
         _continuePromptController?.ShowAdWaiting();
         LocalTelemetryService.RecordRewardedContinueSelected(
             GameResultData.FromScoreState(SessionState.SelectedGameMode, _currentStageDefinition.StageNumber, false, _scoreManager?.State, _currentStageDefinition, _scoreManager?.ObjectiveEvaluator));
-        UnityAdsManager.Instance.ShowRewardedThenContinue(OnRewardedContinueCompleted);
+        AdMobManager.Instance.ShowRewardedThenContinue(OnRewardedContinueCompleted);
     }
 
     private void OnContinueDeclined()

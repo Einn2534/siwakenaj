@@ -127,13 +127,13 @@ public sealed class ContinuePromptController : MonoBehaviour
         RectTransform dialog = CreatePanel("Dialog", overlay, PanelColor);
         SetAnchored(dialog, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(840f, 680f));
 
-        TMP_Text titleText = CreateText("Title", dialog, "CONTINUE?", 74f, 42f, FontStyles.Bold, TextColor, TextAlignmentOptions.Center);
+        TMP_Text titleText = CreateText("Title", dialog, "CONTINUE?", 74f, 42f, FontStyles.Normal, TextColor, TextAlignmentOptions.Center);
         SetAnchored((RectTransform)titleText.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -72f), new Vector2(720f, 96f));
 
-        TMP_Text messageText = CreateText("Message", dialog, "\u30b3\u30f3\u30c6\u30a3\u30cb\u30e5\u30fc\u3059\u308b\uff1f", 46f, 30f, FontStyles.Bold, DangerColor, TextAlignmentOptions.Center);
+        TMP_Text messageText = CreateText("Message", dialog, "\u30b3\u30f3\u30c6\u30a3\u30cb\u30e5\u30fc\u3059\u308b\uff1f", 46f, 30f, FontStyles.Normal, DangerColor, TextAlignmentOptions.Center);
         SetAnchored((RectTransform)messageText.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -166f), new Vector2(720f, 74f));
 
-        _scoreText = CreateText("Score", dialog, "SCORE 0", 42f, 28f, FontStyles.Bold, TextColor, TextAlignmentOptions.Center);
+        _scoreText = CreateText("Score", dialog, "SCORE 0", 42f, 28f, FontStyles.Normal, TextColor, TextAlignmentOptions.Center);
         SetAnchored((RectTransform)_scoreText.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -248f), new Vector2(620f, 64f));
 
         _statusText = CreateText("Status", dialog, string.Empty, 30f, 22f, FontStyles.Normal, MutedTextColor, TextAlignmentOptions.Center);
@@ -206,7 +206,7 @@ public sealed class ContinuePromptController : MonoBehaviour
         button.targetGraphic = rect.GetComponent<Image>();
         ApplyButtonColors(button);
 
-        TMP_Text labelText = CreateText("Label", rect, label, 42f, 28f, FontStyles.Bold, textColor, TextAlignmentOptions.Center);
+        TMP_Text labelText = CreateText("Label", rect, label, 42f, 28f, FontStyles.Normal, textColor, TextAlignmentOptions.Center);
         Stretch((RectTransform)labelText.transform, Vector2.zero, Vector2.one, new Vector2(36f, 14f), new Vector2(-36f, -14f));
         labelText.textWrappingMode = TextWrappingModes.NoWrap;
         return button;

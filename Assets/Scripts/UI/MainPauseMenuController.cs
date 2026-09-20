@@ -19,7 +19,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private const string SpeechPanelResourcePath = "UI/Tutorial/speech_panel";
     private const string HowToWoodPanelResourcePath = "UI/Tutorial/hud_wood_panel";
     private const string HowToMissOrbResourcePath = "UI/Tutorial/miss_orb_lit";
-    private const string PauseFontResourcePath = "Fonts/Y1YomiyasuWide-Bold SDF";
+    private const string PauseFontResourcePath = "Fonts/NotoSansCJKjp-Regular SDF";
     private const string ToggleOnResourcePath = "UI/ui_settings_toggle_on";
     private const string ToggleOffResourcePath = "UI/ui_settings_toggle_off";
     private const string StageFormat = "おしごと  {0}";
@@ -623,8 +623,8 @@ public sealed class MainPauseMenuController : MonoBehaviour
         _menuPanelRoot = panel.gameObject;
 
         CreateSlicedImage("StageChip", panel, cardSprite, PauseCardTint, new Vector2(0f, 712f), new Vector2(350f, 104f));
-        _stageText = CreateText("StageText", panel, string.Empty, 35f, FontStyles.Bold, TextAlignmentOptions.Center, LightTextColor, new Vector2(0f, 714f), new Vector2(308f, 62f));
-        TMP_Text pauseTitle = CreateText("Title", panel, "ひとやすみ", 78f, FontStyles.Bold, TextAlignmentOptions.Center, LightTextColor, new Vector2(0f, 570f), new Vector2(720f, 108f));
+        _stageText = CreateText("StageText", panel, string.Empty, 35f, FontStyles.Normal, TextAlignmentOptions.Center, LightTextColor, new Vector2(0f, 714f), new Vector2(308f, 62f));
+        TMP_Text pauseTitle = CreateText("Title", panel, "ひとやすみ", 78f, FontStyles.Normal, TextAlignmentOptions.Center, LightTextColor, new Vector2(0f, 570f), new Vector2(720f, 108f));
         ApplyPauseFont(pauseTitle);
         pauseTitle.outlineWidth = 0.08f;
         pauseTitle.outlineColor = PauseShadowColor;
@@ -719,7 +719,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         ApplyButtonColors(button, Color.white);
 
         float labelY = string.IsNullOrEmpty(subtitle) ? 0f : 26f;
-        TMP_Text labelText = CreateText("Label", rect, label, isPrimary ? 54f : 43f, FontStyles.Bold, TextAlignmentOptions.Center, DarkTextColor, new Vector2(0f, labelY), new Vector2(size.x - 70f, 76f));
+        TMP_Text labelText = CreateText("Label", rect, label, isPrimary ? 54f : 43f, FontStyles.Normal, TextAlignmentOptions.Center, DarkTextColor, new Vector2(0f, labelY), new Vector2(size.x - 70f, 76f));
         labelText.characterSpacing = 1f;
 
         if (!string.IsNullOrEmpty(subtitle))
@@ -756,8 +756,8 @@ public sealed class MainPauseMenuController : MonoBehaviour
         Image icon = CreateImage("Icon", rect, iconSprite, PauseCardIconTint, true);
         SetAnchored(icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 38f), new Vector2(92f, 92f));
 
-        TMP_Text labelText = CreateText("Label", rect, label, 34f, FontStyles.Bold, TextAlignmentOptions.Center, LightTextColor, new Vector2(0f, -62f), new Vector2(250f, 56f));
-        labelText.outlineWidth = 0.12f;
+        TMP_Text labelText = CreateText("Label", rect, label, 34f, FontStyles.Normal, TextAlignmentOptions.Center, LightTextColor, new Vector2(0f, -62f), new Vector2(250f, 56f));
+        labelText.outlineWidth = 0.045f;
         labelText.outlineColor = PauseShadowColor;
         return button;
     }
@@ -769,7 +769,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
 
         CreateSlicedImage("SpeechPanel", parent, speechPanelSprite, Color.white, new Vector2(-72f, -580f), new Vector2(515f, 104f));
 
-        TMP_Text speechText = CreateText("SpeechText", parent, "ひとやすみも大事だよ～", 29f, FontStyles.Bold, TextAlignmentOptions.Center, DarkTextColor, new Vector2(-72f, -578f), new Vector2(455f, 60f));
+        TMP_Text speechText = CreateText("SpeechText", parent, "ひとやすみも大事だよ～", 29f, FontStyles.Normal, TextAlignmentOptions.Center, DarkTextColor, new Vector2(-72f, -578f), new Vector2(455f, 60f));
         speechText.characterSpacing = 1f;
 
         Image powa = CreateImage("Powa", parent, powaSprite, Color.white, true);
@@ -826,7 +826,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
 
         if (iconSprite == null)
         {
-            CreateText("FallbackIcon", rect, "II", 48f, FontStyles.Bold, TextAlignmentOptions.Center, DarkTextColor, Vector2.zero, new Vector2(88f, 88f));
+            CreateText("FallbackIcon", rect, "II", 48f, FontStyles.Normal, TextAlignmentOptions.Center, DarkTextColor, Vector2.zero, new Vector2(88f, 88f));
         }
 
         return button;
@@ -1051,7 +1051,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         button.targetGraphic = rect.GetComponent<Image>();
         ApplyButtonColors(button, Color.white);
 
-        TMP_Text text = CreateText("Label", rect, label, 38f, FontStyles.Bold, TextAlignmentOptions.Center, textColor, Vector2.zero, new Vector2(560f, 76f));
+        TMP_Text text = CreateText("Label", rect, label, 38f, FontStyles.Normal, TextAlignmentOptions.Center, textColor, Vector2.zero, new Vector2(560f, 76f));
         text.characterSpacing = 2f;
         return button;
     }
@@ -1135,7 +1135,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         button.targetGraphic = rect.GetComponent<Image>();
         ApplyButtonColors(button, Color.white);
 
-        TMP_Text text = CreateText("Label", rect, label, 24f, FontStyles.Bold, TextAlignmentOptions.Center, textColor, Vector2.zero, size - new Vector2(24f, 16f));
+        TMP_Text text = CreateText("Label", rect, label, 24f, FontStyles.Normal, TextAlignmentOptions.Center, textColor, Vector2.zero, size - new Vector2(24f, 16f));
         text.characterSpacing = 1f;
         return button;
     }

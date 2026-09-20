@@ -315,7 +315,7 @@ public sealed class GimmickHudController : MonoBehaviour
         RectTransform rect = CreateUiObject(name, parent, typeof(TextMeshProUGUI));
         TextMeshProUGUI text = rect.GetComponent<TextMeshProUGUI>();
         text.text = value;
-        text.font = Resources.Load<TMP_FontAsset>("UI/Tutorial/YomiyasuWide-Bold SDF") ?? TMP_Settings.defaultFontAsset;
+        text.font = Resources.Load<TMP_FontAsset>("Fonts/NotoSansCJKjp-Regular SDF") ?? TMP_Settings.defaultFontAsset;
         text.fontSize = fontSizeMax;
         text.fontSizeMax = fontSizeMax;
         text.fontSizeMin = fontSizeMin;

@@ -285,7 +285,7 @@ public class StageSelectController : MonoBehaviour
         for (int chapter = 1; chapter <= 3; chapter += 1)
         {
             int capturedChapter = chapter;
-            Button button = CreateButton($"Chapter{chapter}Tab", tabs, slicedSprite, Vector2.zero, $"第{chapter}章", 34f, 24f, FontStyles.Bold, TextColor);
+            Button button = CreateButton($"Chapter{chapter}Tab", tabs, slicedSprite, Vector2.zero, $"第{chapter}章", 34f, 24f, FontStyles.Normal, TextColor);
             button.onClick.AddListener(() => SelectChapter(capturedChapter));
             _chapterButtons.Add(button);
         }
@@ -320,6 +320,15 @@ public class StageSelectController : MonoBehaviour
         float cardTopDistance = _safeArea.rect.yMax - cardBounds.max.y;
         float tabsTopDistance = Mathf.Max(0f, cardTopDistance - _chapterTabs.rect.height - 10f);
         _chapterTabs.anchoredPosition = new Vector2(0f, -tabsTopDistance);
+        // Shorter portrait screens can move the tabs into the heading.
+        if (_safeArea.Find("HeaderText") is RectTransform heading)
+        {
+            Bounds headingBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_safeArea, heading);
+            Bounds tabsBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_safeArea, _chapterTabs);
+            float overlap = tabsBounds.max.y + 16f - headingBounds.min.y;
+            if (overlap > 0f)
+                heading.position += _safeArea.TransformVector(new Vector3(0f, overlap, 0f));
+        }
     }
 
     public void SelectChapter(int chapter)
@@ -520,7 +529,7 @@ public class StageSelectController : MonoBehaviour
         _swipeHintText = CreateText("SwipeHintText", safeArea, "< スワイプでめくる >", 32f, 20f, FontStyles.Normal, new Color(1f, 0.969f, 0.918f, 0.5f), TextAlignmentOptions.Center);
         SetAnchored((RectTransform)_swipeHintText.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, 335f), new Vector2(520f, 46f));
         _swipeHintText.outlineColor = InkColor;
-        _swipeHintText.outlineWidth = 0.16f;
+        _swipeHintText.outlineWidth = 0.045f;
         _swipeHintText.textWrappingMode = TextWrappingModes.NoWrap;
         _swipeHintText.gameObject.SetActive(PlayerPrefs.GetInt(SwipeHintSeenKey, 0) == 0);
     }
@@ -1012,17 +1021,17 @@ public class StageSelectController : MonoBehaviour
         }
         else if (!string.IsNullOrEmpty(fallbackIconText))
         {
-            TMP_Text iconText = CreateText("IconText", rect, fallbackIconText, 62f, 42f, FontStyles.Bold, Color.white, TextAlignmentOptions.Center);
+            TMP_Text iconText = CreateText("IconText", rect, fallbackIconText, 62f, 42f, FontStyles.Normal, Color.white, TextAlignmentOptions.Center);
             SetAnchored((RectTransform)iconText.transform, new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.62f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(88f, 62f));
             iconText.outlineColor = InkColor;
-            iconText.outlineWidth = 0.18f;
+            iconText.outlineWidth = 0.045f;
             iconText.textWrappingMode = TextWrappingModes.NoWrap;
         }
 
         TMP_Text labelText = CreateText("Label", rect, label, 28f, 20f, FontStyles.Normal, Color.white, TextAlignmentOptions.Center);
         SetAnchored((RectTransform)labelText.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 12f), new Vector2(150f, 44f));
         labelText.outlineColor = InkColor;
-        labelText.outlineWidth = 0.18f;
+        labelText.outlineWidth = 0.045f;
         labelText.textWrappingMode = TextWrappingModes.NoWrap;
         return button;
     }
@@ -1133,13 +1142,13 @@ public class StageSelectController : MonoBehaviour
         Stretch(accent, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(12f, 0f));
         accent.GetComponent<Image>().raycastTarget = false;
 
-        TMP_Text numberText = CreateText("Number", row, number, 48f, 32f, FontStyles.Bold, accentColor, TextAlignmentOptions.Center);
+        TMP_Text numberText = CreateText("Number", row, number, 48f, 32f, FontStyles.Normal, accentColor, TextAlignmentOptions.Center);
         SetAnchored((RectTransform)numberText.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(84f, 0f), new Vector2(118f, 92f));
 
         Image iconImage = CreateImage("Icon", row, iconSprite, Color.white, true);
         SetAnchored(iconImage.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(218f, 0f), new Vector2(126f, 126f));
 
-        TMP_Text titleText = CreateText("Title", row, title, 38f, 24f, FontStyles.Bold, TextColor, TextAlignmentOptions.Left);
+        TMP_Text titleText = CreateText("Title", row, title, 38f, 24f, FontStyles.Normal, TextColor, TextAlignmentOptions.Left);
         SetAnchored((RectTransform)titleText.transform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(300f, 42f), new Vector2(-330f, 58f));
         titleText.textWrappingMode = TextWrappingModes.NoWrap;
 
@@ -1150,7 +1159,7 @@ public class StageSelectController : MonoBehaviour
 
     private static Button CreateTopCloseButton(Transform parent, Sprite slicedSprite)
     {
-        Button button = CreateButton("CloseButtonTop", parent, slicedSprite, new Vector2(180f, 82f), "X", 34f, 24f, FontStyles.Bold, Color.white);
+        Button button = CreateButton("CloseButtonTop", parent, slicedSprite, new Vector2(180f, 82f), "X", 34f, 24f, FontStyles.Normal, Color.white);
         SetAnchored((RectTransform)button.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-42f, -34f), new Vector2(180f, 82f));
         button.GetComponent<Image>().color = BlueAccentColor;
         return button;

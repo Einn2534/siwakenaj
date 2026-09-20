@@ -168,13 +168,13 @@ public static class StageCardPrefabUpgrader
             root.transform,
             "TargetScoreText",
             "目標 60台",
-            new Vector2(-150f, -180f),
-            new Vector2(280f, 54f),
+            new Vector2(-150f, -195f),
+            new Vector2(280f, 70f),
             bodyFont,
             38f,
             26f,
             new Color(1f, 0.968f, 0.918f, 1f));
-        targetScoreText.alignment = TextAlignmentOptions.MidlineLeft;
+        targetScoreText.alignment = TextAlignmentOptions.Left;
 
         TMP_Text bestScoreText = UpsertText(
             root.transform,
