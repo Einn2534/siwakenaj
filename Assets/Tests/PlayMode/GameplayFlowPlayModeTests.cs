@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-public sealed class GameplayFlowPlayModeTests
+public sealed partial class GameplayFlowPlayModeTests
 {
     private const float SceneTimeoutSeconds = 12f;
     private const float ResultUnlockTimeoutSeconds = 5f;
@@ -994,12 +994,12 @@ public sealed class GameplayFlowPlayModeTests
         return Rect.MinMaxRect(xMin, yMin, xMax, yMax);
     }
 
-    private static void AssertStoredResult(bool isClear, int expectedScore, int expectedMisses)
+    private static void AssertStoredResult(bool isClear, int expectedScore, int expectedMisses, int expectedStage = 1)
     {
         object result = GetStaticProperty(RequiredType("SessionState"), "LastResult");
         Assert.That(result, Is.Not.Null);
         Assert.That(GetProperty(result, "IsClear"), Is.EqualTo(isClear));
-        Assert.That(GetProperty(result, "StageNumber"), Is.EqualTo(1));
+        Assert.That(GetProperty(result, "StageNumber"), Is.EqualTo(expectedStage));
         Assert.That(GetProperty(result, "Score"), Is.EqualTo(expectedScore));
         Assert.That(GetProperty(result, "MissCount"), Is.EqualTo(expectedMisses));
     }

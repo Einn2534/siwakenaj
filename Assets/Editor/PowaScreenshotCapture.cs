@@ -215,6 +215,11 @@ public static class PowaScreenshotCapture
                 : previousClearFlags;
             camera.backgroundColor = previousBackgroundColor;
 
+            foreach (PowaGameplayLayout layout in UnityEngine.Object.FindObjectsByType<PowaGameplayLayout>(FindObjectsSortMode.None))
+                layout.ApplyLayout(camera);
+            // Synchronous edit-mode scene loads do not run the normal sorting update.
+            UnityEngine.Rendering.SortingGroup.UpdateAllSortingGroups();
+
             Canvas.ForceUpdateCanvases();
             foreach (Canvas canvas in canvases)
             {

@@ -37,6 +37,8 @@ public class GameFlowController : MonoBehaviour
     private ContinuePromptController _continuePromptController;
     private Coroutine _startGameRoutine;
     private Coroutine _continueRoutine;
+    private Coroutine _resultSceneRoutine;
+    private bool _resultSceneLoadStarted;
     private GameState _stateBeforePause = GameState.Ready;
     private float _timeScaleBeforePause = 1f;
     private bool _hasUsedContinue;
@@ -69,6 +71,11 @@ public class GameFlowController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (_resultSceneRoutine != null)
+        {
+            StopCoroutine(_resultSceneRoutine);
+            _resultSceneRoutine = null;
+        }
         if (_carSpawner != null)
         {
             _carSpawner.CarMissed -= OnCarMissed;
@@ -86,6 +93,7 @@ public class GameFlowController : MonoBehaviour
         if (_currentState == GameState.Paused)
         {
             _currentState = _stateBeforePause;
+            _playerAnimationController?.SetPaused(false);
             RestoreTimeScale();
         }
 
@@ -155,6 +163,7 @@ public class GameFlowController : MonoBehaviour
         _timeScaleBeforePause = Time.timeScale > 0f ? Time.timeScale : 1f;
         _currentState = GameState.Paused;
         Time.timeScale = 0f;
+        _playerAnimationController?.SetPaused(true);
         _gimmickHudController?.SetGameplayActive(false);
         return true;
     }
@@ -167,6 +176,7 @@ public class GameFlowController : MonoBehaviour
         }
 
         _currentState = _stateBeforePause;
+        _playerAnimationController?.SetPaused(false);
         RestoreTimeScale();
         _gimmickHudController?.SetGameplayActive(_currentState == GameState.Playing);
     }
@@ -653,6 +663,10 @@ public class GameFlowController : MonoBehaviour
 
     private void FinalizeGameOver()
     {
+        if (_resultSceneLoadStarted)
+        {
+            return;
+        }
         _currentState = GameState.GameOver;
         StopGameplay();
         SoundManager.EnsureInstance().PlayGameOver();
@@ -828,6 +842,27 @@ public class GameFlowController : MonoBehaviour
 
     private void StartResultSceneLoad()
     {
+        if (_resultSceneLoadStarted)
+        {
+            return;
+        }
+
+        _resultSceneLoadStarted = true;
+        _resultSceneRoutine = StartCoroutine(LoadResultAfterReaction());
+    }
+
+    private IEnumerator LoadResultAfterReaction()
+    {
+        // Do not let a missing/disabled animator or interrupted animation block results.
+        float deadline = Time.realtimeSinceStartup + 2f;
+        while (_playerAnimationController != null
+            && _playerAnimationController.IsReactionPlaying
+            && Time.realtimeSinceStartup < deadline)
+        {
+            yield return null;
+        }
+
+        _resultSceneRoutine = null;
         LoadResultScene();
     }
 

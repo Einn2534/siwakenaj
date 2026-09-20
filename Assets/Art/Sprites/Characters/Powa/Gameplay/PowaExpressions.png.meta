@@ -1,0 +1,369 @@
+fileFormatVersion: 2
+guid: c057f3a93b9547b4b804d4baad62ed86
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3356318352003467720
+    second: PowaExpressions_0
+  - first:
+      213: 4248448825697596559
+    second: PowaExpressions_1
+  - first:
+      213: -2750154853358588232
+    second: PowaExpressions_2
+  - first:
+      213: 6103774304294577525
+    second: PowaExpressions_3
+  - first:
+      213: 7121621530330679667
+    second: PowaExpressions_4
+  - first:
+      213: -4306451489921537662
+    second: PowaExpressions_5
+  - first:
+      213: 3101667065067308795
+    second: PowaExpressions_6
+  - first:
+      213: -8354629769179818146
+    second: PowaExpressions_7
+  - first:
+      213: -2050765343070051666
+    second: PowaExpressions_8
+  - first:
+      213: -6397292341174643711
+    second: PowaExpressions_9
+  - first:
+      213: -2524535144605064391
+    second: PowaExpressions_10
+  - first:
+      213: 5570338907047862191
+    second: PowaExpressions_11
+  - first:
+      213: 6006860889483570810
+    second: PowaExpressions_12
+  - first:
+      213: -2321011394459159848
+    second: PowaExpressions_13
+  - first:
+      213: 6567394175101470383
+    second: PowaExpressions_14
+  - first:
+      213: 5308134229471287426
+    second: PowaExpressions_15
+  - first:
+      213: 2445983780047731494
+    second: PowaExpressions_16
+  - first:
+      213: 9089318928541711526
+    second: PowaExpressions_17
+  - first:
+      213: -5576509178693125270
+    second: PowaExpressions_18
+  - first:
+      213: -7501226348437223081
+    second: PowaExpressions_19
+  - first:
+      213: 527666033131069545
+    second: PowaExpressions_20
+  - first:
+      213: 1784928499470514822
+    second: PowaExpressions_21
+  - first:
+      213: 6025371345320328090
+    second: PowaExpressions_22
+  - first:
+      213: 932977646370250339
+    second: PowaExpressions_23
+  - first:
+      213: 9100412438577459462
+    second: PowaExpressions_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 250
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MouthNormal
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 761
+        width: 68
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 449d47e7b9f8a5d43817519e088e7665
+      internalID: -511578336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MouthHappy
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 746
+        width: 136
+        height: 104
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a44a5646289cbca4faa5e76e85846c15
+      internalID: -466651397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MouthSad
+      rect:
+        serializedVersion: 2
+        x: 982
+        y: 773
+        width: 139
+        height: 34
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50237031ca686f94b9b73aac909319bc
+      internalID: 191888483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BadgeHappy
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 205
+        width: 281
+        height: 279
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7c19bf0c96f8234a88046315c1c6288
+      internalID: -275107766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BadgeSad
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 205
+        width: 284
+        height: 279
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80a26962fe0ade940b5dd517b88b8c77
+      internalID: -588140828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tear
+      rect:
+        serializedVersion: 2
+        x: 1009
+        y: 267
+        width: 67
+        height: 136
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3864713bd3cfd449b4e7be41134d843
+      internalID: 1061338669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 4da3d4407b494fc47a6c3b972fbafc0d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BadgeHappy: -275107766
+      BadgeSad: -588140828
+      MouthHappy: -466651397
+      MouthNormal: -511578336
+      MouthSad: 191888483
+      Tear: 1061338669
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

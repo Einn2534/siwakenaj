@@ -297,7 +297,8 @@ public static class RegressionCaptureRunner
     private static void PrepareMainStageFiveHudPreview()
     {
         SessionState.SelectStage(15);
-        PowaScreenshotCapture.PrepareMainScoreLanePreview();
+        // Initialize before adding icons: runtime ResetAll uses deferred destruction.
+        UnityEngine.Object.FindFirstObjectByType<ScoreLaneUI>(FindObjectsInactive.Include)?.gameObject.SetActive(true);
         MainSafeAreaLayout.EnsureInstalled(SceneManager.GetActiveScene());
 
         StageProgressHudController progressHud = UnityEngine.Object.FindFirstObjectByType<StageProgressHudController>(FindObjectsInactive.Include);
@@ -352,7 +353,7 @@ public static class RegressionCaptureRunner
     private static void PrepareMainDailyHudPreview()
     {
         SessionState.SelectDaily(15);
-        PowaScreenshotCapture.PrepareMainScoreLanePreview();
+        UnityEngine.Object.FindFirstObjectByType<ScoreLaneUI>(FindObjectsInactive.Include)?.gameObject.SetActive(true);
         MainSafeAreaLayout.EnsureInstalled(SceneManager.GetActiveScene());
         StageDefinition daily = DailyChallengeService.Create("20260824", 3, 15);
         ScoreManager scoreManager = UnityEngine.Object.FindFirstObjectByType<ScoreManager>(FindObjectsInactive.Include);
@@ -382,7 +383,7 @@ public static class RegressionCaptureRunner
     private static void PrepareMainEndlessHudPreview()
     {
         SessionState.SelectEndless(15);
-        PowaScreenshotCapture.PrepareMainScoreLanePreview();
+        UnityEngine.Object.FindFirstObjectByType<ScoreLaneUI>(FindObjectsInactive.Include)?.gameObject.SetActive(true);
         MainSafeAreaLayout.EnsureInstalled(SceneManager.GetActiveScene());
         StageDatabase database = Resources.Load<StageDatabase>("StageDatabase");
         StageDefinition endless = database != null ? database.GetEndlessStageDefinition(15) : StageDefinition.CreateFallback(15);
