@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="83" result="Passed" total="83" passed="83" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.2917206">
+  <test-suite type="TestSuite" id="1069" name="しわ賢者" fullname="しわ賢者" runstate="Runnable" testcasecount="83" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.291721" total="83" passed="83" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1121" name="Siwakenja.EditModeTests.dll" fullname="F:/Unity/siwakenja/Library/ScriptAssemblies/Siwakenja.EditModeTests.dll" runstate="Runnable" testcasecount="43" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.175230" total="43" passed="43" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="9244" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1071" name="AdRewardCompletionTests" fullname="AdRewardCompletionTests" classname="AdRewardCompletionTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.035258" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1076" name="Completion_RequiresEarnedRewardAndSuccessfulClose" fullname="AdRewardCompletionTests.Completion_RequiresEarnedRewardAndSuccessfulClose" classname="AdRewardCompletionTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.031496" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1072" name="Completion_RequiresEarnedRewardAndSuccessfulClose(False,False,False)" fullname="AdRewardCompletionTests.Completion_RequiresEarnedRewardAndSuccessfulClose(False,False,False)" methodname="Completion_RequiresEarnedRewardAndSuccessfulClose" classname="AdRewardCompletionTests" runstate="Runnable" seed="1470335625" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.020437" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1073" name="Completion_RequiresEarnedRewardAndSuccessfulClose(True,False,True)" fullname="AdRewardCompletionTests.Completion_RequiresEarnedRewardAndSuccessfulClose(True,False,True)" methodname="Completion_RequiresEarnedRewardAndSuccessfulClose" classname="AdRewardCompletionTests" runstate="Runnable" seed="1233427066" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000205" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1074" name="Completion_RequiresEarnedRewardAndSuccessfulClose(True,True,False)" fullname="AdRewardCompletionTests.Completion_RequiresEarnedRewardAndSuccessfulClose(True,True,False)" methodname="Completion_RequiresEarnedRewardAndSuccessfulClose" classname="AdRewardCompletionTests" runstate="Runnable" seed="763146186" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000167" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1075" name="Completion_RequiresEarnedRewardAndSuccessfulClose(False,True,False)" fullname="AdRewardCompletionTests.Completion_RequiresEarnedRewardAndSuccessfulClose(False,True,False)" methodname="Completion_RequiresEarnedRewardAndSuccessfulClose" classname="AdRewardCompletionTests" runstate="Runnable" seed="669237966" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000145" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1077" name="CoreLogicEditModeTests" fullname="CoreLogicEditModeTests" classname="CoreLogicEditModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.032918" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1086" name="CarModifierRules_DefineExpressCoveredAndBrokenBehavior" fullname="CoreLogicEditModeTests.CarModifierRules_DefineExpressCoveredAndBrokenBehavior" methodname="CarModifierRules_DefineExpressCoveredAndBrokenBehavior" classname="CoreLogicEditModeTests" runstate="Runnable" seed="369677954" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.009077" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1089" name="GameResultData_FromNullScoreStateReturnsEmptyResultForStage" fullname="CoreLogicEditModeTests.GameResultData_FromNullScoreStateReturnsEmptyResultForStage" methodname="GameResultData_FromNullScoreStateReturnsEmptyResultForStage" classname="CoreLogicEditModeTests" runstate="Runnable" seed="26025643" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001239" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1088" name="GameResultData_FromScoreStateCopiesGameMode" fullname="CoreLogicEditModeTests.GameResultData_FromScoreStateCopiesGameMode" methodname="GameResultData_FromScoreStateCopiesGameMode" classname="CoreLogicEditModeTests" runstate="Runnable" seed="323308555" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.008491" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1087" name="GameResultData_FromScoreStateCopiesScoreAndLaneCounts" fullname="CoreLogicEditModeTests.GameResultData_FromScoreStateCopiesScoreAndLaneCounts" methodname="GameResultData_FromScoreStateCopiesScoreAndLaneCounts" classname="CoreLogicEditModeTests" runstate="Runnable" seed="898128640" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001820" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1080" name="JudgeEvaluator_MapsNullMatchAndMismatchToExpectedResults" fullname="CoreLogicEditModeTests.JudgeEvaluator_MapsNullMatchAndMismatchToExpectedResults" methodname="JudgeEvaluator_MapsNullMatchAndMismatchToExpectedResults" classname="CoreLogicEditModeTests" runstate="Runnable" seed="461249667" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000711" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1084" name="ScoreState_AppliesSuccessesMissesAndPerLaneCounts" fullname="CoreLogicEditModeTests.ScoreState_AppliesSuccessesMissesAndPerLaneCounts" methodname="ScoreState_AppliesSuccessesMissesAndPerLaneCounts" classname="CoreLogicEditModeTests" runstate="Runnable" seed="1998691788" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000832" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1081" name="ScoreState_ClampsConstructorArgumentsAndTracksLimitFlags" fullname="CoreLogicEditModeTests.ScoreState_ClampsConstructorArgumentsAndTracksLimitFlags" methodname="ScoreState_ClampsConstructorArgumentsAndTracksLimitFlags" classname="CoreLogicEditModeTests" runstate="Runnable" seed="61920716" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000483" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1082" name="ScoreState_EndlessModeHasNoTargetAndCanEndOnOneMiss" fullname="CoreLogicEditModeTests.ScoreState_EndlessModeHasNoTargetAndCanEndOnOneMiss" methodname="ScoreState_EndlessModeHasNoTargetAndCanEndOnOneMiss" classname="CoreLogicEditModeTests" runstate="Runnable" seed="1133971591" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000500" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1085" name="ScoreState_ExpressAndFeverMultipliersStackAndMissResetsCombo" fullname="CoreLogicEditModeTests.ScoreState_ExpressAndFeverMultipliersStackAndMissResetsCombo" methodname="ScoreState_ExpressAndFeverMultipliersStackAndMissResetsCombo" classname="CoreLogicEditModeTests" runstate="Runnable" seed="94753919" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000722" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1083" name="ScoreState_ReviveFromContinueBacksMissesBelowLimitWithoutRestoringScore" fullname="CoreLogicEditModeTests.ScoreState_ReviveFromContinueBacksMissesBelowLimitWithoutRestoringScore" methodname="ScoreState_ReviveFromContinueBacksMissesBelowLimitWithoutRestoringScore" classname="CoreLogicEditModeTests" runstate="Runnable" seed="1426476180" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000501" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1078" name="StageNumberUtility_NormalizesRawNumbersAndIndexes" fullname="CoreLogicEditModeTests.StageNumberUtility_NormalizesRawNumbersAndIndexes" methodname="StageNumberUtility_NormalizesRawNumbersAndIndexes" classname="CoreLogicEditModeTests" runstate="Runnable" seed="1015810424" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000367" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1079" name="StarRatingUtility_ClampsAndScoresClearResultsByMisses" fullname="CoreLogicEditModeTests.StarRatingUtility_ClampsAndScoresClearResultsByMisses" methodname="StarRatingUtility_ClampsAndScoresClearResultsByMisses" classname="CoreLogicEditModeTests" runstate="Runnable" seed="4163684" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000841" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1090" name="P1SystemsEditModeTests" fullname="P1SystemsEditModeTests" classname="P1SystemsEditModeTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.074116" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1095" name="BalancedBagAndFixedIntroPreventQuotaStarvationAndIntroduceGimmickWithinThree" fullname="P1SystemsEditModeTests.BalancedBagAndFixedIntroPreventQuotaStarvationAndIntroduceGimmickWithinThree" methodname="BalancedBagAndFixedIntroPreventQuotaStarvationAndIntroduceGimmickWithinThree" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1670259377" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.014062" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1100" name="DailySave_RolloverResetsDailyBestButPreservesAndAdvancesStreak" fullname="P1SystemsEditModeTests.DailySave_RolloverResetsDailyBestButPreservesAndAdvancesStreak" methodname="DailySave_RolloverResetsDailyBestButPreservesAndAdvancesStreak" classname="P1SystemsEditModeTests" runstate="Runnable" seed="801898111" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.007775" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1098" name="DailyV1_SameDateAndTierProduceIdenticalSettingsAndFirstHundredCars" fullname="P1SystemsEditModeTests.DailyV1_SameDateAndTierProduceIdenticalSettingsAndFirstHundredCars" methodname="DailyV1_SameDateAndTierProduceIdenticalSettingsAndFirstHundredCars" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1433295766" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.004641" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1099" name="DailyV1_UsesJstDateAndProgressionTier" fullname="P1SystemsEditModeTests.DailyV1_UsesJstDateAndProgressionTier" methodname="DailyV1_UsesJstDateAndProgressionTier" classname="P1SystemsEditModeTests" runstate="Runnable" seed="181278118" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003349" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1091" name="ExpressTutorialOnlyStartsForUnseenStageThreeAndIgnoresLegacyHintSeen" fullname="P1SystemsEditModeTests.ExpressTutorialOnlyStartsForUnseenStageThreeAndIgnoresLegacyHintSeen" methodname="ExpressTutorialOnlyStartsForUnseenStageThreeAndIgnoresLegacyHintSeen" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1441548119" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003524" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1103" name="InterstitialGate_AllowsOnlyAfterTwoMinutesOrThreeCompletionsAndNeverForDaily" fullname="P1SystemsEditModeTests.InterstitialGate_AllowsOnlyAfterTwoMinutesOrThreeCompletionsAndNeverForDaily" methodname="InterstitialGate_AllowsOnlyAfterTwoMinutesOrThreeCompletionsAndNeverForDaily" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1019001093" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001611" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1097" name="LocalTelemetry_RecordsAllRequiredMeasurementFields" fullname="P1SystemsEditModeTests.LocalTelemetry_RecordsAllRequiredMeasurementFields" methodname="LocalTelemetry_RecordsAllRequiredMeasurementFields" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1100905043" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.015490" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1093" name="ObjectiveEvaluator_AllFiveGoalsClearAndEachFailsAtMissLimit" fullname="P1SystemsEditModeTests.ObjectiveEvaluator_AllFiveGoalsClearAndEachFailsAtMissLimit" methodname="ObjectiveEvaluator_AllFiveGoalsClearAndEachFailsAtMissLimit" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1888320317" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003550" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1094" name="ObjectiveEvaluator_PausedSurvivalTimeDoesNotAdvanceAndContinueRulesStayConsistent" fullname="P1SystemsEditModeTests.ObjectiveEvaluator_PausedSurvivalTimeDoesNotAdvanceAndContinueRulesStayConsistent" methodname="ObjectiveEvaluator_PausedSurvivalTimeDoesNotAdvanceAndContinueRulesStayConsistent" classname="P1SystemsEditModeTests" runstate="Runnable" seed="720491497" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001430" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1101" name="SaveMigration_PreservesLegacyBestAndStarsWhileAddingExplicitClear" fullname="P1SystemsEditModeTests.SaveMigration_PreservesLegacyBestAndStarsWhileAddingExplicitClear" methodname="SaveMigration_PreservesLegacyBestAndStarsWhileAddingExplicitClear" classname="P1SystemsEditModeTests" runstate="Runnable" seed="1293934456" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001710" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1096" name="SpawnSequence_PeekDoesNotConsumeDeferredInstruction" fullname="P1SystemsEditModeTests.SpawnSequence_PeekDoesNotConsumeDeferredInstruction" methodname="SpawnSequence_PeekDoesNotConsumeDeferredInstruction" classname="P1SystemsEditModeTests" runstate="Runnable" seed="929305268" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000774" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1092" name="StageDatabase_ContainsThreeChaptersAndAllFiveGoalTypes" fullname="P1SystemsEditModeTests.StageDatabase_ContainsThreeChaptersAndAllFiveGoalTypes" methodname="StageDatabase_ContainsThreeChaptersAndAllFiveGoalTypes" classname="P1SystemsEditModeTests" runstate="Runnable" seed="574887453" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003009" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1102" name="StageMasteryAndSaveRecordsUsePerStageMetricsAndNeverRegressBests" fullname="P1SystemsEditModeTests.StageMasteryAndSaveRecordsUsePerStageMetricsAndNeverRegressBests" methodname="StageMasteryAndSaveRecordsUsePerStageMetricsAndNeverRegressBests" classname="P1SystemsEditModeTests" runstate="Runnable" seed="795905667" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.004037" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1104" name="SortingThemesEditModeTests" fullname="SortingThemesEditModeTests" classname="SortingThemesEditModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.021242" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1111" name="AllNonVehicleThemesHideIdentityBehindTheSameParcel" fullname="SortingThemesEditModeTests.AllNonVehicleThemesHideIdentityBehindTheSameParcel" methodname="AllNonVehicleThemesHideIdentityBehindTheSameParcel" classname="SortingThemesEditModeTests" runstate="Runnable" seed="1547532647" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003362" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1110" name="FifteenStageAllocationAndChallengeModesAreExplicit" fullname="SortingThemesEditModeTests.FifteenStageAllocationAndChallengeModesAreExplicit" methodname="FifteenStageAllocationAndChallengeModesAreExplicit" classname="SortingThemesEditModeTests" runstate="Runnable" seed="1735297189" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003011" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1109" name="NamedThemeHasThreeDistinctProductionSprites" fullname="SortingThemesEditModeTests.NamedThemeHasThreeDistinctProductionSprites" classname="SortingThemesEditModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.011371" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1105" name="NamedThemeHasThreeDistinctProductionSprites(1,&quot;くるま&quot;,&quot;トラック&quot;,&quot;普通車&quot;,&quot;スポーツカー&quot;,&quot;台&quot;)" fullname="SortingThemesEditModeTests.NamedThemeHasThreeDistinctProductionSprites(1,&quot;くるま&quot;,&quot;トラック&quot;,&quot;普通車&quot;,&quot;スポーツカー&quot;,&quot;台&quot;)" methodname="NamedThemeHasThreeDistinctProductionSprites" classname="SortingThemesEditModeTests" runstate="Runnable" seed="1081630694" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003359" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1106" name="NamedThemeHasThreeDistinctProductionSprites(4,&quot;じゃんけん&quot;,&quot;グー&quot;,&quot;チョキ&quot;,&quot;パー&quot;,&quot;回&quot;)" fullname="SortingThemesEditModeTests.NamedThemeHasThreeDistinctProductionSprites(4,&quot;じゃんけん&quot;,&quot;グー&quot;,&quot;チョキ&quot;,&quot;パー&quot;,&quot;回&quot;)" methodname="NamedThemeHasThreeDistinctProductionSprites" classname="SortingThemesEditModeTests" runstate="Runnable" seed="1313132233" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.002006" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1107" name="NamedThemeHasThreeDistinctProductionSprites(8,&quot;時計&quot;,&quot;3時&quot;,&quot;6時&quot;,&quot;9時&quot;,&quot;個&quot;)" fullname="SortingThemesEditModeTests.NamedThemeHasThreeDistinctProductionSprites(8,&quot;時計&quot;,&quot;3時&quot;,&quot;6時&quot;,&quot;9時&quot;,&quot;個&quot;)" methodname="NamedThemeHasThreeDistinctProductionSprites" classname="SortingThemesEditModeTests" runstate="Runnable" seed="1102746391" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001882" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1108" name="NamedThemeHasThreeDistinctProductionSprites(11,&quot;葉野菜&quot;,&quot;キャベツ&quot;,&quot;レタス&quot;,&quot;白菜&quot;,&quot;個&quot;)" fullname="SortingThemesEditModeTests.NamedThemeHasThreeDistinctProductionSprites(11,&quot;葉野菜&quot;,&quot;キャベツ&quot;,&quot;レタス&quot;,&quot;白菜&quot;,&quot;個&quot;)" methodname="NamedThemeHasThreeDistinctProductionSprites" classname="SortingThemesEditModeTests" runstate="Runnable" seed="1418993267" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001571" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1112" name="StageDatabaseEditModeTests" fullname="StageDatabaseEditModeTests" classname="StageDatabaseEditModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.010087" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1117" name="StageDatabase_EmptyDatabaseCreatesSafeFallbackStage" fullname="StageDatabaseEditModeTests.StageDatabase_EmptyDatabaseCreatesSafeFallbackStage" methodname="StageDatabase_EmptyDatabaseCreatesSafeFallbackStage" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="1996997026" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000586" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1119" name="StageDatabase_GetNextStageDefinitionSkipsNullsAndRequiresCurrentStage" fullname="StageDatabaseEditModeTests.StageDatabase_GetNextStageDefinitionSkipsNullsAndRequiresCurrentStage" methodname="StageDatabase_GetNextStageDefinitionSkipsNullsAndRequiresCurrentStage" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="988882394" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000826" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1116" name="StageDatabase_GetStageDefinitionMatchesSafeNumberOrFallsBack" fullname="StageDatabaseEditModeTests.StageDatabase_GetStageDefinitionMatchesSafeNumberOrFallsBack" methodname="StageDatabase_GetStageDefinitionMatchesSafeNumberOrFallsBack" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="1569240336" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000368" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1118" name="StageDatabase_IndexMethodsFindMatchesAndReportMissingStages" fullname="StageDatabaseEditModeTests.StageDatabase_IndexMethodsFindMatchesAndReportMissingStages" methodname="StageDatabase_IndexMethodsFindMatchesAndReportMissingStages" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="2067931953" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000608" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1120" name="StageDatabase_IsStageUnlockedRequiresPreviousImplementedStageClear" fullname="StageDatabaseEditModeTests.StageDatabase_IsStageUnlockedRequiresPreviousImplementedStageClear" methodname="StageDatabase_IsStageUnlockedRequiresPreviousImplementedStageClear" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="514430501" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001358" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1115" name="StageDatabase_ReleasedStagesIntroduceGimmicksInOrder" fullname="StageDatabaseEditModeTests.StageDatabase_ReleasedStagesIntroduceGimmicksInOrder" methodname="StageDatabase_ReleasedStagesIntroduceGimmicksInOrder" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="1654321443" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000671" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1114" name="StageDefinition_CreateEndlessUsesOneMissAndNoTarget" fullname="StageDatabaseEditModeTests.StageDefinition_CreateEndlessUsesOneMissAndNoTarget" methodname="StageDefinition_CreateEndlessUsesOneMissAndNoTarget" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="761662802" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000561" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1113" name="StageDefinition_CreateFallbackClampsStageNumber" fullname="StageDatabaseEditModeTests.StageDefinition_CreateFallbackClampsStageNumber" methodname="StageDefinition_CreateFallbackClampsStageNumber" classname="StageDatabaseEditModeTests" runstate="Runnable" seed="227413251" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000351" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1166" name="Siwakenja.InputUIComparison.EditModeTests.dll" fullname="F:/Unity/siwakenja/Library/ScriptAssemblies/Siwakenja.InputUIComparison.EditModeTests.dll" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.095218" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="9244" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1167" name="Siwakenja" fullname="Siwakenja" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.093097" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1168" name="Experiments" fullname="Siwakenja.Experiments" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.092750" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1169" name="InputUIComparison" fullname="Siwakenja.Experiments.InputUIComparison" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.092521" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1170" name="Tests" fullname="Siwakenja.Experiments.InputUIComparison.Tests" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.092241" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1122" name="InputUIComparisonEditModeTests" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="1.073958" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1140" name="Analytics_SeparatesWrongInputFromTimeoutAndUsesCorrectFirstRt" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.Analytics_SeparatesWrongInputFromTimeoutAndUsesCorrectFirstRt" methodname="Analytics_SeparatesWrongInputFromTimeoutAndUsesCorrectFirstRt" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="276177120" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.007352" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1130" name="Counterbalance_P01ThroughP06CoversAllOrdersAndSets" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.Counterbalance_P01ThroughP06CoversAllOrdersAndSets" methodname="Counterbalance_P01ThroughP06CoversAllOrdersAndSets" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="708999104" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.002597" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1156" name="CsvWriter_WritesUtf8BomEscapesTextAndCanCheckpointTwice" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.CsvWriter_WritesUtf8BomEscapesTextAndCanCheckpointTwice" methodname="CsvWriter_WritesUtf8BomEscapesTextAndCanCheckpointTwice" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="283188628" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.036630" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1123" name="IsolatedSceneAssetExists" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.IsolatedSceneAssetExists" methodname="IsolatedSceneAssetExists" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="489572034" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.000403" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1155" name="LatestIncompleteSession_CompletedCheckpointRepairsManifestWithoutLosingRushContract" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.LatestIncompleteSession_CompletedCheckpointRepairsManifestWithoutLosingRushContract" methodname="LatestIncompleteSession_CompletedCheckpointRepairsManifestWithoutLosingRushContract" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1899764207" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.176602" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1128" name="MeasuredSet_FixedSeedIsRepeatable" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.MeasuredSet_FixedSeedIsRepeatable" methodname="MeasuredSet_FixedSeedIsRepeatable" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="232871786" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.014711" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-suite type="ParameterizedMethod" id="1127" name="MeasuredSet_IsFullyStratified" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.MeasuredSet_IsFullyStratified" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.013972" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                  <properties />
+                  <test-case id="1124" name="MeasuredSet_IsFullyStratified(0)" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.MeasuredSet_IsFullyStratified(0)" methodname="MeasuredSet_IsFullyStratified" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1617077863" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.006698" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                  <test-case id="1125" name="MeasuredSet_IsFullyStratified(1)" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.MeasuredSet_IsFullyStratified(1)" methodname="MeasuredSet_IsFullyStratified" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="759473243" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.001145" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                  <test-case id="1126" name="MeasuredSet_IsFullyStratified(2)" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.MeasuredSet_IsFullyStratified(2)" methodname="MeasuredSet_IsFullyStratified" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1816933837" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:02Z" duration="0.003938" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                </test-suite>
+                <test-case id="1129" name="MeasuredSet_SequenceConstraintsHoldAcrossManySeeds" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.MeasuredSet_SequenceConstraintsHoldAcrossManySeeds" methodname="MeasuredSet_SequenceConstraintsHoldAcrossManySeeds" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="454780512" result="Passed" start-time="2026-09-21 08:10:02Z" end-time="2026-09-21 08:10:03Z" duration="0.655282" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1154" name="RawEventJournal_SurvivesReloadDeduplicatesAndIgnoresMalformedTail" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.RawEventJournal_SurvivesReloadDeduplicatesAndIgnoresMalformedTail" methodname="RawEventJournal_SurvivesReloadDeduplicatesAndIgnoresMalformedTail" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="590377106" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.032721" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1139" name="Rules_MatchAuditedSpecialStateContract" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.Rules_MatchAuditedSpecialStateContract" methodname="Rules_MatchAuditedSpecialStateContract" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1864789414" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000621" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1137" name="StableConditionSeed_UsesEveryRequiredComponentAndNeverGetHashCode" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.StableConditionSeed_UsesEveryRequiredComponentAndNeverGetHashCode" methodname="StableConditionSeed_UsesEveryRequiredComponentAndNeverGetHashCode" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1972353328" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000947" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1152" name="V21Aggregator_RejectsDuplicateOrMissingMeasuredTrials" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Aggregator_RejectsDuplicateOrMissingMeasuredTrials" methodname="V21Aggregator_RejectsDuplicateOrMissingMeasuredTrials" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="331873929" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.029527" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1151" name="V21Aggregator_UsesManifestRushPairAndExplicitReference" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Aggregator_UsesManifestRushPairAndExplicitReference" methodname="V21Aggregator_UsesManifestRushPairAndExplicitReference" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="772765036" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.038121" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1142" name="V21Analytics_CoveredUsesPostRevealOriginAndKeepsPrematureTouchSeparate" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_CoveredUsesPostRevealOriginAndKeepsPrematureTouchSeparate" methodname="V21Analytics_CoveredUsesPostRevealOriginAndKeepsPrematureTouchSeparate" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1733535131" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.013531" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1146" name="V21Analytics_ExcludesEventsOutsideMeasuredTrialIdentity" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_ExcludesEventsOutsideMeasuredTrialIdentity" methodname="V21Analytics_ExcludesEventsOutsideMeasuredTrialIdentity" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="2032511229" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000587" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1148" name="V21Analytics_ExplicitRushReferenceSupportsPairWithoutCurrentPreset" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_ExplicitRushReferenceSupportsPairWithoutCurrentPreset" methodname="V21Analytics_ExplicitRushReferenceSupportsPairWithoutCurrentPreset" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1698019487" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.001021" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1147" name="V21Analytics_GenericEmptyRequiresNoHitUiElement" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_GenericEmptyRequiresNoHitUiElement" methodname="V21Analytics_GenericEmptyRequiresNoHitUiElement" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="732371002" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000449" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1144" name="V21Analytics_StaleRepairIncludesHiddenTapImmediatelyAfterRepairDisappears" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_StaleRepairIncludesHiddenTapImmediatelyAfterRepairDisappears" methodname="V21Analytics_StaleRepairIncludesHiddenTapImmediatelyAfterRepairDisappears" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1340544871" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000822" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1143" name="V21Analytics_StaleRepairMetricExcludesStaleVehicleInput" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_StaleRepairMetricExcludesStaleVehicleInput" methodname="V21Analytics_StaleRepairMetricExcludesStaleVehicleInput" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="343661202" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000455" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1145" name="V21Analytics_UsesRestoredEventIndexAcrossMonotonicClockEpochs" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21Analytics_UsesRestoredEventIndexAcrossMonotonicClockEpochs" methodname="V21Analytics_UsesRestoredEventIndexAcrossMonotonicClockEpochs" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1447734562" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000269" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1153" name="V21CsvWriter_HumanRushRequiresExplicitReference" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21CsvWriter_HumanRushRequiresExplicitReference" methodname="V21CsvWriter_HumanRushRequiresExplicitReference" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="233200180" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.008765" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1136" name="V21RushManifest_SnapshotsRegistrationAndRejectsImplicitHumanContract" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21RushManifest_SnapshotsRegistrationAndRejectsImplicitHumanContract" methodname="V21RushManifest_SnapshotsRegistrationAndRejectsImplicitHumanContract" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="306567812" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000858" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1134" name="V21RushSchedule_NonPilotFailsClosedWithoutValidPreregistration" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21RushSchedule_NonPilotFailsClosedWithoutValidPreregistration" methodname="V21RushSchedule_NonPilotFailsClosedWithoutValidPreregistration" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="247704235" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000340" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1135" name="V21RushSchedule_UsesExactlyTwoRegisteredCandidatesInAbBaOrder" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V21RushSchedule_UsesExactlyTwoRegisteredCandidatesInAbBaOrder" methodname="V21RushSchedule_UsesExactlyTwoRegisteredCandidatesInAbBaOrder" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1915455400" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.001034" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1141" name="V2Analytics_SeparatesRawAcceptedBrokenCoveredAndExpressMetrics" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2Analytics_SeparatesRawAcceptedBrokenCoveredAndExpressMetrics" methodname="V2Analytics_SeparatesRawAcceptedBrokenCoveredAndExpressMetrics" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1124926543" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.002945" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1132" name="V2AssistSchedule_CoversAllSixOrdersAndConditionSetPairs" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2AssistSchedule_CoversAllSixOrdersAndConditionSetPairs" methodname="V2AssistSchedule_CoversAllSixOrdersAndConditionSetPairs" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="1675299266" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.001438" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1149" name="V2GroupSummary_UsesPairedParticipantDirections" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2GroupSummary_UsesPairedParticipantDirections" methodname="V2GroupSummary_UsesPairedParticipantDirections" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="921681559" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000865" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1131" name="V2PlacementSchedule_AlternatesOrderAndBalancesTrialSets" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2PlacementSchedule_AlternatesOrderAndBalancesTrialSets" methodname="V2PlacementSchedule_AlternatesOrderAndBalancesTrialSets" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="2071722242" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000898" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1133" name="V2Schedule_P00IsPermittedAndMarkedPilot" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2Schedule_P00IsPermittedAndMarkedPilot" methodname="V2Schedule_P00IsPermittedAndMarkedPilot" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="426195934" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000559" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1150" name="V2SummaryExport_WritesThreeVersionSeparatedUtf8BomFiles" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2SummaryExport_WritesThreeVersionSeparatedUtf8BomFiles" methodname="V2SummaryExport_WritesThreeVersionSeparatedUtf8BomFiles" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="378964839" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.006184" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1138" name="V2TrialSets_AreEquivalentNonIdenticalAndMeetSequenceConstraints" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests.V2TrialSets_AreEquivalentNonIdenticalAndMeetSequenceConstraints" methodname="V2TrialSets_AreEquivalentNonIdenticalAndMeetSequenceConstraints" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonEditModeTests" runstate="Runnable" seed="510796342" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.006910" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="TestFixture" id="1157" name="InputUILayoutCatalogEditModeTests" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.017682" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-suite type="ParameterizedMethod" id="1161" name="AssistConditions_KeepEveryControlRectAndStyle" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.AssistConditions_KeepEveryControlRectAndStyle" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.003882" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                  <properties />
+                  <test-case id="1159" name="AssistConditions_KeepEveryControlRectAndStyle(UpperFixed)" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.AssistConditions_KeepEveryControlRectAndStyle(UpperFixed)" methodname="AssistConditions_KeepEveryControlRectAndStyle" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="1156181458" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.002363" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                  <test-case id="1160" name="AssistConditions_KeepEveryControlRectAndStyle(BottomFixed)" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.AssistConditions_KeepEveryControlRectAndStyle(BottomFixed)" methodname="AssistConditions_KeepEveryControlRectAndStyle" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="1577463342" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000103" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                </test-suite>
+                <test-case id="1162" name="AssistPresentation_ImplementsSpecifiedCanvasGroupStates" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.AssistPresentation_ImplementsSpecifiedCanvasGroupStates" methodname="AssistPresentation_ImplementsSpecifiedCanvasGroupStates" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="1483863558" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000807" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1163" name="BrokenOnly_CanvasGroupApplicationKeepsRectActiveAndReserved" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.BrokenOnly_CanvasGroupApplicationKeepsRectActiveAndReserved" methodname="BrokenOnly_CanvasGroupApplicationKeepsRectActiveAndReserved" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="339078136" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.001779" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1158" name="PlacementConditions_DifferOnlyByRepairAnchoredPosition" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.PlacementConditions_DifferOnlyByRepairAnchoredPosition" methodname="PlacementConditions_DifferOnlyByRepairAnchoredPosition" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="681760714" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.001251" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1164" name="RequiredResolutions_ProjectAllCatalogLayoutsWithoutClippingOrOverlap" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.RequiredResolutions_ProjectAllCatalogLayoutsWithoutClippingOrOverlap" methodname="RequiredResolutions_ProjectAllCatalogLayoutsWithoutClippingOrOverlap" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="29722352" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.005698" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1165" name="RushPresets_RetainLegacyPackageGeometryOnly" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests.RushPresets_RetainLegacyPackageGeometryOnly" methodname="RushPresets_RetainLegacyPackageGeometryOnly" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUILayoutCatalogEditModeTests" runstate="Runnable" seed="164437224" result="Passed" start-time="2026-09-21 08:10:03Z" end-time="2026-09-21 08:10:03Z" duration="0.000581" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: F:\Unity\siwakenja\Deliverables\SortingThemes\Tests\editmode-results.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

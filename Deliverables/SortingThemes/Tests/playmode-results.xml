@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="56" result="Passed" total="56" passed="56" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:09:33Z" duration="167.8478575">
+  <test-suite type="TestSuite" id="1069" name="しわ賢者" fullname="しわ賢者" runstate="Runnable" testcasecount="56" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:09:33Z" duration="167.847858" total="56" passed="56" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1030" name="Siwakenja.InputUIComparison.PlayModeTests.dll" fullname="F:/Unity/siwakenja/Library/ScriptAssemblies/Siwakenja.InputUIComparison.PlayModeTests.dll" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:49Z" duration="3.401877" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="9244" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1031" name="Siwakenja" fullname="Siwakenja" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:49Z" duration="3.400454" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1032" name="Experiments" fullname="Siwakenja.Experiments" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:49Z" duration="3.399164" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1033" name="InputUIComparison" fullname="Siwakenja.Experiments.InputUIComparison" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:49Z" duration="3.398138" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1034" name="Tests" fullname="Siwakenja.Experiments.InputUIComparison.Tests" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:49Z" duration="3.395282" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1001" name="InputUIComparisonPlayModeTests" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:49Z" duration="3.373770" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1020" name="BrokenVehicleButtonIsAcceptedAsWrongThenRepairResolves" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.BrokenVehicleButtonIsAcceptedAsWrongThenRepairResolves" methodname="BrokenVehicleButtonIsAcceptedAsWrongThenRepairResolves" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1590239136" result="Passed" start-time="2026-09-21 08:06:45Z" end-time="2026-09-21 08:06:46Z" duration="0.173794" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1028" name="CheckpointRoundTripRestoresControllerAndAcceptanceState" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.CheckpointRoundTripRestoresControllerAndAcceptanceState" methodname="CheckpointRoundTripRestoresControllerAndAcceptanceState" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1360191574" result="Passed" start-time="2026-09-21 08:06:46Z" end-time="2026-09-21 08:06:46Z" duration="0.454832" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1023" name="CheckpointSnapshotIncludesCurrentAndPreviousRepairRects" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.CheckpointSnapshotIncludesCurrentAndPreviousRepairRects" methodname="CheckpointSnapshotIncludesCurrentAndPreviousRepairRects" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1372504296" result="Passed" start-time="2026-09-21 08:06:46Z" end-time="2026-09-21 08:06:46Z" duration="0.099404" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1014" name="CooldownTapIsLoggedAndRejected" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.CooldownTapIsLoggedAndRejected" methodname="CooldownTapIsLoggedAndRejected" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="666395563" result="Passed" start-time="2026-09-21 08:06:46Z" end-time="2026-09-21 08:06:46Z" duration="0.101106" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1018" name="CoveredReactionClockStartsAtRevealAndPrematureTouchStaysDiagnostic" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.CoveredReactionClockStartsAtRevealAndPrematureTouchStaysDiagnostic" methodname="CoveredReactionClockStartsAtRevealAndPrematureTouchStaysDiagnostic" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="2019732562" result="Passed" start-time="2026-09-21 08:06:46Z" end-time="2026-09-21 08:06:46Z" duration="0.097867" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1026" name="CoveredRevealTransition_IsImmediatelyCheckpointed" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.CoveredRevealTransition_IsImmediatelyCheckpointed" methodname="CoveredRevealTransition_IsImmediatelyCheckpointed" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="779945586" result="Passed" start-time="2026-09-21 08:06:46Z" end-time="2026-09-21 08:06:46Z" duration="0.133457" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1019" name="CoveredTouchCapturedBeforeRevealStaysPrematureWhenFlushedAfterReveal" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.CoveredTouchCapturedBeforeRevealStaysPrematureWhenFlushedAfterReveal" methodname="CoveredTouchCapturedBeforeRevealStaysPrematureWhenFlushedAfterReveal" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="583637338" result="Passed" start-time="2026-09-21 08:06:46Z" end-time="2026-09-21 08:06:47Z" duration="0.099606" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1009" name="DisabledRepairTapIsLoggedAndRejected" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.DisabledRepairTapIsLoggedAndRejected" methodname="DisabledRepairTapIsLoggedAndRejected" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1918517946" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.099367" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1011" name="EmptyAreaTapIsLoggedAsHiddenOrEmpty" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.EmptyAreaTapIsLoggedAsHiddenOrEmpty" methodname="EmptyAreaTapIsLoggedAsHiddenOrEmpty" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="443226232" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.099207" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1025" name="FinalResolvedCheckpoint_AdvancesToSurveyWithoutRepeatingTrial" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.FinalResolvedCheckpoint_AdvancesToSurveyWithoutRepeatingTrial" methodname="FinalResolvedCheckpoint_AdvancesToSurveyWithoutRepeatingTrial" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1508526540" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.274039" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1022" name="GapInputIsSavedAsNonTrialAndCannotBeAttributedToMeasuredTrial" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.GapInputIsSavedAsNonTrialAndCannotBeAttributedToMeasuredTrial" methodname="GapInputIsSavedAsNonTrialAndCannotBeAttributedToMeasuredTrial" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="2100596818" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.099219" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1005" name="GlobalRawCaptureWritesOneRowAndButtonCallbackDoesNotDuplicateIt" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.GlobalRawCaptureWritesOneRowAndButtonCallbackDoesNotDuplicateIt" methodname="GlobalRawCaptureWritesOneRowAndButtonCallbackDoesNotDuplicateIt" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="583855600" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.099685" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1010" name="HiddenRepairAreaTapIsLoggedAsHiddenOrEmpty" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.HiddenRepairAreaTapIsLoggedAsHiddenOrEmpty" methodname="HiddenRepairAreaTapIsLoggedAsHiddenOrEmpty" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="518792545" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.099613" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1008" name="NativeTouchSuppressesSyntheticMouseButNeverSuppressesIndependentTouches" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.NativeTouchSuppressesSyntheticMouseButNeverSuppressesIndependentTouches" methodname="NativeTouchSuppressesSyntheticMouseButNeverSuppressesIndependentTouches" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1986608754" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:47Z" duration="0.099285" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1012" name="NonControlVehicleTargetAndHudTapsAreNotGenericBlankArea" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.NonControlVehicleTargetAndHudTapsAreNotGenericBlankArea" methodname="NonControlVehicleTargetAndHudTapsAreNotGenericBlankArea" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="729095982" result="Passed" start-time="2026-09-21 08:06:47Z" end-time="2026-09-21 08:06:48Z" duration="0.099281" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1017" name="PendingInputsFromDifferentFramesAreArbitratedSeparately" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.PendingInputsFromDifferentFramesAreArbitratedSeparately" methodname="PendingInputsFromDifferentFramesAreArbitratedSeparately" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="2090890395" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099259" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1003" name="PlacementConditionsChangeOnlyRepairPosition" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.PlacementConditionsChangeOnlyRepairPosition" methodname="PlacementConditionsChangeOnlyRepairPosition" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1245680607" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099562" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1013" name="PreviousFixedRepairAreaRemainsIdentifiableAfterAnchorChange" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.PreviousFixedRepairAreaRemainsIdentifiableAfterAnchorChange" methodname="PreviousFixedRepairAreaRemainsIdentifiableAfterAnchorChange" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1833599245" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099247" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1006" name="PureArbitrator_FinalRejectedPhysicalInputNeverFallsBackToEarlierValidInput" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.PureArbitrator_FinalRejectedPhysicalInputNeverFallsBackToEarlierValidInput" methodname="PureArbitrator_FinalRejectedPhysicalInputNeverFallsBackToEarlierValidInput" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1416586838" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.050063" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1007" name="PureArbitrator_InvalidThenValidAcceptsOnlyFinalPhysicalInput" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.PureArbitrator_InvalidThenValidAcceptsOnlyFinalPhysicalInput" methodname="PureArbitrator_InvalidThenValidAcceptsOnlyFinalPhysicalInput" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1878835023" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.049216" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1002" name="RuntimeBootstrapsExactlyOneCanvasAndOneEventSystem" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.RuntimeBootstrapsExactlyOneCanvasAndOneEventSystem" methodname="RuntimeBootstrapsExactlyOneCanvasAndOneEventSystem" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="705935069" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099480" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1029" name="RushShowsThreeVehiclesAndLogsCurrentTargetId" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.RushShowsThreeVehiclesAndLogsCurrentTargetId" methodname="RushShowsThreeVehiclesAndLogsCurrentTargetId" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1765965017" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099335" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1015" name="SameFrameUsesFinalPhysicalInputAndMarksEarlierTapOverwritten" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.SameFrameUsesFinalPhysicalInputAndMarksEarlierTapOverwritten" methodname="SameFrameUsesFinalPhysicalInputAndMarksEarlierTapOverwritten" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="999454626" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099317" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1016" name="SameFrameUsesFinalPhysicalInputEvenWhenItIsRejected" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.SameFrameUsesFinalPhysicalInputEvenWhenItIsRejected" methodname="SameFrameUsesFinalPhysicalInputEvenWhenItIsRejected" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="906082402" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099451" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1004" name="StateAssistConditionsKeepAnchorAndOnlyChangeRepairPresentation" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.StateAssistConditionsKeepAnchorAndOnlyChangeRepairPresentation" methodname="StateAssistConditionsKeepAnchorAndOnlyChangeRepairPresentation" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="1528434991" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:48Z" duration="0.099586" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1027" name="SubmittedSurveyCheckpoint_AdvancesWithoutDuplicateResponse" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.SubmittedSurveyCheckpoint_AdvancesWithoutDuplicateResponse" methodname="SubmittedSurveyCheckpoint_AdvancesWithoutDuplicateResponse" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="430069479" result="Passed" start-time="2026-09-21 08:06:48Z" end-time="2026-09-21 08:06:49Z" duration="0.114154" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1021" name="TargetChangeBetweenTouchAndFlushRejectsStaleInput" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.TargetChangeBetweenTouchAndFlushRejectsStaleInput" methodname="TargetChangeBetweenTouchAndFlushRejectsStaleInput" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="356816277" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:06:49Z" duration="0.099842" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1024" name="TimeoutResolution_CommitsNextTrialIndexBeforeCheckpoint" fullname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests.TimeoutResolution_CommitsNextTrialIndexBeforeCheckpoint" methodname="TimeoutResolution_CommitsNextTrialIndexBeforeCheckpoint" classname="Siwakenja.Experiments.InputUIComparison.Tests.InputUIComparisonPlayModeTests" runstate="Runnable" seed="525821406" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:06:49Z" duration="0.099724" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1065" name="Siwakenja.PlayModeTests.dll" fullname="F:/Unity/siwakenja/Library/ScriptAssemblies/Siwakenja.PlayModeTests.dll" runstate="Runnable" testcasecount="28" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:09:33Z" duration="164.424127" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="9244" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1035" name="AdMobLifecyclePlayModeTests" fullname="AdMobLifecyclePlayModeTests" classname="AdMobLifecyclePlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:06:49Z" duration="0.085514" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1036" name="CallbacksRunBeforeSdkInitialization_AndUnavailableAdsDoNotBlock" fullname="AdMobLifecyclePlayModeTests.CallbacksRunBeforeSdkInitialization_AndUnavailableAdsDoNotBlock" methodname="CallbacksRunBeforeSdkInitialization_AndUnavailableAdsDoNotBlock" classname="AdMobLifecyclePlayModeTests" runstate="Runnable" seed="1987898053" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:06:49Z" duration="0.067177" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1037" name="GameplayFlowPlayModeTests" fullname="GameplayFlowPlayModeTests" classname="GameplayFlowPlayModeTests" runstate="Runnable" testcasecount="27" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:09:33Z" duration="164.336700" total="27" passed="27" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1038" name="PointerDownScenarios_Clear_Result_AndRetryCompleteEndToEnd" fullname="GameplayFlowPlayModeTests.PointerDownScenarios_Clear_Result_AndRetryCompleteEndToEnd" methodname="PointerDownScenarios_Clear_Result_AndRetryCompleteEndToEnd" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="2123882638" result="Passed" start-time="2026-09-21 08:06:49Z" end-time="2026-09-21 08:06:54Z" duration="4.773907" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="1" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1039" name="MissLimit_GiveUp_Result_AndRetryCompleteEndToEnd" fullname="GameplayFlowPlayModeTests.MissLimit_GiveUp_Result_AndRetryCompleteEndToEnd" methodname="MissLimit_GiveUp_Result_AndRetryCompleteEndToEnd" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="333614340" result="Passed" start-time="2026-09-21 08:06:54Z" end-time="2026-09-21 08:06:57Z" duration="3.017605" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="2" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1040" name="ExpressCoveredAndBrokenCarsUseTheirDedicatedRules" fullname="GameplayFlowPlayModeTests.ExpressCoveredAndBrokenCarsUseTheirDedicatedRules" methodname="ExpressCoveredAndBrokenCarsUseTheirDedicatedRules" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="854509859" result="Passed" start-time="2026-09-21 08:06:57Z" end-time="2026-09-21 08:06:58Z" duration="0.880222" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="3" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1041" name="StageFourteenRushSpawnsAThreeCarProcessionAndShowsFeverHud" fullname="GameplayFlowPlayModeTests.StageFourteenRushSpawnsAThreeCarProcessionAndShowsFeverHud" methodname="StageFourteenRushSpawnsAThreeCarProcessionAndShowsFeverHud" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="2074981116" result="Passed" start-time="2026-09-21 08:06:58Z" end-time="2026-09-21 08:06:58Z" duration="0.592938" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="4" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1042" name="TitleCampaignRouteAndChapterTabsUseRealSceneControls" fullname="GameplayFlowPlayModeTests.TitleCampaignRouteAndChapterTabsUseRealSceneControls" methodname="TitleCampaignRouteAndChapterTabsUseRealSceneControls" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="147194109" result="Passed" start-time="2026-09-21 08:06:58Z" end-time="2026-09-21 08:07:03Z" duration="4.385723" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="5" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1043" name="DailyTitleRouteRunsSixtySecondsWithoutContinueAndRetries" fullname="GameplayFlowPlayModeTests.DailyTitleRouteRunsSixtySecondsWithoutContinueAndRetries" methodname="DailyTitleRouteRunsSixtySecondsWithoutContinueAndRetries" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="972869126" result="Passed" start-time="2026-09-21 08:07:03Z" end-time="2026-09-21 08:07:09Z" duration="6.734615" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="6" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1044" name="EndlessTitleRouteUsesHighestClearedStageAndOffersOneContinue" fullname="GameplayFlowPlayModeTests.EndlessTitleRouteUsesHighestClearedStageAndOffersOneContinue" methodname="EndlessTitleRouteUsesHighestClearedStageAndOffersOneContinue" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="673077724" result="Passed" start-time="2026-09-21 08:07:09Z" end-time="2026-09-21 08:07:11Z" duration="1.260722" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="7" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1045" name="SurvivalStagePauseFreezesObjectiveClockInRealMainScene" fullname="GameplayFlowPlayModeTests.SurvivalStagePauseFreezesObjectiveClockInRealMainScene" methodname="SurvivalStagePauseFreezesObjectiveClockInRealMainScene" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="557458328" result="Passed" start-time="2026-09-21 08:07:11Z" end-time="2026-09-21 08:07:12Z" duration="1.054239" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="8" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1046" name="AllFifteenStagesClearThroughRealMainAndResultScenesInSequence" fullname="GameplayFlowPlayModeTests.AllFifteenStagesClearThroughRealMainAndResultScenesInSequence" methodname="AllFifteenStagesClearThroughRealMainAndResultScenesInSequence" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="844994840" result="Passed" start-time="2026-09-21 08:07:12Z" end-time="2026-09-21 08:07:42Z" duration="30.425006" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="9" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1047" name="LateTapImmediatelyAfterPassDoesNotAddAnotherMiss" fullname="GameplayFlowPlayModeTests.LateTapImmediatelyAfterPassDoesNotAddAnotherMiss" methodname="LateTapImmediatelyAfterPassDoesNotAddAnotherMiss" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1065902786" result="Passed" start-time="2026-09-21 08:07:42Z" end-time="2026-09-21 08:07:43Z" duration="0.935758" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="10" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1048" name="GimmickHintsAppearOnlyOnFirstEncounter" fullname="GameplayFlowPlayModeTests.GimmickHintsAppearOnlyOnFirstEncounter" methodname="GimmickHintsAppearOnlyOnFirstEncounter" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1555032877" result="Passed" start-time="2026-09-21 08:07:43Z" end-time="2026-09-21 08:07:44Z" duration="0.526048" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="11" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1049" name="PauseHowToShowsCurrentRulesAndReturnsToThePauseMenu" fullname="GameplayFlowPlayModeTests.PauseHowToShowsCurrentRulesAndReturnsToThePauseMenu" methodname="PauseHowToShowsCurrentRulesAndReturnsToThePauseMenu" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="2102972848" result="Passed" start-time="2026-09-21 08:07:44Z" end-time="2026-09-21 08:07:44Z" duration="0.559098" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="12" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1050" name="TitleHowToCloseButtonKeepsItsArtworkAspect" fullname="GameplayFlowPlayModeTests.TitleHowToCloseButtonKeepsItsArtworkAspect" methodname="TitleHowToCloseButtonKeepsItsArtworkAspect" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="481835011" result="Passed" start-time="2026-09-21 08:07:44Z" end-time="2026-09-21 08:07:44Z" duration="0.356784" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="13" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1051" name="TutorialHighlightsTheTruckButtonDuringTheFirstGuidedStep" fullname="GameplayFlowPlayModeTests.TutorialHighlightsTheTruckButtonDuringTheFirstGuidedStep" methodname="TutorialHighlightsTheTruckButtonDuringTheFirstGuidedStep" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1069275683" result="Passed" start-time="2026-09-21 08:07:44Z" end-time="2026-09-21 08:07:46Z" duration="1.509569" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="14" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1052" name="ExpressTutorialTeachesStoppedAndMovingCarsBeforeStartingStageThree" fullname="GameplayFlowPlayModeTests.ExpressTutorialTeachesStoppedAndMovingCarsBeforeStartingStageThree" methodname="ExpressTutorialTeachesStoppedAndMovingCarsBeforeStartingStageThree" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1270733483" result="Passed" start-time="2026-09-21 08:07:46Z" end-time="2026-09-21 08:08:04Z" duration="17.794955" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="15" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1053" name="SkippingExpressTutorialStartsStageThreeWithoutSkippingTheBasicTutorial" fullname="GameplayFlowPlayModeTests.SkippingExpressTutorialStartsStageThreeWithoutSkippingTheBasicTutorial" methodname="SkippingExpressTutorialStartsStageThreeWithoutSkippingTheBasicTutorial" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1619646420" result="Passed" start-time="2026-09-21 08:08:04Z" end-time="2026-09-21 08:08:04Z" duration="0.373380" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="16" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1058" name="VehicleThemeRealFlow" fullname="GameplayFlowPlayModeTests.VehicleThemeRealFlow" methodname="VehicleThemeRealFlow" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1527883167" result="Passed" start-time="2026-09-21 08:08:04Z" end-time="2026-09-21 08:08:16Z" duration="11.564742" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="30" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Select_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Select_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Select_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_SelectGuide_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_SelectGuide_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_SelectGuide_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Main_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Main_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Main_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Collected_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Collected_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Collected_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_HowTo_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_HowTo_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_HowTo_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Result_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Result_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Result_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Tutorial_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Tutorial_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage01_Tutorial_AndroidTall_1440x3200.png
+]]></output>
+        </test-case>
+        <test-case id="1059" name="HandsThemeRealFlow" fullname="GameplayFlowPlayModeTests.HandsThemeRealFlow" methodname="HandsThemeRealFlow" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1911146870" result="Passed" start-time="2026-09-21 08:08:16Z" end-time="2026-09-21 08:08:27Z" duration="11.386560" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="31" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Select_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Select_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Select_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_SelectGuide_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_SelectGuide_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_SelectGuide_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Main_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Main_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Main_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Collected_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Collected_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Collected_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_HowTo_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_HowTo_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_HowTo_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Result_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Result_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Result_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Tutorial_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Tutorial_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage04_Tutorial_AndroidTall_1440x3200.png
+]]></output>
+        </test-case>
+        <test-case id="1060" name="ClockThemeRealFlow" fullname="GameplayFlowPlayModeTests.ClockThemeRealFlow" methodname="ClockThemeRealFlow" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1765501126" result="Passed" start-time="2026-09-21 08:08:27Z" end-time="2026-09-21 08:08:38Z" duration="11.364665" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="32" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Select_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Select_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Select_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_SelectGuide_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_SelectGuide_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_SelectGuide_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Main_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Main_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Main_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Collected_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Collected_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Collected_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_HowTo_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_HowTo_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_HowTo_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Result_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Result_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Result_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Tutorial_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Tutorial_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage08_Tutorial_AndroidTall_1440x3200.png
+]]></output>
+        </test-case>
+        <test-case id="1061" name="GreensThemeRealFlow" fullname="GameplayFlowPlayModeTests.GreensThemeRealFlow" methodname="GreensThemeRealFlow" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="888927482" result="Passed" start-time="2026-09-21 08:08:38Z" end-time="2026-09-21 08:08:50Z" duration="11.449898" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="33" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Select_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Select_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Select_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_SelectGuide_Android_1080x1920.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_SelectGuide_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured StageSelect: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_SelectGuide_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Main_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Main_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Main_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Collected_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Collected_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Collected_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_HowTo_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_HowTo_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_HowTo_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Result_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Result_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Result: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Result_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Tutorial_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Tutorial_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage11_Tutorial_AndroidTall_1440x3200.png
+]]></output>
+        </test-case>
+        <test-case id="1062" name="ThemeBoundariesNextAndModeSwitchesResolveFreshData" fullname="GameplayFlowPlayModeTests.ThemeBoundariesNextAndModeSwitchesResolveFreshData" methodname="ThemeBoundariesNextAndModeSwitchesResolveFreshData" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="492931430" result="Passed" start-time="2026-09-21 08:08:50Z" end-time="2026-09-21 08:09:05Z" duration="15.033118" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="34" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1063" name="QuotaLabelsAndThemedFailureKeepTheirNames" fullname="GameplayFlowPlayModeTests.QuotaLabelsAndThemedFailureKeepTheirNames" methodname="QuotaLabelsAndThemedFailureKeepTheirNames" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1624164587" result="Passed" start-time="2026-09-21 08:09:05Z" end-time="2026-09-21 08:09:11Z" duration="5.761092" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="35" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage02_Quota_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage02_Quota_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage02_Quota_AndroidTall_1440x3200.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage07_Quota_Android_1080x1920.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage07_Quota_iPhone_1170x2532.png
+[PowaScreenshotCapture] Captured Main: F:\Unity\siwakenja\Deliverables\SortingThemes\Captures\Stage07_Quota_AndroidTall_1440x3200.png
+]]></output>
+        </test-case>
+        <test-case id="1064" name="DailyAndEndlessTutorialsReturnToTheirRealModes" fullname="GameplayFlowPlayModeTests.DailyAndEndlessTutorialsReturnToTheirRealModes" methodname="DailyAndEndlessTutorialsReturnToTheirRealModes" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="580921229" result="Passed" start-time="2026-09-21 08:09:11Z" end-time="2026-09-21 08:09:15Z" duration="3.880800" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Order" value="36" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1055" name="Powa_ClearStopsInputRecordsOnceWaitsThenRetries" fullname="GameplayFlowPlayModeTests.Powa_ClearStopsInputRecordsOnceWaitsThenRetries" methodname="Powa_ClearStopsInputRecordsOnceWaitsThenRetries" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1043794255" result="Passed" start-time="2026-09-21 08:09:15Z" end-time="2026-09-21 08:09:20Z" duration="5.317588" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1056" name="Powa_FailureWaitsAndMissingAnimatorCannotBlockResult" fullname="GameplayFlowPlayModeTests.Powa_FailureWaitsAndMissingAnimatorCannotBlockResult" methodname="Powa_FailureWaitsAndMissingAnimatorCannotBlockResult" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="551572614" result="Passed" start-time="2026-09-21 08:09:20Z" end-time="2026-09-21 08:09:25Z" duration="5.148706" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1054" name="Powa_LatestFeedbackPauseResumeAndWinPriority" fullname="GameplayFlowPlayModeTests.Powa_LatestFeedbackPauseResumeAndWinPriority" methodname="Powa_LatestFeedbackPauseResumeAndWinPriority" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1146003787" result="Passed" start-time="2026-09-21 08:09:25Z" end-time="2026-09-21 08:09:29Z" duration="3.505685" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1057" name="Powa_ReviveCanReactAndReturnToIdle" fullname="GameplayFlowPlayModeTests.Powa_ReviveCanReactAndReturnToIdle" methodname="Powa_ReviveCanReactAndReturnToIdle" classname="GameplayFlowPlayModeTests" runstate="Runnable" seed="1274867272" result="Passed" start-time="2026-09-21 08:09:29Z" end-time="2026-09-21 08:09:33Z" duration="4.699193" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: F:\Unity\siwakenja\Deliverables\SortingThemes\Tests\playmode-results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

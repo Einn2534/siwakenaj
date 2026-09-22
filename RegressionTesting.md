@@ -18,7 +18,7 @@ PowerShellでプロジェクトルートから実行する。
 
 ## EditMode coverage
 
-現在の期待件数は32件。既存回帰に加えて次を個別に証明する。
+テーマ追加後の期待件数は83件。既存回帰に加えて次を個別に証明する。
 
 - `StageDatabase.asset` が連番15面、3章、5目標、面名、MISSIONを持つこと
 - Score / TotalCorrect / Combo / VehicleQuota / Survivalそれぞれの成功とミス上限失敗
@@ -41,7 +41,7 @@ PowerShellでプロジェクトルートから実行する。
 
 急送車チュートリアルは、1-3開始時の表示、旧ヒント既読からの移行、説明の自動送り、一時停止、正しい実入力を待つ停止車練習、走行車の練習とミス後の再試行、本番開始時のスコア・ミス初期化、再挑戦時の非表示、スキップ時の基本チュートリアル保存値の維持を確認する。`ExpressTutorial_Seen` も既存キーと同じくテスト前後でバックアップ・復元する。通常のステージ進行テストは急送車チュートリアル既読として実行し、専用テストで未読の流れを検証する。
 
-現在の期待件数は9件。実際のTitle、StageSelect、Main、Resultシーンと実ボタン/Pointer Downを使用する。
+テーマ追加後の期待件数は56件。実際のTitle、StageSelect、Main、Resultシーンと実ボタン/Pointer Downを使用する。
 
 - 車なし、誤レーン、正解、同一フレーム複数入力、3台上限
 - 実Mainでの目標成功、Result保存、Retryによる新しいMain
@@ -99,3 +99,19 @@ Unity EditorではAds初期化を無効にしているため、回帰中に広�
 - `editmode.log` / `playmode.log` / `capture.log`: Unityの完全ログ
 
 テストを削除、Ignore化、アサーション弱化、偽データへの置換、検証経路の迂回によってPASSさせてはならない。仕様変更が必要な場合は先に実装と本書の期待値を一致させる。
+
+## Sorting themes regression (2026-09-21)
+
+`SortingThemesEditModeTests` は4テーマの名前・3種類の別画像・単位、15面の割り当て、Dailyの車固定、Endlessのテーマ継承、非車の共通覆面画像を検証する。
+
+`SortingThemesPlayModeTests` は以下を既存GameplayFlow fixtureの保存値バックアップ・復元の下で実行する。
+
+- 各テーマでStageSelectの実PlayからMainへ入り、3種の画像・ボタン・名前、正解・誤答、Pauseの説明、Resultの名前と保存、Retry、現在テーマでの練習を検証。
+- 3→4、7→8、10→11のNext、Endless→Daily→Stageで前テーマが残らないこと。
+- 2/7面の種類別ノルマと車・手・時計・野菜の失敗Result。
+- DailyのPause→練習スキップ、EndlessのPause→練習6回入力と卒業画面のボタンから本番復帰し、モード・テーマ・得点初期化・Daily時間・Endless無目標を維持すること。
+- Stage11の既存Express/Covered/Brokenテストは、元の車用覆面資産のサイズ検証を残し、現在の野菜テーマの箱と公開後のレタス画像を厳密比較する。
+
+実フロー中のStageSelect / 選択テーマの説明 / Main / 3回正解後の収集欄 / Pause説明 / Result / Tutorialの7状態×4テーマ×3比率と、2/7面ノルマ×3比率、計90枚を `Deliverables/SortingThemes/Captures` に保存する。Main撮影時のみ現在の対象を横並びにして識別性を記録し、直後に位置を復元する。Tutorialは位置を変えず、撮影用カメラに対してcutoutを再投影する。モーダル画面は背景を遮るscrimより前のUIを検証対象とする。既存42状態のアサーションは変更せず、Editorプレビューのボタン・ギミック名も現在テーマから再解決する。
+
+開いているEditorでUniCliから全検証を行う場合、`SortingThemeTestRunner.Run("EditMode", "", "editmode-results")`、終了後に `SortingThemeTestRunner.Run("PlayMode", "", "playmode-results")` をEvalで呼ぶ。domain reloadでCLI接続が切れても結果は `Deliverables/SortingThemes/Tests` のXMLとprogressへ記録される。完了はprogressのCOMPLETEとXMLのresult/failedで確認する。既存レイアウト行列は `RegressionCaptureRunner.Run` を同じEditorで呼び出す（出力先 `Deliverables/SortingThemes/Regression`）。バッチの `Tools/Run-Regression.ps1` も引き続き利用できる。

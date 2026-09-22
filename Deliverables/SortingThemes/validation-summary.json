@@ -1,0 +1,20 @@
+{
+  "CheckedAt": "2026-09-21T17:10:46.1904057+09:00",
+  "Editor": "6000.3.10f1",
+  "EditMode": {
+    "Result": "Passed",
+    "Failed": "0",
+    "Passed": "83"
+  },
+  "PlayMode": {
+    "Result": "Passed",
+    "Failed": "0",
+    "Passed": "56"
+  },
+  "ThemeCaptures": {
+    "Failed": 0,
+    "Files": 90,
+    "Passed": 90
+  },
+  "Regression": "Final result: PASS (42 captures, 0 failures)"
+}
