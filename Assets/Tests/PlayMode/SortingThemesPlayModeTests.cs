@@ -66,11 +66,15 @@ public sealed partial class GameplayFlowPlayModeTests
         IDictionary collected = (IDictionary)GetField(FindSceneComponent("ScoreLaneUI"), "_laneIcons");
         foreach (DictionaryEntry entry in collected)
             foreach (GameObject icon in (IList)entry.Value)
-                foreach (Image graphic in icon.GetComponentsInChildren<Image>())
+            {
+                Image[] graphics = icon.GetComponentsInChildren<Image>().Where(graphic => graphic.enabled).ToArray();
+                Assert.That(graphics.Length, Is.EqualTo(1), "Each collected item must render exactly one icon.");
+                foreach (Image graphic in graphics)
                 {
                     Assert.That(graphic.sprite, Is.SameAs(Invoke(theme, "GetIconSprite", entry.Key)));
                     if (stageNumber != 1) Assert.That(graphic.preserveAspect, Is.True, "Collected theme icons must not be stretched to the vehicle aspect ratio.");
                 }
+            }
         CaptureTheme($"Stage{stageNumber:00}_Collected");
 
         object pause = FindSceneComponent("MainPauseMenuController");
