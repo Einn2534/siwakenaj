@@ -58,6 +58,8 @@ public class StageDefinition
     public int ChapterNumber = 1;
     public string DisplayName = "仕分け開始";
     public string MissionText = "100点へ到達";
+    public CarVisualDatabase VisualTheme;
+    public CarVisualDatabase Theme => VisualTheme != null ? VisualTheme : CarVisualDatabase.LoadDefault();
 
     [Header("Objective")]
     public StageGoalType GoalType = StageGoalType.Score;
@@ -136,6 +138,7 @@ public class StageDefinition
         {
             StageNumber = StageNumberUtility.Normalize(source.StageNumber),
             ChapterNumber = Mathf.Clamp(source.ChapterNumber, 1, 3),
+            VisualTheme = source.VisualTheme,
             DisplayName = "エンドレス",
             MissionText = "1ミスまで自己ベストへ挑戦",
             GoalType = StageGoalType.Score,

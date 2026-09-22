@@ -127,12 +127,27 @@ public sealed class TutorialController : MonoBehaviour
         {
             return;
         }
+        ClampGuidedCarToPlayZone();
 
         if (Time.time - _lastActionTime >= IdleReinforceSeconds)
         {
             ReinforceCorrectButton();
             _lastActionTime = Time.time;
         }
+    }
+
+    private void ClampGuidedCarToPlayZone()
+    {
+        if (!_isRunning || !_isAwaitingInput || _activeCar == null
+            || (_state != TutorialState.GuidedTruck && _state != TutorialState.GuidedExpress)
+            || _carSpawner == null || !_carSpawner.TryGetPlayZoneWorldRect(out Rect zone)) return;
+        SpriteRenderer renderer = _activeCar.GetComponent<SpriteRenderer>();
+        if (renderer == null) return;
+        float margin = zone.width * .025f;
+        Bounds bounds = renderer.bounds;
+        float shift = bounds.max.x > zone.xMax - margin ? zone.xMax - margin - bounds.max.x
+            : bounds.min.x < zone.xMin + margin ? zone.xMin + margin - bounds.min.x : 0f;
+        _activeCar.transform.position += Vector3.right * shift;
     }
 
     private void OnDisable()
@@ -176,6 +191,12 @@ public sealed class TutorialController : MonoBehaviour
 
         EventSystemInputModuleUtility.EnsureCompatibleEventSystem();
         BuildInterface();
+        TMP_Text returnLabel = _graduationRoot.Find("GraduationCard/StageOneButton/Label")?.GetComponent<TMP_Text>();
+        if (returnLabel != null)
+        {
+            string destination = SessionState.IsDailyMode ? "デイリー" : SessionState.IsEndlessMode ? "エンドレス" : $"おしごと{stageDefinition.StageNumber}";
+            returnLabel.text = $"{destination}へ\n<TAP TO PLAY>";
+        }
         gameObject.SetActive(true);
         _canvas.gameObject.SetActive(true);
         _skipButton.gameObject.SetActive(true);
@@ -784,6 +805,7 @@ public sealed class TutorialController : MonoBehaviour
         if (_dialogueAdvanceButton != null)
         {
             _dialogueAdvanceButton.interactable = enabled;
+            _dialogueAdvanceButton.enabled = enabled;
         }
 
         if (_instructionScrimImage != null)
@@ -794,6 +816,7 @@ public sealed class TutorialController : MonoBehaviour
         if (_speechButton != null)
         {
             _speechButton.interactable = enabled;
+            _speechButton.enabled = enabled;
         }
 
         if (_speechImage != null)
@@ -879,6 +902,16 @@ public sealed class TutorialController : MonoBehaviour
 
     private void SetInstruction(string message)
     {
+        CarVisualDatabase theme = CarVisualDatabase.LoadSelected();
+        if (theme != null && !theme.IsVehicleTheme)
+        {
+            message = message.Replace("急送車", theme.ExpressName)
+                .Replace("同じ車", $"同じ{theme.Noun}").Replace("きた車", $"きた{theme.Noun}")
+                .Replace("速い車", "速いもの").Replace("トラック", theme.GetDisplayName(CarType.LightTruck))
+                .Replace("3台", $"3{theme.CountUnit}");
+            if (theme.GetDisplayName(CarType.LightTruck).Length >= 4)
+                message = message.Replace("だ！", "だ！\n");
+        }
         if (_instructionText != null)
         {
             _instructionText.text = message;

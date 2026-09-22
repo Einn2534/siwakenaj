@@ -230,13 +230,14 @@ public class GameFlowController : MonoBehaviour
         _isFirstAttempt = LocalTelemetryService.BeginAttempt(SessionState.SelectedGameMode, _currentStageDefinition.StageNumber);
         _scoreManager.Initialize(_currentStageDefinition, SessionState.SelectedGameMode);
         _carSpawner.Initialize(_currentStageDefinition);
+        FindAnyObjectByType<LaneButtonVisualController>()?.ApplyVisuals();
         _gimmickHudController = GimmickHudController.EnsureInstalled();
         _gimmickHudController.Initialize(_currentStageDefinition, ResolveLaneInputController());
         _gimmickHudController.UpdateState(_scoreManager.State);
         _gimmickHudController.SetGameplayActive(false);
         SoundManager.EnsureInstance().PlayBgm();
 
-        if (!SessionState.IsEndlessMode && TutorialLaunchService.ShouldStartTutorial(_currentStageDefinition.StageNumber))
+        if (TutorialLaunchService.ShouldStartTutorial(_currentStageDefinition.StageNumber))
         {
             _currentState = GameState.Playing;
             _gimmickHudController.SetGameplayActive(true);
@@ -293,7 +294,7 @@ public class GameFlowController : MonoBehaviour
         CarController activeCar = _carSpawner != null ? _carSpawner.GetActiveCar() : null;
         if (activeCar != null && activeCar.RequiresRepair)
         {
-            ApplyMissForCar(activeCar, "修理が必要！");
+            ApplyMissForCar(activeCar, $"{_currentStageDefinition.Theme.RepairAction}！");
             ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
             EvaluateCompletion();
             return;
@@ -319,11 +320,11 @@ public class GameFlowController : MonoBehaviour
                 wasCorrect = true;
                 break;
             case JudgeResult.WrongLane:
-                ApplyMissForCar(activeCar, "ちがう車!");
+                ApplyMissForCar(activeCar, $"ちがう{_currentStageDefinition.Theme.Noun}!");
                 ResolveLaneInputController()?.PlayWrongLaneFeedback(laneType, activeCar.CarType);
                 break;
             case JudgeResult.NoCar:
-                ApplyMiss("車がいない!");
+                ApplyMiss("何もないよ!");
                 ResolveLaneInputController()?.PlayNoCarFeedback(laneType);
                 break;
         }
@@ -362,11 +363,11 @@ public class GameFlowController : MonoBehaviour
         {
             if (activeCar == null)
             {
-                ApplyMiss("車がいない!");
+                ApplyMiss("何もないよ!");
             }
             else
             {
-                ApplyMissForCar(activeCar, "修理は不要！");
+                ApplyMissForCar(activeCar, "同じボタンへ！");
             }
         }
 

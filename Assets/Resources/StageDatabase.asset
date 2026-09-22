@@ -15,8 +15,9 @@ MonoBehaviour:
   _stages:
   - StageNumber: 1
     ChapterNumber: 1
-    DisplayName: 仕分け開始
-    MissionText: 12台を仕分けろ
+    DisplayName: "\u4ED5\u5206\u3051\u958B\u59CB"
+    MissionText: "12\u53F0\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: ef0e8ac51ec14df9a7808f1582f8d2b3, type: 2}
     GoalType: 1
     GoalValue: 12
     TargetScore: 0
@@ -47,8 +48,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 2
     ChapterNumber: 1
-    DisplayName: 三種チェック
-    MissionText: 各車種を4台ずつ仕分けろ
+    DisplayName: "\u4E09\u7A2E\u30C1\u30A7\u30C3\u30AF"
+    MissionText: "\u5404\u7A2E\u985E\u30924\u53F0\u305A\u3064\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: ef0e8ac51ec14df9a7808f1582f8d2b3, type: 2}
     GoalType: 3
     GoalValue: 12
     TargetScore: 0
@@ -79,8 +81,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 3
     ChapterNumber: 1
-    DisplayName: 急送便
-    MissionText: 180点へ到達しろ
+    DisplayName: "\u6025\u9001\u4FBF"
+    MissionText: "180\u70B9\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: ef0e8ac51ec14df9a7808f1582f8d2b3, type: 2}
     GoalType: 0
     GoalValue: 180
     TargetScore: 180
@@ -117,8 +120,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 4
     ChapterNumber: 1
-    DisplayName: 連続作業
-    MissionText: 12コンボへ到達しろ
+    DisplayName: "\u9023\u7D9A\u4F5C\u696D"
+    MissionText: "12\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 306939478faadbc4394ec704b43c05e3, type: 2}
     GoalType: 2
     GoalValue: 12
     TargetScore: 0
@@ -149,8 +153,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 5
     ChapterNumber: 1
-    DisplayName: 第一検定
-    MissionText: 15台をノーミスで仕分けろ
+    DisplayName: "\u7B2C\u4E00\u691C\u5B9A"
+    MissionText: "15\u56DE\u3092\u30CE\u30FC\u30DF\u30B9\u3067\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 306939478faadbc4394ec704b43c05e3, type: 2}
     GoalType: 1
     GoalValue: 15
     TargetScore: 0
@@ -181,8 +186,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 6
     ChapterNumber: 2
-    DisplayName: 正体不明
-    MissionText: 12台を仕分けろ
+    DisplayName: "\u6B63\u4F53\u4E0D\u660E"
+    MissionText: "12\u56DE\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 306939478faadbc4394ec704b43c05e3, type: 2}
     GoalType: 1
     GoalValue: 12
     TargetScore: 0
@@ -219,8 +225,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 7
     ChapterNumber: 2
-    DisplayName: 見切り
-    MissionText: 各車種を4台ずつ仕分けろ
+    DisplayName: "\u898B\u5207\u308A"
+    MissionText: "\u5404\u7A2E\u985E\u30924\u56DE\u305A\u3064\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 306939478faadbc4394ec704b43c05e3, type: 2}
     GoalType: 3
     GoalValue: 12
     TargetScore: 0
@@ -251,8 +258,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 8
     ChapterNumber: 2
-    DisplayName: 30秒耐久
-    MissionText: 30秒間生き残れ
+    DisplayName: "30\u79D2\u8010\u4E45"
+    MissionText: "30\u79D2\u9593\u751F\u304D\u6B8B\u308C"
+    VisualTheme: {fileID: 11400000, guid: 3b743ecc96affe248904ded096356332, type: 2}
     GoalType: 4
     GoalValue: 30
     TargetScore: 0
@@ -283,8 +291,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 9
     ChapterNumber: 2
-    DisplayName: 見破り連鎖
-    MissionText: 15コンボへ到達しろ
+    DisplayName: "\u898B\u7834\u308A\u9023\u9396"
+    MissionText: "15\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 3b743ecc96affe248904ded096356332, type: 2}
     GoalType: 2
     GoalValue: 15
     TargetScore: 0
@@ -315,8 +324,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 10
     ChapterNumber: 2
-    DisplayName: 第二検定
-    MissionText: 300点へ到達しろ
+    DisplayName: "\u7B2C\u4E8C\u691C\u5B9A"
+    MissionText: "300\u70B9\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 3b743ecc96affe248904ded096356332, type: 2}
     GoalType: 0
     GoalValue: 300
     TargetScore: 300
@@ -347,8 +357,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 11
     ChapterNumber: 3
-    DisplayName: 故障対応
-    MissionText: 12台を仕分けろ
+    DisplayName: "\u304A\u624B\u5165\u308C\u5BFE\u5FDC"
+    MissionText: "12\u500B\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 1
     GoalValue: 12
     TargetScore: 0
@@ -385,8 +396,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 12
     ChapterNumber: 3
-    DisplayName: 整備集中
-    MissionText: 18台を仕分けろ
+    DisplayName: "\u624B\u5165\u308C\u96C6\u4E2D"
+    MissionText: "18\u500B\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 1
     GoalValue: 18
     TargetScore: 0
@@ -417,8 +429,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 13
     ChapterNumber: 3
-    DisplayName: 大名行列
-    MissionText: 35秒間生き残れ
+    DisplayName: "\u5927\u540D\u884C\u5217"
+    MissionText: "35\u79D2\u9593\u751F\u304D\u6B8B\u308C"
+    VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 4
     GoalValue: 35
     TargetScore: 0
@@ -449,8 +462,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 14
     ChapterNumber: 3
-    DisplayName: フィーバー維持
-    MissionText: 18コンボへ到達しろ
+    DisplayName: "\u30D5\u30A3\u30FC\u30D0\u30FC\u7DAD\u6301"
+    MissionText: "18\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 2
     GoalValue: 18
     TargetScore: 0
@@ -481,8 +495,9 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 15
     ChapterNumber: 3
-    DisplayName: 最終検定
-    MissionText: 500点へ到達しろ
+    DisplayName: "\u6700\u7D42\u691C\u5B9A"
+    MissionText: "500\u70B9\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 0
     GoalValue: 500
     TargetScore: 500

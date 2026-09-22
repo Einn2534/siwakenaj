@@ -268,7 +268,7 @@ public sealed class StageProgressHudController : MonoBehaviour
         int remaining = Mathf.Max(0, total - completed);
         if (_remainingText != null)
         {
-            _remainingText.text = isEndless ? $"SCORE {score:N0}" : $"\u3042\u3068{remaining}\u53f0";
+            _remainingText.text = isEndless ? $"SCORE {score:N0}" : $"あと{remaining}{CarVisualDatabase.LoadSelected().CountUnit}";
         }
 
         if (_missText != null)

@@ -27,6 +27,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
     private SpriteRenderer _targetCarRenderer;
     private Coroutine _animationRoutine;
     private Vector2 _pointerBasePosition;
+    private Camera CanvasCamera => _canvas != null && _canvas.renderMode != RenderMode.ScreenSpaceOverlay ? _canvas.worldCamera : null;
 
     public void Initialize(Canvas canvas, RectTransform parent)
     {
@@ -208,11 +209,12 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
             ? pointerWidth * (pointerSprite.rect.height / pointerSprite.rect.width)
             : pointerWidth;
         _pointerRect.sizeDelta = new Vector2(pointerWidth, pointerHeight);
+        float bounce = _animationRoutine != null ? Mathf.Clamp(_pointerRect.anchoredPosition.y - _pointerBasePosition.y, -PointerBouncePixels, PointerBouncePixels) : 0f;
         _pointerBasePosition = center + new Vector2(44f, -146f);
-        if (_animationRoutine == null)
-        {
-            _pointerRect.anchoredPosition = _pointerBasePosition;
-        }
+        Vector2 inset = new(pointerWidth * .5f + 12f, pointerHeight * .5f + PointerBouncePixels + 12f);
+        _pointerBasePosition.x = Mathf.Clamp(_pointerBasePosition.x, _root.rect.xMin + inset.x, _root.rect.xMax - inset.x);
+        _pointerBasePosition.y = Mathf.Clamp(_pointerBasePosition.y, _root.rect.yMin + inset.y, _root.rect.yMax - inset.y);
+        _pointerRect.anchoredPosition = _pointerBasePosition + Vector2.up * bounce;
     }
 
     private void UpdateCarCutout()
@@ -234,8 +236,8 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         Vector2 screenMin = RectTransformUtility.WorldToScreenPoint(worldCamera, worldBounds.min);
         Vector2 screenMax = RectTransformUtility.WorldToScreenPoint(worldCamera, worldBounds.max);
 
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMin, null, out Vector2 localMin)
-            || !RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMax, null, out Vector2 localMax))
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMin, CanvasCamera, out Vector2 localMin)
+            || !RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMax, CanvasCamera, out Vector2 localMax))
         {
             return;
         }
@@ -316,8 +318,8 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
             screenMax = Vector2.Max(screenMax, screenPoint);
         }
 
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMin, null, out Vector2 localMin)
-            || !RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMax, null, out Vector2 localMax))
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMin, CanvasCamera, out Vector2 localMin)
+            || !RectTransformUtility.ScreenPointToLocalPointInRectangle(_root, screenMax, CanvasCamera, out Vector2 localMax))
         {
             return false;
         }

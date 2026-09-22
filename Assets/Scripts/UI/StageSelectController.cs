@@ -178,6 +178,22 @@ public class StageSelectController : MonoBehaviour
 
     public void OnHowToOpen()
     {
+        CarVisualDatabase theme = CarVisualDatabase.LoadForStage(_selectedStageNumber);
+        if (_howToTutorialButton != null) _howToTutorialButton.interactable = CanPlaySelectedStage();
+        if (_howToOverlay != null)
+        {
+            foreach (TMP_Text text in _howToOverlay.GetComponentsInChildren<TMP_Text>(true))
+            {
+                if (text.transform.parent.name == "Step_01" && text.name == "Title") text.text = theme.ThemeName;
+                if (text.transform.parent.name == "Step_01" && text.name == "Detail") text.text = theme.MatchInstruction;
+            }
+            foreach (Image image in _howToOverlay.GetComponentsInChildren<Image>(true))
+            {
+                if (image.name != "Icon") continue;
+                string row = image.transform.parent.name;
+                if (row.StartsWith("Step_")) image.sprite = theme.GetIconSprite(row == "Step_01" ? CarType.LightTruck : row == "Step_02" ? CarType.CompactCar : CarType.SportsCar);
+            }
+        }
         SetPanelActive(_settingsOverlay, false);
         SetPanelActive(_howToOverlay, true);
     }
@@ -191,9 +207,10 @@ public class StageSelectController : MonoBehaviour
 
     public void OnTutorialReplayPressed()
     {
+        if (!CanPlaySelectedStage()) return;
         SaveService.SetHowToShown(true);
         SaveService.Save();
-        StageSelectionService.SelectStage(TutorialLaunchService.TutorialStageNumber);
+        StageSelectionService.SelectStage(_selectedStageNumber);
         TutorialLaunchService.RequestReplay();
         SceneManager.LoadScene(MainSceneName);
     }
@@ -254,6 +271,10 @@ public class StageSelectController : MonoBehaviour
         Sprite slicedSprite = GetBuiltinUiSprite();
         BuildChapterTabs(safeArea, slicedSprite);
         BuildStageNavigationUi(safeArea, slicedSprite);
+        _howToButton = CreateButton("ThemeHowToButton", safeArea, slicedSprite, new Vector2(400f, 80f), "テーマのあそびかた", 30f, 24f, FontStyles.Normal, TextColor);
+        SetAnchored((RectTransform)_howToButton.transform, new Vector2(.5f, 0f), new Vector2(.5f, 0f), new Vector2(.5f, .5f), new Vector2(0f, 500f), new Vector2(400f, 80f));
+        _howToButton.onClick.AddListener(OnHowToOpen);
+        _howToOverlay = BuildHowToOverlay(safeArea, slicedSprite).gameObject;
     }
 
     private void BuildChapterTabs(RectTransform safeArea, Sprite slicedSprite)

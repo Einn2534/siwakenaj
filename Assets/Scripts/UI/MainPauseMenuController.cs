@@ -266,6 +266,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         }
 
         _isHowToOpen = true;
+        SortingThemeGuide.Apply(_howToPanelRoot, CarVisualDatabase.LoadSelected());
         if (_menuPanelRoot != null)
         {
             _menuPanelRoot.SetActive(false);
@@ -392,7 +393,6 @@ public sealed class MainPauseMenuController : MonoBehaviour
     private void ReplayTutorial()
     {
         ResumeBeforeNavigation();
-        StageSelectionService.SelectStage(TutorialLaunchService.TutorialStageNumber);
         TutorialLaunchService.RequestReplay();
         SceneManager.LoadScene(MainSceneName);
     }
@@ -887,6 +887,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         Vector2 closeButtonSize = GetSpriteDisplaySize(primaryButtonSprite, 390f);
         _howToCloseButton = CreateHowToActionButton(panel, "CloseButton", primaryButtonSprite, "わかった!", new Vector2(190f, -752f), closeButtonSize, true);
         _howToCloseButton.onClick.AddListener(CloseHowTo);
+        SortingThemeGuide.Apply(_howToPanelRoot, CarVisualDatabase.LoadSelected());
         _howToPanelRoot.SetActive(false);
     }
 
@@ -946,7 +947,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
             SetAnchored(orb.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2((i - 1) * 48f, 34f), new Vector2(40f, 40f));
         }
 
-        TMP_Text missText = CreateText("Label", missCard, "車がいない時もMISS\n上限でしごと終了", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, new Vector2(0f, -30f), new Vector2(300f, 76f));
+        TMP_Text missText = CreateText("Label", missCard, "車がいない時もMISS\n上限でしごと終了", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, new Vector2(0f, -8f), new Vector2(300f, 64f));
         ApplyPauseFont(missText);
 
         RectTransform goalCard = CreatePanel("GoalRule", paper, woodPanelSprite != null ? Color.white : ToggleOnColor);
@@ -962,7 +963,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         Stretch(goalFill, new Vector2(0f, 0f), new Vector2(0.66f, 1f), new Vector2(4f, 4f), new Vector2(-1f, -4f));
         goalFill.GetComponent<Image>().raycastTarget = false;
 
-        TMP_Text goalText = CreateText("Label", goalCard, "上のMISSIONを\n達成でクリア", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, new Vector2(0f, -30f), new Vector2(300f, 76f));
+        TMP_Text goalText = CreateText("Label", goalCard, "上のMISSIONを\n達成でクリア", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white, new Vector2(0f, -8f), new Vector2(300f, 64f));
         ApplyPauseFont(goalText);
     }
 
@@ -995,7 +996,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         bubbleImage.type = speechPanelSprite != null && speechPanelSprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
         bubbleImage.color = speechPanelSprite != null ? new Color(1f, 0.96f, 0.78f, 1f) : bubbleImage.color;
 
-        TMP_Text tipText = CreateText("TipText", bubble, "COMBOをつなぐとFEVERで得点×2\n大名行列（RUSH）は3台連続!", 24f, FontStyles.Normal, TextAlignmentOptions.Left, HowToTextColor, Vector2.zero, new Vector2(500f, 88f));
+        TMP_Text tipText = CreateText("TipText", bubble, "COMBOをつなぐとFEVERで得点×2\n大名行列（RUSH）は3台連続!", 22f, FontStyles.Normal, TextAlignmentOptions.Left, HowToTextColor, new Vector2(0f, 7f), new Vector2(450f, 70f));
         ApplyPauseFont(tipText);
     }
 

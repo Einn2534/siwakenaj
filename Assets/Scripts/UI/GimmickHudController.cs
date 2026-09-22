@@ -30,6 +30,7 @@ public sealed class GimmickHudController : MonoBehaviour
     private int _feverThreshold;
     private bool _isGameplayActive;
     private bool _activeCarRequiresRepair;
+    private CarVisualDatabase _theme;
 
     public static GimmickHudController EnsureInstalled()
     {
@@ -47,6 +48,8 @@ public sealed class GimmickHudController : MonoBehaviour
     {
         BuildInterface();
         StageDefinition safeStage = stageDefinition ?? StageDefinition.CreateFallback(1);
+        _theme = safeStage.Theme;
+        _repairRoot.GetComponentInChildren<TMP_Text>(true).text = $"X  {_theme.RepairAction}";
         _feverThreshold = Mathf.Max(0, safeStage.FeverComboThreshold);
 
         bool hasRepairCars = safeStage.BrokenChance > 0f;
@@ -104,13 +107,13 @@ public sealed class GimmickHudController : MonoBehaviour
         switch (modifier)
         {
             case CarModifier.Express:
-                ShowMessage("急送車！  「!」は得点×2", FeverColor);
+                ShowMessage($"{_theme.ExpressName}！  「!」は得点×2", FeverColor);
                 break;
             case CarModifier.Covered:
-                ShowMessage("覆面車！  「?」が消えてから仕分け", ComboColor);
+                ShowMessage($"{_theme.CoveredName}！  「?」が消えてから仕分け", ComboColor);
                 break;
             case CarModifier.Broken:
-                ShowMessage("故障車！  「X」は整備へ送れ", RepairColor);
+                ShowMessage($"{_theme.BrokenName}！  「X」は{_theme.RepairAction}", RepairColor);
                 break;
         }
     }
@@ -122,7 +125,7 @@ public sealed class GimmickHudController : MonoBehaviour
 
     public void ShowRushStarted()
     {
-        ShowMessage("大名行列！  3台連続", FeverColor, 0.9f);
+        ShowMessage($"大名行列！  3{_theme.CountUnit}連続", FeverColor, 0.9f);
     }
 
     public void StopEffects()

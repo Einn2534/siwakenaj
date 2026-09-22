@@ -69,6 +69,7 @@ public class LaneButtonVisualController : MonoBehaviour
     public void ApplyVisuals()
     {
         CacheReferences();
+        _visualDatabase = CarVisualDatabase.LoadSelected();
         if (_visualDatabase == null || _laneInputController == null)
         {
             return;
@@ -96,7 +97,7 @@ public class LaneButtonVisualController : MonoBehaviour
     {
         ApplyGraphic(graphic, laneType);
         FitGraphicForLabel(graphic);
-        ApplyLabel(graphic, GetLaneLabel(laneType));
+        ApplyLabel(graphic, _visualDatabase.GetDisplayName(laneType));
     }
 
     private void ApplyGraphic(Graphic graphic, CarType laneType)

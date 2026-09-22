@@ -407,9 +407,15 @@ public class ResultController : MonoBehaviour
 
     private void ApplyCarIcons()
     {
+        GameResultData result = SessionState.LastResult;
+        _visualDatabase = result != null ? CarVisualDatabase.LoadForStage(result.StageNumber, result.Mode) : CarVisualDatabase.LoadSelected();
         ApplyCarIcon(_lightTruckIcon, CarType.LightTruck);
         ApplyCarIcon(_compactCarIcon, CarType.CompactCar);
         ApplyCarIcon(_sportsCarIcon, CarType.SportsCar);
+        foreach (CarType type in new[] { CarType.LightTruck, CarType.CompactCar, CarType.SportsCar })
+        {
+            SetText(FindComponent<TMP_Text>($"SafeAreaRoot/ContentRoot/BreakdownCard/Card/Body/StatList/Row_{type}/Label"), _visualDatabase.GetDisplayName(type));
+        }
     }
 
     private void ApplyCarIcon(Image targetImage, CarType carType)
@@ -1219,7 +1225,7 @@ public class ResultController : MonoBehaviour
 
         if (result.IsEndless)
         {
-            return $"自己ベストへ挑戦  {result.TotalCorrect:N0}台";
+            return $"自己ベストへ挑戦  {result.TotalCorrect:N0}{CarVisualDatabase.LoadForStage(result.StageNumber, result.Mode).CountUnit}";
         }
 
         if (result.IsDaily)

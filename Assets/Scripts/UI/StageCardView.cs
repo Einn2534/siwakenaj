@@ -123,7 +123,7 @@ public class StageCardView : MonoBehaviour
         _currentStatus = status;
 
         SetText(_stageNumberText, $"おしごと {_currentStageNumber}");
-        SetText(_stageNameText, stage.DisplayName);
+        SetText(_stageNameText, $"{stage.Theme.ThemeName} / {stage.DisplayName}");
 
         switch (status)
         {
@@ -139,6 +139,11 @@ public class StageCardView : MonoBehaviour
         }
 
         ApplyStageThumbnail(_currentStageNumber, status);
+        if (_vehiclePreviewImage != null)
+        {
+            _vehiclePreviewImage.sprite = stage.Theme.GetIconSprite(CarType.CompactCar);
+            _vehiclePreviewImage.preserveAspect = true;
+        }
         ApplyArtState(status);
         RefreshStarBadge(starRating, status == StageCardStatus.Unlocked);
         ApplySelectionState();

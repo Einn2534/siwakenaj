@@ -78,7 +78,7 @@ public sealed class StageObjectiveEvaluator
         {
             return new StageProgressSnapshot(
                 $"SCORE {_scoreState.CurrentScore:N0}",
-                $"{_scoreState.TotalCorrectCount:N0}台 / MAX {_scoreState.MaxComboCount:N0} COMBO",
+                $"{_scoreState.TotalCorrectCount:N0}{_stage.Theme.CountUnit} / MAX {_scoreState.MaxComboCount:N0} COMBO",
                 1f,
                 _scoreState.CurrentScore,
                 0);
@@ -86,7 +86,7 @@ public sealed class StageObjectiveEvaluator
 
         return _stage.GoalType switch
         {
-            StageGoalType.TotalCorrect => BuildCountSnapshot(_scoreState.TotalCorrectCount, _stage.EffectiveGoalValue, "台"),
+            StageGoalType.TotalCorrect => BuildCountSnapshot(_scoreState.TotalCorrectCount, _stage.EffectiveGoalValue, _stage.Theme.CountUnit),
             StageGoalType.Combo => BuildComboSnapshot(),
             StageGoalType.VehicleQuota => BuildQuotaSnapshot(),
             StageGoalType.Survival => BuildSurvivalSnapshot(),
@@ -145,8 +145,9 @@ public sealed class StageObjectiveEvaluator
         int sports = Mathf.Min(_scoreState.GetCorrectCount(CarType.SportsCar), sportsTarget);
         int current = light + compact + sports;
         int target = _stage.TotalVehicleQuota;
-        string detail = $"軽 {light}/{lightTarget}  小 {compact}/{compactTarget}  ス {sports}/{sportsTarget}";
-        return new StageProgressSnapshot("車種別ノルマ", detail, target > 0 ? current / (float)target : 0f, current, target);
+        CarVisualDatabase theme = _stage.Theme;
+        string detail = $"{theme.GetDisplayName(CarType.LightTruck)} {light}/{lightTarget}  {theme.GetDisplayName(CarType.CompactCar)} {compact}/{compactTarget}  {theme.GetDisplayName(CarType.SportsCar)} {sports}/{sportsTarget}";
+        return new StageProgressSnapshot("種類別ノルマ", detail, target > 0 ? current / (float)target : 0f, current, target);
     }
 
     private StageProgressSnapshot BuildSurvivalSnapshot()

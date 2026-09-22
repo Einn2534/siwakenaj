@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8ee6d24c954da9a52b9084cb8f1f5c, type: 3}
+  m_Name: Hands
+  m_EditorClassIdentifier: Assembly-CSharp::CarVisualDatabase
+  _entries:
+  - _carType: 0
+    _displayName: "\u30B0\u30FC"
+    _bodySprite: {fileID: 21300000, guid: 8252646f30794094dbc21e7afe789b63, type: 3}
+    _iconSprite: {fileID: 21300000, guid: 8252646f30794094dbc21e7afe789b63, type: 3}
+  - _carType: 1
+    _displayName: "\u30C1\u30E7\u30AD"
+    _bodySprite: {fileID: 21300000, guid: f0d1e4f6a778eab4b8574cfdc6f8f39b, type: 3}
+    _iconSprite: {fileID: 21300000, guid: f0d1e4f6a778eab4b8574cfdc6f8f39b, type: 3}
+  - _carType: 2
+    _displayName: "\u30D1\u30FC"
+    _bodySprite: {fileID: 21300000, guid: 4fa1323b51a14c342afa0ee0c02f4cae, type: 3}
+    _iconSprite: {fileID: 21300000, guid: 4fa1323b51a14c342afa0ee0c02f4cae, type: 3}
+  _themeName: "\u3058\u3083\u3093\u3051\u3093"
+  _noun: "\u624B"
+  _countUnit: "\u56DE"
+  _brokenName: "\u304A\u624B\u5165\u308C"
+  _repairAction: "\u624B\u5F53\u3066\u3078\u9001\u308B"
+  _coveredSprite: {fileID: 21300000, guid: 9966b4edc2cb50641baff9cb199dc1e1, type: 3}
+  _isVehicleTheme: 0

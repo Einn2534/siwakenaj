@@ -25,7 +25,8 @@ public static class TutorialLaunchService
             return true;
         }
 
-        return StageNumberUtility.Normalize(stageNumber) == TutorialStageNumber
+        return SessionState.SelectedGameMode == GameMode.Stage
+            && StageNumberUtility.Normalize(stageNumber) == TutorialStageNumber
             && !SaveService.GetTutorialCompleted()
             && !SaveService.GetTutorialSkipped();
     }

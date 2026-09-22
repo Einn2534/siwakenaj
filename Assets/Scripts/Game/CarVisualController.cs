@@ -4,11 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class CarVisualController : MonoBehaviour
 {
-    private const string CoveredSpriteResourcePath = "Gameplay/covered_vehicle";
-
     private static readonly Color ExpressColor = new(1f, 0.78f, 0.22f, 1f);
     private static readonly Color BrokenColor = new(1f, 0.38f, 0.42f, 1f);
-    private static Sprite s_CoveredSprite;
 
     [SerializeField]
     private CarVisualDatabase _visualDatabase;
@@ -17,6 +14,8 @@ public class CarVisualController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
 
     private TextMeshPro _modifierBadge;
+
+    public void SetDatabase(CarVisualDatabase database) => _visualDatabase = database;
 
     private void Awake()
     {
@@ -44,7 +43,7 @@ public class CarVisualController : MonoBehaviour
         }
 
         Sprite sprite = modifier == CarModifier.Covered && !isRevealed
-            ? GetCoveredSprite()
+            ? _visualDatabase.CoveredSprite
             : _visualDatabase.GetBodySprite(carType);
         sprite ??= _visualDatabase.GetBodySprite(CarType.CompactCar);
         if (sprite != null)
@@ -121,12 +120,6 @@ public class CarVisualController : MonoBehaviour
             _modifierBadge.transform.localScale = Vector3.one;
             _modifierBadge.transform.localPosition = new Vector3(0f, 3.5f, -0.1f);
         }
-    }
-
-    private static Sprite GetCoveredSprite()
-    {
-        s_CoveredSprite ??= Resources.Load<Sprite>(CoveredSpriteResourcePath);
-        return s_CoveredSprite;
     }
 
     private void EnsureModifierBadge()

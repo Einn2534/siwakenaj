@@ -76,6 +76,7 @@ public class HowToOverlayController : MonoBehaviour
 
     public void ShowOverlay()
     {
+        SortingThemeGuide.Apply(_overlayPanel, CarVisualDatabase.LoadDefault());
         SetOverlayActive(true);
     }
 

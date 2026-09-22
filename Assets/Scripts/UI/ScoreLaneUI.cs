@@ -65,7 +65,7 @@ public class ScoreLaneUI : MonoBehaviour
 
     private void Awake()
     {
-        _visualDatabase ??= CarVisualDatabase.LoadDefault();
+        _visualDatabase = CarVisualDatabase.LoadSelected();
         CachePrefabMetrics();
     }
 
@@ -275,6 +275,7 @@ public class ScoreLaneUI : MonoBehaviour
                 }
 
                 images[i].sprite = sprite;
+                if (_visualDatabase != null && !_visualDatabase.IsVehicleTheme) images[i].preserveAspect = true;
                 images[i].enabled = true;
                 images[i].color = Color.white;
             }
@@ -283,7 +284,7 @@ public class ScoreLaneUI : MonoBehaviour
 
     private Sprite GetSpriteForLane(CarType laneType)
     {
-        _visualDatabase ??= CarVisualDatabase.LoadDefault();
+        _visualDatabase = CarVisualDatabase.LoadSelected();
         return _visualDatabase != null ? _visualDatabase.GetIconSprite(laneType) : null;
     }
 

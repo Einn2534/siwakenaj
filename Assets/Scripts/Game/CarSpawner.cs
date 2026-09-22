@@ -51,7 +51,7 @@ public class CarSpawner : MonoBehaviour
             ? stageDefinition.FixedSeed
             : unchecked((uint)(Environment.TickCount ^ GetInstanceID()));
         _spawnSequence = new DeterministicSpawnSequence(stageDefinition, seed);
-        _visualDatabase ??= CarVisualDatabase.LoadDefault();
+        _visualDatabase = stageDefinition != null ? stageDefinition.Theme : CarVisualDatabase.LoadDefault();
         CleanupNullCars();
     }
 
@@ -327,6 +327,7 @@ public class CarSpawner : MonoBehaviour
             carObject.AddComponent<CarController>();
         }
 
+        carObject.GetComponent<CarVisualController>().SetDatabase(_visualDatabase);
         return carObject;
     }
 
@@ -419,6 +420,7 @@ public class CarSpawner : MonoBehaviour
         {
             return CarModifier.Normal;
         }
+
 
         float brokenChance = CarModifierRules.ClampChance(_stageDefinition.BrokenChance);
         float coveredChance = CarModifierRules.ClampChance(_stageDefinition.CoveredChance);
