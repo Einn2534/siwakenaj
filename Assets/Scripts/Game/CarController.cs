@@ -6,7 +6,6 @@ using UnityEngine.Serialization;
 public class CarController : MonoBehaviour
 {
     private const float MinimumSpeed = 0f;
-    private const float MissMarginRatio = 0.02f;
     private const float CoveredRevealLineRatio = 0.48f;
 
     [SerializeField, FormerlySerializedAs("carType")]
@@ -15,8 +14,8 @@ public class CarController : MonoBehaviour
     private CarVisualController _visualController;
     private CarModifier _modifier;
     private float _speedWorld;
-    private float _leftEdgeX;
-    private float _missMarginX;
+    private float _initialMissBoundaryX;
+    private CarSpawner _playZoneSource;
     private float _coveredRevealX;
     private bool _hasMissLine;
     private bool _hasReportedMiss;
@@ -34,6 +33,11 @@ public class CarController : MonoBehaviour
     public bool IsRevealed { get; private set; }
     public bool RequiresRepair => CarModifierRules.RequiresRepair(_modifier);
     public int ScoreMultiplier => CarModifierRules.GetScoreMultiplier(_modifier);
+    public float MissBoundaryX => _playZoneSource != null && _playZoneSource.TryGetPlayZoneWorldRect(out Rect zone)
+        ? MissBoundaryGeometry.GetBoundaryX(zone.xMin, zone.width)
+        : _initialMissBoundaryX;
+
+    internal void SetPlayZoneSource(CarSpawner source) => _playZoneSource = source;
 
     private void Awake()
     {
@@ -53,8 +57,8 @@ public class CarController : MonoBehaviour
         IsRevealed = !CarModifierRules.StartsCovered(modifier);
         _visualController?.Apply(carType, modifier, IsRevealed);
         _speedWorld = Mathf.Max(speedWorld * CarModifierRules.GetSpeedMultiplier(modifier), MinimumSpeed);
-        _leftEdgeX = leftEdgeX;
-        _missMarginX = playZoneWidth * MissMarginRatio;
+        _initialMissBoundaryX = MissBoundaryGeometry.GetBoundaryX(leftEdgeX, playZoneWidth);
+        _playZoneSource = null;
         _coveredRevealX = leftEdgeX + (playZoneWidth * CoveredRevealLineRatio);
         _hasMissLine = true;
         _hasReportedMiss = false;
@@ -115,7 +119,7 @@ public class CarController : MonoBehaviour
 
     private void Update()
     {
-        if (!_isInitialized)
+        if (!_isInitialized || Time.timeScale <= 0f)
         {
             return;
         }
@@ -139,6 +143,6 @@ public class CarController : MonoBehaviour
 
     private bool IsOutOfPlayZone()
     {
-        return GetMinX() < (_leftEdgeX - _missMarginX);
+        return GetMinX() < MissBoundaryX;
     }
 }

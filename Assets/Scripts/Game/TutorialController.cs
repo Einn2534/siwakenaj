@@ -144,9 +144,10 @@ public sealed class TutorialController : MonoBehaviour
         SpriteRenderer renderer = _activeCar.GetComponent<SpriteRenderer>();
         if (renderer == null) return;
         float margin = zone.width * .025f;
+        float leftLimit = MissBoundaryGeometry.GetBoundaryX(zone.xMin, zone.width) + margin;
         Bounds bounds = renderer.bounds;
         float shift = bounds.max.x > zone.xMax - margin ? zone.xMax - margin - bounds.max.x
-            : bounds.min.x < zone.xMin + margin ? zone.xMin + margin - bounds.min.x : 0f;
+            : bounds.min.x < leftLimit ? leftLimit - bounds.min.x : 0f;
         _activeCar.transform.position += Vector3.right * shift;
     }
 

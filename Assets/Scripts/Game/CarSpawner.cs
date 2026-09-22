@@ -29,6 +29,7 @@ public class CarSpawner : MonoBehaviour
     private Transform _spawnPoint;
 
     private readonly List<CarController> _activeCars = new();
+    private readonly Vector3[] _playZoneCorners = new Vector3[4];
     private StageDefinition _stageDefinition;
     private Coroutine _spawnCoroutine;
     private Coroutine _rushCoroutine;
@@ -42,6 +43,7 @@ public class CarSpawner : MonoBehaviour
     public event Action RushStarted;
 
     public int LastRushSpawnCount { get; private set; }
+    public RectTransform PlayZone => _playZone;
 
     public void Initialize(StageDefinition stageDefinition)
     {
@@ -248,6 +250,7 @@ public class CarSpawner : MonoBehaviour
 
         float speedWorld = playZoneWorldRect.width * Mathf.Max(carSpeed, 0f);
         car.Initialize(carType, modifier, speedWorld, playZoneWorldRect.xMin, playZoneWorldRect.width);
+        car.SetPlayZoneSource(this);
 
         float carWidth = GetCarWidth(carObject);
         float spawnMarginX = carWidth * SpawnMarginRatio;
@@ -380,10 +383,9 @@ public class CarSpawner : MonoBehaviour
             return false;
         }
 
-        Vector3[] corners = new Vector3[4];
-        _playZone.GetWorldCorners(corners);
-        Vector3 bottomLeft = corners[0];
-        Vector3 topRight = corners[2];
+        _playZone.GetWorldCorners(_playZoneCorners);
+        Vector3 bottomLeft = _playZoneCorners[0];
+        Vector3 topRight = _playZoneCorners[2];
         worldRect = new Rect(bottomLeft.x, bottomLeft.y, topRight.x - bottomLeft.x, topRight.y - bottomLeft.y);
         return worldRect.width > 0f && worldRect.height > 0f;
     }
