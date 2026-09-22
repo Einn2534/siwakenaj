@@ -1,5 +1,11 @@
 # P1 regression testing
 
+## Miss boundary regression (2026-09-23)
+
+`MissBoundaryEditModeTests` は領域左から6%の境界、15%幅の接近表示、対象左端が線上ならセーフ・越えたら見逃しとなることを確認する。
+`GameplayFlowPlayModeTests.MissBoundary_*` は実Mainで接近、通過、重複ミス防止、0.18秒の追加入力保護、Pause中の発光停止、表示と判定のリサイズ追従、再ロード時の単一生成、全モードと停止対象の練習を確認する。
+4テーマ×3解像度の通常・接近・見逃し、計36枚の実プレイPNGを `Deliverables/MissBoundary` に出力する。撮影時にも既存対象の判定座標と線の一致、SafeArea内への収まり、タップを遮らないことを検証する。
+
 ## Full run
 
 PowerShellでプロジェクトルートから実行する。
