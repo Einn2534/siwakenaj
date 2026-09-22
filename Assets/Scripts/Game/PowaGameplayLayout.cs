@@ -14,7 +14,7 @@ public sealed class PowaGameplayLayout : MonoBehaviour
         float height = camera.orthographicSize * 2;
         float width = height * camera.aspect;
         float scale = Mathf.Min(width * .44f, height * .29f) / 5.2f;
-        Vector3 center = camera.ViewportToWorldPoint(new Vector3(.27f, .33f, 0));
+        Vector3 center = camera.ViewportToWorldPoint(new Vector3(.27f, .42f, 0));
         transform.position = new Vector3(center.x, center.y, 0);
         transform.localScale = Vector3.one * scale;
     }
