@@ -262,11 +262,19 @@ public class ScoreLaneUI : MonoBehaviour
 
         Sprite sprite = GetSpriteForLane(laneType);
         Image[] images = icon.GetComponentsInChildren<Image>(true);
+        // The prefab contains both a root Image and a child Image. Rendering both
+        // duplicates the icon at different offsets when preserveAspect is enabled.
+        Image iconImage = icon.GetComponent<Image>();
+        if (iconImage == null && images.Length > 0)
+        {
+            iconImage = images[0];
+        }
+
         for (int i = 0; i < images.Length; i += 1)
         {
             if (images[i] != null)
             {
-                if (sprite == null)
+                if (sprite == null || images[i] != iconImage)
                 {
                     images[i].sprite = null;
                     images[i].enabled = false;
