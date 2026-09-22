@@ -307,18 +307,23 @@ public sealed partial class GameplayFlowPlayModeTests
 
         object coveredCar = SpawnFixedCar(carSpawner, "CompactCar", "Covered");
         Assert.That(GetProperty(coveredCar, "IsRevealed"), Is.False);
-        Sprite coveredSprite = Resources.Load<Sprite>("Gameplay/covered_vehicle");
-        Assert.That(coveredSprite, Is.Not.Null, "Covered vehicle sprite was not imported as a Sprite resource.");
-        Assert.That(coveredSprite.bounds.size.x, Is.EqualTo(9.9f).Within(0.05f));
+        Sprite vehicleCover = Resources.Load<Sprite>("Gameplay/covered_vehicle");
+        Assert.That(vehicleCover, Is.Not.Null, "The original vehicle cover must remain available.");
+        Assert.That(vehicleCover.bounds.size.x, Is.EqualTo(9.9f).Within(0.05f));
+        object theme = InvokeStatic(RequiredType("CarVisualDatabase"), "LoadSelected");
+        Sprite coveredSprite = (Sprite)GetProperty(theme, "CoveredSprite");
+        Assert.That(coveredSprite, Is.Not.Null);
+        Assert.That(coveredSprite, Is.Not.SameAs(vehicleCover), "Stage 11 uses the neutral parcel for vegetables.");
         SpriteRenderer coveredRenderer = (coveredCar as Component)?.GetComponent<SpriteRenderer>();
         Assert.That(coveredRenderer, Is.Not.Null);
-        Assert.That(coveredRenderer.sprite, Is.SameAs(coveredSprite), "Covered cars should use the neutral tarp silhouette.");
+        Assert.That(coveredRenderer.sprite, Is.SameAs(coveredSprite), "Covered objects should use their theme's neutral silhouette.");
         PointerDown(laneInput, "CompactCar");
         yield return SettleInput();
         AssertScore(scoreManager, score: 15, misses: 1);
 
         Invoke(coveredCar, "Reveal");
         Assert.That(coveredRenderer.sprite, Is.Not.SameAs(coveredSprite), "Reveal should restore the actual vehicle sprite.");
+        Assert.That(coveredRenderer.sprite, Is.SameAs(Invoke(theme, "GetBodySprite", EnumValue("CarType", "CompactCar"))));
         PointerDown(laneInput, "CompactCar");
         yield return SettleInput();
         AssertScore(scoreManager, score: 25, misses: 1);

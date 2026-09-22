@@ -24,6 +24,67 @@ public static class RegressionCaptureRunner
     };
 
     private static readonly List<LayoutCaptureResult> Results = new();
+    private static bool _themeEvidenceStarted;
+
+    // Called by PlayMode integration checks while the actual Main/Result/HowTo is live.
+    public static void CaptureCurrentTheme(string stateName)
+    {
+        if (!Application.isPlaying) throw new InvalidOperationException("Theme evidence requires Play mode.");
+        const string output = "Deliverables/SortingThemes/Captures";
+        Directory.CreateDirectory(output);
+        string report = Path.Combine(output, "layout-validation.md");
+        if (!_themeEvidenceStarted)
+        {
+            File.WriteAllText(report, "# Theme captures from real PlayMode flows\n\n", Encoding.UTF8);
+            _themeEvidenceStarted = true;
+        }
+        Scene scene = SceneManager.GetActiveScene();
+        CarController[] cars = UnityEngine.Object.FindObjectsByType<CarController>(FindObjectsSortMode.None).OrderBy(c => (int)c.CarType).ToArray();
+        Vector3[] originalPositions = cars.Select(c => c.transform.position).ToArray();
+        try
+        {
+            foreach (DeviceProfile profile in DeviceProfiles)
+            {
+                SafeAreaFitter.SetEditorSimulation(profile.ScreenSize, profile.SafeArea);
+                List<string> failures = new();
+                PowaScreenshotCapture.CaptureSceneForRegression(scene, Path.Combine(output, $"{stateName}_{profile.Name}.png"), profile.Width, profile.Height, camera =>
+                {
+                    RefreshSafeAreaFitters(scene);
+                    ForceLayouts(scene);
+                    foreach (Canvas canvas in UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+                    {
+                        if (canvas.isRootCanvas && canvas.gameObject.scene == scene)
+                        {
+                            // A modal's scrim blocks the screen beneath it. Validate its visible
+                            // controls using the same modal-root scope as the existing matrix.
+                            Transform root = stateName.EndsWith("_SelectGuide")
+                                ? canvas.transform.Find("SafeAreaRoot/HowToOverlay") : canvas.transform;
+                            failures.AddRange(ValidateLayout(scene, root, profile));
+                        }
+                    }
+                    CarSpawner spawner = UnityEngine.Object.FindFirstObjectByType<CarSpawner>();
+                    if (stateName.EndsWith("_Main") && cars.Length > 1 && spawner != null && spawner.TryGetPlayZoneWorldRect(out Rect rect))
+                        for (int i = 0; i < cars.Length; i++)
+                            cars[i].transform.position = new Vector3(Mathf.Lerp(rect.xMin, rect.xMax, (i + 1f) / (cars.Length + 1f)), rect.center.y, originalPositions[i].z);
+                    // The capture changes camera size synchronously, before the normal LateUpdate.
+                    // Reproject the live tutorial cutouts onto the resized targets before rendering.
+                    foreach (TutorialController tutorial in UnityEngine.Object.FindObjectsByType<TutorialController>(FindObjectsSortMode.None))
+                        InvokePrivate(tutorial, "ClampGuidedCarToPlayZone");
+                    foreach (TutorialFocusGuideView guide in UnityEngine.Object.FindObjectsByType<TutorialFocusGuideView>(FindObjectsSortMode.None))
+                        InvokePrivate(guide, "LateUpdate");
+                });
+                File.AppendAllText(report, $"- {stateName} / {profile.Name}: {(failures.Count == 0 ? "PASS" : "FAIL")}\n" + string.Join("", failures.Distinct().Select(f => "  - " + f + "\n")), Encoding.UTF8);
+                if (failures.Count > 0) throw new InvalidOperationException(string.Join("\n", failures.Distinct()));
+            }
+        }
+        finally
+        {
+            SafeAreaFitter.ClearEditorSimulation();
+            for (int i = 0; i < cars.Length; i++) if (cars[i] != null) cars[i].transform.position = originalPositions[i];
+            RefreshSafeAreaFitters(scene);
+            ForceLayouts(scene);
+        }
+    }
 
     [MenuItem("Tools/Siwakenja/Regression/Capture Layout Matrix")]
     public static void RunFromMenu()
@@ -239,6 +300,8 @@ public static class RegressionCaptureRunner
         SafeAreaFitter.SetEditorSimulation(profile.ScreenSize, profile.SafeArea);
         Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
         prepare?.Invoke();
+        if (scene.name == "Main")
+            UnityEngine.Object.FindFirstObjectByType<LaneButtonVisualController>(FindObjectsInactive.Include)?.ApplyVisuals();
         RefreshSafeAreaFitters(scene);
 
         string screenshotPath = Path.Combine(outputDirectory, $"{stateName}_{profile.Name}.png");
@@ -341,7 +404,7 @@ public static class RegressionCaptureRunner
             TMP_Text messageText = messageRoot.GetComponentInChildren<TMP_Text>(true);
             if (messageText != null)
             {
-                messageText.text = "急送車！  「!」は得点×2";
+                messageText.text = $"{stageFifteen.Theme.ExpressName}！  「!」は得点×2";
             }
 
             messageRoot.gameObject.SetActive(true);
