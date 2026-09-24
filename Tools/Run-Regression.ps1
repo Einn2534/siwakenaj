@@ -58,7 +58,6 @@ Invoke-UnityRegressionStep -Name 'EditMode' -Arguments @(
 
 Invoke-UnityRegressionStep -Name 'PlayMode' -Arguments @(
     '-batchmode',
-    '-nographics',
     '-projectPath', $quotedProjectPath,
     '-runTests',
     '-testPlatform', 'PlayMode',

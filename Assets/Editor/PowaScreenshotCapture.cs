@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using TMPro;
 using UnityEditor;
@@ -368,7 +369,8 @@ public static class PowaScreenshotCapture
             : Array.Empty<StageCardView>();
         SetPrivateField(controller, "_stageDatabase", stageDatabase);
         SetPrivateField(controller, "_stageCardViews", cards);
-        SetPrivateField(controller, "_currentChapter", Mathf.Clamp(chapter, 1, 3));
+        int chapterCount = stageDatabase.Stages.Where(stage => stage != null).Select(stage => stage.ChapterNumber).DefaultIfEmpty(1).Max();
+        SetPrivateField(controller, "_currentChapter", Mathf.Clamp(chapter, 1, chapterCount));
         InvokePrivateMethod(controller, "BuildUtilityUi");
         InvokePrivateMethod(controller, "ApplyChapterFilter");
         InvokePrivateMethod(controller, "ApplySelectionIndex", 0);

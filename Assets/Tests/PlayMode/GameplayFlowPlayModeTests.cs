@@ -14,6 +14,7 @@ public sealed partial class GameplayFlowPlayModeTests
     private const float SceneTimeoutSeconds = 12f;
     private const float ResultUnlockTimeoutSeconds = 5f;
     private const float TestTimeScale = 20f;
+    private const int CampaignStageCount = 20;
 
     private static readonly string[] BasePlayerPrefsKeys =
     {
@@ -96,7 +97,7 @@ public sealed partial class GameplayFlowPlayModeTests
         PlayerPrefs.DeleteKey("GimmickHintSeen_Express");
         PlayerPrefs.DeleteKey("GimmickHintSeen_Covered");
         PlayerPrefs.DeleteKey("GimmickHintSeen_Broken");
-        for (int i = 1; i <= 15; i += 1)
+        for (int i = 1; i <= CampaignStageCount; i += 1)
         {
             PlayerPrefs.DeleteKey($"StageClear_{i}");
             PlayerPrefs.DeleteKey($"BestTime_Stage{i}");
@@ -416,6 +417,7 @@ public sealed partial class GameplayFlowPlayModeTests
         Assert.That(daily, Is.Not.Null);
         Assert.That(endless, Is.Not.Null);
         Assert.That(GetButtonText(campaign), Does.Contain("おしごと"));
+        Assert.That(GetButtonText(campaign), Does.Contain("20 STAGES"));
         Assert.That(GetButtonText(daily), Does.Contain("デイリー"));
         Assert.That(GetButtonText(endless), Does.Contain("エンドレス"));
 
@@ -423,7 +425,7 @@ public sealed partial class GameplayFlowPlayModeTests
         yield return WaitForScene("StageSelect", SceneTimeoutSeconds);
         yield return WaitUntil(() => FindSceneObject("ChapterTabs") != null, 3f, "Chapter tabs were not created.");
         GameObject chapterTabs = FindSceneObject("ChapterTabs");
-        Assert.That(chapterTabs.GetComponentsInChildren<UnityEngine.UI.Button>(true), Has.Length.EqualTo(3));
+        Assert.That(chapterTabs.GetComponentsInChildren<UnityEngine.UI.Button>(true), Has.Length.EqualTo(4));
 
         object controller = FindSceneComponent("StageSelectController");
         Invoke(controller, "SelectChapter", 3);
@@ -865,7 +867,10 @@ public sealed partial class GameplayFlowPlayModeTests
         Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(1));
         Assert.That(GetProperty(GetField(tutorial, "_activeCar"), "Modifier").ToString(), Is.EqualTo("Express"));
 
-        PointerDown(laneInput, "CompactCar");
+        // The input controller ignores taps inside its short debounce window.
+        yield return new WaitForSecondsRealtime(0.1f);
+        string practiceCarType = GetProperty(GetField(tutorial, "_activeCar"), "CarType").ToString();
+        PointerDown(laneInput, practiceCarType);
         yield return SettleInput();
         Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(2));
         yield return WaitUntil(() => !(bool)GetProperty(tutorial, "IsRunning"),
@@ -1303,7 +1308,7 @@ public sealed partial class GameplayFlowPlayModeTests
     private static string[] BuildIntPlayerPrefsKeys()
     {
         List<string> keys = new(BasePlayerPrefsKeys);
-        for (int i = 1; i <= 15; i += 1)
+        for (int i = 1; i <= CampaignStageCount; i += 1)
         {
             keys.Add($"BestScore_Stage{i}");
             keys.Add($"StarRating_Stage{i}");
@@ -1312,7 +1317,7 @@ public sealed partial class GameplayFlowPlayModeTests
 
         foreach (string mode in new[] { "0", "1", "2" })
         {
-            for (int i = 1; i <= 15; i += 1)
+            for (int i = 1; i <= CampaignStageCount; i += 1)
             {
                 keys.Add($"Telemetry_Attempted_{mode}_{i}");
             }
@@ -1323,6 +1328,6 @@ public sealed partial class GameplayFlowPlayModeTests
 
     private static string[] BuildFloatPlayerPrefsKeys()
     {
-        return Enumerable.Range(1, 15).Select(stage => $"BestTime_Stage{stage}").ToArray();
+        return Enumerable.Range(1, CampaignStageCount).Select(stage => $"BestTime_Stage{stage}").ToArray();
     }
 }

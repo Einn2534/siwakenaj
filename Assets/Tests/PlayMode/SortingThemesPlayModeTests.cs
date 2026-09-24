@@ -14,6 +14,29 @@ public sealed partial class GameplayFlowPlayModeTests
     [UnityTest, Order(31)] public IEnumerator HandsThemeRealFlow() => CheckThemeFlow(4, "じゃんけん");
     [UnityTest, Order(32)] public IEnumerator ClockThemeRealFlow() => CheckThemeFlow(8, "時計");
     [UnityTest, Order(33)] public IEnumerator GreensThemeRealFlow() => CheckThemeFlow(11, "葉野菜");
+    [UnityTest, Order(37)] public IEnumerator BeansThemeRealFlow() => CheckThemeFlow(16, "豆類");
+    [UnityTest, Order(38)] public IEnumerator ReptilesThemeRealFlow() => CheckThemeFlow(17, "爬虫類");
+    [UnityTest, Order(39)] public IEnumerator PosesThemeRealFlow() => CheckThemeFlow(18, "ポーズ");
+    [UnityTest, Order(40)] public IEnumerator ErasThemeRealFlow() => CheckThemeFlow(19, "時代");
+    [UnityTest, Order(41)] public IEnumerator HiraganaThemeRealFlow() => CheckThemeFlow(20, "ひらがな");
+
+    [UnityTest, Order(42)]
+    public IEnumerator FinalChapterStageReturnsToSelection()
+    {
+        for (int stage = 1; stage < 20; stage++) PlayerPrefs.SetInt($"StageClear_{stage}", 1);
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", 20);
+        yield return LoadScene("Main");
+        object flow = FindSceneComponent("GameFlowController");
+        yield return WaitUntil(() => GetBool(flow, "IsPlaying"), SceneTimeoutSeconds, "Final chapter stage did not start");
+        yield return CompleteCurrentStageThroughRealInput(flow, 20);
+        yield return WaitForScene("Result", SceneTimeoutSeconds);
+        object result = FindSceneComponent("ResultController");
+        yield return WaitUntil(() => (bool)GetField(result, "_areResultActionsUnlocked"), 6f, "Final result locked");
+        Invoke(result, "OnNextStagePressed");
+        yield return WaitForScene("StageSelect", SceneTimeoutSeconds);
+        yield return WaitUntil(() => Equals(Invoke(FindSceneComponent("StageSelectController"), "GetSelectedStageNumber"), 20),
+            SceneTimeoutSeconds, "Final stage selection did not settle on stage 20");
+    }
 
     private IEnumerator CheckThemeFlow(int stageNumber, string title)
     {
@@ -103,6 +126,8 @@ public sealed partial class GameplayFlowPlayModeTests
             Assert.That(icon.sprite, Is.SameAs(Invoke(theme, "GetIconSprite", EnumValue("CarType", types[index]))));
         }
         Assert.That(PlayerPrefs.GetInt($"StageClear_{stageNumber}"), Is.EqualTo(1));
+        if (stageNumber >= 16)
+            Assert.That(PlayerPrefs.GetInt($"StarRating_Stage{stageNumber}"), Is.EqualTo(2));
         CaptureTheme($"Stage{stageNumber:00}_Result");
         yield return RetryFromResult(stageNumber);
         flow = FindSceneComponent("GameFlowController");
@@ -135,7 +160,7 @@ public sealed partial class GameplayFlowPlayModeTests
     [UnityTest, Order(34)]
     public IEnumerator ThemeBoundariesNextAndModeSwitchesResolveFreshData()
     {
-        foreach (int stageNumber in new[] { 3, 7, 10 })
+        foreach (int stageNumber in new[] { 3, 7, 10, 15, 16, 17, 18, 19 })
         {
             InvokeStatic(RequiredType("SessionState"), "SelectStage", stageNumber);
             yield return LoadScene("Main");
@@ -160,7 +185,7 @@ public sealed partial class GameplayFlowPlayModeTests
             object flow = FindSceneComponent("GameFlowController");
             yield return WaitUntil(() => GetBool(flow, "IsPlaying"), SceneTimeoutSeconds, "Mode did not start");
             object theme = InvokeStatic(RequiredType("CarVisualDatabase"), "LoadSelected");
-            Assert.That(GetProperty(theme, "ThemeName"), Is.EqualTo(mode == "SelectEndless" ? "葉野菜" : "くるま"));
+            Assert.That(GetProperty(theme, "ThemeName"), Is.EqualTo(mode == "SelectEndless" ? "時代" : "くるま"));
             AssertThemeButtons(theme);
         }
     }
@@ -168,7 +193,7 @@ public sealed partial class GameplayFlowPlayModeTests
     [UnityTest, Order(35)]
     public IEnumerator QuotaLabelsAndThemedFailureKeepTheirNames()
     {
-        foreach (int stageNumber in new[] { 2, 7, 8, 11 })
+        foreach (int stageNumber in new[] { 2, 7, 8, 11, 16, 17, 18, 19, 20 })
         {
             InvokeStatic(RequiredType("SessionState"), "SelectStage", stageNumber);
             yield return LoadScene("Main");
@@ -178,7 +203,7 @@ public sealed partial class GameplayFlowPlayModeTests
             Invoke(spawner, "StopSpawning");
             Invoke(spawner, "DespawnAllCars");
             yield return null;
-            if (stageNumber == 2 || stageNumber == 7) CaptureTheme($"Stage{stageNumber:00}_Quota");
+            if (stageNumber == 2 || stageNumber == 7 || stageNumber == 17) CaptureTheme($"Stage{stageNumber:00}_Quota");
             object theme = InvokeStatic(RequiredType("CarVisualDatabase"), "LoadSelected");
             object lane = FindSceneComponent("LaneInputController");
             int missLimit = (int)GetProperty(GetProperty(FindSceneComponent("ScoreManager"), "State"), "MissLimit");

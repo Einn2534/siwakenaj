@@ -10,7 +10,8 @@ public static class MissBoundaryCapture
     public static void Capture(string stateName, CarController car, float distanceRatio)
     {
         if (!Application.isPlaying) throw new InvalidOperationException("Boundary evidence requires Play mode.");
-        const string output = "Deliverables/MissBoundary";
+        string output = Environment.GetEnvironmentVariable("SIWAKENJA_MISS_BOUNDARY_OUTPUT");
+        if (string.IsNullOrWhiteSpace(output)) output = "Deliverables/MissBoundary";
         Directory.CreateDirectory(output);
         Vector2Int[] sizes = { new(1080, 1920), new(1170, 2532), new(1440, 3200) };
         Rect[] safeAreas = { new(0, 0, 1080, 1920), new(0, 102, 1170, 2289), new(0, 120, 1440, 2960) };

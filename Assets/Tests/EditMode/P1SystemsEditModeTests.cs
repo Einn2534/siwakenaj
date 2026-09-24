@@ -41,12 +41,12 @@ public sealed class P1SystemsEditModeTests
     }
 
     [Test]
-    public void StageDatabase_ContainsThreeChaptersAndAllFiveGoalTypes()
+    public void StageDatabase_ContainsFourChaptersAndAllFiveGoalTypes()
     {
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
         Assert.That(database, Is.Not.Null);
         IList stages = (IList)CoreReflection.GetProperty<object>(database, "Stages");
-        Assert.That(stages.Count, Is.EqualTo(15));
+        Assert.That(stages.Count, Is.EqualTo(20));
 
         HashSet<string> goalTypes = new();
         for (int i = 0; i < stages.Count; i += 1)
@@ -56,7 +56,7 @@ public sealed class P1SystemsEditModeTests
             Assert.That(GetField<int>(stage, "ChapterNumber"), Is.EqualTo((i / 5) + 1));
             Assert.That(GetField<string>(stage, "DisplayName"), Is.Not.Empty);
             Assert.That(GetField<string>(stage, "MissionText"), Is.Not.Empty);
-            string expectedSpawnPattern = i + 1 is 2 or 7
+            string expectedSpawnPattern = i + 1 is 2 or 7 or 17
                 ? "BalancedBag"
                 : i + 1 is 3 or 6 or 11 ? "FixedIntroThenBag" : "WeightedRandom";
             Assert.That(GetField<object>(stage, "SpawnPattern").ToString(), Is.EqualTo(expectedSpawnPattern), $"stage {i + 1}");

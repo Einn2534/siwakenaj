@@ -30,7 +30,8 @@ public static class RegressionCaptureRunner
     public static void CaptureCurrentTheme(string stateName)
     {
         if (!Application.isPlaying) throw new InvalidOperationException("Theme evidence requires Play mode.");
-        const string output = "Deliverables/SortingThemes/Captures";
+        string output = Environment.GetEnvironmentVariable("SIWAKENJA_THEME_CAPTURE_OUTPUT");
+        if (string.IsNullOrWhiteSpace(output)) output = "Deliverables/SortingThemes/Captures";
         Directory.CreateDirectory(output);
         string report = Path.Combine(output, "layout-validation.md");
         if (!_themeEvidenceStarted)
@@ -111,6 +112,7 @@ public static class RegressionCaptureRunner
                 CaptureTitle(profile, absoluteOutputDirectory, true);
                 CaptureStageSelect(profile, absoluteOutputDirectory, 1);
                 CaptureStageSelect(profile, absoluteOutputDirectory, 3);
+                CaptureStageSelect(profile, absoluteOutputDirectory, 4);
                 CaptureMain(profile, absoluteOutputDirectory);
                 CaptureMainStageFiveHud(profile, absoluteOutputDirectory);
                 CaptureMainDailyHud(profile, absoluteOutputDirectory);
