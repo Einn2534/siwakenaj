@@ -127,9 +127,9 @@ public sealed class P1SystemsEditModeTests
         Assert.That(CoreReflection.GetProperty<bool>(dailyEvaluator, "CanOfferRewardedContinue"), Is.False);
 
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
-        object noMissStage = CoreReflection.Call(database, "GetStageDefinition", 5);
-        Assert.That(GetField<int>(noMissStage, "MissLimit"), Is.EqualTo(1));
-        Assert.That(GetField<bool>(noMissStage, "AllowRewardedContinue"), Is.False);
+        object firstExam = CoreReflection.Call(database, "GetStageDefinition", 5);
+        Assert.That(GetField<int>(firstExam, "MissLimit"), Is.EqualTo(2));
+        Assert.That(GetField<bool>(firstExam, "AllowRewardedContinue"), Is.False);
     }
 
     [Test]

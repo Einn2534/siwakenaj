@@ -583,7 +583,7 @@ public sealed partial class GameplayFlowPlayModeTests
 
             if (stageNumber is 1 or 5 or 10)
             {
-                int expectedMissSlots = stageNumber == 5 ? 1 : stageNumber == 10 ? 2 : 3;
+                int expectedMissSlots = stageNumber == 5 ? 2 : 3;
                 Assert.That(CountActiveSlots(FindSceneComponent("StageProgressHudController"), "_missOrbs"), Is.EqualTo(expectedMissSlots), $"stage {stageNumber}");
             }
 

@@ -109,6 +109,9 @@ public sealed partial class GameplayFlowPlayModeTests
             int before = ResultEventCount();
             PointerDown(input, "SportsCar");
             yield return SettlePowaInput();
+            Assert.That(GetBool(flow, "IsPlaying"), Is.True, "The first exam allows one miss.");
+            PointerDown(input, "SportsCar");
+            yield return SettlePowaInput();
             if (!disconnect)
             {
                 Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("Main"));
@@ -116,7 +119,7 @@ public sealed partial class GameplayFlowPlayModeTests
                 Invoke(flow, "FinalizeGameOver");
             }
             yield return WaitForScene("Result", 3f);
-            AssertStoredResult(false, 0, 1, 5);
+            AssertStoredResult(false, 0, 2, 5);
             Assert.That(ResultEventCount() - before, Is.EqualTo(1));
         }
     }

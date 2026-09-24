@@ -67,6 +67,27 @@ public sealed class StageDatabaseEditModeTests
     }
 
     [Test]
+    public void StageDatabase_CampaignDifficultyRisesGraduallyWithinEachChapter()
+    {
+        ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
+        for (int chapter = 0; chapter < 3; chapter++)
+        {
+            for (int offset = 1; offset < 5; offset++)
+            {
+                int stageNumber = chapter * 5 + offset + 1;
+                object previous = CoreReflection.Call(database, "GetStageDefinition", stageNumber - 1);
+                object current = CoreReflection.Call(database, "GetStageDefinition", stageNumber);
+                float speedIncrease = CoreReflection.GetField<float>(current, "CarSpeed")
+                    - CoreReflection.GetField<float>(previous, "CarSpeed");
+                float intervalDecrease = CoreReflection.GetField<float>(previous, "SpawnInterval")
+                    - CoreReflection.GetField<float>(current, "SpawnInterval");
+                Assert.That(speedIncrease, Is.InRange(0f, 0.041f), $"stage {stageNumber} speed");
+                Assert.That(intervalDecrease, Is.InRange(0f, 0.071f), $"stage {stageNumber} spawn interval");
+            }
+        }
+    }
+
+    [Test]
     public void StageDatabase_GetStageDefinitionMatchesSafeNumberOrFallsBack()
     {
         Type definitionType = CoreReflection.RequiredType("StageDefinition");
