@@ -60,6 +60,7 @@ public class TitleController : MonoBehaviour
 
     private void BuildModeButtons()
     {
+        _stageDatabase ??= Resources.Load<StageDatabase>(StageDatabaseResourcePath);
         Button campaignButton = GameObject.Find("StageSelectButton")?.GetComponent<Button>();
         if (campaignButton == null || campaignButton.transform.parent is not RectTransform root)
         {
@@ -101,7 +102,8 @@ public class TitleController : MonoBehaviour
         Button endlessButton = Instantiate(campaignButton, column, false);
         endlessButton.name = "EndlessButton";
 
-        ConfigureModeButton(campaignButton, "おしごと", "15 STAGES", true, OnStartPressed);
+        int stageCount = _stageDatabase != null ? _stageDatabase.Stages.Count : 0;
+        ConfigureModeButton(campaignButton, "おしごと", $"{stageCount} STAGES", true, OnStartPressed);
         bool extendedUnlocked = SaveService.IsExtendedModeUnlocked();
         string lockedDetail = "おしごと5クリアで解放";
         ConfigureModeButton(dailyButton, "デイリー", extendedUnlocked ? "JST / 60 SECONDS" : lockedDetail, extendedUnlocked, OnDailyPressed);

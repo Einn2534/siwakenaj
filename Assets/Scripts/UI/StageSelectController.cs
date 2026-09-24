@@ -99,12 +99,11 @@ public class StageSelectController : MonoBehaviour
     private IEnumerator Start()
     {
         SoundManager.EnsureInstance().PlayStageSelectBgm();
-        BuildUtilityUi();
-
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
         SaveService.EnsureProgressMigration(_stageDatabase);
+        BuildUtilityUi();
         int lastStageNumber = SaveService.GetLastStage();
-        _currentChapter = Mathf.Clamp(((lastStageNumber - 1) / 5) + 1, 1, 3);
+        _currentChapter = Mathf.Clamp(((lastStageNumber - 1) / 5) + 1, 1, GetChapterCount());
         EnsureStageCardViews();
 
         if (_swipeSnapController != null)
@@ -303,7 +302,7 @@ public class StageSelectController : MonoBehaviour
         layout.childForceExpandWidth = true;
         layout.childForceExpandHeight = true;
 
-        for (int chapter = 1; chapter <= 3; chapter += 1)
+        for (int chapter = 1; chapter <= GetChapterCount(); chapter += 1)
         {
             int capturedChapter = chapter;
             Button button = CreateButton($"Chapter{chapter}Tab", tabs, slicedSprite, Vector2.zero, $"第{chapter}章", 34f, 24f, FontStyles.Normal, TextColor);
@@ -341,20 +340,11 @@ public class StageSelectController : MonoBehaviour
         float cardTopDistance = _safeArea.rect.yMax - cardBounds.max.y;
         float tabsTopDistance = Mathf.Max(0f, cardTopDistance - _chapterTabs.rect.height - 10f);
         _chapterTabs.anchoredPosition = new Vector2(0f, -tabsTopDistance);
-        // Shorter portrait screens can move the tabs into the heading.
-        if (_safeArea.Find("HeaderText") is RectTransform heading)
-        {
-            Bounds headingBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_safeArea, heading);
-            Bounds tabsBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(_safeArea, _chapterTabs);
-            float overlap = tabsBounds.max.y + 16f - headingBounds.min.y;
-            if (overlap > 0f)
-                heading.position += _safeArea.TransformVector(new Vector3(0f, overlap, 0f));
-        }
     }
 
     public void SelectChapter(int chapter)
     {
-        _currentChapter = Mathf.Clamp(chapter, 1, 3);
+        _currentChapter = Mathf.Clamp(chapter, 1, GetChapterCount());
         ApplyChapterFilter();
         _swipeSnapController?.JumpToIndex(0);
         ApplySelectionIndex(0);
@@ -695,8 +685,11 @@ public class StageSelectController : MonoBehaviour
         }
 
         int clampedIndex = Mathf.Clamp(index, 0, selectableCount - 1);
-        int databaseIndex = ((_currentChapter - 1) * 5) + clampedIndex;
-        databaseIndex = Mathf.Clamp(databaseIndex, 0, _stageDatabase.Stages.Count - 1);
+        int databaseIndex = GetStageIndexInChapter(_currentChapter, clampedIndex);
+        if (databaseIndex < 0)
+        {
+            return;
+        }
         _selectedGameMode = GameMode.Stage;
         StageDefinition stageDefinition = _stageDatabase.Stages[databaseIndex];
         _selectedStageNumber = GetDisplayStageNumber(stageDefinition, databaseIndex);
@@ -922,9 +915,9 @@ public class StageSelectController : MonoBehaviour
 
         if (_stageDatabase.TryGetStageIndex(preferredStageNumber, out int preferredIndex) && IsPlayableStage(preferredIndex))
         {
-            _currentChapter = Mathf.Clamp((_stageDatabase.Stages[preferredIndex].ChapterNumber), 1, 3);
+            _currentChapter = Mathf.Clamp((_stageDatabase.Stages[preferredIndex].ChapterNumber), 1, GetChapterCount());
             ApplyChapterFilter();
-            return preferredIndex % 5;
+            return GetIndexWithinChapter(preferredIndex);
         }
 
         for (int i = 0; i < _stageDatabase.Stages.Count; i += 1)
@@ -932,9 +925,9 @@ public class StageSelectController : MonoBehaviour
             if (IsPlayableStage(i))
             {
                 StageDefinition stage = _stageDatabase.Stages[i];
-                _currentChapter = stage != null ? Mathf.Clamp(stage.ChapterNumber, 1, 3) : 1;
+                _currentChapter = stage != null ? Mathf.Clamp(stage.ChapterNumber, 1, GetChapterCount()) : 1;
                 ApplyChapterFilter();
-                return i % 5;
+                return GetIndexWithinChapter(i);
             }
         }
 
@@ -986,6 +979,74 @@ public class StageSelectController : MonoBehaviour
         }
 
         return count;
+    }
+
+    private int GetChapterCount()
+    {
+        int count = 1;
+        if (_stageDatabase == null)
+        {
+            return count;
+        }
+
+        foreach (StageDefinition stage in _stageDatabase.Stages)
+        {
+            if (stage != null)
+            {
+                count = Mathf.Max(count, stage.ChapterNumber);
+            }
+        }
+
+        return count;
+    }
+
+    private int GetStageIndexInChapter(int chapter, int chapterIndex)
+    {
+        if (_stageDatabase == null)
+        {
+            return -1;
+        }
+
+        int currentIndex = 0;
+        for (int i = 0; i < _stageDatabase.Stages.Count; i += 1)
+        {
+            StageDefinition stage = _stageDatabase.Stages[i];
+            if (stage == null || stage.ChapterNumber != chapter)
+            {
+                continue;
+            }
+
+            if (currentIndex == chapterIndex)
+            {
+                return i;
+            }
+
+            currentIndex += 1;
+        }
+
+        return -1;
+    }
+
+    private int GetIndexWithinChapter(int stageIndex)
+    {
+        if (_stageDatabase == null || stageIndex < 0 || stageIndex >= _stageDatabase.Stages.Count)
+        {
+            return 0;
+        }
+
+        StageDefinition selected = _stageDatabase.Stages[stageIndex];
+        int chapter = selected != null ? selected.ChapterNumber : 1;
+        int chapterIndex = 0;
+        for (int i = 0; i < stageIndex; i += 1)
+        {
+            StageDefinition stage = _stageDatabase.Stages[i];
+            if (stage != null && stage.ChapterNumber == chapter)
+            {
+                chapterIndex += 1;
+            }
+        }
+
+        return chapterIndex;
     }
 
     private int GetEndlessIndex()
