@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8ee6d24c954da9a52b9084cb8f1f5c, type: 3}
+  m_Name: Beans
+  m_EditorClassIdentifier: Assembly-CSharp::CarVisualDatabase
+  _entries:
+  - _carType: 0
+    _displayName: "\u30A4\u30F3\u30B2\u30F3"
+    _bodySprite: {fileID: 21300000, guid: b35bd08a09ef2c448ac414bb8686ab89, type: 3}
+    _iconSprite: {fileID: 21300000, guid: b35bd08a09ef2c448ac414bb8686ab89, type: 3}
+  - _carType: 1
+    _displayName: "\u30B5\u30E4\u30A8\u30F3\u30C9\u30A6"
+    _bodySprite: {fileID: 21300000, guid: 9e0e600d106887c46860680d11e18411, type: 3}
+    _iconSprite: {fileID: 21300000, guid: 9e0e600d106887c46860680d11e18411, type: 3}
+  - _carType: 2
+    _displayName: "\u679D\u8C46"
+    _bodySprite: {fileID: 21300000, guid: 024aa45bc8542124bb2664ad6ac0a6c4, type: 3}
+    _iconSprite: {fileID: 21300000, guid: 024aa45bc8542124bb2664ad6ac0a6c4, type: 3}
+  _themeName: "\u8C46\u985E"
+  _noun: "\u8C46"
+  _countUnit: "\u500B"
+  _brokenName: "\u50B7\u3093\u3060\u8C46"
+  _repairAction: "\u624B\u5165\u308C\u3078\u9001\u308B"
+  _coveredSprite: {fileID: 21300000, guid: 9966b4edc2cb50641baff9cb199dc1e1, type: 3}
+  _isVehicleTheme: 0

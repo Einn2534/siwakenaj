@@ -137,7 +137,7 @@ public class StageDefinition
         return new StageDefinition
         {
             StageNumber = StageNumberUtility.Normalize(source.StageNumber),
-            ChapterNumber = Mathf.Clamp(source.ChapterNumber, 1, 3),
+            ChapterNumber = Mathf.Max(1, source.ChapterNumber),
             VisualTheme = source.VisualTheme,
             DisplayName = "エンドレス",
             MissionText = "1ミスまで自己ベストへ挑戦",
