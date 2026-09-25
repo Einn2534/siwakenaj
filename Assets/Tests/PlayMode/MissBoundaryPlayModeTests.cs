@@ -119,7 +119,7 @@ public sealed partial class GameplayFlowPlayModeTests
             Assert.That(GetField(car, "_speedWorld"), Is.EqualTo(0f));
             MoveToBoundaryDistance(car, spawner, -.03f);
             Invoke(tutorial, "ClampGuidedCarToPlayZone");
-            Assert.That((float)Invoke(car, "GetMinX"), Is.GreaterThan((float)GetProperty(car, "MissBoundaryX")));
+            Assert.That((float)Invoke(car, "GetMissPointX"), Is.GreaterThan((float)GetProperty(car, "MissBoundaryX")));
             Assert.That(FindSceneComponents("MissBoundaryView").Count(), Is.EqualTo(1));
             Invoke(tutorial, "SkipTutorial");
             yield return null;
@@ -152,9 +152,9 @@ public sealed partial class GameplayFlowPlayModeTests
         RectTransform zone = (RectTransform)GetProperty(spawner, "PlayZone");
         Vector3[] corners = new Vector3[4];
         zone.GetWorldCorners(corners);
-        float minX = (float)Invoke(car, "GetMinX");
+        float missPointX = (float)Invoke(car, "GetMissPointX");
         float targetX = (float)GetProperty(car, "MissBoundaryX") + (corners[2].x - corners[0].x) * widthRatio;
-        car.transform.position += Vector3.right * (targetX - minX);
+        car.transform.position += Vector3.right * (targetX - missPointX);
     }
 
     private static void CaptureBoundary(string stateName, Component car, float distanceRatio)

@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 public class CarController : MonoBehaviour
 {
     private const float MinimumSpeed = 0f;
-    private const float CoveredRevealLineRatio = 0.48f;
+    private const float CoveredRevealLineRatio = 0.58f;
 
     [SerializeField, FormerlySerializedAs("carType")]
     private CarType _carType;
@@ -93,6 +93,16 @@ public class CarController : MonoBehaviour
         return transform.position.x;
     }
 
+    public float GetMissPointX()
+    {
+        if (BoundsHelper.TryGetBounds(gameObject, out Bounds bounds))
+        {
+            return MissBoundaryGeometry.GetMissPointX(bounds.min.x, bounds.size.x);
+        }
+
+        return transform.position.x;
+    }
+
     public void Despawn()
     {
         if (_isDespawning)
@@ -143,6 +153,6 @@ public class CarController : MonoBehaviour
 
     private bool IsOutOfPlayZone()
     {
-        return GetMinX() < MissBoundaryX;
+        return GetMissPointX() < MissBoundaryX;
     }
 }

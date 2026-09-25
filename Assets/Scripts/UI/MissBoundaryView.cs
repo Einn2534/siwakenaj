@@ -106,7 +106,7 @@ public sealed class MissBoundaryView : MonoBehaviour
         {
             CarController car = _spawner.GetActiveCar();
             if (car != null)
-                Proximity = MissBoundaryGeometry.GetProximity(car.GetMinX(), car.MissBoundaryX, zone.width);
+                Proximity = MissBoundaryGeometry.GetProximity(car.GetMissPointX(), car.MissBoundaryX, zone.width);
         }
 
         float flash = FlashStrength;

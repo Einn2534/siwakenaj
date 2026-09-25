@@ -36,7 +36,7 @@ public static class MissBoundaryCapture
                     if (car != null)
                     {
                         Vector3 position = car.transform.position;
-                        position.x += boundaryX + zone.width * distanceRatio - car.GetMinX();
+                        position.x += boundaryX + zone.width * distanceRatio - car.GetMissPointX();
                         position.y = zone.center.y;
                         car.transform.position = position;
                         if (Mathf.Abs(car.MissBoundaryX - boundaryX) > .0001f) throw new InvalidOperationException("Target boundary did not resize.");
