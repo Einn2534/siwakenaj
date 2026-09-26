@@ -357,7 +357,7 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 11
     ChapterNumber: 3
-    DisplayName: "\u304A\u624B\u5165\u308C\u5BFE\u5FDC"
+    DisplayName: "\u91CE\u83DC\u306E\u4ED5\u5206\u3051"
     MissionText: "12\u500B\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 1
@@ -396,7 +396,7 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 12
     ChapterNumber: 3
-    DisplayName: "\u624B\u5165\u308C\u96C6\u4E2D"
+    DisplayName: "\u50B7\u307F\u3092\u898B\u629C\u3051"
     MissionText: "18\u500B\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 1

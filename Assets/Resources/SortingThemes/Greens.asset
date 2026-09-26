@@ -29,6 +29,6 @@ MonoBehaviour:
   _noun: "\u91CE\u83DC"
   _countUnit: "\u500B"
   _brokenName: "\u50B7\u3093\u3060\u91CE\u83DC"
-  _repairAction: "\u624B\u5165\u308C\u3078\u9001\u308B"
+  _repairAction: "\u53D6\u308A\u9664\u304F"
   _coveredSprite: {fileID: 21300000, guid: 9966b4edc2cb50641baff9cb199dc1e1, type: 3}
   _isVehicleTheme: 0

@@ -30,21 +30,21 @@ public static class SortingThemeInstaller
             importer.filterMode = FilterMode.Bilinear;
             importer.SaveAndReimport();
         }
-        CarVisualDatabase hands = CreateTheme("Hands", "じゃんけん", "手", "回", "お手入れ", "手当てへ送る",
+        CarVisualDatabase hands = CreateTheme("Hands", "じゃんけん", "手", "回", "けがした手", "手当てする",
             new[] { "グー", "チョキ", "パー" }, new[] { "rock", "scissors", "paper" });
-        CarVisualDatabase clocks = CreateTheme("Clocks", "時計", "時計", "個", "故障時計", "修理へ送る",
+        CarVisualDatabase clocks = CreateTheme("Clocks", "時計", "時計", "個", "故障した時計", "修理へ送る",
             new[] { "3時", "6時", "9時" }, new[] { "clock-3", "clock-6", "clock-9" });
-        CarVisualDatabase greens = CreateTheme("Greens", "葉野菜", "野菜", "個", "傷んだ野菜", "手入れへ送る",
+        CarVisualDatabase greens = CreateTheme("Greens", "葉野菜", "野菜", "個", "傷んだ野菜", "取り除く",
             new[] { "キャベツ", "レタス", "白菜" }, new[] { "cabbage", "lettuce", "napa" });
-        CarVisualDatabase beans = CreateTheme("Beans", "豆類", "豆", "個", "傷んだ豆", "手入れへ送る",
+        CarVisualDatabase beans = CreateTheme("Beans", "豆類", "豆", "個", "傷んだ豆", "取り除く",
             new[] { "インゲン", "サヤエンドウ", "枝豆" }, new[] { "green-bean", "snow-pea", "edamame" });
         CarVisualDatabase reptiles = CreateTheme("Reptiles", "爬虫類", "生き物", "匹", "具合の悪い生き物", "保護へ送る",
             new[] { "トカゲ", "ヤモリ", "レオパ" }, new[] { "lizard", "gecko", "leopard-gecko" });
-        CarVisualDatabase poses = CreateTheme("Poses", "ポーズ", "ポーズ", "回", "くずれたポーズ", "手当てへ送る",
+        CarVisualDatabase poses = CreateTheme("Poses", "ポーズ", "ポーズ", "回", "くずれたポーズ", "やり直す",
             new[] { "逆立ち", "三点倒立", "ブリッジ" }, new[] { "handstand", "tripod-headstand", "bridge-pose" });
-        CarVisualDatabase eras = CreateTheme("Eras", "時代", "人", "人", "疲れた人", "休憩へ送る",
+        CarVisualDatabase eras = CreateTheme("Eras", "時代", "人", "人", "疲れた人", "休ませる",
             new[] { "原始人", "侍", "現代人" }, new[] { "ancient-person", "samurai", "modern-person" });
-        CarVisualDatabase hiragana = CreateTheme("Hiragana", "ひらがな", "文字", "文字", "かすれた文字", "直しへ送る",
+        CarVisualDatabase hiragana = CreateTheme("Hiragana", "ひらがな", "文字", "文字", "かすれた文字", "書き直す",
             new[] { "め", "の", "ゆ" }, new[] { "hiragana-me", "hiragana-no", "hiragana-yu" });
         StageDatabase stages = Resources.Load<StageDatabase>("StageDatabase");
         foreach (StageDefinition stage in stages.Stages)
@@ -53,8 +53,8 @@ public static class SortingThemeInstaller
             stage.VisualTheme = stage.StageNumber <= 3 ? CarVisualDatabase.LoadDefault()
                 : stage.StageNumber <= 7 ? hands : stage.StageNumber <= 10 ? clocks : greens;
             stage.MissionText = stage.MissionText.Replace("車種", "種類").Replace("台", stage.Theme.CountUnit);
-            if (stage.StageNumber == 11) stage.DisplayName = "お手入れ対応";
-            if (stage.StageNumber == 12) stage.DisplayName = "手入れ集中";
+            if (stage.StageNumber == 11) stage.DisplayName = "野菜の仕分け";
+            if (stage.StageNumber == 12) stage.DisplayName = "傷みを見抜け";
         }
         List<StageDefinition> definitions = new(stages.Stages);
         AddStageIfMissing(stages, definitions, 16, "豆の見分け", "12個を仕分けろ", beans,

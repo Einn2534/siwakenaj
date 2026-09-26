@@ -113,7 +113,7 @@ public sealed class GimmickHudController : MonoBehaviour
                 ShowMessage($"{_theme.CoveredName}！  「?」が消えてから仕分け", ComboColor);
                 break;
             case CarModifier.Broken:
-                ShowMessage($"{_theme.BrokenName}！  「X」は{_theme.RepairAction}", RepairColor);
+                ShowMessage($"{_theme.BrokenName}！  「X」で{_theme.RepairAction}", RepairColor);
                 break;
         }
     }
