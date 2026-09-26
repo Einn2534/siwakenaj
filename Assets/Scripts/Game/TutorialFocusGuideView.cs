@@ -24,6 +24,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
     private RectTransform _targetButton;
     private Image _targetButtonImage;
     private RawImage _targetButtonIcon;
+    private bool _showButtonCopy;
     private SpriteRenderer _targetCarRenderer;
     private Coroutine _animationRoutine;
     private Vector2 _pointerBasePosition;
@@ -81,6 +82,17 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
 
     public void ShowFocus(CarType expectedType, LaneInputController laneInputController, CarController activeCar)
     {
+        UnityEngine.UI.Button targetButton = null;
+        if (laneInputController != null)
+        {
+            laneInputController.TryGetButtonForLane(expectedType, out targetButton);
+        }
+
+        ShowFocus(targetButton, activeCar, true);
+    }
+
+    public void ShowFocus(UnityEngine.UI.Button targetButton, CarController activeCar, bool showButtonCopy = true)
+    {
         if (_root == null)
         {
             HideFocus();
@@ -90,13 +102,9 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         _targetCarRenderer = activeCar != null
             ? activeCar.GetComponentInChildren<SpriteRenderer>()
             : null;
-        UnityEngine.UI.Button targetButton = null;
-        if (laneInputController != null)
-        {
-            laneInputController.TryGetButtonForLane(expectedType, out targetButton);
-        }
 
         _targetButton = targetButton != null ? targetButton.transform as RectTransform : null;
+        _showButtonCopy = showButtonCopy;
         _targetButtonImage = targetButton != null
             ? targetButton.targetGraphic as Image ?? targetButton.GetComponent<Image>()
             : null;
@@ -123,6 +131,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
         _targetButton = null;
         _targetButtonImage = null;
         _targetButtonIcon = null;
+        _showButtonCopy = false;
         _targetCarRenderer = null;
         if (_animationRoutine != null)
         {
@@ -258,7 +267,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
     {
         Vector2 buttonCenter = Vector2.zero;
         Vector2 buttonSize = Vector2.zero;
-        bool hasButtonImage = _targetButtonImage != null
+        bool hasButtonImage = _showButtonCopy && _targetButtonImage != null
             && TryGetTargetRect(_targetButton, out buttonCenter, out buttonSize);
         _buttonCutoutRect.gameObject.SetActive(hasButtonImage);
         if (hasButtonImage)
@@ -279,7 +288,7 @@ public sealed class TutorialFocusGuideView : MonoBehaviour
 
         Vector2 iconCenter = Vector2.zero;
         Vector2 iconSize = Vector2.zero;
-        bool hasButtonIcon = _targetButtonIcon != null
+        bool hasButtonIcon = _showButtonCopy && _targetButtonIcon != null
             && TryGetTargetRect(_targetButtonIcon.rectTransform, out iconCenter, out iconSize);
         _buttonIconCutoutRect.gameObject.SetActive(hasButtonIcon);
         if (hasButtonIcon)

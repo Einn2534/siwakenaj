@@ -4,6 +4,7 @@ public static class TutorialLaunchService
 {
     public const int TutorialStageNumber = 1;
     public const int ExpressTutorialStageNumber = 3;
+    public const int BrokenTutorialStageNumber = 11;
 
     private static bool _replayRequested;
 
@@ -43,6 +44,16 @@ public static class TutorialLaunchService
         return SessionState.SelectedGameMode == GameMode.Stage
             && stageNumber == ExpressTutorialStageNumber
             && !SaveService.HasSeenExpressTutorial();
+    }
+
+    public static bool ShouldStartBrokenTutorial(int stageNumber)
+    {
+        if (SessionState.SelectedGameMode != GameMode.Stage || stageNumber != BrokenTutorialStageNumber)
+        {
+            return false;
+        }
+
+        return ConsumeReplayRequest() || !SaveService.HasSeenBrokenTutorial();
     }
 
     public static void MarkCompleted()

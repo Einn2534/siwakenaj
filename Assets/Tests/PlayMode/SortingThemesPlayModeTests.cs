@@ -14,6 +14,43 @@ public sealed partial class GameplayFlowPlayModeTests
     [UnityTest, Order(31)] public IEnumerator HandsThemeRealFlow() => CheckThemeFlow(4, "じゃんけん");
     [UnityTest, Order(32)] public IEnumerator ClockThemeRealFlow() => CheckThemeFlow(8, "時計");
     [UnityTest, Order(33)] public IEnumerator GreensThemeRealFlow() => CheckThemeFlow(11, "葉野菜");
+    [UnityTest, Order(36)]
+    public IEnumerator FirstGreensStageGuidesNormalAndDamagedVegetables()
+    {
+        PlayerPrefs.SetInt("BrokenTutorial_Seen", 0);
+        for (int stage = 1; stage < 11; stage++) PlayerPrefs.SetInt($"StageClear_{stage}", 1);
+        InvokeStatic(RequiredType("StageSelectionService"), "SelectStage", 11);
+        yield return LoadScene("Main");
+
+        object tutorial = FindSceneComponent("TutorialController");
+        Assert.That(tutorial, Is.Not.Null);
+        Assert.That(GetProperty(tutorial, "IsRunning"), Is.True);
+        yield return WaitUntil(() => GetField(tutorial, "_activeCar") != null
+            && (bool)GetField(tutorial, "_isAwaitingInput"), 6f, "Vegetable sorting step did not start");
+        Assert.That(GetField(tutorial, "_state").ToString(), Is.EqualTo("GuidedBrokenNormal"));
+        PointerDown(FindSceneComponent("LaneInputController"), "LightTruck");
+        yield return SettleInput();
+        Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(1));
+
+        yield return WaitUntil(() => GetField(tutorial, "_state").ToString() == "GuidedBroken"
+            && (bool)GetField(tutorial, "_isAwaitingInput"), 8f, "Damaged vegetable step did not start");
+        object damaged = GetField(tutorial, "_activeCar");
+        Assert.That(GetProperty(damaged, "RequiresRepair"), Is.True);
+        Assert.That(GetTextComponentValue((Component)GetField(tutorial, "_instructionText")), Does.Contain("取り除く"));
+        object gimmick = FindSceneComponent("GimmickHudController");
+        Assert.That(GetProperty(gimmick, "RepairButton"), Is.Not.Null.And.Property("interactable").True);
+        RepairPointerDown();
+        yield return SettleInput();
+        Assert.That(GetField(tutorial, "_completedCarCount"), Is.EqualTo(2));
+        yield return WaitUntil(() => PlayerPrefs.GetInt("BrokenTutorial_Seen", 0) == 1, 8f,
+            "Broken tutorial completion was not saved");
+        yield return WaitUntil(() => !(bool)GetProperty(tutorial, "IsRunning"), 5f,
+            "Vegetable tutorial did not return to the stage");
+
+        yield return LoadScene("Main");
+        Assert.That(FindSceneComponent("TutorialController"), Is.Null,
+            "The completed vegetable tutorial should not repeat on retry");
+    }
     [UnityTest, Order(37)] public IEnumerator BeansThemeRealFlow() => CheckThemeFlow(16, "豆類");
     [UnityTest, Order(38)] public IEnumerator ReptilesThemeRealFlow() => CheckThemeFlow(17, "爬虫類");
     [UnityTest, Order(39)] public IEnumerator PosesThemeRealFlow() => CheckThemeFlow(18, "ポーズ");

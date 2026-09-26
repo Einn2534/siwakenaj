@@ -22,7 +22,11 @@ public sealed class TutorialController : MonoBehaviour
         ExpressIntroduction,
         GuidedExpress,
         ExpressPractice,
-        ExpressComplete
+        ExpressComplete,
+        BrokenIntroduction,
+        GuidedBrokenNormal,
+        GuidedBroken,
+        BrokenComplete
     }
 
     private const float ReferenceWidth = 1080f;
@@ -33,6 +37,7 @@ public sealed class TutorialController : MonoBehaviour
     private const float FirstMissIntroSeconds = 0.2f;
     private const float DialogueAutoAdvanceSeconds = 2f;
     private const int ExpressTutorialCarCount = 2;
+    private const int BrokenTutorialCarCount = 2;
     private const int FirstIndependentIndex = 3;
     private const int RequiredIndependentSuccessCount = 3;
 
@@ -95,6 +100,7 @@ public sealed class TutorialController : MonoBehaviour
     private float _lastActionTime;
     private bool _isRunning;
     private bool _isExpressTutorial;
+    private bool _isBrokenTutorial;
     private bool _isAwaitingInput;
     private bool _stepSucceeded;
     private bool _firstMissExplained;
@@ -106,7 +112,8 @@ public sealed class TutorialController : MonoBehaviour
 
     public bool IsRunning => _isRunning;
     public TutorialState State => _state;
-    private int TutorialCarCount => _isExpressTutorial ? ExpressTutorialCarCount : TutorialCars.Length;
+    private int TutorialCarCount => _isExpressTutorial ? ExpressTutorialCarCount
+        : _isBrokenTutorial ? BrokenTutorialCarCount : TutorialCars.Length;
     private bool IsPaused => _gameFlowController != null && _gameFlowController.IsPaused();
 
     public static TutorialController EnsureInstalled()
@@ -139,7 +146,8 @@ public sealed class TutorialController : MonoBehaviour
     private void ClampGuidedCarToPlayZone()
     {
         if (!_isRunning || !_isAwaitingInput || _activeCar == null
-            || (_state != TutorialState.GuidedTruck && _state != TutorialState.GuidedExpress)
+            || (_state != TutorialState.GuidedTruck && _state != TutorialState.GuidedExpress
+                && _state != TutorialState.GuidedBrokenNormal && _state != TutorialState.GuidedBroken)
             || _carSpawner == null || !_carSpawner.TryGetPlayZoneWorldRect(out Rect zone)) return;
         SpriteRenderer renderer = _activeCar.GetComponent<SpriteRenderer>();
         if (renderer == null) return;
@@ -175,14 +183,25 @@ public sealed class TutorialController : MonoBehaviour
         BeginInternal(gameFlowController, scoreManager, carSpawner, stageDefinition, true);
     }
 
+    public void BeginBrokenTutorial(
+        GameFlowController gameFlowController,
+        ScoreManager scoreManager,
+        CarSpawner carSpawner,
+        StageDefinition stageDefinition)
+    {
+        BeginInternal(gameFlowController, scoreManager, carSpawner, stageDefinition, false, true);
+    }
+
     private void BeginInternal(
         GameFlowController gameFlowController,
         ScoreManager scoreManager,
         CarSpawner carSpawner,
         StageDefinition stageDefinition,
-        bool isExpressTutorial)
+        bool isExpressTutorial,
+        bool isBrokenTutorial = false)
     {
         _isExpressTutorial = isExpressTutorial;
+        _isBrokenTutorial = isBrokenTutorial;
         _gameFlowController = gameFlowController;
         _scoreManager = scoreManager;
         _carSpawner = carSpawner;
@@ -228,7 +247,8 @@ public sealed class TutorialController : MonoBehaviour
             StopCoroutine(_tutorialRoutine);
         }
 
-        _tutorialRoutine = StartCoroutine(_isExpressTutorial ? RunExpressTutorial() : RunTutorial());
+        _tutorialRoutine = StartCoroutine(_isExpressTutorial ? RunExpressTutorial()
+            : _isBrokenTutorial ? RunBrokenTutorial() : RunTutorial());
     }
 
     public void HandleLaneInput(CarType laneType)
@@ -245,6 +265,12 @@ public sealed class TutorialController : MonoBehaviour
             return;
         }
 
+        if (_state == TutorialState.GuidedBroken)
+        {
+            HandleTutorialMiss();
+            return;
+        }
+
         if (_activeCar.CarType == laneType)
         {
             CompleteCurrentCar();
@@ -252,6 +278,24 @@ public sealed class TutorialController : MonoBehaviour
         }
 
         HandleTutorialMiss();
+    }
+
+    public void HandleRepairInput()
+    {
+        if (!_isRunning || !_isAwaitingInput || IsPaused || !_isBrokenTutorial)
+        {
+            return;
+        }
+
+        _lastActionTime = Time.time;
+        if (_state == TutorialState.GuidedBroken && _activeCar != null && _activeCar.RequiresRepair)
+        {
+            CompleteCurrentCar();
+        }
+        else
+        {
+            HandleTutorialMiss();
+        }
     }
 
     public void HandleCarMissed(CarController car)
@@ -371,6 +415,57 @@ public sealed class TutorialController : MonoBehaviour
         _isAwaitingInput = false;
     }
 
+    private IEnumerator RunBrokenTutorial()
+    {
+        CarVisualDatabase theme = _stageDefinition.Theme;
+        _state = TutorialState.BrokenIntroduction;
+        _carSpawner?.StopSpawning();
+        _carSpawner?.DespawnAllCars();
+        ClearButtonGuide();
+
+        SetInstruction($"このおしごとでは\n{theme.ThemeName}を仕分けるよ！");
+        yield return WaitForDialogueAdvance();
+        yield return RunGuidedStep(0, TutorialState.GuidedBrokenNormal, true);
+        yield return WaitForDialogueAdvance();
+
+        yield return RunBrokenStep();
+        yield return WaitForDialogueAdvance();
+        _state = TutorialState.BrokenComplete;
+        SetInstruction($"準備OK！\n{theme.BrokenName}はXで{theme.RepairAction}！");
+        yield return WaitForDialogueAdvance();
+        SaveService.SetBrokenTutorialSeen();
+        _state = TutorialState.Completed;
+        FinishAndStartRegularStage();
+    }
+
+    private IEnumerator RunBrokenStep()
+    {
+        CarVisualDatabase theme = _stageDefinition.Theme;
+        _state = TutorialState.GuidedBroken;
+        _expectedType = CarType.CompactCar;
+        _currentCarSpeed = 0f;
+        _stepSucceeded = false;
+        _isAwaitingInput = false;
+        ClearButtonGuide();
+        yield return SpawnCurrentCar();
+        yield return WaitForStoppedCarArrival();
+
+        _focusGuideView?.ShowFocus((UnityEngine.UI.Button)null, _activeCar);
+        SetInstruction($"{theme.BrokenName}だ！\n普通のボタンではなくXを押そう");
+        yield return WaitForDialogueAdvance();
+        SetInstruction($"「X」で{theme.RepairAction}！");
+        ApplyBrokenButtonGuide();
+        _isAwaitingInput = true;
+        _lastActionTime = Time.time;
+        while (_isRunning && !_stepSucceeded)
+        {
+            yield return null;
+        }
+
+        ClearButtonGuide();
+        _isAwaitingInput = false;
+    }
+
     private IEnumerator RunPracticeStep(int carIndex)
     {
         yield return RunStep(carIndex, false, false);
@@ -451,6 +546,13 @@ public sealed class TutorialController : MonoBehaviour
         _progressHudController?.SetTutorialProgress(_completedCarCount, TutorialCarCount, _tutorialMissCount);
         _progressHudController?.HighlightMiss();
         _gameFlowController?.PlayTutorialMissFeedback();
+
+        if (_state == TutorialState.GuidedBroken)
+        {
+            SetInstruction($"{_stageDefinition.Theme.BrokenName}は\n「X」で{_stageDefinition.Theme.RepairAction}！");
+            RestartCurrentCar();
+            return;
+        }
 
         if (_isExpressTutorial)
         {
@@ -534,7 +636,7 @@ public sealed class TutorialController : MonoBehaviour
 
         yield return null;
         yield return SpawnCurrentCar();
-        if (_state == TutorialState.GuidedExpress)
+        if (_state == TutorialState.GuidedExpress || _state == TutorialState.GuidedBroken)
         {
             yield return WaitForStoppedCarArrival();
         }
@@ -552,7 +654,8 @@ public sealed class TutorialController : MonoBehaviour
         while (_isRunning && _activeCar == null && _carSpawner != null)
         {
             _activeCar = _carSpawner.SpawnFixedCar(
-                _expectedType, _currentCarSpeed, _isExpressTutorial ? CarModifier.Express : CarModifier.Normal);
+                _expectedType, _currentCarSpeed, _isExpressTutorial ? CarModifier.Express
+                    : _state == TutorialState.GuidedBroken ? CarModifier.Broken : CarModifier.Normal);
             if (_activeCar != null)
             {
                 yield break;
@@ -623,6 +726,12 @@ public sealed class TutorialController : MonoBehaviour
             return;
         }
 
+        if (_state == TutorialState.GuidedBroken)
+        {
+            ApplyBrokenButtonGuide();
+            return;
+        }
+
         ApplyButtonGuide(_expectedType, true);
     }
 
@@ -677,15 +786,55 @@ public sealed class TutorialController : MonoBehaviour
         }
     }
 
+    private void ApplyBrokenButtonGuide()
+    {
+        ClearButtonGuide();
+        if (_laneInputController == null)
+        {
+            _laneInputController = FindAnyObjectByType<LaneInputController>(FindObjectsInactive.Include);
+        }
+
+        if (_laneInputController != null)
+        {
+            foreach (CarType laneType in LaneTypes)
+            {
+                if (!_laneInputController.TryGetButtonForLane(laneType, out Button button) || button == null) continue;
+                CanvasGroup group = button.GetComponent<CanvasGroup>();
+                if (group == null) group = button.gameObject.AddComponent<CanvasGroup>();
+                _originalGroupAlpha[group] = group.alpha;
+                group.alpha = 0.55f;
+                _originalInteractable[button] = button.interactable;
+                button.interactable = false;
+            }
+        }
+
+        Button repairButton = FindAnyObjectByType<GimmickHudController>(FindObjectsInactive.Include)?.RepairButton;
+        if (repairButton != null)
+        {
+            _originalInteractable[repairButton] = repairButton.interactable;
+            repairButton.interactable = true;
+            StartBlink(repairButton.transform as RectTransform);
+            _focusGuideView?.ShowFocus(repairButton, _activeCar, false);
+        }
+        SetInstructionScrimVisible(ShouldShowInstructionScrim());
+    }
+
     private void StartBlink(CarType expectedType)
     {
-        StopBlink();
         if (_laneInputController == null
             || !_laneInputController.TryGetButtonForLane(expectedType, out RectTransform rectTransform)
             || rectTransform == null)
         {
             return;
         }
+
+        StartBlink(rectTransform);
+    }
+
+    private void StartBlink(RectTransform rectTransform)
+    {
+        StopBlink();
+        if (rectTransform == null) return;
 
         if (!_originalScales.ContainsKey(rectTransform))
         {
@@ -745,7 +894,8 @@ public sealed class TutorialController : MonoBehaviour
         return _state == TutorialState.GuidedTruck
             || _state == TutorialState.GuidedCompactCar
             || _state == TutorialState.GuidedSportsCar
-            || _state == TutorialState.GuidedExpress;
+            || _state == TutorialState.GuidedExpress
+            || _state == TutorialState.GuidedBrokenNormal;
     }
 
     private bool ShouldShowInstructionScrim()
@@ -753,7 +903,9 @@ public sealed class TutorialController : MonoBehaviour
         return _state == TutorialState.Introduction
             || _state == TutorialState.GuidedTruck
             || _state == TutorialState.ExpressIntroduction
-            || _state == TutorialState.GuidedExpress;
+            || _state == TutorialState.GuidedExpress
+            || _state == TutorialState.BrokenIntroduction
+            || _state == TutorialState.GuidedBrokenNormal;
     }
 
     private void SetInstructionScrimVisible(bool isVisible)
@@ -841,6 +993,10 @@ public sealed class TutorialController : MonoBehaviour
         if (_isExpressTutorial)
         {
             SaveService.SetExpressTutorialSeen();
+        }
+        else if (_isBrokenTutorial)
+        {
+            SaveService.SetBrokenTutorialSeen();
         }
         else
         {

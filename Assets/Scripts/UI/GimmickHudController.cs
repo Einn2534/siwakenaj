@@ -32,6 +32,8 @@ public sealed class GimmickHudController : MonoBehaviour
     private bool _activeCarRequiresRepair;
     private CarVisualDatabase _theme;
 
+    public UnityEngine.UI.Button RepairButton => _repairButton;
+
     public static GimmickHudController EnsureInstalled()
     {
         GimmickHudController existing = FindAnyObjectByType<GimmickHudController>(FindObjectsInactive.Include);

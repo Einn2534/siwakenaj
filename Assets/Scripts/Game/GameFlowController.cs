@@ -237,6 +237,16 @@ public class GameFlowController : MonoBehaviour
         _gimmickHudController.SetGameplayActive(false);
         SoundManager.EnsureInstance().PlayBgm();
 
+        if (TutorialLaunchService.ShouldStartBrokenTutorial(_currentStageDefinition.StageNumber))
+        {
+            _currentState = GameState.Playing;
+            _gimmickHudController.SetGameplayActive(true);
+            _tutorialController = TutorialController.EnsureInstalled();
+            _tutorialController.BeginBrokenTutorial(this, _scoreManager, _carSpawner, _currentStageDefinition);
+            _startGameRoutine = null;
+            yield break;
+        }
+
         if (TutorialLaunchService.ShouldStartTutorial(_currentStageDefinition.StageNumber))
         {
             _currentState = GameState.Playing;
@@ -345,6 +355,7 @@ public class GameFlowController : MonoBehaviour
 
         if (_tutorialController != null && _tutorialController.IsRunning)
         {
+            _tutorialController.HandleRepairInput();
             return;
         }
 

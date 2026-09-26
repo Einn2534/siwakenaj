@@ -11,6 +11,7 @@ public static class SaveService
     private const string TutorialCompletedKey = "Tutorial_Completed";
     private const string TutorialSkippedKey = "Tutorial_Skipped";
     private const string ExpressTutorialSeenKey = "ExpressTutorial_Seen";
+    private const string BrokenTutorialSeenKey = "BrokenTutorial_Seen";
     private const string SelectedStageKey = "SelectedStage";
     private const string LastStageKey = "LastStage";
     private const string LastGameModeKey = "LastGameMode";
@@ -193,6 +194,17 @@ public static class SaveService
     {
         SetBool(ExpressTutorialSeenKey, true);
         SetGimmickHintSeen(CarModifier.Express);
+    }
+
+    public static bool HasSeenBrokenTutorial()
+    {
+        return GetBool(BrokenTutorialSeenKey, false);
+    }
+
+    public static void SetBrokenTutorialSeen()
+    {
+        SetBool(BrokenTutorialSeenKey, true);
+        SetGimmickHintSeen(CarModifier.Broken);
     }
 
     public static void SetGimmickHintSeen(CarModifier modifier)
