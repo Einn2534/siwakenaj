@@ -4,18 +4,21 @@ using UnityEngine.UI;
 
 public class LaneButtonLayoutController : MonoBehaviour
 {
-    private const float ButtonWidthRatio = 0.285f;
+    private const float ButtonWidthRatio = 0.26f;
     private const float MinButtonWidth = 120f;
     private const float MaxButtonWidth = 330f;
     private const float HorizontalPaddingRatio = 0.03f;
     private const float MinHorizontalPadding = 12f;
     private const float MaxHorizontalPadding = 36f;
-    private const float SpacingRatio = 0.02f;
+    private const float SpacingRatio = 0.045f;
     private const float MinSpacing = 8f;
-    private const float MaxSpacing = 24f;
+    private const float MaxSpacing = 50f;
     private const float VerticalPaddingRatio = 0.045f;
     private const float MinVerticalPadding = 12f;
     private const float MaxVerticalPadding = 30f;
+    private const float BottomPaddingRatio = 0.08f;
+    private const float MinBottomPadding = 48f;
+    private const float MaxBottomPadding = 88f;
     private const float MinButtonAspect = 0.1f;
     private const float Epsilon = 0.5f;
 
@@ -74,10 +77,11 @@ public class LaneButtonLayoutController : MonoBehaviour
         }
 
         float buttonHeight = buttonWidth / referenceAspect;
-        float verticalPadding = Mathf.Clamp(parentWidth * VerticalPaddingRatio, MinVerticalPadding, MaxVerticalPadding);
-        float zoneHeight = buttonHeight + (verticalPadding * 2f);
+        float topPadding = Mathf.Clamp(parentWidth * VerticalPaddingRatio, MinVerticalPadding, MaxVerticalPadding);
+        float bottomPadding = Mathf.Clamp(parentWidth * BottomPaddingRatio, MinBottomPadding, MaxBottomPadding);
+        float zoneHeight = buttonHeight + topPadding + bottomPadding;
 
-        ApplyLayoutGroup(horizontalPadding, spacing);
+        ApplyLayoutGroup(horizontalPadding, spacing, topPadding, bottomPadding);
         SetHeightIfNeeded(_cachedRectTransform, zoneHeight);
         ApplyBackdrop();
 
@@ -159,7 +163,7 @@ public class LaneButtonLayoutController : MonoBehaviour
         return Mathf.Max(width / height, MinButtonAspect);
     }
 
-    private void ApplyLayoutGroup(float horizontalPadding, float spacing)
+    private void ApplyLayoutGroup(float horizontalPadding, float spacing, float topPadding, float bottomPadding)
     {
         int roundedPadding = Mathf.RoundToInt(horizontalPadding);
         if (_cachedLayoutGroup.padding.left != roundedPadding || _cachedLayoutGroup.padding.right != roundedPadding)
@@ -172,6 +176,9 @@ public class LaneButtonLayoutController : MonoBehaviour
         {
             _cachedLayoutGroup.spacing = spacing;
         }
+
+        _cachedLayoutGroup.padding.top = Mathf.RoundToInt(topPadding);
+        _cachedLayoutGroup.padding.bottom = Mathf.RoundToInt(bottomPadding);
     }
 
     private static void SetWidthIfNeeded(RectTransform target, float width)
