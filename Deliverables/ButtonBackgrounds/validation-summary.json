@@ -1,0 +1,39 @@
+{
+  "unityVersion": "6000.3.10f1",
+  "changedFiles": [
+    "Assets/Scenes/Main.unity",
+    "Assets/Art/Sprites/Gameplay/lane_button_energy_orbs.png",
+    "Assets/Art/Sprites/Gameplay/lane_button_energy_orbs.png.meta"
+  ],
+  "sourceSha256": "362791C5BA2E180F47DD87F33A627389BF622E4D3DCC33FA77615F78BD1FAF9D",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "spriteSize": [
+    724,
+    724
+  ],
+  "leftToRight": [
+    "green",
+    "blue",
+    "orange"
+  ],
+  "backgroundScale": 1.1,
+  "iconCenterAnchorY": 0.62,
+  "portraitPreviews": 12,
+  "automatedLayoutCaptures": 240,
+  "compileErrors": 0,
+  "consoleErrors": 0,
+  "editMode": {
+    "passed": 102,
+    "skipped": 0,
+    "failed": 0
+  },
+  "playMode": {
+    "passed": 74,
+    "skipped": 0,
+    "failed": 0
+  },
+  "screenshot": "Captures/Stage04_1440x3200.png"
+}

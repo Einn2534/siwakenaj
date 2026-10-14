@@ -1,0 +1,19 @@
+{
+  "changedFile": "Assets/Scripts/UI/LaneButtonVisualController.cs",
+  "correction": "Restore the trimmed sprite rectangle offset from its original pivot when positioning RawImage icons",
+  "portraitPreviews": 12,
+  "layoutPass": 240,
+  "layoutFail": 0,
+  "compileErrors": 0,
+  "editMode": {
+    "failed": 0,
+    "passed": 102,
+    "skipped": 0
+  },
+  "playMode": {
+    "failed": 0,
+    "passed": 74,
+    "skipped": 0
+  },
+  "screenshot": "Captures/Stage04_1440x3200.png"
+}

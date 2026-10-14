@@ -39,12 +39,12 @@ public static class PowaUiPolishBatch
         RectTransform buttonZone = FindRect("ButtonZone");
         if (buttonZone != null)
         {
-            SetAnchored(buttonZone, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), Vector2.zero, new Vector2(0f, 468f));
+            SetAnchored(buttonZone, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), Vector2.zero, new Vector2(0f, 405f));
             HorizontalLayoutGroup layout = buttonZone.GetComponent<HorizontalLayoutGroup>();
             if (layout != null)
             {
-                layout.padding = new RectOffset(34, 34, 12, 34);
-                layout.spacing = 20f;
+                layout.padding = new RectOffset(34, 34, 30, 88);
+                layout.spacing = 49f;
                 layout.childAlignment = TextAnchor.LowerCenter;
             }
         }

@@ -1,0 +1,42 @@
+{
+  "unityVersion": "6000.3.10f1",
+  "themes": [
+    "vehicles",
+    "hands",
+    "clocks",
+    "greens",
+    "beans",
+    "reptiles",
+    "poses",
+    "eras",
+    "hiragana"
+  ],
+  "representativeStages": [
+    1,
+    4,
+    8,
+    11,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "resolutions": [
+    "1080x1920",
+    "1170x2532",
+    "1440x3200"
+  ],
+  "capturedPreviews": 27,
+  "backgroundSafeAreaChecks": "27/27 passed",
+  "hitAreasEnabled": true,
+  "visualFindings": [],
+  "consoleErrors": 0,
+  "productChangesThisAudit": [],
+  "existingTestResults": {
+    "editModePassed": 102,
+    "playModePassed": 74,
+    "failed": 0,
+    "source": "../RightAlignment/validation-summary.json"
+  }
+}

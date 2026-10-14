@@ -130,11 +130,11 @@ public class LaneButtonVisualController : MonoBehaviour
                 rect.y / texture.height,
                 rect.width / texture.width,
                 rect.height / texture.height);
-            FitRawImageToSprite(rawImage, rect);
+            FitRawImageToSprite(rawImage, sprite, rect);
         }
     }
 
-    private static void FitRawImageToSprite(RawImage rawImage, Rect spriteRect)
+    private static void FitRawImageToSprite(RawImage rawImage, Sprite sprite, Rect spriteRect)
     {
         RectTransform rectTransform = rawImage.rectTransform;
         RectTransform parent = rectTransform.parent as RectTransform;
@@ -163,7 +163,12 @@ public class LaneButtonVisualController : MonoBehaviour
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = new Vector2(0f, parentRect.height * (IconCenterY - 0.5f));
+        // RawImage draws the trimmed texture rectangle, so restore its offset
+        // from the sprite pivot to keep asymmetric transparent margins centered.
+        Vector2 centerOffset = sprite.textureRectOffset + spriteRect.size * 0.5f - sprite.pivot;
+        float pixelsToCanvasUnits = height / spriteRect.height;
+        rectTransform.anchoredPosition = new Vector2(0f, parentRect.height * (IconCenterY - 0.5f))
+            + centerOffset * pixelsToCanvasUnits;
         rectTransform.sizeDelta = new Vector2(width, height);
     }
 
