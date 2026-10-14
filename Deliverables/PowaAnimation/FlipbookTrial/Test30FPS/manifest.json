@@ -1,0 +1,58 @@
+{
+  "fps": 30,
+  "duration": 0.4,
+  "frames": 12,
+  "method": "7 individually generated in-between drawings + 5 existing key drawings; no optical flow or crossfade",
+  "defs": [
+    {
+      "n": 1,
+      "a": 0,
+      "b": 1,
+      "mix": 0.5,
+      "phase": "The first half of anticipation. The head/hat is only halfway down to image 2, left hand halfway down and outward, knees only gently bent. Keep the tiny neutral mouth."
+    },
+    {
+      "n": 3,
+      "a": 1,
+      "b": 2,
+      "mix": 0.3333333333333333,
+      "phase": "Leaving the compressed anticipation pose. Keep two thirds of image 1's lowered head/body position, with only one third of image 2's open arms, bent legs and dress flare. The smile is just starting to open."
+    },
+    {
+      "n": 4,
+      "a": 1,
+      "b": 2,
+      "mix": 0.6666666666666666,
+      "phase": "Rising toward the happy pose. Two thirds of the way from image 1 to image 2. Arms and knees must be visibly between the references; the left hand is lower and closer to the torso than image 2. The small smile has nearly opened."
+    },
+    {
+      "n": 6,
+      "a": 2,
+      "b": 3,
+      "mix": 0.5,
+      "phase": "Passing slowly through the apex. Preserve the nearly matching hat/head position. Interpolate the boot directions, knees, left fingers and staff orb position exactly halfway. This is a subtle but distinct intermediate drawing."
+    },
+    {
+      "n": 8,
+      "a": 3,
+      "b": 4,
+      "mix": 0.5,
+      "phase": "Descending from the happy apex. Open arms lower halfway toward image 2, knees begin straightening, left boot descends halfway. Mouth and hem halfway between both drawings."
+    },
+    {
+      "n": 10,
+      "a": 4,
+      "b": 0,
+      "mix": 0.5,
+      "phase": "Settling toward neutral. The LEFT hand halfway between the visibly open hand of image 1 and the relaxed mostly-hidden hand of image 2; right hand partly tucked behind dress. Smile halfway closed. Match the in-between dress outline and boots."
+    },
+    {
+      "n": 11,
+      "a": 4,
+      "b": 0,
+      "mix": 0.85,
+      "phase": "Final settling in-between, 85 percent returned to neutral image 2. A tiny nearly-closed mouth, arms nearly resting by the skirt, right hand almost entirely hidden, boots and skirt nearly at reference resting position. Only subtle follow-through remains, ready to cut to image 2 next."
+    }
+  ],
+  "common": "Create ONE precise full-character hand-drawn animation in-between frame from the two attached PNG keyframes. Image 1 is the earlier keyframe, image 2 is the later keyframe. Both show the SAME Powa witch. Keep the same 1254x1254 pixel canvas and exact camera, scale, registration and illustration quality. Output exactly one character pose, not a sheet, not two characters, no panels, no labels. True alpha transparent background, no matte, no checkerboard. This is frame-by-frame animation on ones at 30 fps; synthesize the specific intermediate pose, do not copy either endpoint. Keep exactly one staff floating on screen RIGHT. Keep the oversized navy curled hat, its brown band and orange round badge, cyan tip ornament, purple sleeveless dress and brown boots. Eyes and ears remain completely hidden by the hat as in both references. Interpolate the physical outlines and positions with consistent anatomy; do not crossfade or produce doubled/ghosted outlines. All solid surfaces fully opaque. Keep the fine dark outline clean with no red, cyan, white or magenta fringe. Do not redesign the face, clothes, ornaments or limbs. Interpolate staff angle and position as well as the character. All hidden-edge shading and texture detail remain consistent. "
+}

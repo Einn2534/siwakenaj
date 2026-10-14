@@ -104,3 +104,16 @@ Assets/_Recovery.meta
 /design-qa.md
 /Assets/InitTestScene*.unity
 /Assets/InitTestScene*.unity.meta
+
+# Reproducible local QA captures and animation intermediates (keep source assets in Assets).
+/QAOutput/
+/Deliverables/**/*.png
+/Deliverables/**/*.jpg
+/Deliverables/**/*.mp4
+/Deliverables/**/*.xml
+/Deliverables/**/*.progress
+/Deliverables/**/*.md5
+/Deliverables/**/frames/
+/Deliverables/**/gameplay-frames/
+/Deliverables/**/capture-complete.txt
+!/Deliverables/Release/screenshots/**/*.png
