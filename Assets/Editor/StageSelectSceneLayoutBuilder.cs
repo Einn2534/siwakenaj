@@ -12,7 +12,7 @@ public static class StageSelectSceneLayoutBuilder
     private const string ScenePath = "Assets/Scenes/StageSelect.unity";
     private const string PrefabPath = "Assets/Prefabs/StageCard.prefab";
     private const string BackgroundPath = "Assets/Art/Sprites/Backgrounds/magic_shop_background.png";
-    private const string TitleFontPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
+    private const string TitleFontPath = "Assets/Resources/Fonts/NotoSansCJKjp-Regular SDF.asset";
     private const string BodyFontPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
 
     private static readonly Color Ink = new(0.169f, 0.145f, 0.188f, 1f);

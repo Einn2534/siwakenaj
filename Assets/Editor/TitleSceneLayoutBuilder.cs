@@ -16,7 +16,7 @@ public static class TitleSceneLayoutBuilder
     private const string HeadlineFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string UiFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
     private const string JapaneseFallbackFontAssetPath = "Assets/Fonts/DotGothic16-Regular SDF.asset";
-    private const string SettingsFontAssetPath = "Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset";
+    private const string SettingsFontAssetPath = "Assets/Resources/Fonts/NotoSansCJKjp-Regular SDF.asset";
     private const string TitleBackgroundPath = "Assets/Art/UI/Sprites/Title/title_background_factory.png";
     private const string TitleLogoPath = "Assets/Art/UI/Sprites/Title/siwakennja.png";
     private const string SecondaryButtonPath = "Assets/Art/UI/Sprites/Result/Common/button_secondary_outline_strong.png";
