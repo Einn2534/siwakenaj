@@ -67,23 +67,32 @@ public sealed class StageDatabaseEditModeTests
     }
 
     [Test]
-    public void StageDatabase_CampaignDifficultyRisesGraduallyWithinEachChapter()
+    public void StageDatabase_CampaignPaceRisesGraduallyAcrossChapterBoundaries()
     {
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
-        for (int chapter = 0; chapter < 3; chapter++)
+        System.Collections.IList stages = (System.Collections.IList)CoreReflection.GetProperty<object>(database, "Stages");
+        for (int stageNumber = 2; stageNumber <= stages.Count; stageNumber++)
         {
-            for (int offset = 1; offset < 5; offset++)
-            {
-                int stageNumber = chapter * 5 + offset + 1;
-                object previous = CoreReflection.Call(database, "GetStageDefinition", stageNumber - 1);
-                object current = CoreReflection.Call(database, "GetStageDefinition", stageNumber);
-                float speedIncrease = CoreReflection.GetField<float>(current, "CarSpeed")
-                    - CoreReflection.GetField<float>(previous, "CarSpeed");
-                float intervalDecrease = CoreReflection.GetField<float>(previous, "SpawnInterval")
-                    - CoreReflection.GetField<float>(current, "SpawnInterval");
-                Assert.That(speedIncrease, Is.InRange(0f, 0.041f), $"stage {stageNumber} speed");
-                Assert.That(intervalDecrease, Is.InRange(0f, 0.071f), $"stage {stageNumber} spawn interval");
-            }
+            object previous = CoreReflection.Call(database, "GetStageDefinition", stageNumber - 1);
+            object current = CoreReflection.Call(database, "GetStageDefinition", stageNumber);
+            float speedIncrease = CoreReflection.GetField<float>(current, "CarSpeed")
+                - CoreReflection.GetField<float>(previous, "CarSpeed");
+            float intervalDecrease = CoreReflection.GetField<float>(previous, "SpawnInterval")
+                - CoreReflection.GetField<float>(current, "SpawnInterval");
+            Assert.That(speedIncrease, Is.InRange(0f, 0.041f), $"stage {stageNumber} speed");
+            Assert.That(intervalDecrease, Is.InRange(0f, 0.071f), $"stage {stageNumber} spawn interval");
+            float previousChance = CoreReflection.GetField<float>(previous, "ExpressChance")
+                + CoreReflection.GetField<float>(previous, "CoveredChance") + CoreReflection.GetField<float>(previous, "BrokenChance");
+            float currentChance = CoreReflection.GetField<float>(current, "ExpressChance")
+                + CoreReflection.GetField<float>(current, "CoveredChance") + CoreReflection.GetField<float>(current, "BrokenChance");
+            Assert.That(currentChance, Is.GreaterThanOrEqualTo(previousChance - 0.0001f), $"stage {stageNumber} modifier rate");
+            Assert.That(currentChance, Is.LessThanOrEqualTo(0.55f), $"stage {stageNumber} modifier rate cap");
+            int previousRush = CoreReflection.GetField<int>(previous, "RushEveryCorrect");
+            if (previousRush > 0)
+                Assert.That(CoreReflection.GetField<int>(current, "RushEveryCorrect"), Is.InRange(1, previousRush), $"stage {stageNumber} rush frequency");
+            int previousFever = CoreReflection.GetField<int>(previous, "FeverComboThreshold");
+            if (previousFever > 0)
+                Assert.That(CoreReflection.GetField<int>(current, "FeverComboThreshold"), Is.GreaterThanOrEqualTo(previousFever), $"stage {stageNumber} fever threshold");
         }
     }
 

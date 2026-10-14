@@ -14,7 +14,7 @@ public sealed partial class GameplayFlowPlayModeTests
     private const float SceneTimeoutSeconds = 12f;
     private const float ResultUnlockTimeoutSeconds = 5f;
     private const float TestTimeScale = 20f;
-    private const int CampaignStageCount = 20;
+    private const int CampaignStageCount = 30;
 
     private static readonly string[] BasePlayerPrefsKeys =
     {
@@ -421,7 +421,7 @@ public sealed partial class GameplayFlowPlayModeTests
         Assert.That(daily, Is.Not.Null);
         Assert.That(endless, Is.Not.Null);
         Assert.That(GetButtonText(campaign), Does.Contain("おしごと"));
-        Assert.That(GetButtonText(campaign), Does.Contain("20 STAGES"));
+        Assert.That(GetButtonText(campaign), Does.Contain("30 STAGES"));
         Assert.That(GetButtonText(daily), Does.Contain("デイリー"));
         Assert.That(GetButtonText(endless), Does.Contain("エンドレス"));
 
@@ -429,7 +429,7 @@ public sealed partial class GameplayFlowPlayModeTests
         yield return WaitForScene("StageSelect", SceneTimeoutSeconds);
         yield return WaitUntil(() => FindSceneObject("ChapterTabs") != null, 3f, "Chapter tabs were not created.");
         GameObject chapterTabs = FindSceneObject("ChapterTabs");
-        Assert.That(chapterTabs.GetComponentsInChildren<UnityEngine.UI.Button>(true), Has.Length.EqualTo(4));
+        Assert.That(chapterTabs.GetComponentsInChildren<UnityEngine.UI.Button>(true), Has.Length.EqualTo(6));
 
         object controller = FindSceneComponent("StageSelectController");
         Invoke(controller, "SelectChapter", 3);
@@ -573,11 +573,11 @@ public sealed partial class GameplayFlowPlayModeTests
 
     [UnityTest]
     [Order(9)]
-    public IEnumerator AllFifteenStagesClearThroughRealMainAndResultScenesInSequence()
+    public IEnumerator AllThirtyStagesClearThroughRealMainAndResultScenesInSequence()
     {
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
         Func<int, bool> getCleared = stageNumber => PlayerPrefs.GetInt($"StageClear_{stageNumber}", 0) == 1;
-        for (int stageNumber = 1; stageNumber <= 15; stageNumber += 1)
+        for (int stageNumber = 1; stageNumber <= CampaignStageCount; stageNumber += 1)
         {
             Assert.That(Invoke(database, "IsStageUnlocked", stageNumber - 1, getCleared), Is.True, $"Stage {stageNumber} should unlock in sequence.");
             InvokeStatic(RequiredType("SessionState"), "SelectStage", stageNumber);
@@ -601,9 +601,16 @@ public sealed partial class GameplayFlowPlayModeTests
             Assert.That(GetProperty(result, "StageNumber"), Is.EqualTo(stageNumber));
             Assert.That(GetProperty(result, "IsClear"), Is.EqualTo(true), $"Stage {stageNumber} should clear through Main.");
             Assert.That(getCleared(stageNumber), Is.True, $"Stage {stageNumber} clear should persist in Result.");
+            object stage = Invoke(database, "GetStageDefinition", stageNumber);
+            if (GetField(stage, "GoalType").ToString() == "Combo" || stageNumber == 15)
+            {
+                Assert.That(GetProperty(result, "MissCount"), Is.EqualTo(0), $"Stage {stageNumber} should clear without misses.");
+                Assert.That(PlayerPrefs.GetInt($"StarRating_Stage{stageNumber}", 0), Is.EqualTo(3),
+                    $"Stage {stageNumber} should save three stars for a no-miss clear.");
+            }
         }
 
-        Assert.That(Enumerable.Range(1, 15).All(getCleared), Is.True);
+        Assert.That(Enumerable.Range(1, CampaignStageCount).All(getCleared), Is.True);
     }
 
     [UnityTest]

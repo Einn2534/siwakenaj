@@ -41,12 +41,12 @@ public sealed class P1SystemsEditModeTests
     }
 
     [Test]
-    public void StageDatabase_ContainsFourChaptersAndAllFiveGoalTypes()
+    public void StageDatabase_ContainsSixChaptersAndAllFiveGoalTypes()
     {
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
         Assert.That(database, Is.Not.Null);
         IList stages = (IList)CoreReflection.GetProperty<object>(database, "Stages");
-        Assert.That(stages.Count, Is.EqualTo(20));
+        Assert.That(stages.Count, Is.EqualTo(30));
 
         HashSet<string> goalTypes = new();
         for (int i = 0; i < stages.Count; i += 1)
@@ -56,7 +56,7 @@ public sealed class P1SystemsEditModeTests
             Assert.That(GetField<int>(stage, "ChapterNumber"), Is.EqualTo((i / 5) + 1));
             Assert.That(GetField<string>(stage, "DisplayName"), Is.Not.Empty);
             Assert.That(GetField<string>(stage, "MissionText"), Is.Not.Empty);
-            string expectedSpawnPattern = i + 1 is 2 or 7 or 17
+            string expectedSpawnPattern = i + 1 is 2 or 7 or 17 or 21 or 27
                 ? "BalancedBag"
                 : i + 1 is 3 or 6 or 11 ? "FixedIntroThenBag" : "WeightedRandom";
             Assert.That(GetField<object>(stage, "SpawnPattern").ToString(), Is.EqualTo(expectedSpawnPattern), $"stage {i + 1}");
@@ -424,6 +424,55 @@ public sealed class P1SystemsEditModeTests
             RestoreInts(originalInts);
             if (timeExisted) PlayerPrefs.SetFloat(timeKey, originalTime); else PlayerPrefs.DeleteKey(timeKey);
             PlayerPrefs.Save();
+        }
+    }
+
+    [TestCase(0, 1, 3)]
+    [TestCase(0, 2, 3)]
+    [TestCase(1, 1, 2)]
+    [TestCase(1, 2, 2)]
+    [TestCase(2, 1, 1)]
+    [TestCase(2, 2, 1)]
+    [TestCase(3, 1, 0)]
+    [TestCase(3, 2, 0)]
+    public void ComboStages_RateActualResultsByMissesRegardlessOfScoreBonuses(int misses, int multiplier, int expectedStars)
+    {
+        ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
+        IList stages = (IList)CoreReflection.GetProperty<object>(database, "Stages");
+        Type resultType = CoreReflection.RequiredType("GameResultData");
+        Type starUtility = CoreReflection.RequiredType("StarRatingUtility");
+        foreach (object stage in stages)
+        {
+            int stageNumber = GetField<int>(stage, "StageNumber");
+            bool comboGoal = GetField<object>(stage, "GoalType").ToString() == "Combo";
+            if (!comboGoal && stageNumber != 15) continue;
+
+            object state = NewScoreState(stage);
+            object evaluator = NewEvaluator(stage, state, "Stage");
+            for (int miss = 0; miss < misses; miss++)
+            {
+                // Breaking a near-complete combo must not improve stars by farming score.
+                int successesBeforeMiss = comboGoal ? GetField<int>(stage, "GoalValue") - 1 : 3;
+                for (int i = 0; i < successesBeforeMiss; i++)
+                    CoreReflection.Call(state, "ApplySuccess", EnumValue("CarType", "LightTruck"), multiplier);
+                Assert.That(CoreReflection.GetProperty<object>(evaluator, "Outcome").ToString(), Is.EqualTo("Playing"));
+                CoreReflection.Call(state, "ApplyMiss");
+            }
+
+            int safety = 0;
+            while (CoreReflection.GetProperty<object>(evaluator, "Outcome").ToString() == "Playing")
+            {
+                Assert.That(++safety, Is.LessThan(100), $"stage {stageNumber} should finish at its goal");
+                CoreReflection.Call(state, "ApplySuccess", EnumValue("CarType", "LightTruck"), multiplier);
+            }
+
+            bool isClear = CoreReflection.GetProperty<object>(evaluator, "Outcome").ToString() == "Cleared";
+            Assert.That(isClear, Is.EqualTo(misses < 3), $"stage {stageNumber}");
+            object result = CoreReflection.CallStatic(resultType, "FromScoreState",
+                EnumValue("GameMode", "Stage"), stageNumber, isClear, state, stage, evaluator);
+            Assert.That(CoreReflection.GetProperty<int>(result, "MissCount"), Is.EqualTo(misses));
+            Assert.That(CoreReflection.CallStatic(starUtility, "CalculateForResult", result, stage),
+                Is.EqualTo(expectedStars), $"stage {stageNumber}, misses {misses}, multiplier {multiplier}");
         }
     }
 

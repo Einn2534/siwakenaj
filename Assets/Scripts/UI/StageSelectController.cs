@@ -293,19 +293,22 @@ public class StageSelectController : MonoBehaviour
 
         RectTransform tabs = CreateUiObject("ChapterTabs", safeArea);
         _chapterTabs = tabs;
-        SetAnchored(tabs, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -248f), new Vector2(810f, 86f));
+        int chapterCount = GetChapterCount();
+        SetAnchored(tabs, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -248f), new Vector2(900f, 86f));
         HorizontalLayoutGroup layout = tabs.gameObject.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 16f;
+        layout.spacing = chapterCount > 4 ? 8f : 16f;
         layout.childAlignment = TextAnchor.MiddleCenter;
         layout.childControlWidth = true;
         layout.childControlHeight = true;
         layout.childForceExpandWidth = true;
         layout.childForceExpandHeight = true;
 
-        for (int chapter = 1; chapter <= GetChapterCount(); chapter += 1)
+        for (int chapter = 1; chapter <= chapterCount; chapter += 1)
         {
             int capturedChapter = chapter;
             Button button = CreateButton($"Chapter{chapter}Tab", tabs, slicedSprite, Vector2.zero, $"第{chapter}章", 34f, 24f, FontStyles.Normal, TextColor);
+            TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+            Stretch((RectTransform)label.transform, Vector2.zero, Vector2.one, new Vector2(8f, 8f), new Vector2(-8f, -8f));
             button.onClick.AddListener(() => SelectChapter(capturedChapter));
             _chapterButtons.Add(button);
         }

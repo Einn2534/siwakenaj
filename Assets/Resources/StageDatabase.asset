@@ -60,8 +60,8 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.60
-    SpawnInterval: 1.10
+    CarSpeed: 0.6
+    SpawnInterval: 1.1
     WeightLightTruck: 4
     WeightCompactCar: 4
     WeightSportsCar: 4
@@ -146,9 +146,9 @@ MonoBehaviour:
     IntroSpawns: []
     UseFixedSeed: 0
     FixedSeed: 0
-    MasteryMetric: 1
-    TwoStarThreshold: 150
-    ThreeStarThreshold: 220
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
     LegacyClearScore: 310
     IsImplemented: 1
   - StageNumber: 5
@@ -187,10 +187,10 @@ MonoBehaviour:
   - StageNumber: 6
     ChapterNumber: 2
     DisplayName: "\u6B63\u4F53\u4E0D\u660E"
-    MissionText: "12\u56DE\u3092\u4ED5\u5206\u3051\u308D"
+    MissionText: "16\u56DE\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 306939478faadbc4394ec704b43c05e3, type: 2}
     GoalType: 1
-    GoalValue: 12
+    GoalValue: 16
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -198,12 +198,12 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.64
-    SpawnInterval: 1.10
+    CarSpeed: 0.74
+    SpawnInterval: 0.93
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
+    ExpressChance: 0.08
     CoveredChance: 0.18
     BrokenChance: 0
     RushEveryCorrect: 0
@@ -226,23 +226,23 @@ MonoBehaviour:
   - StageNumber: 7
     ChapterNumber: 2
     DisplayName: "\u898B\u5207\u308A"
-    MissionText: "\u5404\u7A2E\u985E\u30924\u56DE\u305A\u3064\u4ED5\u5206\u3051\u308D"
+    MissionText: "\u5404\u7A2E\u985E\u30926\u56DE\u305A\u3064\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 306939478faadbc4394ec704b43c05e3, type: 2}
     GoalType: 3
-    GoalValue: 12
+    GoalValue: 18
     TargetScore: 0
-    LightTruckQuota: 4
-    CompactCarQuota: 4
-    SportsCarQuota: 4
+    LightTruckQuota: 6
+    CompactCarQuota: 6
+    SportsCarQuota: 6
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.68
-    SpawnInterval: 1.04
+    CarSpeed: 0.76
+    SpawnInterval: 0.91
     WeightLightTruck: 4
     WeightCompactCar: 4
     WeightSportsCar: 4
-    ExpressChance: 0.06
+    ExpressChance: 0.08
     CoveredChance: 0.22
     BrokenChance: 0
     RushEveryCorrect: 0
@@ -270,8 +270,8 @@ MonoBehaviour:
     SurvivalSeconds: 30
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.72
-    SpawnInterval: 0.98
+    CarSpeed: 0.78
+    SpawnInterval: 0.89
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
@@ -292,10 +292,10 @@ MonoBehaviour:
   - StageNumber: 9
     ChapterNumber: 2
     DisplayName: "\u898B\u7834\u308A\u9023\u9396"
-    MissionText: "15\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    MissionText: "18\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
     VisualTheme: {fileID: 11400000, guid: 3b743ecc96affe248904ded096356332, type: 2}
     GoalType: 2
-    GoalValue: 15
+    GoalValue: 18
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -303,12 +303,12 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.76
-    SpawnInterval: 0.92
+    CarSpeed: 0.8
+    SpawnInterval: 0.87
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0.10
+    ExpressChance: 0.1
     CoveredChance: 0.28
     BrokenChance: 0
     RushEveryCorrect: 0
@@ -317,27 +317,27 @@ MonoBehaviour:
     IntroSpawns: []
     UseFixedSeed: 0
     FixedSeed: 0
-    MasteryMetric: 1
-    TwoStarThreshold: 240
-    ThreeStarThreshold: 320
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
     LegacyClearScore: 0
     IsImplemented: 1
   - StageNumber: 10
     ChapterNumber: 2
     DisplayName: "\u7B2C\u4E8C\u691C\u5B9A"
-    MissionText: "260\u70B9\u3078\u5230\u9054\u3057\u308D"
+    MissionText: "300\u70B9\u3078\u5230\u9054\u3057\u308D"
     VisualTheme: {fileID: 11400000, guid: 3b743ecc96affe248904ded096356332, type: 2}
     GoalType: 0
-    GoalValue: 260
-    TargetScore: 260
+    GoalValue: 300
+    TargetScore: 300
     LightTruckQuota: 0
     CompactCarQuota: 0
     SportsCarQuota: 0
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.80
-    SpawnInterval: 0.86
+    CarSpeed: 0.82
+    SpawnInterval: 0.85
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
@@ -351,17 +351,17 @@ MonoBehaviour:
     UseFixedSeed: 0
     FixedSeed: 0
     MasteryMetric: 1
-    TwoStarThreshold: 260
-    ThreeStarThreshold: 270
+    TwoStarThreshold: 300
+    ThreeStarThreshold: 310
     LegacyClearScore: 0
     IsImplemented: 1
   - StageNumber: 11
     ChapterNumber: 3
     DisplayName: "\u91CE\u83DC\u306E\u4ED5\u5206\u3051"
-    MissionText: "12\u500B\u3092\u4ED5\u5206\u3051\u308D"
+    MissionText: "20\u500B\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 1
-    GoalValue: 12
+    GoalValue: 20
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -369,13 +369,13 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.68
-    SpawnInterval: 1.05
+    CarSpeed: 0.84
+    SpawnInterval: 0.83
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0
+    ExpressChance: 0.12
+    CoveredChance: 0.12
     BrokenChance: 0.18
     RushEveryCorrect: 0
     FeverComboThreshold: 0
@@ -397,10 +397,10 @@ MonoBehaviour:
   - StageNumber: 12
     ChapterNumber: 3
     DisplayName: "\u50B7\u307F\u3092\u898B\u629C\u3051"
-    MissionText: "18\u500B\u3092\u4ED5\u5206\u3051\u308D"
+    MissionText: "24\u500B\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 1
-    GoalValue: 18
+    GoalValue: 24
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -408,14 +408,14 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.72
-    SpawnInterval: 0.98
+    CarSpeed: 0.86
+    SpawnInterval: 0.81
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0.08
-    BrokenChance: 0.25
+    ExpressChance: 0.1
+    CoveredChance: 0.12
+    BrokenChance: 0.22
     RushEveryCorrect: 0
     FeverComboThreshold: 0
     SpawnPattern: 0
@@ -441,14 +441,14 @@ MonoBehaviour:
     SurvivalSeconds: 35
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.76
-    SpawnInterval: 0.91
+    CarSpeed: 0.88
+    SpawnInterval: 0.79
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0.10
-    CoveredChance: 0.12
-    BrokenChance: 0.17
+    ExpressChance: 0.1
+    CoveredChance: 0.14
+    BrokenChance: 0.2
     RushEveryCorrect: 10
     FeverComboThreshold: 0
     SpawnPattern: 0
@@ -463,10 +463,10 @@ MonoBehaviour:
   - StageNumber: 14
     ChapterNumber: 3
     DisplayName: "\u30D5\u30A3\u30FC\u30D0\u30FC\u7DAD\u6301"
-    MissionText: "16\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    MissionText: "20\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
     VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 2
-    GoalValue: 16
+    GoalValue: 20
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -474,41 +474,41 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.80
-    SpawnInterval: 0.84
+    CarSpeed: 0.9
+    SpawnInterval: 0.77
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0.13
-    CoveredChance: 0.13
-    BrokenChance: 0.13
-    RushEveryCorrect: 12
+    ExpressChance: 0.14
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 10
     FeverComboThreshold: 6
     SpawnPattern: 0
     IntroSpawns: []
     UseFixedSeed: 0
     FixedSeed: 0
-    MasteryMetric: 1
-    TwoStarThreshold: 280
-    ThreeStarThreshold: 320
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
     LegacyClearScore: 0
     IsImplemented: 1
   - StageNumber: 15
     ChapterNumber: 3
-    DisplayName: "\u6700\u7D42\u691C\u5B9A"
-    MissionText: "420\u70B9\u3078\u5230\u9054\u3057\u308D"
+    DisplayName: "\u7B2C\u4E09\u691C\u5B9A"
+    MissionText: "600\u70B9\u3078\u5230\u9054\u3057\u308D"
     VisualTheme: {fileID: 11400000, guid: 4d9c448f21df62c488223ec17e6380e9, type: 2}
     GoalType: 0
-    GoalValue: 420
-    TargetScore: 420
+    GoalValue: 600
+    TargetScore: 600
     LightTruckQuota: 0
     CompactCarQuota: 0
     SportsCarQuota: 0
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.84
-    SpawnInterval: 0.77
+    CarSpeed: 0.92
+    SpawnInterval: 0.75
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
@@ -521,18 +521,18 @@ MonoBehaviour:
     IntroSpawns: []
     UseFixedSeed: 0
     FixedSeed: 0
-    MasteryMetric: 2
-    TwoStarThreshold: 14
-    ThreeStarThreshold: 20
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
     LegacyClearScore: 0
     IsImplemented: 1
   - StageNumber: 16
     ChapterNumber: 4
     DisplayName: "\u8C46\u306E\u898B\u5206\u3051"
-    MissionText: "12\u500B\u3092\u4ED5\u5206\u3051\u308D"
+    MissionText: "30\u500B\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 8bba2d1fd5f203c449b3bd0c6360f860, type: 2}
     GoalType: 1
-    GoalValue: 12
+    GoalValue: 30
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -540,16 +540,16 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.68
-    SpawnInterval: 1.05
+    CarSpeed: 0.94
+    SpawnInterval: 0.73
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0
-    BrokenChance: 0
-    RushEveryCorrect: 0
-    FeverComboThreshold: 0
+    ExpressChance: 0.15
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 10
+    FeverComboThreshold: 6
     SpawnPattern: 0
     IntroSpawns: []
     UseFixedSeed: 0
@@ -562,27 +562,27 @@ MonoBehaviour:
   - StageNumber: 17
     ChapterNumber: 4
     DisplayName: "\u3044\u304D\u3082\u306E\u56F3\u9451"
-    MissionText: "\u5404\u7A2E\u985E\u30924\u5339\u305A\u3064\u4ED5\u5206\u3051\u308D"
+    MissionText: "\u5404\u7A2E\u985E\u309210\u5339\u305A\u3064\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 9bbb1e00ffbc15041b44466a82c1d0cb, type: 2}
     GoalType: 3
-    GoalValue: 12
+    GoalValue: 30
     TargetScore: 0
-    LightTruckQuota: 4
-    CompactCarQuota: 4
-    SportsCarQuota: 4
+    LightTruckQuota: 10
+    CompactCarQuota: 10
+    SportsCarQuota: 10
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.7
-    SpawnInterval: 1
+    CarSpeed: 0.96
+    SpawnInterval: 0.71
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0
-    BrokenChance: 0
-    RushEveryCorrect: 0
-    FeverComboThreshold: 0
+    ExpressChance: 0.15
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 10
+    FeverComboThreshold: 6
     SpawnPattern: 1
     IntroSpawns: []
     UseFixedSeed: 0
@@ -595,10 +595,10 @@ MonoBehaviour:
   - StageNumber: 18
     ChapterNumber: 4
     DisplayName: "\u30DD\u30FC\u30BA\u5224\u5B9A"
-    MissionText: "10\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    MissionText: "24\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
     VisualTheme: {fileID: 11400000, guid: e23405437793e8a4d9939fec934e4c22, type: 2}
     GoalType: 2
-    GoalValue: 10
+    GoalValue: 24
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
@@ -606,16 +606,16 @@ MonoBehaviour:
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.72
-    SpawnInterval: 0.95
+    CarSpeed: 0.98
+    SpawnInterval: 0.69
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0
-    BrokenChance: 0
-    RushEveryCorrect: 0
-    FeverComboThreshold: 0
+    ExpressChance: 0.15
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 10
+    FeverComboThreshold: 6
     SpawnPattern: 0
     IntroSpawns: []
     UseFixedSeed: 0
@@ -628,27 +628,27 @@ MonoBehaviour:
   - StageNumber: 19
     ChapterNumber: 4
     DisplayName: "\u6642\u4EE3\u3092\u3053\u3048\u3066"
-    MissionText: "30\u79D2\u9593\u751F\u304D\u6B8B\u308C"
+    MissionText: "25\u79D2\u9593\u751F\u304D\u6B8B\u308C"
     VisualTheme: {fileID: 11400000, guid: f51e08760f726004f83c0e7e736d85e2, type: 2}
     GoalType: 4
-    GoalValue: 30
+    GoalValue: 25
     TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
     SportsCarQuota: 0
-    SurvivalSeconds: 30
+    SurvivalSeconds: 25
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.74
-    SpawnInterval: 0.9
+    CarSpeed: 1
+    SpawnInterval: 0.67
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0
-    BrokenChance: 0
-    RushEveryCorrect: 0
-    FeverComboThreshold: 0
+    ExpressChance: 0.15
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 10
+    FeverComboThreshold: 6
     SpawnPattern: 0
     IntroSpawns: []
     UseFixedSeed: 0
@@ -660,28 +660,358 @@ MonoBehaviour:
     IsImplemented: 1
   - StageNumber: 20
     ChapterNumber: 4
-    DisplayName: "\u3072\u3089\u304C\u306A\u691C\u5B9A"
-    MissionText: "180\u70B9\u3078\u5230\u9054\u3057\u308D"
+    DisplayName: "\u3072\u3089\u304C\u306A\u4ED5\u5206\u3051"
+    MissionText: "36\u6587\u5B57\u3092\u4ED5\u5206\u3051\u308D"
     VisualTheme: {fileID: 11400000, guid: 56ad11c5f834500408c8a68f530951ec, type: 2}
-    GoalType: 0
-    GoalValue: 180
-    TargetScore: 180
+    GoalType: 1
+    GoalValue: 36
+    TargetScore: 0
     LightTruckQuota: 0
     CompactCarQuota: 0
     SportsCarQuota: 0
     SurvivalSeconds: 0
     MissLimit: 3
     AllowRewardedContinue: 1
-    CarSpeed: 0.76
-    SpawnInterval: 0.85
+    CarSpeed: 1.02
+    SpawnInterval: 0.65
     WeightLightTruck: 1
     WeightCompactCar: 1
     WeightSportsCar: 1
-    ExpressChance: 0
-    CoveredChance: 0
-    BrokenChance: 0
-    RushEveryCorrect: 0
-    FeverComboThreshold: 0
+    ExpressChance: 0.15
+    CoveredChance: 0.15
+    BrokenChance: 0.15
+    RushEveryCorrect: 10
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 21
+    ChapterNumber: 5
+    DisplayName: "\u8C46\u306E\u4E09\u7A2E\u30C1\u30A7\u30C3\u30AF"
+    MissionText: "\u5404\u7A2E\u985E\u309212\u500B\u305A\u3064\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 8bba2d1fd5f203c449b3bd0c6360f860, type: 2}
+    GoalType: 3
+    GoalValue: 36
+    TargetScore: 0
+    LightTruckQuota: 12
+    CompactCarQuota: 12
+    SportsCarQuota: 12
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.04
+    SpawnInterval: 0.63
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.16
+    CoveredChance: 0.16
+    BrokenChance: 0.15
+    RushEveryCorrect: 9
+    FeverComboThreshold: 6
+    SpawnPattern: 1
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 22
+    ChapterNumber: 5
+    DisplayName: "\u3044\u304D\u3082\u306E\u9023\u9396"
+    MissionText: "30\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 9bbb1e00ffbc15041b44466a82c1d0cb, type: 2}
+    GoalType: 2
+    GoalValue: 30
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.06
+    SpawnInterval: 0.61
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.16
+    CoveredChance: 0.16
+    BrokenChance: 0.15
+    RushEveryCorrect: 9
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 23
+    ChapterNumber: 5
+    DisplayName: "\u30DD\u30FC\u30BA\u8010\u4E45"
+    MissionText: "30\u79D2\u9593\u751F\u304D\u6B8B\u308C"
+    VisualTheme: {fileID: 11400000, guid: e23405437793e8a4d9939fec934e4c22, type: 2}
+    GoalType: 4
+    GoalValue: 30
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 30
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.08
+    SpawnInterval: 0.59
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.16
+    CoveredChance: 0.16
+    BrokenChance: 0.15
+    RushEveryCorrect: 9
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 24
+    ChapterNumber: 5
+    DisplayName: "\u6642\u4EE3\u306E\u5FDC\u7528"
+    MissionText: "42\u4EBA\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: f51e08760f726004f83c0e7e736d85e2, type: 2}
+    GoalType: 1
+    GoalValue: 42
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.1
+    SpawnInterval: 0.57
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.16
+    CoveredChance: 0.16
+    BrokenChance: 0.15
+    RushEveryCorrect: 9
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 25
+    ChapterNumber: 5
+    DisplayName: "\u6587\u5B57\u306E\u9023\u7D9A\u5224\u5B9A"
+    MissionText: "36\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: 56ad11c5f834500408c8a68f530951ec, type: 2}
+    GoalType: 2
+    GoalValue: 36
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.12
+    SpawnInterval: 0.55
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.16
+    CoveredChance: 0.16
+    BrokenChance: 0.15
+    RushEveryCorrect: 9
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 26
+    ChapterNumber: 6
+    DisplayName: "\u8C46\u306E\u691C\u5B9A"
+    MissionText: "45\u500B\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 8bba2d1fd5f203c449b3bd0c6360f860, type: 2}
+    GoalType: 1
+    GoalValue: 45
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.14
+    SpawnInterval: 0.53
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0.18
+    BrokenChance: 0.16
+    RushEveryCorrect: 8
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 27
+    ChapterNumber: 6
+    DisplayName: "\u3044\u304D\u3082\u306E\u691C\u5B9A"
+    MissionText: "\u5404\u7A2E\u985E\u309216\u5339\u305A\u3064\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 9bbb1e00ffbc15041b44466a82c1d0cb, type: 2}
+    GoalType: 3
+    GoalValue: 48
+    TargetScore: 0
+    LightTruckQuota: 16
+    CompactCarQuota: 16
+    SportsCarQuota: 16
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.16
+    SpawnInterval: 0.51
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0.18
+    BrokenChance: 0.16
+    RushEveryCorrect: 8
+    FeverComboThreshold: 6
+    SpawnPattern: 1
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 28
+    ChapterNumber: 6
+    DisplayName: "\u30DD\u30FC\u30BA\u691C\u5B9A"
+    MissionText: "40\u30B3\u30F3\u30DC\u3078\u5230\u9054\u3057\u308D"
+    VisualTheme: {fileID: 11400000, guid: e23405437793e8a4d9939fec934e4c22, type: 2}
+    GoalType: 2
+    GoalValue: 40
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.18
+    SpawnInterval: 0.49
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0.18
+    BrokenChance: 0.16
+    RushEveryCorrect: 8
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 29
+    ChapterNumber: 6
+    DisplayName: "\u6642\u4EE3\u306E\u691C\u5B9A"
+    MissionText: "35\u79D2\u9593\u751F\u304D\u6B8B\u308C"
+    VisualTheme: {fileID: 11400000, guid: f51e08760f726004f83c0e7e736d85e2, type: 2}
+    GoalType: 4
+    GoalValue: 35
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 35
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.2
+    SpawnInterval: 0.47
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0.18
+    BrokenChance: 0.16
+    RushEveryCorrect: 8
+    FeverComboThreshold: 6
+    SpawnPattern: 0
+    IntroSpawns: []
+    UseFixedSeed: 0
+    FixedSeed: 0
+    MasteryMetric: 0
+    TwoStarThreshold: 1
+    ThreeStarThreshold: 0
+    LegacyClearScore: 0
+    IsImplemented: 1
+  - StageNumber: 30
+    ChapterNumber: 6
+    DisplayName: "\u3072\u3089\u304C\u306A\u6700\u7D42\u691C\u5B9A"
+    MissionText: "60\u6587\u5B57\u3092\u4ED5\u5206\u3051\u308D"
+    VisualTheme: {fileID: 11400000, guid: 56ad11c5f834500408c8a68f530951ec, type: 2}
+    GoalType: 1
+    GoalValue: 60
+    TargetScore: 0
+    LightTruckQuota: 0
+    CompactCarQuota: 0
+    SportsCarQuota: 0
+    SurvivalSeconds: 0
+    MissLimit: 3
+    AllowRewardedContinue: 1
+    CarSpeed: 1.22
+    SpawnInterval: 0.45
+    WeightLightTruck: 1
+    WeightCompactCar: 1
+    WeightSportsCar: 1
+    ExpressChance: 0.18
+    CoveredChance: 0.18
+    BrokenChance: 0.16
+    RushEveryCorrect: 8
+    FeverComboThreshold: 6
     SpawnPattern: 0
     IntroSpawns: []
     UseFixedSeed: 0

@@ -56,23 +56,25 @@ public sealed partial class GameplayFlowPlayModeTests
     [UnityTest, Order(39)] public IEnumerator PosesThemeRealFlow() => CheckThemeFlow(18, "ポーズ");
     [UnityTest, Order(40)] public IEnumerator ErasThemeRealFlow() => CheckThemeFlow(19, "時代");
     [UnityTest, Order(41)] public IEnumerator HiraganaThemeRealFlow() => CheckThemeFlow(20, "ひらがな");
+    [UnityTest, Order(43)] public IEnumerator AppliedBeansThemeRealFlow() => CheckThemeFlow(21, "豆類");
+    [UnityTest, Order(44)] public IEnumerator FinalHiraganaThemeRealFlow() => CheckThemeFlow(30, "ひらがな");
 
     [UnityTest, Order(42)]
     public IEnumerator FinalChapterStageReturnsToSelection()
     {
-        for (int stage = 1; stage < 20; stage++) PlayerPrefs.SetInt($"StageClear_{stage}", 1);
-        InvokeStatic(RequiredType("SessionState"), "SelectStage", 20);
+        for (int stage = 1; stage < CampaignStageCount; stage++) PlayerPrefs.SetInt($"StageClear_{stage}", 1);
+        InvokeStatic(RequiredType("SessionState"), "SelectStage", CampaignStageCount);
         yield return LoadScene("Main");
         object flow = FindSceneComponent("GameFlowController");
         yield return WaitUntil(() => GetBool(flow, "IsPlaying"), SceneTimeoutSeconds, "Final chapter stage did not start");
-        yield return CompleteCurrentStageThroughRealInput(flow, 20);
+        yield return CompleteCurrentStageThroughRealInput(flow, CampaignStageCount);
         yield return WaitForScene("Result", SceneTimeoutSeconds);
         object result = FindSceneComponent("ResultController");
         yield return WaitUntil(() => (bool)GetField(result, "_areResultActionsUnlocked"), 6f, "Final result locked");
         Invoke(result, "OnNextStagePressed");
         yield return WaitForScene("StageSelect", SceneTimeoutSeconds);
-        yield return WaitUntil(() => Equals(Invoke(FindSceneComponent("StageSelectController"), "GetSelectedStageNumber"), 20),
-            SceneTimeoutSeconds, "Final stage selection did not settle on stage 20");
+        yield return WaitUntil(() => Equals(Invoke(FindSceneComponent("StageSelectController"), "GetSelectedStageNumber"), CampaignStageCount),
+            SceneTimeoutSeconds, "Final stage selection did not settle on the final stage");
     }
 
     private IEnumerator CheckThemeFlow(int stageNumber, string title)

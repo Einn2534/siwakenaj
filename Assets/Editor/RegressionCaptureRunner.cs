@@ -113,6 +113,8 @@ public static class RegressionCaptureRunner
                 CaptureStageSelect(profile, absoluteOutputDirectory, 1);
                 CaptureStageSelect(profile, absoluteOutputDirectory, 3);
                 CaptureStageSelect(profile, absoluteOutputDirectory, 4);
+                CaptureStageSelect(profile, absoluteOutputDirectory, 5);
+                CaptureStageSelect(profile, absoluteOutputDirectory, 6);
                 CaptureMain(profile, absoluteOutputDirectory);
                 CaptureMainStageFiveHud(profile, absoluteOutputDirectory);
                 CaptureMainDailyHud(profile, absoluteOutputDirectory);

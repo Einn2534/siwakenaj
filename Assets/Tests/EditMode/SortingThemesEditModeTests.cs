@@ -38,14 +38,14 @@ public sealed class SortingThemesEditModeTests
     }
 
     [Test]
-    public void TwentyStageAllocationAndChallengeModesAreExplicit()
+    public void ThirtyStageAllocationAndChallengeModesAreExplicit()
     {
         ScriptableObject stages = Resources.Load<ScriptableObject>("StageDatabase");
         string[] chapterFour = { "豆類", "爬虫類", "ポーズ", "時代", "ひらがな" };
-        for (int n = 1; n <= 20; n++)
+        for (int n = 1; n <= 30; n++)
         {
             string expected = n <= 3 ? "くるま" : n <= 7 ? "じゃんけん" : n <= 10 ? "時計"
-                : n <= 15 ? "葉野菜" : chapterFour[n - 16];
+                : n <= 15 ? "葉野菜" : chapterFour[(n - 16) % 5];
             object stage = CoreReflection.Call(stages, "GetStageDefinition", n);
             Assert.That(CoreReflection.GetField<object>(stage, "VisualTheme"), Is.SameAs(Theme(n, "Stage")));
             Assert.That(CoreReflection.GetProperty<string>(Theme(n, "Stage"), "ThemeName"), Is.EqualTo(expected));
@@ -67,40 +67,34 @@ public sealed class SortingThemesEditModeTests
     }
 
     [Test]
-    public void ChapterFourKeepsExistingProgressionAndUsesGentleGoals()
+    public void LateThemesReturnThreeTimesWithDifferentGoalsAndIncreasingPace()
     {
         ScriptableObject database = Resources.Load<ScriptableObject>("StageDatabase");
-        string[] goals = { "TotalCorrect", "VehicleQuota", "Combo", "Survival", "Score" };
-        int[] values = { 12, 12, 10, 30, 180 };
-        float[] speeds = { 0.68f, 0.70f, 0.72f, 0.74f, 0.76f };
-        float[] intervals = { 1.05f, 1.00f, 0.95f, 0.90f, 0.85f };
-        for (int offset = 0; offset < 5; offset++)
+        for (int number = 16; number <= 30; number++)
         {
-            int number = 16 + offset;
             object stage = CoreReflection.Call(database, "GetStageDefinition", number);
             Assert.That(CoreReflection.GetField<int>(stage, "StageNumber"), Is.EqualTo(number));
-            Assert.That(CoreReflection.GetField<int>(stage, "ChapterNumber"), Is.EqualTo(4));
-            Assert.That(CoreReflection.GetField<object>(stage, "GoalType").ToString(), Is.EqualTo(goals[offset]));
-            Assert.That(CoreReflection.GetField<int>(stage, "GoalValue"), Is.EqualTo(values[offset]));
-            Assert.That(CoreReflection.GetField<float>(stage, "CarSpeed"), Is.EqualTo(speeds[offset]));
-            Assert.That(CoreReflection.GetField<float>(stage, "SpawnInterval"), Is.EqualTo(intervals[offset]));
+            Assert.That(CoreReflection.GetField<int>(stage, "ChapterNumber"), Is.EqualTo((number - 1) / 5 + 1));
+            Assert.That(CoreReflection.GetField<int>(stage, "GoalValue"), Is.GreaterThanOrEqualTo(24));
             Assert.That(CoreReflection.GetField<int>(stage, "MissLimit"), Is.EqualTo(3));
             Assert.That(CoreReflection.GetField<bool>(stage, "AllowRewardedContinue"), Is.True);
-            Assert.That(CoreReflection.GetField<float>(stage, "ExpressChance"), Is.Zero);
-            Assert.That(CoreReflection.GetField<float>(stage, "CoveredChance"), Is.Zero);
-            Assert.That(CoreReflection.GetField<float>(stage, "BrokenChance"), Is.Zero);
-            Assert.That(CoreReflection.GetField<int>(stage, "RushEveryCorrect"), Is.Zero);
-            Assert.That(CoreReflection.GetField<int>(stage, "FeverComboThreshold"), Is.Zero);
+            Assert.That(CoreReflection.GetField<float>(stage, "ExpressChance"), Is.GreaterThan(0f));
+            Assert.That(CoreReflection.GetField<float>(stage, "CoveredChance"), Is.GreaterThan(0f));
+            Assert.That(CoreReflection.GetField<float>(stage, "BrokenChance"), Is.GreaterThan(0f));
+            Assert.That(CoreReflection.GetField<int>(stage, "RushEveryCorrect"), Is.GreaterThan(0));
+            Assert.That(CoreReflection.GetField<int>(stage, "FeverComboThreshold"), Is.GreaterThan(0));
             Assert.That(CoreReflection.GetField<int>(stage, "WeightLightTruck"), Is.EqualTo(1));
             Assert.That(CoreReflection.GetField<int>(stage, "WeightCompactCar"), Is.EqualTo(1));
             Assert.That(CoreReflection.GetField<int>(stage, "WeightSportsCar"), Is.EqualTo(1));
-            Assert.That(CoreReflection.GetField<object>(stage, "SpawnPattern").ToString(),
-                Is.EqualTo(number == 17 ? "BalancedBag" : "WeightedRandom"));
-            if (number == 17)
+            bool quota = CoreReflection.GetField<object>(stage, "GoalType").ToString() == "VehicleQuota";
+            Assert.That(CoreReflection.GetField<object>(stage, "SpawnPattern").ToString(), Is.EqualTo(quota ? "BalancedBag" : "WeightedRandom"));
+            if (quota)
             {
-                Assert.That(CoreReflection.GetField<int>(stage, "LightTruckQuota"), Is.EqualTo(4));
-                Assert.That(CoreReflection.GetField<int>(stage, "CompactCarQuota"), Is.EqualTo(4));
-                Assert.That(CoreReflection.GetField<int>(stage, "SportsCarQuota"), Is.EqualTo(4));
+                int each = CoreReflection.GetField<int>(stage, "LightTruckQuota");
+                Assert.That(each, Is.GreaterThanOrEqualTo(10));
+                Assert.That(CoreReflection.GetField<int>(stage, "CompactCarQuota"), Is.EqualTo(each));
+                Assert.That(CoreReflection.GetField<int>(stage, "SportsCarQuota"), Is.EqualTo(each));
+                Assert.That(CoreReflection.GetField<int>(stage, "GoalValue"), Is.EqualTo(each * 3));
             }
             Assert.That(CoreReflection.GetField<object>(stage, "MasteryMetric").ToString(), Is.EqualTo("MissCount"));
             Assert.That(CoreReflection.GetField<float>(stage, "TwoStarThreshold"), Is.EqualTo(1f));
@@ -113,11 +107,30 @@ public sealed class SortingThemesEditModeTests
                 Assert.That(CoreReflection.CallStatic(rating, "CalculateForResult", clear, stage),
                     Is.EqualTo(3 - misses), $"stage {number}, misses {misses}");
             }
+            if (number >= 21)
+            {
+                object previous = CoreReflection.Call(database, "GetStageDefinition", number - 5);
+                Assert.That(CoreReflection.GetField<object>(stage, "VisualTheme"), Is.SameAs(CoreReflection.GetField<object>(previous, "VisualTheme")));
+                Assert.That(CoreReflection.GetField<float>(stage, "CarSpeed"), Is.GreaterThan(CoreReflection.GetField<float>(previous, "CarSpeed")));
+                Assert.That(CoreReflection.GetField<float>(stage, "SpawnInterval"), Is.LessThan(CoreReflection.GetField<float>(previous, "SpawnInterval")));
+            }
+        }
+        for (int first = 16; first <= 20; first++)
+        {
+            HashSet<string> goals = new();
+            for (int number = first; number <= 30; number += 5)
+                goals.Add(CoreReflection.GetField<object>(CoreReflection.Call(database, "GetStageDefinition", number), "GoalType").ToString());
+            Assert.That(goals.Count, Is.GreaterThanOrEqualTo(2), $"theme at stage {first} needs distinct challenges");
+            object basic = CoreReflection.Call(database, "GetStageDefinition", first);
+            object final = CoreReflection.Call(database, "GetStageDefinition", first + 10);
+            Assert.That(CoreReflection.GetField<object>(final, "GoalType"), Is.EqualTo(CoreReflection.GetField<object>(basic, "GoalType")));
+            Assert.That(CoreReflection.GetField<int>(final, "GoalValue"), Is.GreaterThan(CoreReflection.GetField<int>(basic, "GoalValue")));
         }
 
         object next = CoreReflection.Call(database, "GetNextStageDefinition", 15);
         Assert.That(CoreReflection.GetField<int>(next, "StageNumber"), Is.EqualTo(16));
-        Assert.That(CoreReflection.Call(database, "GetNextStageDefinition", 20), Is.Null);
+        Assert.That(CoreReflection.GetField<int>(CoreReflection.Call(database, "GetNextStageDefinition", 20), "StageNumber"), Is.EqualTo(21));
+        Assert.That(CoreReflection.Call(database, "GetNextStageDefinition", 30), Is.Null);
         Func<int, bool> onlyFifteenCleared = number => number == 15;
         Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 15, onlyFifteenCleared), Is.True);
         Assert.That(CoreReflection.Call(database, "IsStageUnlocked", 16, onlyFifteenCleared), Is.False);
