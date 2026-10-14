@@ -247,6 +247,15 @@ public class GameFlowController : MonoBehaviour
             yield break;
         }
 
+        if (TutorialLaunchService.ShouldStartCoveredTutorial(_currentStageDefinition.StageNumber))
+        {
+            _currentState = GameState.Playing;
+            _tutorialController = TutorialController.EnsureInstalled();
+            _tutorialController.BeginCoveredTutorial(this, _scoreManager, _carSpawner, _currentStageDefinition);
+            _startGameRoutine = null;
+            yield break;
+        }
+
         if (TutorialLaunchService.ShouldStartTutorial(_currentStageDefinition.StageNumber))
         {
             _currentState = GameState.Playing;

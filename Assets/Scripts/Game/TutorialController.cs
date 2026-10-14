@@ -26,7 +26,11 @@ public sealed class TutorialController : MonoBehaviour
         BrokenIntroduction,
         GuidedBrokenNormal,
         GuidedBroken,
-        BrokenComplete
+        BrokenComplete,
+        CoveredIntroduction,
+        GuidedCovered,
+        CoveredPractice,
+        CoveredComplete
     }
 
     private const float ReferenceWidth = 1080f;
@@ -38,6 +42,7 @@ public sealed class TutorialController : MonoBehaviour
     private const float DialogueAutoAdvanceSeconds = 2f;
     private const int ExpressTutorialCarCount = 2;
     private const int BrokenTutorialCarCount = 2;
+    private const int CoveredTutorialCarCount = 2;
     private const int FirstIndependentIndex = 3;
     private const int RequiredIndependentSuccessCount = 3;
 
@@ -101,6 +106,7 @@ public sealed class TutorialController : MonoBehaviour
     private bool _isRunning;
     private bool _isExpressTutorial;
     private bool _isBrokenTutorial;
+    private bool _isCoveredTutorial;
     private bool _isAwaitingInput;
     private bool _stepSucceeded;
     private bool _firstMissExplained;
@@ -113,7 +119,8 @@ public sealed class TutorialController : MonoBehaviour
     public bool IsRunning => _isRunning;
     public TutorialState State => _state;
     private int TutorialCarCount => _isExpressTutorial ? ExpressTutorialCarCount
-        : _isBrokenTutorial ? BrokenTutorialCarCount : TutorialCars.Length;
+        : _isBrokenTutorial ? BrokenTutorialCarCount
+        : _isCoveredTutorial ? CoveredTutorialCarCount : TutorialCars.Length;
     private bool IsPaused => _gameFlowController != null && _gameFlowController.IsPaused();
 
     public static TutorialController EnsureInstalled()
@@ -147,6 +154,7 @@ public sealed class TutorialController : MonoBehaviour
     {
         if (!_isRunning || !_isAwaitingInput || _activeCar == null
             || (_state != TutorialState.GuidedTruck && _state != TutorialState.GuidedExpress
+                && _state != TutorialState.GuidedCovered
                 && _state != TutorialState.GuidedBrokenNormal && _state != TutorialState.GuidedBroken)
             || _carSpawner == null || !_carSpawner.TryGetPlayZoneWorldRect(out Rect zone)) return;
         SpriteRenderer renderer = _activeCar.GetComponent<SpriteRenderer>();
@@ -192,16 +200,27 @@ public sealed class TutorialController : MonoBehaviour
         BeginInternal(gameFlowController, scoreManager, carSpawner, stageDefinition, false, true);
     }
 
+    public void BeginCoveredTutorial(
+        GameFlowController gameFlowController,
+        ScoreManager scoreManager,
+        CarSpawner carSpawner,
+        StageDefinition stageDefinition)
+    {
+        BeginInternal(gameFlowController, scoreManager, carSpawner, stageDefinition, false, false, true);
+    }
+
     private void BeginInternal(
         GameFlowController gameFlowController,
         ScoreManager scoreManager,
         CarSpawner carSpawner,
         StageDefinition stageDefinition,
         bool isExpressTutorial,
-        bool isBrokenTutorial = false)
+        bool isBrokenTutorial = false,
+        bool isCoveredTutorial = false)
     {
         _isExpressTutorial = isExpressTutorial;
         _isBrokenTutorial = isBrokenTutorial;
+        _isCoveredTutorial = isCoveredTutorial;
         _gameFlowController = gameFlowController;
         _scoreManager = scoreManager;
         _carSpawner = carSpawner;
@@ -248,12 +267,13 @@ public sealed class TutorialController : MonoBehaviour
         }
 
         _tutorialRoutine = StartCoroutine(_isExpressTutorial ? RunExpressTutorial()
-            : _isBrokenTutorial ? RunBrokenTutorial() : RunTutorial());
+            : _isBrokenTutorial ? RunBrokenTutorial()
+            : _isCoveredTutorial ? RunCoveredTutorial() : RunTutorial());
     }
 
     public void HandleLaneInput(CarType laneType)
     {
-        if (!_isRunning || !_isAwaitingInput)
+        if (!_isRunning || !_isAwaitingInput || IsPaused)
         {
             return;
         }
@@ -265,7 +285,7 @@ public sealed class TutorialController : MonoBehaviour
             return;
         }
 
-        if (_state == TutorialState.GuidedBroken)
+        if ((_activeCar.IsCovered && !_activeCar.IsRevealed) || _state == TutorialState.GuidedBroken)
         {
             HandleTutorialMiss();
             return;
@@ -415,6 +435,91 @@ public sealed class TutorialController : MonoBehaviour
         _isAwaitingInput = false;
     }
 
+    private IEnumerator RunCoveredTutorial()
+    {
+        _state = TutorialState.CoveredIntroduction;
+        _carSpawner?.StopSpawning();
+        _carSpawner?.DespawnAllCars();
+        ClearButtonGuide();
+
+        SetInstruction($"このおしごとから\n「{_stageDefinition.Theme.CoveredName}」が登場するよ！");
+        yield return WaitForDialogueAdvance();
+        yield return RunCoveredStep(CarType.LightTruck, true);
+        yield return WaitForDialogueAdvance();
+
+        _state = TutorialState.CoveredPractice;
+        SetInstruction("今度は止まらずに流れるよ\n正体が見えてから仕分けよう！");
+        yield return WaitForDialogueAdvance();
+        yield return RunCoveredStep(CarType.CompactCar, false);
+        yield return WaitForDialogueAdvance();
+
+        _state = TutorialState.CoveredComplete;
+        SetInstruction("準備OK！\n「?」が消えてから、同じボタン！");
+        yield return WaitForDialogueAdvance();
+        SaveService.SetCoveredTutorialSeen();
+        _state = TutorialState.Completed;
+        FinishAndStartRegularStage();
+    }
+
+    private IEnumerator RunCoveredStep(CarType carType, bool guided)
+    {
+        _state = guided ? TutorialState.GuidedCovered : TutorialState.CoveredPractice;
+        _expectedType = carType;
+        _currentCarSpeed = guided ? 0f : _stageDefinition.CarSpeed;
+        _stepSucceeded = false;
+
+        while (_isRunning && !_stepSucceeded)
+        {
+            _isAwaitingInput = false;
+            ClearButtonGuide();
+            yield return SpawnCurrentCar();
+            if (guided)
+            {
+                yield return WaitForStoppedCarArrival();
+                SetInstruction("「?」の間は正体が分からないよ\n見える前に押すとミス！");
+                yield return WaitForDialogueAdvance();
+            }
+
+            SetInstruction("まだ押さずに待とう\n「?」が消えると正体が分かるよ");
+            _isAwaitingInput = true;
+            _lastActionTime = Time.time;
+            while (_isRunning && _activeCar != null && !_activeCar.IsRevealed)
+            {
+                // Let CarController reveal at the same position as regular play.
+                // The guided example moves slowly, then waits for the player's input.
+                if (guided && !IsPaused && _carSpawner.TryGetPlayZoneWorldRect(out Rect zone))
+                {
+                    _activeCar.transform.position += Vector3.left * (GetTutorialCarSpeed() * zone.width * Time.deltaTime);
+                }
+                yield return null;
+            }
+
+            if (_activeCar != null)
+            {
+                SetInstruction(guided
+                    ? $"{_stageDefinition.Theme.GetDisplayName(carType)}だ！\n同じボタンを押そう"
+                    : "正体が見えた！\n通りすぎる前に同じボタン！");
+                if (guided)
+                {
+                    _activeCar.Stop();
+                    ApplyButtonGuide(_expectedType);
+                }
+
+                while (_isRunning && _activeCar != null && !_stepSucceeded)
+                {
+                    yield return null;
+                }
+            }
+
+            _isAwaitingInput = false;
+            ClearButtonGuide();
+            if (!_stepSucceeded)
+            {
+                yield return WaitTutorialSeconds(0.45f);
+            }
+        }
+    }
+
     private IEnumerator RunBrokenTutorial()
     {
         CarVisualDatabase theme = _stageDefinition.Theme;
@@ -547,6 +652,18 @@ public sealed class TutorialController : MonoBehaviour
         _progressHudController?.HighlightMiss();
         _gameFlowController?.PlayTutorialMissFeedback();
 
+        if (_isCoveredTutorial)
+        {
+            SetInstruction(_activeCar != null && !_activeCar.IsRevealed
+                ? "まだ正体が見えていないよ\n「?」が消えるまで待とう！"
+                : "もう一度！ 正体が見えたら\n通りすぎる前に同じボタン！");
+            _isAwaitingInput = false;
+            ClearButtonGuide();
+            _carSpawner?.DespawnCar(_activeCar);
+            _activeCar = null;
+            return;
+        }
+
         if (_state == TutorialState.GuidedBroken)
         {
             SetInstruction($"{_stageDefinition.Theme.BrokenName}は\n「X」で{_stageDefinition.Theme.RepairAction}！");
@@ -655,6 +772,7 @@ public sealed class TutorialController : MonoBehaviour
         {
             _activeCar = _carSpawner.SpawnFixedCar(
                 _expectedType, _currentCarSpeed, _isExpressTutorial ? CarModifier.Express
+                    : _isCoveredTutorial ? CarModifier.Covered
                     : _state == TutorialState.GuidedBroken ? CarModifier.Broken : CarModifier.Normal);
             if (_activeCar != null)
             {
@@ -683,6 +801,10 @@ public sealed class TutorialController : MonoBehaviour
         if (_isExpressTutorial && _carSpawner != null && _carSpawner.TryGetPlayZoneWorldRect(out Rect playZone))
         {
             stoppedPositionX = playZone.center.x;
+        }
+        else if (_isCoveredTutorial && _carSpawner != null && _carSpawner.TryGetPlayZoneWorldRect(out Rect coveredZone))
+        {
+            stoppedPositionX = car.transform.position.x + coveredZone.xMax - coveredZone.width * 0.025f - bounds.max.x;
         }
         float startPositionX = car.transform.position.x;
         float elapsed = 0f;
@@ -722,6 +844,11 @@ public sealed class TutorialController : MonoBehaviour
     private void ReinforceCorrectButton()
     {
         if (!_isRunning || !_isAwaitingInput)
+        {
+            return;
+        }
+
+        if (_isCoveredTutorial && (_activeCar == null || !_activeCar.IsRevealed))
         {
             return;
         }
@@ -895,6 +1022,7 @@ public sealed class TutorialController : MonoBehaviour
             || _state == TutorialState.GuidedCompactCar
             || _state == TutorialState.GuidedSportsCar
             || _state == TutorialState.GuidedExpress
+            || (_state == TutorialState.GuidedCovered && _activeCar != null && _activeCar.IsRevealed)
             || _state == TutorialState.GuidedBrokenNormal;
     }
 
@@ -903,6 +1031,7 @@ public sealed class TutorialController : MonoBehaviour
         return _state == TutorialState.Introduction
             || _state == TutorialState.GuidedTruck
             || _state == TutorialState.ExpressIntroduction
+            || _state == TutorialState.CoveredIntroduction
             || _state == TutorialState.GuidedExpress
             || _state == TutorialState.BrokenIntroduction
             || _state == TutorialState.GuidedBrokenNormal;
@@ -997,6 +1126,10 @@ public sealed class TutorialController : MonoBehaviour
         else if (_isBrokenTutorial)
         {
             SaveService.SetBrokenTutorialSeen();
+        }
+        else if (_isCoveredTutorial)
+        {
+            SaveService.SetCoveredTutorialSeen();
         }
         else
         {

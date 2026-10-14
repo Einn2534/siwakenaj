@@ -26,6 +26,7 @@ public sealed partial class GameplayFlowPlayModeTests
         "Tutorial_Completed",
         "Tutorial_Skipped",
         "ExpressTutorial_Seen",
+        "CoveredTutorial_Seen",
         "BrokenTutorial_Seen",
         "SelectedStage",
         "LastStage",
@@ -88,6 +89,7 @@ public sealed partial class GameplayFlowPlayModeTests
         PlayerPrefs.SetInt("Tutorial_Completed", 1);
         PlayerPrefs.SetInt("Tutorial_Skipped", 0);
         PlayerPrefs.SetInt("ExpressTutorial_Seen", 1);
+        PlayerPrefs.SetInt("CoveredTutorial_Seen", 1);
         PlayerPrefs.SetInt("BrokenTutorial_Seen", 1);
         PlayerPrefs.SetInt("SelectedStage", 1);
         PlayerPrefs.SetInt("LastStage", 1);

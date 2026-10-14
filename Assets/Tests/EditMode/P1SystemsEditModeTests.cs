@@ -9,6 +9,42 @@ using UnityEngine;
 public sealed class P1SystemsEditModeTests
 {
     [Test]
+    public void CoveredTutorialStartsAtStageSixWithIndependentSeenStateAndSupportsReplay()
+    {
+        Dictionary<string, (bool, int)> original = BackupInts(new[] { "CoveredTutorial_Seen", "GimmickHintSeen_Covered" });
+        Type session = CoreReflection.RequiredType("SessionState");
+        Type launch = CoreReflection.RequiredType("TutorialLaunchService");
+        string originalMode = session.GetProperty("SelectedGameMode").GetValue(null).ToString();
+        object originalStage = session.GetProperty("SelectedStageNumber").GetValue(null);
+        try
+        {
+            CoreReflection.CallStatic(launch, "ConsumeReplayRequest");
+            PlayerPrefs.DeleteKey("CoveredTutorial_Seen");
+            PlayerPrefs.SetInt("GimmickHintSeen_Covered", 1);
+            CoreReflection.CallStatic(session, "SelectStage", 6);
+            for (int stage = 1; stage <= 30; stage++)
+                Assert.That(CoreReflection.CallStatic(launch, "ShouldStartCoveredTutorial", stage), Is.EqualTo(stage == 6));
+            CoreReflection.CallStatic(session, "SelectDaily", 6);
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartCoveredTutorial", 6), Is.EqualTo(false));
+            CoreReflection.CallStatic(session, "SelectEndless", 6);
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartCoveredTutorial", 6), Is.EqualTo(false));
+            CoreReflection.CallStatic(session, "SelectStage", 6);
+            CoreReflection.CallStatic(CoreReflection.RequiredType("SaveService"), "SetCoveredTutorialSeen");
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartCoveredTutorial", 6), Is.EqualTo(false));
+            CoreReflection.CallStatic(launch, "RequestReplay");
+            Assert.That(CoreReflection.CallStatic(launch, "ShouldStartCoveredTutorial", 6), Is.EqualTo(true));
+            Assert.That(CoreReflection.CallStatic(launch, "ConsumeReplayRequest"), Is.EqualTo(false));
+        }
+        finally
+        {
+            CoreReflection.CallStatic(launch, "ConsumeReplayRequest");
+            string restoreMethod = originalMode == "Daily" ? "SelectDaily" : originalMode == "Endless" ? "SelectEndless" : "SelectStage";
+            CoreReflection.CallStatic(session, restoreMethod, originalStage);
+            RestoreInts(original);
+        }
+    }
+
+    [Test]
     public void ExpressTutorialOnlyStartsForUnseenStageThreeAndIgnoresLegacyHintSeen()
     {
         Dictionary<string, (bool, int)> original = BackupInts(new[] { "ExpressTutorial_Seen", "GimmickHintSeen_Express" });
