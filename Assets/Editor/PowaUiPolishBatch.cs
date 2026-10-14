@@ -30,10 +30,9 @@ public static class PowaUiPolishBatch
         }
 
         RectTransform frameImage = FindRect("FrameImage");
-        if (frameImage != null)
+        if (topZone != null && frameImage != null)
         {
-            Stretch(frameImage, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0f, -160f));
-            SetImageRaycast(frameImage, true);
+            ConfigureMonitorScreen(topZone, frameImage);
         }
 
         RectTransform buttonZone = FindRect("ButtonZone");
@@ -57,6 +56,38 @@ public static class PowaUiPolishBatch
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
+    }
+
+    private static void ConfigureMonitorScreen(RectTransform topZone, RectTransform frameImage)
+    {
+        UnityEngine.UI.Image originalFrame = topZone.GetComponent<UnityEngine.UI.Image>();
+        UnityEngine.UI.Image frame = frameImage.GetComponent<UnityEngine.UI.Image>();
+        if (originalFrame == null || frame == null) return;
+
+        // Draw the opaque display behind the existing bezel, with the score icons above both.
+        RectTransform screen = topZone.Find("MonitorScreen") as RectTransform;
+        if (screen == null)
+        {
+            GameObject screenObject = new("MonitorScreen", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            screenObject.layer = topZone.gameObject.layer;
+            screen = (RectTransform)screenObject.transform;
+            screen.SetParent(topZone, false);
+        }
+
+        // Overlap the opaque bezel slightly so the rounded opening has no transparent seams.
+        Stretch(screen, new Vector2(0.08f, 0.15f), new Vector2(0.92f, 0.85f), Vector2.zero, Vector2.zero);
+        UnityEngine.UI.Image display = screen.GetComponent<UnityEngine.UI.Image>();
+        display.color = new Color32(14, 20, 28, 255);
+        display.raycastTarget = false;
+        screen.SetAsFirstSibling();
+
+        frame.sprite = originalFrame.sprite;
+        frame.color = originalFrame.color;
+        frame.raycastTarget = originalFrame.raycastTarget;
+        Stretch(frameImage, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        frameImage.gameObject.SetActive(true);
+        frameImage.SetSiblingIndex(1);
+        originalFrame.enabled = false;
     }
 
     private static RectTransform FindRect(string name)
