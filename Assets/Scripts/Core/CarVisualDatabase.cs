@@ -36,6 +36,7 @@ public class CarVisualDatabase : ScriptableObject
     [SerializeField] private string _brokenName = "故障車";
     [SerializeField] private string _repairAction = "整備へ送る";
     [SerializeField] private Sprite _coveredSprite;
+    [SerializeField] private Sprite _stageSelectBackground;
     [SerializeField] private bool _isVehicleTheme = true;
 
     public string ThemeName => _themeName;
@@ -44,6 +45,7 @@ public class CarVisualDatabase : ScriptableObject
     public string BrokenName => _brokenName;
     public string RepairAction => _repairAction;
     public bool IsVehicleTheme => _isVehicleTheme;
+    public Sprite StageSelectBackground => _stageSelectBackground;
     public string ExpressName => _isVehicleTheme ? "急送車" : "特急便";
     public string CoveredName => _isVehicleTheme ? "覆面車" : "ひみつ便";
     public Sprite CoveredSprite => _coveredSprite != null ? _coveredSprite : Resources.Load<Sprite>("Gameplay/covered_vehicle");

@@ -1,0 +1,29 @@
+Settled editor previews using real stage-select scene and card prefab. All stages temporarily unlocked; preferences and original scene restored afterwards.
+PASS Stage 1 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 1 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 1 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 4 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 4 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 4 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 8 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 8 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 8 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 11 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 11 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 11 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 16 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 16 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 16 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 17 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 17 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 17 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 18 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 18 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 18 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 19 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 19 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 19 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS Stage 20 / Android_1080x1920 / centered, safe area, buttons, text
+PASS Stage 20 / iPhone_1170x2532 / centered, safe area, buttons, text
+PASS Stage 20 / AndroidTall_1440x3200 / centered, safe area, buttons, text
+PASS 27 theme/device previews

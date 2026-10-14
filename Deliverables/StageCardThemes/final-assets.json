@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cars",
+    "name": "車",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-d2108d1a-bbdd-46fb-b987-bfd258580264.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_cars.png"
+  },
+  {
+    "id": "hands",
+    "name": "じゃんけん",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-5b183e22-62a6-4bee-b833-584fc8de96e1.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_hands.png"
+  },
+  {
+    "id": "clocks",
+    "name": "時計",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-d9f0eadc-d1ed-4213-910e-a8193dbbeea7.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_clocks.png"
+  },
+  {
+    "id": "greens",
+    "name": "葉野菜",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-afd6d76f-df96-4bca-aa3c-7c892da33696.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_greens.png"
+  },
+  {
+    "id": "beans",
+    "name": "豆類",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-0ce08094-ac25-4698-9f2b-746927485f17.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_beans.png"
+  },
+  {
+    "id": "reptiles",
+    "name": "爬虫類",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-b2bb6799-a007-4c5f-b7d1-05a5f6f8f8a3.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_reptiles.png"
+  },
+  {
+    "id": "poses",
+    "name": "ポーズ",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-bf4cd55f-0836-4510-b077-b60c95b15302.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_poses.png"
+  },
+  {
+    "id": "eras",
+    "name": "時代",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-4e1c75d8-eda8-41e2-96e0-b6238e8aa4fb.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_eras.png"
+  },
+  {
+    "id": "hiragana",
+    "name": "ひらがな",
+    "source": "C:\\Users\\einn\\.codex\\generated_images\\01a136db-3f71-7aa0-9adb-7b2967678f14\\exec-f6aefb88-577d-41d3-98f0-9613c2355509.png",
+    "path": "F:/Unity/siwakenja/Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_hiragana.png"
+  }
+]

@@ -1,0 +1,36 @@
+Generation mode: built-in image_gen. One separate generation per theme.
+Assets: Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_<theme>.png
+
+Shared prompt:
+Use case: illustration-story. Asset type: Unity mobile game stage-select thumbnail background.
+Create ONE finished landscape illustration, aspect ratio 12:7, approximately 1680x980 pixels. Part of a coordinated set for a cozy whimsical Japanese fantasy sorting game. Polished hand-painted 2D storybook illustration with confident dark warm-brown ink outlines, softly shaded matte colors and very subtle paper grain. Readable rounded forms, normal undistorted perspective. Rich but deliberately simplified detail that stays readable at 430x250 pixels.
+Composition: environment only, naturally wide room or courtyard. Clear quiet open floor/ground across the CENTRAL 45% width in the lower-middle, around x=50%, y=60%, reserved for a separately overlaid game item. Put distinctive decorations at the sides and back, not in the central foreground. Large legible environmental shapes, distinct silhouettes and characteristic architecture. Foreground floor occupies roughly lower 40%. Comfortable medium-light exposure, no harsh highlights behind the item.
+No people, no characters, no animals, no vehicles, no readable lettering, no numbers, no signage, no UI, no border, no watermark, no blur. Full-bleed scenery, no split panels. Keep center calm and uncluttered, foreground items will be added by the game.
+
+cars / 車：配送工房
+Scene direction: A welcoming magical delivery garage open to a sunny village street. Warm terracotta brick, honey-colored wood posts, sky blue open doorway at rear, neatly stacked shipping parcels and small spare tires at the far left, an organized workbench with brass tools at far right, gentle amber wall lanterns. A broad empty pale cobblestone service bay in front, comfortable low eye-level perspective. Emphasize the open garage architecture and bright blue sky, warm orange accents. NO parked vehicles or toy vehicles.
+
+hands / じゃんけん：遊戯の中庭
+Scene direction: A cheerful little fantasy game pavilion in a sheltered courtyard: rounded white plaster arcade, soft coral-red and teal fabric pennants without symbols, sunlit honey stone paving, colorful small game boxes and cushions neatly along the far left wall, climbing flowers by a right-hand arch, warm afternoon light. A small shallow empty circular practice circle engraved into the paving at lower center, very subtle. Charming playful social space, entirely empty. Distinct coral, cream, teal and soft yellow palette, airy courtyard silhouette. No hands, no people, no written game rules.
+
+clocks / 時計：星明かりの時計工房
+Scene direction: An enchanted clockmaker's workshop at blue hour. Beautiful tall arched window with muted indigo evening sky at the back, walnut side workbenches with brass gears and pendulums, large round wall clock cases with simple tick marks and hands but absolutely no numerals, warm amber desk lamps at the edges. Quiet wide central floor of dusky blue stone, empty lower-middle. Brass gold and muted midnight blue dominate, unmistakable clockwork architecture, a few large decorative cog shapes high at the corners. Cozy and clear rather than dark, a little luminous stardust near the top only.
+
+greens / 葉野菜：陽だまりの温室
+Scene direction: A lush bright storybook greenhouse for leafy vegetables. Pale green painted iron greenhouse arches and translucent glass roof, warm sunlight, broad leafy cabbage and lettuce beds on raised wooden planters along both side edges, a few gardening pots and wicker baskets at the far edges. Empty pale warm sandstone path and open sorting space in the center foreground. Fresh mint, leafy emerald, soft cream and sunlit yellow, airy glasshouse depth. The central backdrop is a calm frosted-glass wall with gentle light, not a busy patch of leaves.
+
+beans / 豆類：豆棚の菜園
+Scene direction: A tranquil open-air kitchen garden with tall rustic wooden trellises and gently climbing pea and bean vines along the left and right edges. A distant low cottage fence and sunny pale peach sky at the back, small wicker harvest baskets and a terracotta watering pot at the far edges. Broad uncluttered ochre garden paving and earth in the center foreground. Olive green, warm earth, golden morning light, natural timber lattice architecture. Clear outdoor agricultural scene distinct from an enclosed greenhouse. Keep the central ground calm and spacious, no prominent food items in the center.
+
+reptiles / 爬虫類：あたたかな岩の飼育室
+Scene direction: A cozy fantasy naturalist's reptile conservatory with large sun-warmed sandstone rock formations on both side edges, graceful branches and ferns, small glass terrarium enclosures placed at the side walls, warm shaft of sunlight from a high window. Muted warm terracotta sand floor with broad flat stones, center entirely empty for a separately overlaid animal. Desert ochre, sage green, muted dusty lilac shadows, a calm little sunlit habitat with believable scale. No actual animals, no eggs, no skeletons, no people.
+
+poses / ポーズ：風の通る練習場
+Scene direction: An airy peaceful exercise pavilion in a magical village, with elegant timber beams, pale lavender linen curtains gently framing the sides, open windows looking onto distant soft blue-green hills and a peach sunset. Light honey wooden plank floor, a few rolled yoga mats and neatly arranged bolsters only at the extreme side edges. Central lower-middle completely empty and spacious for a separate pose character sprite. Minimal readable shapes, coral peach, lavender and light wood palette, warm soft rim light, no mirrors reflecting people, no actual figures.
+
+eras / 時代：時の博物館
+Scene direction: A whimsical miniature museum of time with weathered sandstone arches. Along far left, a small exhibit of prehistoric stone tools and smooth fossil stones; along far right, a quiet lacquered wooden chest and antique brass globe, no mannequins or humanoid exhibits. A high round window at back softly glowing turquoise like a subtle time portal, flanked by clean stone columns. Broad empty patterned stone floor in front, low-contrast central ground. Warm sepia sandstone and muted turquoise, elegant ancient architecture, a coherent cozy history gallery rather than a cluttered collage. No people, no statues of people, no written labels.
+
+hiragana / ひらがな：紙と筆の書斎
+Scene direction: A cozy Japanese-inspired magical calligraphy study. Warm wooden floor, ivory shoji paper screens, indigo blue fabric curtains on the side windows, low writing benches at the extreme sides with an inkstone, brushes in ceramic pots, neatly rolled blank cream paper scrolls and blank books. A soft amber paper lantern high at the left, a tiny red maple branch near the right edge. Spacious empty central floor and quiet cream shoji backdrop behind the separately overlaid letter. Restrained indigo, ivory, warm wood, small vermilion accents. All paper is BLANK: absolutely no letters, characters, kanji, kana, numbers or calligraphy marks.
+

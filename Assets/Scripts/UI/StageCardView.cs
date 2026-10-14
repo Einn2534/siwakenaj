@@ -138,7 +138,7 @@ public class StageCardView : MonoBehaviour
                 break;
         }
 
-        ApplyStageThumbnail(_currentStageNumber, status);
+        ApplyStageThumbnail(_currentStageNumber, status, stage.Theme);
         if (_vehiclePreviewImage != null)
         {
             _vehiclePreviewImage.sprite = stage.Theme.GetIconSprite(CarType.CompactCar);
@@ -176,7 +176,7 @@ public class StageCardView : MonoBehaviour
             _statusText.gameObject.SetActive(false);
         }
 
-        ApplyStageThumbnail(StageNumberUtility.MinimumStageNumber, StageCardStatus.Unlocked);
+        ApplyStageThumbnail(StageNumberUtility.MinimumStageNumber, StageCardStatus.Unlocked, CarVisualDatabase.LoadDefault());
         ApplyArtState(StageCardStatus.Unlocked);
         RefreshStarBadge(0, false);
         ApplySelectionState();
@@ -325,21 +325,22 @@ public class StageCardView : MonoBehaviour
         }
     }
 
-    private void ApplyStageThumbnail(int stageNumber, StageCardStatus status)
+    private void ApplyStageThumbnail(int stageNumber, StageCardStatus status, CarVisualDatabase theme)
     {
-        if (_thumbnailImage == null || _stageThumbnailSprites == null || _stageThumbnailSprites.Length == 0)
+        if (_thumbnailImage == null)
         {
             return;
         }
 
-        int thumbnailIndex = Mathf.Abs(stageNumber - 1) % _stageThumbnailSprites.Length;
-        Sprite thumbnailSprite = _stageThumbnailSprites[thumbnailIndex];
-        if (thumbnailSprite != null)
+        Sprite thumbnailSprite = theme != null ? theme.StageSelectBackground : null;
+        if (thumbnailSprite == null && _stageThumbnailSprites != null && _stageThumbnailSprites.Length > 0)
         {
-            _thumbnailImage.sprite = thumbnailSprite;
+            int thumbnailIndex = Mathf.Abs(stageNumber - 1) % _stageThumbnailSprites.Length;
+            thumbnailSprite = _stageThumbnailSprites[thumbnailIndex];
         }
 
-        _thumbnailImage.preserveAspect = false;
+        _thumbnailImage.sprite = thumbnailSprite;
+        _thumbnailImage.preserveAspect = true;
         _thumbnailImage.color = status switch
         {
             StageCardStatus.Locked => LockedThumbnailColor,

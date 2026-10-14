@@ -1,0 +1,11 @@
+Generation mode: built-in image_gen
+Asset: Assets/Art/UI/Sprites/StageSelect/ui_stage_card_magic_shop_wide.png
+Card frame: 720 x 420 (12:7), preserveAspect enabled.
+
+Use case: illustration-story
+Asset type: Unity mobile game stage-select card background, landscape 12:7 aspect ratio, ideally 1728x1008.
+Primary request: Create a beautiful dedicated wide illustration of a cozy little wizard's sorting shop, designed to remain clear when displayed at about 430x250 pixels. The existing game's art is a warm hand-drawn picture-book magical shop with dark brown ink outlines, muted walnut and ochre timber, sage stone floors, turquoise potion bottles, lavender crystals, parchment rolls, hanging herbs and soft amber lanterns.
+Scene: View straight into a charming compact magical workshop with sturdy wooden shelves on both sides and the back, a few neatly grouped potions, crystals and scrolls, simple wood beams above and a spacious stone floor below. A modest small cyan swirling portal sits at the far right edge beside the shelves as a secondary accent.
+Composition: Naturally drawn landscape proportions and believable room perspective, absolutely no squashing or stretched objects. The central 40 percent width and lower middle area are calm uncluttered low-contrast stone floor / gently shaded backdrop, reserved for a separately overlaid colorful vehicle or item sprite. Keep a clear empty stage in the central foreground, with most decorative detail grouped towards the side edges and upper corners. The floor occupies the lower 45 percent. Avoid long busy perspective corridors or dense tiny texture.
+Style: Polished 2D Japanese storybook game environment illustration, confident warm dark-brown ink outlines, softly painted matte colors, subtle paper texture, readable rounded shapes, restrained cozy fantasy whimsy. Warm walnut, honey and muted beige with small teal/lilac highlights. Clear crisp detail at thumbnail size, comfortable medium-light exposure.
+Constraints: Background scenery only. No vehicle, no car, no characters, no animals, no UI, no cards, no border, no typography, no text, no logo, no watermark. Fill the entire landscape canvas edge to edge. No fisheye. No photorealism. No blur.

@@ -1,0 +1,33 @@
+Final stage-card theme backgrounds — 2026-10-15
+
+Artwork
+- User approved cars-style-v4 after comparison with the original magic-shop background.
+- Built-in image_gen; original artwork plus approved car background used as the references for eight further themes.
+- Nine final PNGs: Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_{cars,hands,clocks,greens,beans,reptiles,poses,eras,hiragana}.png.
+- Source PNGs: 1642 x 958 pixels each. PNG hashes match the generated originals.
+- Unity SpriteRect crops only five pixels from each horizontal edge and three pixels from each vertical edge: 1632 x 952, exactly 12:7. Image.preserveAspect=true.
+- Sprite imports: max size 2048, FullRect, no mipmaps, NPOT scale None, CompressedHQ, bilinear, clamp.
+- Prompts: generation-prompts-final.txt. Source and destination mapping: final-assets.json.
+
+Implementation
+- CarVisualDatabase has a serialized StageSelectBackground sprite.
+- StageCardView uses the stage theme background, with existing array fallback.
+- Nine theme data assets point to the corresponding backgrounds.
+- StageCard.prefab and StageCardPrefabUpgrader use the approved car image as the fallback.
+- No scene files were edited.
+
+Verification
+- Unity 6000.3.10f1 compilation: 0 errors, 0 warnings.
+- EditMode: 72 passed, 0 failed.
+- PlayMode: 78 passed, 0 failed, 0 skipped.
+- PlayMode report: ../SortingThemes/Tests/stage-card-themes-final-20261015.xml.
+- All 30 stages x 3 card statuses: 90 successful theme-routing/aspect checks. Endless card fallback also passed.
+- Nine themes x three device profiles: 27 settled scene previews passed card centering, safe-area, buttons and text checks.
+- Profiles: Android 1080x1920, iPhone 1170x2532, Tall Android 1440x3200.
+- Preview/validation.txt contains the per-device results.
+- Visual inspection: car Android, clock iPhone, leafy-vegetable Android and hiragana tall Android show correct proportions and centered cards.
+- Generic real-flow captures can catch carousel positions while resolution is changing; Preview/ images explicitly rebuild layout and snap to the selected card before capture.
+- Preview capture temporarily unlocked stages and restored original preferences and scene setup in finally.
+- Code whitespace checks passed. Saving the car theme through Unity serialized existing default fields, including Unity's normal empty-string YAML whitespace.
+
+These are Unity Editor simulations; no device build was installed.

@@ -31,4 +31,5 @@ MonoBehaviour:
   _brokenName: "\u50B7\u3093\u3060\u8C46"
   _repairAction: "\u53D6\u308A\u9664\u304F"
   _coveredSprite: {fileID: 21300000, guid: 9966b4edc2cb50641baff9cb199dc1e1, type: 3}
+  _stageSelectBackground: {fileID: 3122085349247158081, guid: 51d31c87dea4dea4fbe31410d033dd89, type: 3}
   _isVehicleTheme: 0

@@ -1,0 +1,12 @@
+Built-in image_gen mode: edit / faithful horizontal extension.
+Reference and edit target: Assets/Art/Sprites/Backgrounds/magic_shop_background_powa.png
+Preview source: C:\Users\einn\.codex\generated_images\01a136db-3f71-7aa0-9adb-7b2967678f14\exec-d2108d1a-bbdd-46fb-b987-bfd258580264.png
+Status: approved by user on 2026-10-15; final cars theme and style reference for other eight themes.
+
+Edit the attached original illustration into a landscape version for a game stage card, approximately 12:7 aspect ratio. Image 1 is the EDIT TARGET, and its existing artwork is the visual standard to preserve.
+
+Keep the actual illustrated shop's distinctive shelves, wooden sign plaques, herbs and lanterns, crystals, potion bottles, book spines, blue magic portal and slate floor. Preserve their original drawn forms, brown-black contour strokes, slightly crooked construction, restrained colors, soft broad shading, delicate texture and exact illustrative finish. The original drawing has a specific, cohesive hand; keep that hand throughout. Preserve its amount of detail, neither simplifying it nor adding ornate hyper-detailed rendering.
+
+Reframe and extend this same original room horizontally into a naturally proportioned wide composition, keeping the recognizable left shelves, rear shelf bays and the right blue portal. Remove the two witches and the tiny creatures, continuing the surrounding original shelving and floor in their places. For the vehicle-sorting theme, replace some existing inventory with a few charming toy-like car models, tires, simple brass wheel parts, hand tools and parcels, all drawn with the same shape language, line weight, materials and level of detail as the existing objects. Retain plenty of the original magical inventory and its bright small color accents. The center aisle must remain visible for a separate game icon overlay; shelves should still feel close and substantial, not a distant miniature panorama.
+
+This is a faithful edit and horizontal extension of the supplied finished artwork. Match the original light intensity, contrast, muted palette, contour quality and gentle dimensional shading. No dramatic spotlighting, sharp metallic shine, intricate realistic machines, dense ornamental micro-detail, stylized vector simplification or new illustrative style. No people or creatures. No text, UI, border or watermark.

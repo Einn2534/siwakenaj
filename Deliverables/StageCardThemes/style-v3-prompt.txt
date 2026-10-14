@@ -1,0 +1,13 @@
+Built-in image_gen mode: style-transfer with original artwork as reference.
+Reference: Assets/Art/Sprites/Backgrounds/magic_shop_background_powa.png
+Preview source: C:\Users\einn\.codex\generated_images\01a136db-3f71-7aa0-9adb-7b2967678f14\exec-2262e8b9-8ea5-4545-8de0-b43531c760bc.png
+Status: single cars-theme preview; style feedback pending.
+
+Use case: style-transfer.
+Asset type: finished illustrated background for a horizontal stage-select card in a Japanese fantasy sorting game. Landscape canvas approximately 12:7.
+
+Image 1 is the sole art-style reference: the game's original magic-shop illustration. Match the ORIGINAL artist's rendering and level of finish. Study the irregular fine dark-brown outlines, thinner interior drawing, gently modeled warm wood and stone, small reflected light in glass and crystals, softly mottled paint within crisp contours, varied appealing colors, and the many carefully drawn objects. Keep the same density of drawing and material detail. This must look like another finished background from the same game.
+
+Draw a new vehicle-sorting workshop adjoining that magic shop, in a natural slightly diagonal interior perspective. Warm timber rafters above, tall shelves receding into the room, slate flagstones below. The shop's magical inventory and vehicle-repair props are intermingled: richly detailed little colored vehicle models and spare wheel hubs on shelves, brass gears and tools, tied parcels and rolled plans, stoppered teal/purple potion bottles, bright small crystals, old books, bundles of dried herbs and hanging oil lanterns. A curved blue magic portal is visible in a rear shelving bay, lit like the reference. A side workbench has an open mechanism and arranged tools. Foreground edges have convincing layered shelves and boxes; the center floor is visible to accommodate a car icon added by the game. The room should be inviting and full of interesting details, with balanced amber, green, violet, turquoise and muted red accents, not a mostly empty brown warehouse. Retain the original's hand-drawn shapes, charming irregular construction, material marks, mild gradients and localized lantern glow. Composition should fill the card, preserving natural object proportions.
+
+No people or animals, no large foreground vehicle (the game overlays a separate car icon), no text, no UI, no border. Do not simplify the original art or remove its detail. Do not switch to a cinematic painting, photorealistic or 3D render, clean vector illustration, thick cartoon outlines, or uniform flat fills. Deliver one finished landscape illustration.

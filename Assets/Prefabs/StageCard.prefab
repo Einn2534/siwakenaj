@@ -414,9 +414,9 @@ MonoBehaviour:
   _filledStarSprite: {fileID: 21300000, guid: 0eab3ae7aa55b64787fd3739e0712225, type: 3}
   _emptyStarSprite: {fileID: 21300000, guid: f6e1a37344264cbb959a88fdc99ed45a, type: 3}
   _stageThumbnailSprites:
-  - {fileID: -9196879036529103603, guid: ea659fc44f644fc9a7b5bb046b5618d5, type: 3}
-  - {fileID: -9196879036529103603, guid: ea659fc44f644fc9a7b5bb046b5618d5, type: 3}
-  - {fileID: -9196879036529103603, guid: ea659fc44f644fc9a7b5bb046b5618d5, type: 3}
+  - {fileID: -226340446894746066, guid: de99a609b29a0284c83cb9a450605b57, type: 3}
+  - {fileID: -226340446894746066, guid: de99a609b29a0284c83cb9a450605b57, type: 3}
+  - {fileID: -226340446894746066, guid: de99a609b29a0284c83cb9a450605b57, type: 3}
 --- !u!114 &1286401321475087576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -654,9 +654,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -9196879036529103603, guid: ea659fc44f644fc9a7b5bb046b5618d5, type: 3}
+  m_Sprite: {fileID: -226340446894746066, guid: de99a609b29a0284c83cb9a450605b57, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

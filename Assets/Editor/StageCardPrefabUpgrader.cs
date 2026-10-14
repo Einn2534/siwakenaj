@@ -96,7 +96,7 @@ public static class StageCardPrefabUpgrader
         Sprite selectionGlowSprite = GetBuiltInUiSprite();
         Sprite lockOverlaySprite = LoadSprite(StageSelectSpriteRoot + "ui_stageselect_sheet15_item07.png");
         Sprite woodPanelSprite = LoadSprite("Assets/Resources/UI/Tutorial/hud_wood_panel.png");
-        Sprite magicShopSprite = LoadSprite("Assets/Art/Sprites/Backgrounds/magic_shop_background.png");
+        Sprite magicShopSprite = LoadSprite("Assets/Art/Sprites/Backgrounds/StageCards/stage_thumb_cars.png");
         Sprite vehicleSprite = LoadSprite("Assets/Art/Sprites/Vehicles/truck.png");
         Sprite filledStarSprite = LoadSprite(StageSelectSpriteRoot + "ui_stage_star_filled.png");
         Sprite emptyStarSprite = LoadSprite(StageSelectSpriteRoot + "ui_stage_star_empty.png");
@@ -124,7 +124,7 @@ public static class StageCardPrefabUpgrader
         pin.type = Image.Type.Sliced;
         pin.color = new Color(1f, 0.851f, 0.29f, 1f);
 
-        Image thumbnail = UpsertImage(root.transform, "StageThumbnail", thumbnailSprites[0], new Vector2(0f, 105f), new Vector2(720f, 420f), false);
+        Image thumbnail = UpsertImage(root.transform, "StageThumbnail", thumbnailSprites[0], new Vector2(0f, 105f), new Vector2(720f, 420f), true);
         Outline thumbnailOutline = thumbnail.GetComponent<Outline>() ?? thumbnail.gameObject.AddComponent<Outline>();
         thumbnailOutline.effectColor = new Color(0.169f, 0.145f, 0.188f, 1f);
         thumbnailOutline.effectDistance = new Vector2(6f, -6f);
@@ -137,7 +137,7 @@ public static class StageCardPrefabUpgrader
         infoPanel.type = Image.Type.Sliced;
         infoPanel.color = new Color(0.43f, 0.25f, 0.13f, 1f);
 
-        TMP_FontAsset headlineFont = LoadFont("Assets/Fonts/Y1YomiyasuWide-Bold SDF.asset");
+        TMP_FontAsset headlineFont = LoadFont("Assets/Resources/Fonts/NotoSansCJKjp-Regular SDF.asset");
         TMP_FontAsset bodyFont = LoadFont("Assets/Fonts/DotGothic16-Regular SDF.asset");
 
         TMP_Text stageNumberText = UpsertText(

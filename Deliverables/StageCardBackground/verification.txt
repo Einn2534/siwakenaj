@@ -1,0 +1,21 @@
+Stage card background verification
+
+Generated with the built-in image_gen tool: 1643 x 957 PNG.
+Prompt: generation-prompt.txt
+Asset: Assets/Art/UI/Sprites/StageSelect/ui_stage_card_magic_shop_wide.png
+
+Changes:
+- StageCard.prefab: all three thumbnail slots and the displayed thumbnail use the generated image; preserveAspect enabled.
+- StageCardView.cs: retain the original image aspect ratio when refreshing card state.
+- StageCardPrefabUpgrader.cs: use the wide image and preserveAspect when rebuilding cards.
+- Existing full-screen background and scene files were not edited for this task.
+
+Validation:
+- Unity 6000.3.10f1 compilation: 0 errors. Existing obsolete SetIconsForTargetGroup warning in GooglePlayReleaseSetup.cs.
+- Siwakenja.EditModeTests: 72 passed, 0 failed, 0 skipped.
+- Siwakenja.PlayModeTests: 50 passed, 0 failed, 0 skipped. Full result: playmode-results.xml.
+- Real PlayMode captures checked at 1080x1920, 1170x2532, and 1440x3200; background retains its shape and foreground icons remain clear.
+- Final stage-select screenshots: StageSelect_1080x1920.png, StageSelect_1170x2532.png, StageSelect_1440x3200.png.
+- Broader theme-flow captures and layout results: PlayMode/.
+
+During verification the Editor disconnected. On reopening, the scene recovery dialog was accepted to preserve backups under Assets/_Recovery/; recovered scenes were not applied over the working scenes.

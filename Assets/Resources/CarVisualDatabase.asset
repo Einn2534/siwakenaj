@@ -14,11 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entries:
   - _carType: 0
+    _displayName: 
     _bodySprite: {fileID: 2894126367625617641, guid: 55463c0df174ed949b24554b419851ce, type: 3}
     _iconSprite: {fileID: 2894126367625617641, guid: 55463c0df174ed949b24554b419851ce, type: 3}
   - _carType: 1
+    _displayName: 
     _bodySprite: {fileID: -8030835215644163416, guid: c4532249822142d4ea34477f32f39a65, type: 3}
     _iconSprite: {fileID: -8030835215644163416, guid: c4532249822142d4ea34477f32f39a65, type: 3}
   - _carType: 2
+    _displayName: 
     _bodySprite: {fileID: 1223640595971329524, guid: 4d1373d91e161554e91e5e3483a029a2, type: 3}
     _iconSprite: {fileID: 1223640595971329524, guid: 4d1373d91e161554e91e5e3483a029a2, type: 3}
+  _themeName: "\u304F\u308B\u307E"
+  _noun: "\u8ECA"
+  _countUnit: "\u53F0"
+  _brokenName: "\u6545\u969C\u8ECA"
+  _repairAction: "\u6574\u5099\u3078\u9001\u308B"
+  _coveredSprite: {fileID: 0}
+  _stageSelectBackground: {fileID: -226340446894746066, guid: de99a609b29a0284c83cb9a450605b57, type: 3}
+  _isVehicleTheme: 1
