@@ -664,6 +664,7 @@ public sealed class MainPauseMenuController : MonoBehaviour
         _bgmVolumeSlider.onValueChanged.AddListener(SetBgmVolume);
         _seVolumeSlider.onValueChanged.AddListener(SetSeVolume);
         _settingsCloseButton.onClick.AddListener(CloseSettings);
+        AdRemovalPurchasePanel.Install(settingsPanel, 175f);
         _settingsPanelRoot.SetActive(false);
 
         BuildHowToPanel(overlayRect);

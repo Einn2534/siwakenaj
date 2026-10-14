@@ -1,7 +1,7 @@
 {
     "name": "Siwakenja.PlayModeTests",
     "rootNamespace": "",
-    "references": [],
+    "references": ["Unity.TextMeshPro"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

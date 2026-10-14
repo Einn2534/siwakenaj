@@ -993,7 +993,7 @@ public class ResultController : MonoBehaviour
         }
 
         _resultPresentationCoroutine = null;
-        if (!InterstitialGate.CanShow(_resultGameMode, DateTime.UtcNow))
+        if (!isClear || !InterstitialGate.CanShow(_resultGameMode, DateTime.UtcNow))
         {
             UnlockResultActions();
             yield break;

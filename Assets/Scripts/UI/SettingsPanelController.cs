@@ -87,6 +87,7 @@ public class SettingsPanelController : MonoBehaviour
         EnsureVibrationRowBindings();
         EnsureVolumeBindings();
         PrivacyPolicyPanel.Install(transform);
+        AdRemovalPurchasePanel.Install(transform);
     }
 
     private void Start()

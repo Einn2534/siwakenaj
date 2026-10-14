@@ -19,7 +19,14 @@ public class TitleController : MonoBehaviour
     [SerializeField]
     private HowToOverlayController _howToOverlayController;
 
+    [SerializeField]
+    private UnityEngine.UI.Button _adRemovalButton;
+
     private StageDatabase _stageDatabase;
+
+    private void OnEnable() => AdRemovalEntitlement.Changed += RefreshAdRemovalEntry;
+
+    private void OnDisable() => AdRemovalEntitlement.Changed -= RefreshAdRemovalEntry;
 
     private void Start()
     {
@@ -27,6 +34,7 @@ public class TitleController : MonoBehaviour
         _stageDatabase = Resources.Load<StageDatabase>(StageDatabaseResourcePath);
         SaveService.EnsureProgressMigration(_stageDatabase);
         BuildModeButtons();
+        RefreshAdRemovalEntry(AdRemovalEntitlement.IsOwned);
     }
 
     public void OnStartPressed()
@@ -192,6 +200,23 @@ public class TitleController : MonoBehaviour
     public void OnSettingsOpen()
     {
         SetPanelActive(_settingsPanel, true);
+    }
+
+    public void OnAdRemovalPressed()
+    {
+        if (_settingsPanel == null) return;
+        SetPanelActive(_settingsPanel, true);
+        AdRemovalPurchasePanel.Install(_settingsPanel.transform);
+        _settingsPanel.GetComponent<AdRemovalPurchasePanel>().OpenFromTitle(OnSettingsClose);
+    }
+
+    private void RefreshAdRemovalEntry(bool owned)
+    {
+        if (_adRemovalButton == null) return;
+        TMP_Text label = _adRemovalButton.transform.Find("Label")?.GetComponent<TMP_Text>();
+        TMP_Text detail = _adRemovalButton.transform.Find("Detail")?.GetComponent<TMP_Text>();
+        if (label != null) label.text = owned ? "広告削除済み" : "広告を削除";
+        if (detail != null) detail.text = owned ? "購入済み" : "買い切り";
     }
 
     public void OnSettingsClose()

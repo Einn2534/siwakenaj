@@ -731,6 +731,12 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
+        if (AdRemovalEntitlement.IsOwned)
+        {
+            OnRewardedContinueCompleted(true);
+            return;
+        }
+
         _continuePromptController?.ShowAdWaiting();
         LocalTelemetryService.RecordRewardedContinueSelected(
             GameResultData.FromScoreState(SessionState.SelectedGameMode, _currentStageDefinition.StageNumber, false, _scoreManager?.State, _currentStageDefinition, _scoreManager?.ObjectiveEvaluator));

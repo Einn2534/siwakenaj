@@ -428,9 +428,9 @@ public sealed class P1SystemsEditModeTests
     }
 
     [Test]
-    public void InterstitialGate_AllowsOnlyAfterTwoMinutesOrThreeCompletionsAndNeverForDaily()
+    public void InterstitialGate_RequiresThreeMinutesAndTwoClearsAndOnlyAllowsCampaign()
     {
-        string[] keys = { "Interstitial_CompletedSinceLast" };
+        string[] keys = { "Interstitial_CompletedSinceLast", "IAP_Editor_RemoveAds_v1" };
         Dictionary<string, (bool, int)> originalInts = BackupInts(keys);
         const string ticksKey = "Interstitial_LastShownUtcTicks";
         bool ticksExisted = PlayerPrefs.HasKey(ticksKey);
@@ -439,15 +439,52 @@ public sealed class P1SystemsEditModeTests
         {
             DateTime now = new(2026, 8, 24, 0, 0, 0, DateTimeKind.Utc);
             Type gate = CoreReflection.RequiredType("InterstitialGate");
-            PlayerPrefs.SetInt("Interstitial_CompletedSinceLast", 0);
-            PlayerPrefs.SetString(ticksKey, now.AddSeconds(-119).Ticks.ToString());
+            PlayerPrefs.SetInt("IAP_Editor_RemoveAds_v1", 0);
+            PlayerPrefs.SetInt("Interstitial_CompletedSinceLast", 1);
+            PlayerPrefs.SetString(ticksKey, now.AddSeconds(-600).Ticks.ToString());
             Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Stage"), now), Is.False);
-            PlayerPrefs.SetString(ticksKey, now.AddSeconds(-120).Ticks.ToString());
-            Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Stage"), now), Is.True);
-            PlayerPrefs.SetString(ticksKey, now.Ticks.ToString());
-            PlayerPrefs.SetInt("Interstitial_CompletedSinceLast", 3);
+            PlayerPrefs.SetInt("Interstitial_CompletedSinceLast", 2);
+            PlayerPrefs.SetString(ticksKey, now.AddSeconds(-179).Ticks.ToString());
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Stage"), now), Is.False);
+            PlayerPrefs.SetString(ticksKey, now.AddSeconds(-180).Ticks.ToString());
             Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Stage"), now), Is.True);
             Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Daily"), now), Is.False);
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Endless"), now), Is.False);
+            PlayerPrefs.SetInt("IAP_Editor_RemoveAds_v1", 1);
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", EnumValue("GameMode", "Stage"), now), Is.False);
+        }
+        finally
+        {
+            RestoreInts(originalInts);
+            RestoreString(ticksKey, ticksExisted, originalTicks);
+        }
+    }
+
+    [Test]
+    public void InterstitialGate_FirstTwoFastClearsHaveGraceAndShowingResetsBothLimits()
+    {
+        string[] keys = { "Interstitial_CompletedSinceLast", "IAP_Editor_RemoveAds_v1" };
+        Dictionary<string, (bool, int)> originalInts = BackupInts(keys);
+        const string ticksKey = "Interstitial_LastShownUtcTicks";
+        bool ticksExisted = PlayerPrefs.HasKey(ticksKey);
+        string originalTicks = PlayerPrefs.GetString(ticksKey, string.Empty);
+        try
+        {
+            Type gate = CoreReflection.RequiredType("InterstitialGate");
+            object stage = EnumValue("GameMode", "Stage");
+            PlayerPrefs.SetInt("IAP_Editor_RemoveAds_v1", 0);
+            PlayerPrefs.SetInt("Interstitial_CompletedSinceLast", 0);
+            PlayerPrefs.DeleteKey(ticksKey);
+            for (int i = 0; i < 2; i++) CoreReflection.CallStatic(gate, "RecordCompletedRun");
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", stage, DateTime.UtcNow), Is.False);
+            DateTime firstClear = new(long.Parse(PlayerPrefs.GetString(ticksKey)), DateTimeKind.Utc);
+            DateTime shownAt = firstClear.AddSeconds(180);
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", stage, shownAt), Is.True);
+            CoreReflection.CallStatic(gate, "RecordShown", shownAt);
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", stage, shownAt.AddMinutes(30)), Is.False);
+            for (int i = 0; i < 2; i++) CoreReflection.CallStatic(gate, "RecordCompletedRun");
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", stage, shownAt.AddSeconds(179)), Is.False);
+            Assert.That(CoreReflection.CallStatic(gate, "CanShow", stage, shownAt.AddSeconds(180)), Is.True);
         }
         finally
         {

@@ -42,11 +42,13 @@ public sealed class ContinuePromptController : MonoBehaviour
     {
         EventSystemInputModuleUtility.EnsureCompatibleEventSystem();
         BuildInterface();
+        AdRemovalEntitlement.Changed += OnAdRemovalChanged;
         Hide();
     }
 
     private void OnDestroy()
     {
+        AdRemovalEntitlement.Changed -= OnAdRemovalChanged;
         ClearListeners();
     }
 
@@ -60,7 +62,7 @@ public sealed class ContinuePromptController : MonoBehaviour
             _scoreText.text = score.ToString("N0");
         }
 
-        SetStatusText("広告を最後まで見て、続きから再開");
+        RefreshContinueOffer();
         SetButtonsInteractable(true);
 
         if (_root != null)
@@ -72,6 +74,22 @@ public sealed class ContinuePromptController : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(_continueButton.gameObject);
         }
+    }
+
+    private void OnAdRemovalChanged(bool owned)
+    {
+        if (_root != null && _root.activeSelf && _continueButton != null && _continueButton.interactable)
+        {
+            RefreshContinueOffer();
+        }
+    }
+
+    private void RefreshContinueOffer()
+    {
+        bool adsRemoved = AdRemovalEntitlement.IsOwned;
+        TMP_Text label = _continueButton != null ? _continueButton.GetComponentInChildren<TMP_Text>() : null;
+        if (label != null) label.text = adsRemoved ? "広告なしで復活" : "広告を見て復活";
+        SetStatusText(adsRemoved ? "広告削除を購入済みです。続きから再開できます" : "広告を最後まで見て、続きから再開");
     }
 
     public void Hide()

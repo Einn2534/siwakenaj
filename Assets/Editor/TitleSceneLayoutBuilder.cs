@@ -338,9 +338,9 @@ public static class TitleSceneLayoutBuilder
         Button settingsButton = CreateRoundMenuButton("SettingsButtonTop", contentRoot, settingsIconSprite, string.Empty, uiFontAsset, slicedSprite);
         SetAnchored((RectTransform)settingsButton.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(82f, -76f), new Vector2(112f, 112f));
         AddButtonListener(settingsButton, titleController.OnSettingsOpen);
-        Button howToButton = CreateRoundMenuButton("HowToButton", contentRoot, howToIconSprite, string.Empty, uiFontAsset, slicedSprite, "?");
-        SetAnchored((RectTransform)howToButton.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-82f, -76f), new Vector2(112f, 112f));
-        AddButtonListener(howToButton, titleController.OnHowToOpen);
+        Button adRemovalButton = CreateRoundMenuButton("AdRemovalPurchaseButton", contentRoot, null, string.Empty, uiFontAsset, slicedSprite);
+        ConfigureTitleAdRemovalButton(adRemovalButton, uiFontAsset);
+        AddButtonListener(adRemovalButton, titleController.OnAdRemovalPressed);
 
         RectTransform logoBlock = CreateUIObject("LogoBlock", contentRoot);
         SetAnchored(logoBlock, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -130f), new Vector2(990f, 390f));
@@ -372,7 +372,41 @@ public static class TitleSceneLayoutBuilder
         AddButtonListener(stageButton, titleController.OnStartPressed);
 
         settingsButton.transform.SetAsLastSibling();
-        howToButton.transform.SetAsLastSibling();
+        adRemovalButton.transform.SetAsLastSibling();
+    }
+
+    // Also upgrades the existing scene button without rebuilding the title.
+    public static void ConfigureTitleAdRemovalButton(UnityEngine.UI.Button button, TMP_FontAsset font)
+    {
+        button.name = "AdRemovalPurchaseButton";
+        RectTransform rect = (RectTransform)button.transform;
+        SetAnchored(rect, Vector2.one, Vector2.one, new Vector2(1f, 0.5f), new Vector2(-26f, -76f), new Vector2(280f, 112f));
+        UnityEngine.UI.Image face = button.GetComponent<UnityEngine.UI.Image>();
+        face.color = new Color(0.34f, 0.20f, 0.46f, 1f);
+        face.type = UnityEngine.UI.Image.Type.Sliced;
+        UnityEngine.UI.LayoutElement layout = button.GetComponent<UnityEngine.UI.LayoutElement>();
+        if (layout != null)
+        {
+            layout.preferredWidth = 280f;
+            layout.preferredHeight = 112f;
+        }
+        foreach (string oldIcon in new[] { "Icon", "IconText" })
+        {
+            Transform icon = rect.Find(oldIcon);
+            if (icon != null) icon.gameObject.SetActive(false);
+        }
+        TMP_Text label = rect.Find("Label")?.GetComponent<TMP_Text>()
+            ?? CreateText("Label", rect, "広告を削除", font, 38f, 28f, Color.white, TextAlignmentOptions.Center);
+        label.text = "広告を削除";
+        label.color = Color.white;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        Stretch(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(14f, 42f), new Vector2(-14f, -8f));
+        TMP_Text detail = rect.Find("Detail")?.GetComponent<TMP_Text>()
+            ?? CreateText("Detail", rect, "買い切り", font, 25f, 21f, Color.white, TextAlignmentOptions.Center);
+        detail.text = "買い切り";
+        detail.color = Color.white;
+        detail.textWrappingMode = TextWrappingModes.NoWrap;
+        SetAnchored(detail.rectTransform, Vector2.zero, new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 10f), new Vector2(-28f, 32f));
     }
 
     private static void BuildLogoBlock(RectTransform parent, Sprite logoSprite, TMP_FontAsset titleFontAsset, TMP_FontAsset headlineFontAsset, TMP_FontAsset uiFontAsset, Sprite slicedSprite)
@@ -1267,6 +1301,7 @@ public static class TitleSceneLayoutBuilder
         SetObjectReference(serializedTitle, "_howToPanel", howToPanel);
         SetObjectReference(serializedTitle, "_settingsPanel", settingsPanel);
         SetObjectReference(serializedTitle, "_howToOverlayController", howToOverlayController);
+        SetObjectReference(serializedTitle, "_adRemovalButton", GameObject.Find("AdRemovalPurchaseButton")?.GetComponent<UnityEngine.UI.Button>());
         serializedTitle.ApplyModifiedPropertiesWithoutUndo();
     }
 

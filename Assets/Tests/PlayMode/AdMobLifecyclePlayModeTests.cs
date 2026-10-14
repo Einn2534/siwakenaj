@@ -6,6 +6,26 @@ using UnityEngine.TestTools;
 
 public class AdMobLifecyclePlayModeTests
 {
+    private const string AdRemovalKey = "IAP_Editor_RemoveAds_v1";
+    private bool _hadAdRemovalKey;
+    private int _savedAdRemoval;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _hadAdRemovalKey = UnityEngine.PlayerPrefs.HasKey(AdRemovalKey);
+        _savedAdRemoval = UnityEngine.PlayerPrefs.GetInt(AdRemovalKey);
+        UnityEngine.PlayerPrefs.DeleteKey(AdRemovalKey);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        if (_hadAdRemovalKey) UnityEngine.PlayerPrefs.SetInt(AdRemovalKey, _savedAdRemoval);
+        else UnityEngine.PlayerPrefs.DeleteKey(AdRemovalKey);
+        UnityEngine.PlayerPrefs.Save();
+    }
+
     [UnityTest]
     public IEnumerator CallbacksRunBeforeSdkInitialization_AndUnavailableAdsDoNotBlock()
     {

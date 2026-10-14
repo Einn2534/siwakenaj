@@ -18,6 +18,7 @@ public sealed partial class GameplayFlowPlayModeTests
 
     private static readonly string[] BasePlayerPrefsKeys =
     {
+        "IAP_Editor_RemoveAds_v1",
         "BGM_On",
         "SE_On",
         "Vibration_On",
@@ -79,6 +80,7 @@ public sealed partial class GameplayFlowPlayModeTests
     [SetUp]
     public void SetUp()
     {
+        PlayerPrefs.SetInt("IAP_Editor_RemoveAds_v1", 0);
         PlayerPrefs.SetInt("BGM_On", 0);
         PlayerPrefs.SetInt("SE_On", 0);
         PlayerPrefs.SetInt("Vibration_On", 0);

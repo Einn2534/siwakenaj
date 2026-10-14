@@ -9,7 +9,7 @@ public sealed class AdMobManager : MonoBehaviour
     private static AdMobManager _instance;
     private InterstitialAd _interstitial;
     private RewardedAd _rewarded;
-    private bool _initializing, _initialized, _loadingInterstitial, _loadingRewarded, _showing, _privacyShowing;
+    private bool _initializing, _initialized, _loadingInterstitial, _loadingRewarded, _showing, _privacyShowing, _consentRequested;
     private float _nextInterstitial, _nextRewarded, _interstitialExpiry, _rewardedExpiry;
     private Action _interstitialComplete;
     private AdRewardCompletion _rewardCompletion;
@@ -29,9 +29,17 @@ public sealed class AdMobManager : MonoBehaviour
         if (_instance != null && _instance != this) { Destroy(gameObject); return; }
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        AdRemovalEntitlement.Changed += OnAdRemovalChanged;
         // Consent callbacks run before MobileAds.Initialize creates its executor.
         MobileAdsEventExecutor.Initialize();
+        RequestConsent();
+    }
+
+    private void RequestConsent()
+    {
+        if (AdRemovalEntitlement.IsOwned || _consentRequested) return;
 #if UNITY_ANDROID && !UNITY_EDITOR
+        _consentRequested = true;
         ConsentInformation.Update(new ConsentRequestParameters(), error => OnMain(() =>
         {
             if (error != null) { Debug.LogWarning("AdMob consent: " + error.Message); TryInitialize(); return; }
@@ -44,16 +52,32 @@ public sealed class AdMobManager : MonoBehaviour
 #endif
     }
 
+    private void OnAdRemovalChanged(bool owned)
+    {
+        if (owned)
+        {
+            // An already displayed ad must still deliver its completion callback.
+            if (_showing) return;
+            _interstitial?.Destroy(); _interstitial = null;
+            _rewarded?.Destroy(); _rewarded = null;
+        }
+        else
+        {
+            RequestConsent();
+            TryInitialize();
+        }
+    }
+
     private static void OnMain(Action action) => MobileAdsEventExecutor.ExecuteInUpdate(action);
     private void TryInitialize()
     {
-        if (this == null || !ConsentInformation.CanRequestAds()) return;
+        if (this == null || AdRemovalEntitlement.IsOwned || !ConsentInformation.CanRequestAds()) return;
         InitializeSdk();
     }
 
     private void InitializeSdk()
     {
-        if (_initializing || _initialized) return;
+        if (AdRemovalEntitlement.IsOwned || _initializing || _initialized) return;
         _initializing = true;
         MobileAds.SetRequestConfiguration(new RequestConfiguration
         {
@@ -91,6 +115,7 @@ public sealed class AdMobManager : MonoBehaviour
 
     private bool CanRequest()
     {
+        if (AdRemovalEntitlement.IsOwned) return false;
 #if UNITY_EDITOR
         return _initialized && !_privacyShowing;
 #else
@@ -147,6 +172,7 @@ public sealed class AdMobManager : MonoBehaviour
 
     public void ShowRewardedThenContinue(Action<bool> onComplete)
     {
+        if (AdRemovalEntitlement.IsOwned) { onComplete?.Invoke(true); return; }
         if (!IsRewardedReady()) { onComplete?.Invoke(false); return; }
         _showing = true;
         var completion = new AdRewardCompletion(onComplete);
@@ -157,6 +183,7 @@ public sealed class AdMobManager : MonoBehaviour
 
     public void ShowInterstitialThenContinue(Action onComplete)
     {
+        if (AdRemovalEntitlement.IsOwned) { onComplete?.Invoke(); return; }
         if (!CanRequest() || _showing || _interstitial == null || Time.realtimeSinceStartup >= _interstitialExpiry || !_interstitial.CanShowAd())
         { onComplete?.Invoke(); return; }
         _showing = true;
@@ -190,6 +217,7 @@ public sealed class AdMobManager : MonoBehaviour
     private void OnDestroy()
     {
         if (_instance != this) return;
+        AdRemovalEntitlement.Changed -= OnAdRemovalChanged;
         _interstitial?.Destroy();
         _rewarded?.Destroy();
         _instance = null;

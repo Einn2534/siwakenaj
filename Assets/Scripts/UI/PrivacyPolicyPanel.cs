@@ -10,6 +10,17 @@ public sealed class PrivacyPolicyPanel : MonoBehaviour
     private ScrollRect _scroll;
     private TMP_FontAsset _font;
     private GameObject _adPrivacy;
+    private string _closeCaption = "設定にもどる";
+
+    public static PrivacyPolicyPanel CreateReader(Transform parent, TMP_FontAsset font)
+    {
+        var panel = parent.GetComponent<PrivacyPolicyPanel>();
+        if (panel != null) return panel;
+        panel = parent.gameObject.AddComponent<PrivacyPolicyPanel>();
+        panel._font = font;
+        panel._closeCaption = "購入画面にもどる";
+        return panel;
+    }
 
     public static void Install(Transform settings)
     {
@@ -83,7 +94,7 @@ public sealed class PrivacyPolicyPanel : MonoBehaviour
         _scroll.viewport = viewport;
         _scroll.content = content;
         AddButton("OpenPolicyWebsite", root, "Webで見る（通信が必要）", 130, () => Application.OpenURL(PolicyUrl));
-        AddButton("ClosePolicy", root, "設定にもどる", 30, Close);
+        AddButton("ClosePolicy", root, _closeCaption, 30, Close);
         AddButton("AdPrivacyOptions", root, "広告のプライバシー設定", 230, () => AdMobManager.Instance.ShowPrivacyOptions());
         _adPrivacy = root.Find("AdPrivacyOptions").gameObject;
     }
