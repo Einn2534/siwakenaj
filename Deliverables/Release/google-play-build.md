@@ -1,6 +1,21 @@
 # Google Playビルド手順
 
-## 最新の内部テスト配信版（1.0.8、2026-10-12）
+## 最新の内部テスト配信版（1.0.9、2026-10-15）
+
+ひみつ便チュートリアル、星評価の調整、仕分けレーンと操作ボタン、テーマ別ステージカード、モニターの透過修正を含む1.0.9 / versionCode 10を内部テストへ公開。Consoleで「1.0.9 チュートリアルと画面表示の改善」「内部テスターに公開」「10月15日 3:08 に公開」を確認した。Alphaの審査状況は `internal-test-release.md` を参照。
+
+- AAB: `Builds/GooglePlay/siwakenja-1.0.9-10.aab`、159,048,700 bytes。
+- SHA-256: `FE4D7B9F1F1E7E361B55946E5B4C9B1A53E0E880F01A755C32CE57E1632CF764`。
+- Unity 6000.3.10f1、既存 `CommandLineAndroidBuild.BuildGooglePlayAab` をUniCliから実行。結果Succeeded、エラー0。警告17件はローカルAndroid SDKの重複配置16件とAndroid対象外iOSプラグイン1件。既存DPAPI署名を使用し、資格情報・一時設定は完了後に復元済み。任意のPlay依存メタデータは前版と同じく省略。
+- 同じソースで直前に実施したEditMode 112/112、PlayMode 78/78成功。検証後の機能変更なし。今回の変更はバージョン設定のみ。ビルドで消去された動的フォントキャッシュは検証済みのGit版へ復元し、Unityへ再インポートした。
+- 署名検証成功。証明書SHA-256 `A3:BB:63:2D:D3:96:1A:86:7F:39:1A:1F:5A:8C:0E:12:BD:77:F8:19:F8:36:C6:19:72:1E:36:84:10:EF:3B:12` は既存配信版と一致。
+- アプリID、target API 36、AdMob ID、課金権限、Unity Ads不在、ARM64のみ、7ライブラリのELF LOAD配置16 KB以上を確認。ThirdPartyNotices.txtも元ファイルと同一。
+- AABがUnityの150 MB警告閾値を超えたため、所有者がサイズ計算と結果確認を実施。Play Consoleの新規インストールサイズは157 MB（前版比+33 MB）、サポート対象デバイス数の変化なし。公開を妨げるエラーなし。難読化解除ファイル・ネイティブデバッグシンボル未添付の警告2件は従来どおり。
+- アップロード名は `candidate.aab`。Gradle生成物を先に検証・アップロードし、Unityビルド完了後の最終AABとSHA-256が一致することを確認した。実機での更新・購入・復元は今回未実施。
+
+証拠: `QAOutput/PlayUpdate20261015/` の `build-status.json`、`build-report.json`、`aab-details.json`、`aab-verification.txt`、テストXML、`internal-published.jpg/.txt`。code 10は使用済みなので、次の新規AABはcode 11以上。以下は各日付時点の履歴。
+
+## 内部テスト配信版（1.0.8、2026-10-12）
 
 強制広告の「3分以上＋2回クリア」、通常クリア時だけの表示、タイトルの広告削除購入ボタン、未使用EmojiOne除外を含む新版を内部テストへ公開済み。Consoleで「内部テスターに公開」「10月12日 15:23 に公開」を確認。同じAABをクローズドテストAlphaへ追加して審査送信を確定し、現在はGoogleの自動チェック待ち。Alphaの承認・1.0.8配信開始は未確認。
 
