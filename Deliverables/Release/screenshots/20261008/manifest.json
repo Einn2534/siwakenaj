@@ -1,0 +1,46 @@
+[
+  {
+    "file": "00-title.png",
+    "width": 1080,
+    "height": 1920,
+    "pixelFormat": "24bit RGB",
+    "bytes": 1900472,
+    "sha256": "1EC7E6B8A6A9B16BFD8CE844807C0408B26F4545BDC1189C37EFA0A408EBEB46",
+    "uploadOrder": 1,
+    "selectionStatus": "saved_review_submission_accepted_quick_check_pending",
+    "aiLabel": true
+  },
+  {
+    "file": "04-gameplay.png",
+    "width": 1080,
+    "height": 1920,
+    "pixelFormat": "24bit RGB",
+    "bytes": 2547945,
+    "sha256": "A43443EF41CF29775B97C3EA0DE0E1961C58EB0881F493C61715E167CB9213E4",
+    "uploadOrder": 2,
+    "selectionStatus": "saved_review_submission_accepted_quick_check_pending",
+    "aiLabel": true
+  },
+  {
+    "file": "02-stages.png",
+    "width": 1080,
+    "height": 1920,
+    "pixelFormat": "24bit RGB",
+    "bytes": 2008762,
+    "sha256": "A99D64C739DA52524D390B634A2E95984086407FD4EE6DEF4A0D26B83B7F4E2C",
+    "uploadOrder": 3,
+    "selectionStatus": "saved_review_submission_accepted_quick_check_pending",
+    "aiLabel": true
+  },
+  {
+    "file": "05-result.png",
+    "width": 1080,
+    "height": 1920,
+    "pixelFormat": "24bit RGB",
+    "bytes": 1736046,
+    "sha256": "4067AEA8D0A0D779CF68244AB3F0A30489CA11125D8C7F80909862CC2A5D9B6A",
+    "uploadOrder": 4,
+    "selectionStatus": "saved_review_submission_accepted_quick_check_pending",
+    "aiLabel": true
+  }
+]
